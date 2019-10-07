@@ -1,4 +1,14 @@
-/******/ (function(modules) { // webpackBootstrap
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["GLP"] = factory();
+	else
+		root["GLP"] = factory();
+})(window, function() {
+return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -81,32 +91,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./examples/ex2/src/ts/main.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./examples/ex2/src/ts/main.ts":
-/*!*************************************!*\
-  !*** ./examples/ex2/src/ts/main.ts ***!
-  \*************************************/
-/*! exports provided: APP */
+/***/ "./src/core/Renderer.ts":
+/*!******************************!*\
+  !*** ./src/core/Renderer.ts ***!
+  \******************************/
+/*! exports provided: Renderer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"APP\", function() { return APP; });\n/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../src */ \"./src/index.ts\");\n\nvar APP = /** @class */ (function () {\n    function APP() {\n        console.log('[examples2]');\n        var testClass = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Test\"]();\n        testClass.print();\n    }\n    return APP;\n}());\n\nwindow.addEventListener('load', function () {\n    var app = new APP();\n});\n\n\n//# sourceURL=webpack:///./examples/ex2/src/ts/main.ts?");
-
-/***/ }),
-
-/***/ "./src/core/Test.ts":
-/*!**************************!*\
-  !*** ./src/core/Test.ts ***!
-  \**************************/
-/*! exports provided: Test */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Test\", function() { return Test; });\nvar Test = /** @class */ (function () {\n    function Test() {\n    }\n    Test.prototype.print = function () {\n        console.log('Test class');\n    };\n    return Test;\n}());\n\n\n\n//# sourceURL=webpack:///./src/core/Test.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"Renderer\", function() { return Renderer; });\nvar Renderer = /** @class */ (function () {\n    function Renderer() {\n        console.log('glpower');\n    }\n    return Renderer;\n}());\n\n\n\n//# sourceURL=webpack://GLP/./src/core/Renderer.ts?");
 
 /***/ }),
 
@@ -114,12 +112,13 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/*! exports provided: Test */
+/*! exports provided: Renderer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _core_Test__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/Test */ \"./src/core/Test.ts\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Test\", function() { return _core_Test__WEBPACK_IMPORTED_MODULE_0__[\"Test\"]; });\n\n\n\n\n//# sourceURL=webpack:///./src/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _core_Renderer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/Renderer */ \"./src/core/Renderer.ts\");\n/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, \"Renderer\", function() { return _core_Renderer__WEBPACK_IMPORTED_MODULE_0__[\"Renderer\"]; });\n\n\n\n\n//# sourceURL=webpack://GLP/./src/index.ts?");
 
 /***/ })
 
 /******/ });
+});

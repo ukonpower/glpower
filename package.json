@@ -1,15 +1,16 @@
 {
-  "name": "package-template",
+  "name": "glpower",
   "version": "0.0.1",
   "description": "",
-  "main": "build/packageName.js",
+  "main": "build/glpower.js",
   "author": "ukonpower",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ukonpower/package-template.git"
+    "url": "git@github.com:ukonpower/glpower.git"
   },
   "keywords": [
+    "WebGL"
   ],
   "types": "types/index.d.ts",
   "files": [
@@ -18,7 +19,7 @@
     "types"
   ],
   "bugs": {
-    "url": "https://github.com/ukonpower/package-template/issues"
+    "url": "https://github.com/ukonpower/glpower/issues"
   },
   "devDependencies": {
     "browser-sync": "^2.26.7",
@@ -38,9 +39,8 @@
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.2",
     "webpack-dev-server": "^3.3.1",
-    "webpack-merge": "^4.2.1"
-  },
-  "dependencies": {
+    "webpack-merge": "^4.2.1",
     "webpack-stream": "^5.2.1"
-  }
+  },
+  "dependencies": {}
 }

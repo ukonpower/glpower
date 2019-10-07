@@ -1,13 +1,12 @@
-import * as MyPackage from '../../../../src';
+import * as GLP from '../../../../src';
 
 export class APP{
 
+	private renderer: GLP.Renderer;
+
 	constructor(){
 
-		console.log( '[examples1]' );
-
-		let testClass = new MyPackage.Test();
-		testClass.print();
+		this.renderer = new GLP.Renderer();
 
 	}
 
