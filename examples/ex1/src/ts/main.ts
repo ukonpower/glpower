@@ -6,7 +6,9 @@ export class APP{
 
 	constructor(){
 
-		this.renderer = new GLP.Renderer();
+		this.renderer = new GLP.Renderer({
+			canvas: document.querySelector( '#canvas' )
+		});
 
 	}
 
