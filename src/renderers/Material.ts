@@ -1,5 +1,6 @@
 export declare interface OUniform{
 	value: any;
+	location?: WebGLUniformLocation;
 }
 
 export declare interface Uniforms{
@@ -9,7 +10,7 @@ export declare interface Uniforms{
 export declare interface MaterialParam{
 	frag: string;
 	vert: string;
-	uniforms: Uniforms
+	uniforms?: Uniforms
 }
 
 export class Material{

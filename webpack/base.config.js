@@ -11,7 +11,7 @@ module.exports = {
 				loader: 'ts-loader',
 				options: {
                     configFile: 'webpack/tsconfig/dev.json'
-                }
+                },
 			}
 		]
 	}
