@@ -2,7 +2,6 @@ import { Material, MaterialParam } from "./Material";
 import { Scene } from "../objects/Scene";
 import { Camera } from "./Camera";
 import { Mesh } from "../objects/Mesh";
-import { Empty } from "../objects/Empty";
 import { Geometry } from "../geometries/Geometry";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
@@ -38,6 +37,8 @@ export class Renderer{
 
 		this._canvas.width = width * ( this.isRetina ? window.devicePixelRatio : 1 );
 		this._canvas.height = height * ( this.isRetina ? window.devicePixelRatio : 1 );
+
+		this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
 
 	}
 
@@ -96,31 +97,10 @@ export class Renderer{
 		
 	}
 
-	protected setAttributes( mat: Material, geo: Geometry ){
-
-		let prg = mat.program;
-
-		let keys = Object.keys( geo.attributes );
-
-		for ( let i = 0; i < keys.length; i++ ){
-
-			let key = keys[i];
-			let attr = geo.attributes[key];
-
-			let target = ( key == 'index' ) ? this._gl.ELEMENT_ARRAY_BUFFER : this._gl.ARRAY_BUFFER;
-
-			this._gl.bindBuffer( target, attr.vbo );
-			this._gl.enableVertexAttribArray( attr.location );
-			this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
-
-		}
-
-	}
-
 	protected createBufferObject( vertices: number[], isIndex: boolean = false ){
 
 		let vbo = this._gl.createBuffer();
-
+		
 		let target = isIndex ? this._gl.ELEMENT_ARRAY_BUFFER : this._gl.ARRAY_BUFFER;
 
 		let array = isIndex ? new Int16Array( vertices ) : new Float32Array( vertices );
@@ -131,6 +111,31 @@ export class Renderer{
 		this._gl.bindBuffer( target, null );
 
 		return vbo;
+
+	}
+
+	protected setAttributes( geo: Geometry ){
+
+		let keys = Object.keys( geo.attributes );
+
+		for ( let i = 0; i < keys.length; i++ ){
+
+			let key = keys[i];
+			let attr = geo.attributes[key];
+
+			if( key == 'index' ){
+
+				this._gl.bindBuffer( this._gl.ELEMENT_ARRAY_BUFFER, attr.vbo );
+
+			}else{
+
+				this._gl.bindBuffer( this._gl.ARRAY_BUFFER, attr.vbo );
+				this._gl.enableVertexAttribArray( attr.location );
+				this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
+
+			}
+
+		}
 
 	}
 
@@ -199,10 +204,10 @@ export class Renderer{
 
 		}
 
-		this.setAttributes( mat, geo );
-		this.setUniforms( mat );
-
 		this._gl.useProgram( mat.program );
+
+		this.setAttributes( geo );
+		this.setUniforms( mat );
 
 		this._gl.clear( this._gl.COLOR_BUFFER_BIT );
 

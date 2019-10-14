@@ -161,8 +161,8 @@ function sassDev(){
 
     return gulp.src( srcDir + "/scss/style.scss" )
         .pipe( plumber() )
-        .pipe( autoprefixer() )
         .pipe( sass() )
+        .pipe( autoprefixer() )
         .pipe( cssmin() )
         .pipe( gulp.dest( distDir + "/css/" ) )
         .pipe( browserSync.stream() )
@@ -184,8 +184,8 @@ function watch(){
 
     gulp.watch( './src/**/*', gulp.series( webpackDev ) );
     gulp.watch( srcDir + '/ts/**/*', gulp.series( webpackDev ) );
-    gulp.watch( srcDir + '/scss/*.scss', gulp.task( sassDev ) );
-    gulp.watch( srcDir + '/html/**/*', gulp.task( copyDevFiles ) );
+    gulp.watch( srcDir + '/scss/**/*.scss', gulp.series( sassDev ) );
+    gulp.watch( srcDir + '/html/**/*', gulp.series( copyDevFiles ) );
 
 }
 

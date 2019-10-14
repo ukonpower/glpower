@@ -4,7 +4,6 @@ export declare interface Attribute{
 	location?: number;
 	stride?: number;
 	vbo?: WebGLBuffer;
-	ibo?: WebGLBuffer;
 }
 
 export declare interface Attributes{

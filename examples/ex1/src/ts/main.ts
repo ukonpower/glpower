@@ -33,18 +33,25 @@ export class APP{
 		this.camera.position.z = 5;
 		
 		let posArray = [
-			0, 1.0, 0,
-			-1.0, -1.0, 0,
-			1.0, -1.0, 0
+			0.0, 1.0, 0.0,
+			1.0, -1.0, 0.0,
+			-1.0, -1.0, 0.0
 		]
 
 		let indexArray = [
 			0, 1, 2
 		]
 
+		let colorArray = [
+			1.0, 0.0, 0.0,
+			0.0, 1.0, 0.0,
+			0.0, 0.0, 1.0,
+		]
+
 		let geo = new GLP.Geometry();
 		geo.addAttributes( 'position', posArray, 3 );
 		geo.addAttributes( 'index', indexArray, 1 );
+		geo.addAttributes( 'color', colorArray, 3 );
 
 		this.uni = {
 			time: {
