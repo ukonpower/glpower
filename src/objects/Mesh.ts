@@ -14,6 +14,14 @@ export class Mesh extends Empty{
 		this.geometry = geometry;
 		this.material = material;
 		
+		this.material.uniforms.modelViewMatrix = {
+			value: this.modelViewMatrix
+		}
+
+		this.material.uniforms.projectionMatrix = {
+			value: null
+		}
+		
 	}
 
 	public get isMesh(){

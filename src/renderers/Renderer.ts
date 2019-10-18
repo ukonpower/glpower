@@ -5,6 +5,7 @@ import { Mesh } from "../objects/Mesh";
 import { Geometry } from "../geometries/Geometry";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
+import { Mat4 } from "../math/Mat4";
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
@@ -23,7 +24,8 @@ export class Renderer{
 
 	constructor( param: RendererParam ){
 
-		console.log( 'GLパワーをみせつけろ' );
+		console.log( "%c- GLパワーをみせつけろ "  + " -", 'padding: 5px 10px ;background-color: black; color: white;font-size:11px' );
+
 
 		this._canvas = param.canvas;
 
@@ -167,7 +169,10 @@ export class Renderer{
 
 			let value = uni.value;
 
-			let type = '';
+			if( !value ) continue;
+
+			let type: string;
+			let isMat: boolean = false;
 
 			if( typeof( value ) == 'number' ){
 
@@ -181,32 +186,55 @@ export class Renderer{
 
 				type = 'uniform3fv';
 
+			}else if( ( value as Mat4 ).isMat4 ){
+
+				type = 'uniformMatrix4fv';
+
+				value = value.element;
+
+				isMat = true;
+
 			}
 
-			this._gl[type]( uni.location, value );
+			if( type ){
+
+				if( isMat ){
+
+					this._gl[type]( uni.location, false, value );
+
+				}else{
+				
+					this._gl[type]( uni.location, value );
+					
+				}
+
+			}
 
 		}
 
 	}
 
-	protected drawMesh( obj: Mesh ){
+	protected drawMesh( obj: Mesh, camera: Camera ){
 
 		let mat = obj.material;
 		let geo = obj.geometry;
-		
+
+		mat.uniforms.projectionMatrix.value = camera.projectionMatrix		
+
 		if( !mat.program ){
 
 			this.createProgram( mat );
 
-			this.createAttributes( mat, geo );
-
 			this.createUniforms( mat );
+
+			this.createAttributes( mat, geo );
+			
+			this.setAttributes( geo );
 
 		}
 
 		this._gl.useProgram( mat.program );
 
-		this.setAttributes( geo );
 		this.setUniforms( mat );
 
 		this._gl.clear( this._gl.COLOR_BUFFER_BIT );
@@ -217,15 +245,19 @@ export class Renderer{
 
 	}
 
-	public render( scene: Scene, cmaera: Camera ){
+	public render( scene: Scene, camera: Camera ){
 
+		camera.updateMatrix();		
+		
 		for( let i = 0; i < scene.children.length; i++ ){
 
 			let obj = scene.children[i];
 
 			if( ( obj as Mesh ).isMesh ){
 
-				this.drawMesh( obj as Mesh );
+				obj.updateMatrix();
+
+				this.drawMesh( obj as Mesh, camera );
 				
 			}
 

@@ -10,6 +10,8 @@ export class APP{
 	private camera: GLP.Camera;
 
 	private uni: GLP.Uniforms;
+
+	private mesh: GLP.Mesh;
 	
 	constructor(){
 
@@ -17,11 +19,14 @@ export class APP{
 			canvas: document.querySelector( '#canvas' ),
 			retina: true
 		});
+
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 		this.initScene();
 
 		this.animate();
+
+		window.addEventListener( 'resize', this.resize.bind( this ) );
 
 	}
 
@@ -29,13 +34,13 @@ export class APP{
 		
 		this.scene = new GLP.Scene();
 
-		this.camera = new GLP.Camera();
+		this.camera = new GLP.Camera( 50, 0.1, 10 );
 		this.camera.position.z = 5;
 		
 		let posArray = [
-			0.0, 1.0, 0.0,
-			1.0, -1.0, 0.0,
-			-1.0, -1.0, 0.0
+			0.0, 0.5, 0.0,
+			0.5, -0.5, 0.0,
+			-0.5, -0.5, 0.0
 		]
 
 		let indexArray = [
@@ -65,9 +70,12 @@ export class APP{
 			uniforms: this.uni
 		});
 
-		let mesh = new GLP.Mesh( geo, mat );
+		this.mesh = new GLP.Mesh( geo, mat );
+		this.mesh.position.set( 0, 0, 0 );
+		this.mesh.rotation.set( 0, 0.0, 0 );
+		this.mesh.scale.set( 1, 1, 1 );
 
-		this.scene.add( mesh );
+		this.scene.add( this.mesh );
 
 	}
 
@@ -75,9 +83,17 @@ export class APP{
 
 		this.uni.time.value += 1.0;
 
+		this.mesh.rotation.y = this.uni.time.value * 0.02;
+
 		this.renderer.render( this.scene, this.camera );
 
 		requestAnimationFrame( this.animate.bind( this ) );
+
+	}
+
+	private resize(){
+
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 	}
 
