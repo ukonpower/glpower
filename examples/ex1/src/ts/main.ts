@@ -34,8 +34,9 @@ export class APP{
 		
 		this.scene = new GLP.Scene();
 
-		this.camera = new GLP.Camera( 50, 0.1, 10 );
-		this.camera.position.z = 5;
+		this.camera = new GLP.Camera( 50, 0.1, 1000 );
+		this.camera.position.set( 0, 0, 5 );
+		// this.camera.rotation.set( 1.0, 0, 0 );
 		
 		let posArray = [
 			0.0, 0.5, 0.0,
@@ -72,7 +73,7 @@ export class APP{
 
 		this.mesh = new GLP.Mesh( geo, mat );
 		this.mesh.position.set( 0, 0, 0 );
-		this.mesh.rotation.set( 0, 0.0, 0 );
+		this.mesh.rotation.set( 0, 0, 0 );
 		this.mesh.scale.set( 1, 1, 1 );
 
 		this.scene.add( this.mesh );
@@ -83,6 +84,7 @@ export class APP{
 
 		this.uni.time.value += 1.0;
 
+		// this.mesh.rotation.x = this.uni.time.value * 0.02;
 		this.mesh.rotation.y = this.uni.time.value * 0.02;
 
 		this.renderer.render( this.scene, this.camera );

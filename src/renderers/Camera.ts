@@ -8,6 +8,7 @@ export class Camera extends Empty{
 	private far: number;
 	
 	public projectionMatrix: Mat4;
+	public modelMatrixInverse: Mat4;
 	
 	constructor( fov: number, near: number, far: number ){
 	
@@ -18,6 +19,7 @@ export class Camera extends Empty{
 		this.far = far;
 		
 		this.projectionMatrix = new Mat4();
+		this.modelMatrixInverse = new Mat4();
 		
 	}
 
@@ -25,7 +27,9 @@ export class Camera extends Empty{
 
 		super.updateMatrix();
 
-		this.projectionMatrix.perspective( 50, window.innerWidth / window.innerHeight, this.near, this.far );		
+		this.modelMatrixInverse.copy( this.modelMatrix.clone().inverse() );
+
+		this.projectionMatrix.perspective( this.fov, window.innerWidth / window.innerHeight, this.near, this.far );		
 
 	}
 

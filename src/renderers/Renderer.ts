@@ -214,12 +214,16 @@ export class Renderer{
 
 	}
 
-	protected drawMesh( obj: Mesh, camera: Camera ){
+	protected renderMesh( obj: Mesh, camera: Camera ){
 
 		let mat = obj.material;
 		let geo = obj.geometry;
 
-		mat.uniforms.projectionMatrix.value = camera.projectionMatrix		
+		obj.updateMatrix();
+
+		obj.modelViewMatrix.copy( camera.modelMatrixInverse.clone().multiply( obj.modelMatrix ) );
+		// obj.modelViewMatrix.copy( obj.modelMatrix.clone().multiply( camera.modelMatrixInverse ) );
+		mat.uniforms.projectionMatrix.value = camera.projectionMatrix;
 
 		if( !mat.program ){
 
@@ -255,9 +259,7 @@ export class Renderer{
 
 			if( ( obj as Mesh ).isMesh ){
 
-				obj.updateMatrix();
-
-				this.drawMesh( obj as Mesh, camera );
+				this.renderMesh( obj as Mesh, camera );
 				
 			}
 

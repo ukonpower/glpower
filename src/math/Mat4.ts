@@ -25,6 +25,8 @@ export class Mat4{
 			0, 0, 0, 1,
 		]
 
+		return this;
+
 	}
 
 	public clone(){
@@ -79,12 +81,51 @@ export class Mat4{
 
 	public inverse(){
 
+		let a = this.element[0],  b = this.element[1],  c = this.element[2],  d = this.element[3],
+			e = this.element[4],  f = this.element[5],  g = this.element[6],  h = this.element[7],
+			i = this.element[8],  j = this.element[9],  k = this.element[10], l = this.element[11],
+			m = this.element[12], n = this.element[13], o = this.element[14], p = this.element[15],
+			q = a * f - b * e, r = a * g - c * e,
+			s = a * h - d * e, t = b * g - c * f,
+			u = b * h - d * f, v = c * h - d * g,
+			w = i * n - j * m, x = i * o - k * m,
+			y = i * p - l * m, z = j * o - k * n,
+			A = j * p - l * n, B = k * p - l * o,
+			ivd = 1 / (q * B - r * A + s * z + t * y - u * x + v * w);
+
+		this.element[0]  = ( f * B - g * A + h * z) * ivd;
+		this.element[1]  = (-b * B + c * A - d * z) * ivd;
+		this.element[2]  = ( n * v - o * u + p * t) * ivd;
+		this.element[3]  = (-j * v + k * u - l * t) * ivd;
+		this.element[4]  = (-e * B + g * y - h * x) * ivd;
+		this.element[5]  = ( a * B - c * y + d * x) * ivd;
+		this.element[6]  = (-m * v + o * s - p * r) * ivd;
+		this.element[7]  = ( i * v - k * s + l * r) * ivd;
+		this.element[8]  = ( e * A - f * y + h * w) * ivd;
+		this.element[9]  = (-a * A + b * y - d * w) * ivd;
+		this.element[10] = ( m * u - n * s + p * q) * ivd;
+		this.element[11] = (-i * u + j * s - l * q) * ivd;
+		this.element[12] = (-e * z + f * x - g * w) * ivd;
+		this.element[13] = ( a * z - b * x + c * w) * ivd;
+		this.element[14] = (-m * t + n * r - o * q) * ivd;
+		this.element[15] = ( i * t - j * r + k * q) * ivd;
+
+		return this;
 		
 	}
 
 	public createTransformMatrix( pos: Vec3, rot: Vec3, scale: Vec3 ){
 
 		this.identity();
+
+		//position
+
+		this.matmul([
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			pos.x, pos.y, pos.z, 1
+		])
 
 		//rotation
 
@@ -115,15 +156,6 @@ export class Mat4{
 			0, 0, 0, 1
 		])
 
-		//position
-		
-		this.matmul([
-			1, 0, 0, 0,
-			0, 1, 0, 0,
-			0, 0, 1, 0,
-			pos.x, pos.y, pos.z, 1
-		])
-
 		//scale
 
 		this.matmul([
@@ -132,6 +164,10 @@ export class Mat4{
 			0, 0, scale.z, 0,
 			0, 0, 0, 1	
 		])
+
+
+
+
 
 		return this;
 

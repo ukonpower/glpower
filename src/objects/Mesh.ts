@@ -23,7 +23,7 @@ export class Mesh extends Empty{
 		}
 		
 	}
-
+	
 	public get isMesh(){
 
 		return true;
