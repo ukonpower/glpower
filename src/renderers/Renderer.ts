@@ -107,9 +107,16 @@ export class Renderer{
 			let key = keys[i];
 			let attr = geo.attributes[key];
 
-			attr.location = this._gl.getAttribLocation( prg, key.toString() );
-			
-			attr.vbo = this.createBufferObject( attr.vertices, key == 'index' );
+			if( key == 'index' ){
+
+				attr.vbo = this.createBufferObject( attr.vertices, true );
+
+			}else{
+
+				attr.location = this._gl.getAttribLocation( prg, key.toString() );
+				attr.vbo = this.createBufferObject( attr.vertices, false );
+				
+			}
 			
 		}
 		
@@ -292,7 +299,7 @@ export class Renderer{
 
 		if( ( obj as Mesh ).isMesh ){
 
-			this._gl.drawArrays( this._gl.TRIANGLES, 0, geo.attributes.position.vertices.length / 3 );
+			this._gl.drawElements( this._gl.TRIANGLES, geo.attributes.index.vertices.length, this._gl.UNSIGNED_SHORT, 0 );
 
 		}else if( ( obj as Points ).isPoints ){
 

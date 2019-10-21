@@ -2,58 +2,70 @@ import { Geometry } from './Geometry';
 
 export class CubeGeometry extends Geometry{
 
-	constructor( width: number = 1, height: number = 1, depth: number = 1, resX: number = 0, resY: number = 1, resZ: number = 1){
+	constructor( width: number = 1, height: number = 1, depth: number = 1 ){
 
 		super();
 
-		let posArray = [];
+		let hx = width / 2;
+		let hy = height / 2;
+		let hz = depth / 2;
+		
+		let posArray = [
+			-hx, hy, hz,
+			hx, hy, hz,
+			-hx, -hy, hz,
+			hx, -hy, hz,
+
+			hx, hy, hz,
+			hx, hy, -hz,
+			hx, -hy, hz,
+			hx, -hy, -hz,
+
+			hx, hy, -hz,
+			-hx, hy, -hz,
+			hx, -hy, -hz,
+			-hx, -hy, -hz,
+
+			-hx, hy, -hz,
+			-hx, hy, hz,
+			-hx, -hy, -hz,
+			-hx, -hy, hz,
+
+			hx, hy, -hz,
+			hx, hy, hz,
+			-hx, hy, -hz,
+			-hx, hy, hz,
+
+			-hx, -hy, -hz,
+			-hx, -hy, hz,
+			hx, -hy, -hz,
+			hx, -hy, hz,
+
+		];
+
 		let uvArray = [];
 		let indexArray = [];
 
-		for( let i = 0; i <= resY; i++ ){
+		for( let i = 0; i < 6; i++ ){
 
-			let x: number;
-			let y: number;
-			let z: number;
+			uvArray.push(
+				0, 1,
+				1, 1,
+				0, 0,
+				1, 0
+			);
 
-			y = ( height / 2 ) - ( height / resY ) * i;
+			let offset = 4 * i;
 
-			for( let j = 0; j <= resX; j++ ){
-				
-				x = -( width / 2 ) + ( width / resX ) * j;
-				z = depth / 2;
-				
-				posArray.push( x, y, z );
-
-			}
-
-			for( let j = 0; j <= resY; j++ ){
-
-				x = width / 2;
-				z = ( depth / 2 ) - ( depth / resY ) * j;
-				posArray.push( x, y, z );
-				
-			}
-
-			for( let j = 0; j <= resX; j++ ){
-
-				x = ( width / 2 ) - ( width / resX ) * j;
-				z = -depth / 2;
-				posArray.push( x, y, z );
-				
-			}
-
-			for( let j = 0; j <= resY; j++ ){
-
-				x = -width / 2;
-				z = -( depth / 2 ) + ( depth / resY ) * j;
-				posArray.push( x, y, z );
-				
-			}
+			indexArray.push(
+				0 + offset, 2 + offset, 1 + offset, 1 + offset, 2 + offset, 3 + offset
+			)
 
 		}
-		
+
 		this.addAttributes( 'position', posArray, 3 );
+		this.addAttributes( 'uv', uvArray, 2 );
+		this.addAttributes( 'index', indexArray, 1 );
 
 	}
 }

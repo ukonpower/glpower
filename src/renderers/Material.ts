@@ -42,7 +42,7 @@ export class Material{
 			let key = uniKeys[i];
 
 			uni[key] = {
-				value: this.uniforms.key.value
+				value: this.uniforms[key].value
 			}
 			
 		}
