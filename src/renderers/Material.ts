@@ -10,7 +10,8 @@ export declare interface Uniforms{
 export declare interface MaterialParam{
 	frag: string;
 	vert: string;
-	uniforms?: Uniforms
+	uniforms?: Uniforms,
+	doubleSide?: boolean;
 }
 
 export class Material{
@@ -18,12 +19,14 @@ export class Material{
 	public uniforms: Uniforms;
 	public frag: string;
 	public vert: string;
+	public doubleSide: boolean;
 	
 	constructor( param: MaterialParam ){
 
 		this.uniforms = param.uniforms;
 		this.frag = param.frag;
 		this.vert = param.vert;
+		this.doubleSide = param.doubleSide || false;
 
 	}
 
@@ -47,6 +50,7 @@ export class Material{
 		return new Material({
 			vert: this.vert,
 			frag: this.frag,
+			doubleSide: this.doubleSide,
 			uniforms: uni
 		});
 		

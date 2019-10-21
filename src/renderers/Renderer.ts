@@ -26,13 +26,20 @@ export class Renderer{
 
 		console.log( "%c- GLパワーをみせつけろ "  + " -", 'padding: 5px 10px ;background-color: black; color: white;font-size:11px' );
 
-
-		this._canvas = param.canvas;
-
-		this._gl = this._canvas.getContext( 'webgl' );
+		this.initContext( param.canvas );
 
 		this.isRetina = param.retina || false;
 
+	}
+
+	protected initContext( canvas: HTMLCanvasElement ){
+
+		this._canvas = canvas;
+
+		this._gl = this._canvas.getContext( 'webgl' );
+
+		this._gl.enable( this._gl.DEPTH_TEST );
+		
 	}
 
 	public setSize( width: number, height: number ){
@@ -249,6 +256,16 @@ export class Renderer{
 
 		}
 
+		if( mat.doubleSide ){
+
+			this._gl.disable( this._gl.CULL_FACE );
+			
+		}else{
+
+			this._gl.enable( this._gl.CULL_FACE );
+
+		}
+		
 		this._gl.useProgram( obj.program );
 
 		this.applyUniforms( mat.uniforms );

@@ -68,7 +68,8 @@ export class APP{
 		let mat = new GLP.Material({
 			frag: frag,
 			vert: vert,
-			uniforms: this.uni
+			uniforms: this.uni,
+			doubleSide: true
 		});
 
 		this.meshes.push( new GLP.Mesh( geo, mat ) );
