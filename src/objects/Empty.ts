@@ -26,7 +26,11 @@ export class Empty{
 	
 	public add( obj: Empty ){
 
-		this.children.push( obj );
+		if( obj ){
+		
+			this.children.push( obj );
+			
+		}
 
 	}
 

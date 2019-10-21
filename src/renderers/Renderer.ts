@@ -6,6 +6,8 @@ import { Geometry } from "../geometries/Geometry";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
+import { Points } from "../objects/Points";
+import { RenderingObject } from "../objects/RenderingObject";
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
@@ -21,6 +23,8 @@ export class Renderer{
 	protected pixelRatio: number;
 
 	protected isRetina: boolean;
+
+	protected attributeCnt: number = 0;
 
 	constructor( param: RendererParam ){
 
@@ -51,7 +55,7 @@ export class Renderer{
 
 	}
 
-	protected createProgram( obj: Mesh ){
+	protected createProgram( obj: RenderingObject ){
 
 		let mat = obj.material;
 
@@ -89,7 +93,7 @@ export class Renderer{
 
 	}
 
-	protected createAttributes( obj: Mesh ){
+	protected createAttributes( obj: RenderingObject ){
 
 		let mat = obj.material;
 		let geo = obj.geometry;
@@ -130,12 +134,16 @@ export class Renderer{
 
 	protected setAttributes( geo: Geometry ){
 
+		this.clearAttributes();
+		
 		let keys = Object.keys( geo.attributes );
+		this.attributeCnt = keys.length;
 
 		for ( let i = 0; i < keys.length; i++ ){
 
 			let key = keys[i];
 			let attr = geo.attributes[key];
+
 
 			if( key == 'index' ){
 
@@ -146,9 +154,19 @@ export class Renderer{
 				this._gl.bindBuffer( this._gl.ARRAY_BUFFER, attr.vbo );
 				this._gl.enableVertexAttribArray( attr.location );
 				this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
-
+				
 			}
 
+		}
+
+	}
+
+	protected clearAttributes(){
+
+		for ( let i = 0; i < this.attributeCnt; i++ ) {
+			
+			this._gl.disableVertexAttribArray( i );
+			
 		}
 
 	}
@@ -231,7 +249,7 @@ export class Renderer{
 
 	}
 
-	protected renderObject( obj: Mesh, camera: Camera ){
+	protected renderObject( obj: RenderingObject, camera: Camera ){
 
 		let mat = obj.material;
 		let geo = obj.geometry;
@@ -251,8 +269,6 @@ export class Renderer{
 			this.createUniforms( obj.program, obj.IndividualUniforms );
 
 			this.createAttributes( obj );
-			
-			this.setAttributes( geo );
 
 		}
 
@@ -272,7 +288,18 @@ export class Renderer{
 
 		this.applyUniforms( obj.IndividualUniforms );
 
-		this._gl.drawElements( this._gl.TRIANGLES, geo.attributes.index.vertices.length, this._gl.UNSIGNED_SHORT, 0 );
+		this.setAttributes( geo );
+
+		if( ( obj as Mesh ).isMesh ){
+
+			this._gl.drawArrays( this._gl.TRIANGLES, 0, geo.attributes.position.vertices.length / 3 );
+
+		}else if( ( obj as Points ).isPoints ){
+
+			this._gl.drawArrays( this._gl.POINTS, 0, geo.attributes.position.vertices.length / 3 );
+
+		}
+
 
 
 	}
@@ -286,11 +313,11 @@ export class Renderer{
 		for( let i = 0; i < scene.children.length; i++ ){
 
 			let obj = scene.children[i];
+			
+			if( ( obj as RenderingObject ).isRenderingObject ){
 
-			if( ( obj as Mesh ).isMesh ){
+				this.renderObject( obj as RenderingObject, camera );
 
-				this.renderObject( obj as Mesh, camera );
-				
 			}
 
 		}
