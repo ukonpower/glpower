@@ -1,4 +1,4 @@
-import { Material, MaterialParam } from "./Material";
+import { Material, MaterialParam, Uniforms } from "./Material";
 import { Scene } from "../objects/Scene";
 import { Camera } from "./Camera";
 import { Mesh } from "../objects/Mesh";
@@ -44,7 +44,9 @@ export class Renderer{
 
 	}
 
-	protected createProgram( mat: Material ){
+	protected createProgram( obj: Mesh ){
+
+		let mat = obj.material;
 
 		let prg = this._gl.createProgram();
 
@@ -55,7 +57,7 @@ export class Renderer{
 		this._gl.attachShader( prg, fs );
 		this._gl.linkProgram( prg );
 
-		mat.program = prg;
+		obj.program = prg;
 
 	}
 
@@ -80,9 +82,12 @@ export class Renderer{
 
 	}
 
-	protected createAttributes( mat: Material, geo: Geometry ){
+	protected createAttributes( obj: Mesh ){
 
-		let prg = mat.program;
+		let mat = obj.material;
+		let geo = obj.geometry;
+
+		let prg = obj.program;
 
 		let keys = Object.keys( geo.attributes );
 
@@ -141,80 +146,85 @@ export class Renderer{
 
 	}
 
-	protected createUniforms( mat: Material ){
+	protected createUniforms( program: WebGLProgram, uniforms: Uniforms ){
 
-		let keys = Object.keys( mat.uniforms );
+		let matUniKeys = Object.keys( uniforms );
 
-		for ( let i = 0; i < keys.length; i++ ) {
+		for ( let i = 0; i < matUniKeys.length; i++ ) {
 
-			const key = keys[i];
+			const key = matUniKeys[i];
 
-			let uni = mat.uniforms[key];
+			let uni = uniforms[key];
 			
-			uni.location = this._gl.getUniformLocation( mat.program, key.toString() );
+			uni.location = this._gl.getUniformLocation( program, key.toString() );
 
 		}
 
 	}
+	
+	protected applyUniforms( uniforms: Uniforms ){
 
-	protected setUniforms( mat: Material ){
-
-		let keys = Object.keys( mat.uniforms );
+		let keys = Object.keys( uniforms );
 
 		for ( let i = 0; i < keys.length; i++ ) {
 
 			const key = keys[i];
 
-			let uni = mat.uniforms[key];
+			let uni = uniforms[key];
 
-			let value = uni.value;
+			if( !uni.value ) continue;
 
-			if( !value ) continue;
+			this.setUniform( uni.location, uni.value );
 
-			let type: string;
-			let isMat: boolean = false;
+		}
 
-			if( typeof( value ) == 'number' ){
+	}
 
-				type = 'uniform1f';
+	
+	protected setUniform( location: WebGLUniformLocation, value: any ){
+
+		let type: string;
+		let isMat: boolean = false;
+
+		if( typeof( value ) == 'number' ){
+
+			type = 'uniform1f';
+			
+		}else if( ( value as Vec2 ).isVec2 ){
+
+			type = 'uniform2fv';
+
+		}else if( ( value as Vec3 ).isVec3 ){
+
+			type = 'uniform3fv';
+
+		}else if( ( value as Mat4 ).isMat4 ){
+
+			type = 'uniformMatrix4fv';
+
+			value = value.element;
+
+			isMat = true;
+
+		}
+
+		if( type ){
+
+			if( isMat ){
+
+				this._gl[type]( location, false, value );
+
+			}else{
+			
+				this._gl[type]( location, value );
 				
-			}else if( ( value as Vec2 ).isVec2 ){
-
-				type = 'uniform2fv';
-
-			}else if( ( value as Vec3 ).isVec3 ){
-
-				type = 'uniform3fv';
-
-			}else if( ( value as Mat4 ).isMat4 ){
-
-				type = 'uniformMatrix4fv';
-
-				value = value.element;
-
-				isMat = true;
-
-			}
-
-			if( type ){
-
-				if( isMat ){
-
-					this._gl[type]( uni.location, false, value );
-
-				}else{
-				
-					this._gl[type]( uni.location, value );
-					
-				}
-
 			}
 
 		}
 
 	}
 
-	protected renderMesh( obj: Mesh, camera: Camera ){
+	protected renderObject( obj: Mesh, camera: Camera ){
 
 		let mat = obj.material;
 		let geo = obj.geometry;
@@ -222,36 +232,39 @@ export class Renderer{
 		obj.updateMatrix();
 
 		obj.modelViewMatrix.copy( camera.modelMatrixInverse.clone().multiply( obj.modelMatrix ) );
-		// obj.modelViewMatrix.copy( obj.modelMatrix.clone().multiply( camera.modelMatrixInverse ) );
-		mat.uniforms.projectionMatrix.value = camera.projectionMatrix;
 
-		if( !mat.program ){
+		obj.IndividualUniforms.projectionMatrix.value = camera.projectionMatrix;
 
-			this.createProgram( mat );
+		if( !obj.program ){
 
-			this.createUniforms( mat );
+			this.createProgram( obj );
 
-			this.createAttributes( mat, geo );
+			this.createUniforms( obj.program, mat.uniforms );
+
+			this.createUniforms( obj.program, obj.IndividualUniforms );
+
+			this.createAttributes( obj );
 			
 			this.setAttributes( geo );
 
 		}
 
-		this._gl.useProgram( mat.program );
+		this._gl.useProgram( obj.program );
 
-		this.setUniforms( mat );
+		this.applyUniforms( mat.uniforms );
 
-		this._gl.clear( this._gl.COLOR_BUFFER_BIT );
+		this.applyUniforms( obj.IndividualUniforms );
 
 		this._gl.drawElements( this._gl.TRIANGLES, geo.attributes.index.vertices.length, this._gl.UNSIGNED_SHORT, 0 );
 
-		this._gl.flush();
 
 	}
 
 	public render( scene: Scene, camera: Camera ){
 
 		camera.updateMatrix();		
+
+		this._gl.clear( this._gl.COLOR_BUFFER_BIT );
 		
 		for( let i = 0; i < scene.children.length; i++ ){
 
@@ -259,11 +272,13 @@ export class Renderer{
 
 			if( ( obj as Mesh ).isMesh ){
 
-				this.renderMesh( obj as Mesh, camera );
+				this.renderObject( obj as Mesh, camera );
 				
 			}
 
 		}
+		
+		this._gl.flush();
 
 	}
 

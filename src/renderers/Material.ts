@@ -15,8 +15,6 @@ export declare interface MaterialParam{
 
 export class Material{
 
-	public program: WebGLProgram;
-
 	public uniforms: Uniforms;
 	public frag: string;
 	public vert: string;
@@ -27,6 +25,31 @@ export class Material{
 		this.frag = param.frag;
 		this.vert = param.vert;
 
+	}
+
+
+	public clone(){
+
+		let uni: Uniforms = {};
+
+		let uniKeys = Object.keys( this.uniforms );
+
+		for( let i = 0; i < uniKeys.length; i++ ){
+
+			let key = uniKeys[i];
+
+			uni[key] = {
+				value: this.uniforms.key.value
+			}
+			
+		}
+		
+		return new Material({
+			vert: this.vert,
+			frag: this.frag,
+			uniforms: uni
+		});
+		
 	}
 
 }

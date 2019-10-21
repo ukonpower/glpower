@@ -17,11 +17,29 @@ export class Geometry{
 	constructor(){
 
 	}
+
+	public clone(){
+		
+		let geo = new Geometry();
+		
+		let keys = Object.keys( this.attributes );
+
+		for (let i = 0; i < keys.length; i++) {
+
+			let attr = this.attributes[keys[i]];
+
+			geo.addAttributes( keys[i], attr.vertices, attr.stride );
+			
+		}
+
+		return geo;
+
+	}
 	
-	public addAttributes( name: string, array: number[], stride: number ){
+	public addAttributes( name: string, vertices: number[], stride: number ){
 		
 		this.attributes[name] = {
-			vertices: array,
+			vertices: vertices,
 			stride: stride,
 		}
 

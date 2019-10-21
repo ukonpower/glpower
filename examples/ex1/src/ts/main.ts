@@ -11,7 +11,7 @@ export class APP{
 
 	private uni: GLP.Uniforms;
 
-	private mesh: GLP.Mesh;
+	private meshes: GLP.Mesh[] = [];
 	
 	constructor(){
 
@@ -71,12 +71,15 @@ export class APP{
 			uniforms: this.uni
 		});
 
-		this.mesh = new GLP.Mesh( geo, mat );
-		this.mesh.position.set( 0, 0, 0 );
-		this.mesh.rotation.set( 0, 0, 0 );
-		this.mesh.scale.set( 1, 1, 1 );
+		this.meshes.push( new GLP.Mesh( geo, mat ) );
+		this.meshes[0].rotation.set( 0, 0, 0 );
+		this.meshes[0].scale.set( 1, 1, 1 );
+		this.scene.add( this.meshes[0] );
 
-		this.scene.add( this.mesh );
+		this.meshes.push( new GLP.Mesh( geo, mat ) );
+		this.meshes[1].position.set( 0, 0, 0 );
+		this.scene.add( this.meshes[1] );
+
 
 	}
 
@@ -84,8 +87,8 @@ export class APP{
 
 		this.uni.time.value += 1.0;
 
-		// this.mesh.rotation.x = this.uni.time.value * 0.02;
-		this.mesh.rotation.y = this.uni.time.value * 0.02;
+		this.meshes[0].rotation.y = this.uni.time.value * 0.02;
+		this.meshes[1].rotation.y = this.uni.time.value * 0.02 + Math.PI / 2;
 
 		this.renderer.render( this.scene, this.camera );
 

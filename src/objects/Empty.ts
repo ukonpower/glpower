@@ -6,17 +6,18 @@ export class Empty{
 
 	public children: Empty[] = [];
 	
+	public modelMatrix: Mat4;
 	public modelViewMatrix: Mat4;
 
 	public position: Vec3;
 	public rotation: Vec3;
 	public scale: Vec3;
-	public modelMatrix: Mat4;
 	
 	constructor(){
 
-		this.modelViewMatrix = new Mat4();
 		this.modelMatrix = new Mat4();
+		this.modelViewMatrix = new Mat4();
+
 		this.position = new Vec3();
 		this.rotation = new Vec3();
 		this.scale = new Vec3( 1, 1, 1 );
