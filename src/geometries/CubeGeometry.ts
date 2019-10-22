@@ -16,15 +16,15 @@ export class CubeGeometry extends Geometry{
 			-hx, -hy, hz,
 			hx, -hy, hz,
 
-			hx, hy, hz,
-			hx, hy, -hz,
-			hx, -hy, hz,
-			hx, -hy, -hz,
-
 			hx, hy, -hz,
 			-hx, hy, -hz,
 			hx, -hy, -hz,
 			-hx, -hy, -hz,
+
+			hx, hy, hz,
+			hx, hy, -hz,
+			hx, -hy, hz,
+			hx, -hy, -hz,
 
 			-hx, hy, -hz,
 			-hx, hy, hz,
@@ -41,6 +41,33 @@ export class CubeGeometry extends Geometry{
 			hx, -hy, -hz,
 			hx, -hy, hz,
 
+		];
+
+		let normalArray = [
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, 1,
+			0, 0, -1,
+			0, 0, -1,
+			0, 0, -1,
+			0, 0, -1,
+			1, 0, 0,
+			1, 0, 0,
+			1, 0, 0,
+			1, 0, 0,
+			-1, 0, 0,
+			-1, 0, 0,
+			-1, 0, 0,
+			-1, 0, 0,
+			0, 1, 0,
+			0, 1, 0,
+			0, 1, 0,
+			0, 1, 0,
+			0, -1, 0,
+			0, -1, 0,
+			0, -1, 0,
+			0, -1, 0,
 		];
 
 		let uvArray = [];
@@ -64,6 +91,7 @@ export class CubeGeometry extends Geometry{
 		}
 
 		this.addAttributes( 'position', posArray, 3 );
+		this.addAttributes( 'normal', normalArray, 3 );
 		this.addAttributes( 'uv', uvArray, 2 );
 		this.addAttributes( 'index', indexArray, 1 );
 

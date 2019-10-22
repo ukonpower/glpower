@@ -158,9 +158,13 @@ export class Renderer{
 
 			}else{
 
-				this._gl.bindBuffer( this._gl.ARRAY_BUFFER, attr.vbo );
-				this._gl.enableVertexAttribArray( attr.location );
-				this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
+				if( attr.location !== -1 ){
+				
+					this._gl.bindBuffer( this._gl.ARRAY_BUFFER, attr.vbo );
+					this._gl.enableVertexAttribArray( attr.location );
+					this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
+
+				}
 				
 			}
 

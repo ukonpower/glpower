@@ -2,6 +2,7 @@ import * as GLP from '../../../../src';
 
 import vert from './shaders/cube.vs';
 import frag from './shaders/cube.fs';
+import { Empty } from '../../../../src';
 
 export class APP{
 
@@ -11,9 +12,10 @@ export class APP{
 
 	private uni: GLP.Uniforms;
 
-	private tri: GLP.Mesh;
-	private cube: GLP.Mesh;
-	
+	private objs: Empty[] = [];
+
+	private time: number = 0;
+
 	constructor(){
 
 		this.renderer = new GLP.Renderer({
@@ -73,27 +75,42 @@ export class APP{
 			doubleSide: true
 		});
 
-		this.tri = new GLP.Mesh( geo, mat );
-		this.tri.position.y = -1;
-		this.scene.add( this.tri );
+		let tri = new GLP.Mesh( geo, mat );
+		this.scene.add( tri );
+		this.objs.push( tri );
 
-		let cubeMat = mat.clone();
-		cubeMat.doubleSide = false;
+		let cube = new GLP.Mesh( new GLP.CubeGeometry( 0.6, 0.6, 0.6 ), mat );
+		this.scene.add( cube );
+		this.objs.push( cube );
 
-		this.cube = new GLP.Mesh( new GLP.CubeGeometry( 1, 1, 1 ), cubeMat );
-		this.cube.position.y = 1;
-		this.scene.add( this.cube );
+		let cylinder = new GLP.Mesh( new GLP.CylinderGeometry( 0.5, 0.5, 10, 3 ), mat );
+		this.scene.add( cylinder );
+		this.objs.push( cylinder );
 
+		let scale = 1.5;
+
+		for( let i = 0; i < this.objs.length; i++ ){
+
+			let x = -( this.objs.length - 1 ) * scale / 2 + i * scale;
+
+			this.objs[i].position.x = x;
+
+		}
 
 	}
 
 	private animate(){
 
-		this.uni.time.value += 1.0;
+		this.time += 1;
 
-		this.tri.rotation.y = this.uni.time.value * 0.02;
-		this.cube.rotation.y = this.uni.time.value * 0.02;
-		this.cube.rotation.x = this.uni.time.value * 0.02;
+		this.uni.time.value = this.time;
+
+		for( let i = 0; i < this.objs.length; i++ ){
+
+			this.objs[i].rotation.x = this.time * 0.02;
+			this.objs[i].rotation.y = this.time * 0.02;
+
+		}
 
 		this.renderer.render( this.scene, this.camera );
 

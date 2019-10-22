@@ -4,6 +4,7 @@ export * from './renderers/Camera';
 
 export * from './geometries/Geometry';
 export * from './geometries/CubeGeometry';
+export * from './geometries/CylinderGeometry';
 
 export * from './objects/Scene';
 export * from './objects/Empty';
