@@ -3,7 +3,7 @@ import { Vec3 } from '../math/Vec3';
 
 export class CylinderGeometry extends Geometry{
 
-	constructor( radius: number, height: number, radSegments: number = 5, heightSegments: number = 1 ){
+	constructor( radiusTop: number, radiusBottom: number, height: number, radSegments: number = 5, heightSegments: number = 1 ){
 
 		super();
 
@@ -22,6 +22,8 @@ export class CylinderGeometry extends Geometry{
 				if( i <= heightSegments ){
 
 					//side
+					let w = i / heightSegments; 
+					let radius = ( 1.0 - w ) * radiusBottom + w * radiusTop;
 
 					let x = Math.cos( theta ) * radius;
 					let y = -( height / 2 ) + ( height / heightSegments ) * i;
@@ -34,12 +36,12 @@ export class CylinderGeometry extends Geometry{
 						i / heightSegments
 					);
 					
-					let length = new Vec3( x, 0, z ).length();
+					let normal = new Vec3( Math.cos( theta ), 0, Math.sin( theta ) ).normalize();
 
 					normalArray.push(
-						x / length,
-						0,
-						z / length,
+						normal.x,
+						normal.y,
+						normal.z
 					);
 					
 					if( i < heightSegments ){
@@ -62,6 +64,8 @@ export class CylinderGeometry extends Geometry{
 					//bottom, top
 
 					let side = i - heightSegments - 1;
+
+					let radius = side ? radiusTop : radiusBottom;
 
 					let x = Math.cos( theta ) * radius;
 					let y = -( height / 2 ) + height * ( side );

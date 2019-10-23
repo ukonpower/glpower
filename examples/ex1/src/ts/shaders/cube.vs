@@ -18,5 +18,6 @@ void main( void ){
 	gl_PointSize = 5.0;
 
 	vColor = vec3( uv, 1.0 ) + color;
+	// vColor = normal + 0.5;
 
 }
