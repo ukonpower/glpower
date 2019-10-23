@@ -83,9 +83,13 @@ export class APP{
 		this.scene.add( cube );
 		this.objs.push( cube );
 
-		let cylinder = new GLP.Mesh( new GLP.CylinderGeometry( 0.5, 0.5, 10, 3 ), mat );
+		let cylinder = new GLP.Mesh( new GLP.CylinderGeometry( 0.0, 0.5, 0.5, 10, 3 ), mat );
 		this.scene.add( cylinder );
 		this.objs.push( cylinder );
+
+		let sphere = new GLP.Mesh( new GLP.SphereGeometry( 0.5 ), mat );
+		this.scene.add( sphere );
+		this.objs.push( sphere );
 
 		let scale = 1.5;
 
