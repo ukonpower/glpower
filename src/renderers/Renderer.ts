@@ -8,11 +8,15 @@ import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
 import { Points } from "../objects/Points";
 import { RenderingObject } from "../objects/RenderingObject";
+import { SideFront, SideDouble, SideBack } from "../Constants";
+import { Texture } from "../textures/Texture";
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
 	retina?: boolean;
 }
+
+export type Uniformable = number | Vec2 | Vec3 | Mat4 | Texture;
 
 export class Renderer{
 
@@ -26,9 +30,10 @@ export class Renderer{
 
 	protected attributeCnt: number = 0;
 
+	protected textureCnt: number = 0;
+
 	constructor( param: RendererParam ){
 
-		console.log( "%c- GLパワーをみせつけろ "  + " -", 'padding: 5px 10px ;background-color: black; color: white;font-size:11px' );
 
 		this.initContext( param.canvas );
 
@@ -85,7 +90,6 @@ export class Renderer{
 			
         } else {
 
-			console.warn(this._gl.getShaderInfoLog(shader));
 			
 			return null;
 			
@@ -184,6 +188,8 @@ export class Renderer{
 
 	protected createUniforms( program: WebGLProgram, uniforms: Uniforms ){
 
+		if( !uniforms ) return;
+		
 		let matUniKeys = Object.keys( uniforms );
 
 		for ( let i = 0; i < matUniKeys.length; i++ ) {
@@ -192,13 +198,15 @@ export class Renderer{
 
 			let uni = uniforms[key];
 			
-			uni.location = this._gl.getUniformLocation( program, key.toString() );
+			uni.location = this._gl.getUniformLocation( program, key.toString() );			
 
 		}
 
 	}
-	
+
 	protected applyUniforms( uniforms: Uniforms ){
+
+		if( !uniforms ) return;
 
 		let keys = Object.keys( uniforms );
 
@@ -208,56 +216,91 @@ export class Renderer{
 
 			let uni = uniforms[key];
 
-			if( !uni.value ) continue;
-
 			this.setUniform( uni.location, uni.value );
 
 		}
 
 	}
 
-	
-	protected setUniform( location: WebGLUniformLocation, value: any ){
+	protected setUniform( location: WebGLUniformLocation, value: Uniformable ){
 
+		if( value == null ) return;
+		
 		let type: string;
 		let isMat: boolean = false;
+		let input: any;
+
+		input = value;
 
 		if( typeof( value ) == 'number' ){
 
 			type = 'uniform1f';
 			
-		}else if( ( value as Vec2 ).isVec2 ){
+		}else if( 'isVec2' in value ){
 
 			type = 'uniform2fv';
 
-		}else if( ( value as Vec3 ).isVec3 ){
+		}else if( 'isVec3' in value ){
 
 			type = 'uniform3fv';
 
-		}else if( ( value as Mat4 ).isMat4 ){
+		}else if( 'isMat4' in value ){
 
 			type = 'uniformMatrix4fv';
 
-			value = value.element;
+			input = value.element;
 
 			isMat = true;
 
+		}else if( 'isTexture' in value ){
+			
+			if( value.webglTex == null ){
+
+				let texInfo = this.createTexture( value );
+				
+				value.webglTex = texInfo.texture;
+				
+				value.unitID = texInfo.unitID;
+				
+			}
+			
+			this._gl.activeTexture( this._gl.TEXTURE0 + value.unitID );
+			this._gl.bindTexture( this._gl.TEXTURE_2D, value.webglTex );
+			
+			input = value.unitID;
+			
+			type = 'uniform1i';
+			
 		}
 
 		if( type ){
 
 			if( isMat ){
 
-				this._gl[type]( location, false, value );
+				this._gl[type]( location, false, input );
 
 			}else{
-			
-				this._gl[type]( location, value );
+				
+				this._gl[type]( location, input );
 				
 			}
 
 		}
 
+	}
+
+	protected createTexture( texture: Texture ){
+
+		let tex = this._gl.createTexture();
+		
+		this._gl.bindTexture( this._gl.TEXTURE_2D, tex );
+		this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image );
+		this._gl.generateMipmap( this._gl.TEXTURE_2D );
+
+		this._gl.bindTexture( this._gl.TEXTURE_2D, null );
+
+		return { texture: tex, unitID: this.textureCnt++ };
+		
 	}
 
 	protected renderObject( obj: RenderingObject, camera: Camera ){
@@ -283,14 +326,25 @@ export class Renderer{
 
 		}
 
-		if( mat.doubleSide ){
+		if( mat.side == SideDouble ){
 
 			this._gl.disable( this._gl.CULL_FACE );
 			
-		}else{
+		}else if( mat.side == SideFront ){
+
+			this._gl.frontFace( this._gl.CCW );
 
 			this._gl.enable( this._gl.CULL_FACE );
 
+		}else if( mat.side == SideBack ){
+
+			this._gl.frontFace( this._gl.CW );
+
+			this._gl.enable( this._gl.CULL_FACE );
+
+		}else{
+
+			
 		}
 		
 		this._gl.useProgram( obj.program );

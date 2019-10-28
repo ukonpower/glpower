@@ -3,9 +3,9 @@ import { Mat4 } from "../math/Mat4";
 
 export class Camera extends Empty{
 
-	private fov: number;
-	private near: number;
-	private far: number;
+	protected fov: number;
+	protected near: number;
+	protected far: number;
 	
 	public projectionMatrix: Mat4;
 	public modelMatrixInverse: Mat4;
