@@ -11,6 +11,14 @@ module.exports = merge(baseConfig,{
 	module: {
 		rules: [
 			{
+				test: /\.ts$/,
+				exclude: /node_modules/,
+				loader: 'ts-loader',
+				options: {
+                    configFile: 'webpack/tsconfig/dev.json'
+                },
+			},
+			{
 				test: /\.(glsl|vs|fs)$/,
 				loader: 'shader-loader',
 				options: {

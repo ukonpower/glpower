@@ -17,7 +17,7 @@ module.exports = merge(baseConfig,{
 				loader: 'ts-loader',
 				options: {
                     configFile: 'webpack/tsconfig/build.json'
-                }
+                },
 			}
 		]
 	}
