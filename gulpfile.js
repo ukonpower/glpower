@@ -71,8 +71,8 @@ function buildExamples( cb ){
             //sass
             gulp.src( exDir + files[i] + "/src/scss/style.scss" )
                 .pipe( plumber() )
-                .pipe( autoprefixer() )
                 .pipe( sass() )
+                .pipe( autoprefixer() )
                 .pipe( cssmin() )
                 .pipe( gulp.dest( docsExDir + files[i] + "/css/" ) )
 
