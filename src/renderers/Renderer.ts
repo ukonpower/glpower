@@ -8,15 +8,16 @@ import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
 import { Points } from "../objects/Points";
 import { RenderingObject } from "../objects/RenderingObject";
-import { SideFront, SideDouble, SideBack } from "../Constants";
+import { SideFront, SideDouble, SideBack, FilterLinear, FilterNearest } from "../Constants";
 import { Texture } from "../textures/Texture";
+import { FrameBuffer } from "./FrameBuffer";
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
 	retina?: boolean;
 }
 
-export type Uniformable = number | Vec2 | Vec3 | Mat4 | Texture;
+export type Uniformable = number | Vec2 | Vec3 | Mat4 | Texture | FrameBuffer;
 
 export class Renderer{
 
@@ -28,12 +29,21 @@ export class Renderer{
 
 	protected isRetina: boolean;
 
+
+	// count 
+
 	protected attributeCnt: number = 0;
 
 	protected textureCnt: number = 0;
 
+
+	// render
+
+	protected renderTarget: FrameBuffer;
+	
 	constructor( param: RendererParam ){
 
+		console.log( 'GLパワーを見せつけろ');
 
 		this.initContext( param.canvas );
 
@@ -55,8 +65,6 @@ export class Renderer{
 
 		this._canvas.width = width * ( this.isRetina ? window.devicePixelRatio : 1 );
 		this._canvas.height = height * ( this.isRetina ? window.devicePixelRatio : 1 );
-
-		this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
 
 	}
 
@@ -256,11 +264,7 @@ export class Renderer{
 			
 			if( value.webglTex == null ){
 
-				let texInfo = this.createTexture( value );
-				
-				value.webglTex = texInfo.texture;
-				
-				value.unitID = texInfo.unitID;
+				this.createTexture( value );
 				
 			}
 			
@@ -270,7 +274,23 @@ export class Renderer{
 			input = value.unitID;
 			
 			type = 'uniform1i';
+
+		}else if( 'isFrameBuffer' in value ){
+
+			if( !value.texture.webglTex ){
+
+				return;
+				
+			}
+
+			this._gl.activeTexture( this._gl.TEXTURE0 + value.texture.unitID );
 			
+			this._gl.bindTexture( this._gl.TEXTURE_2D, value.texture.webglTex );
+
+			input = value.texture.unitID;
+
+			type = 'uniform1i';
+
 		}
 
 		if( type ){
@@ -294,12 +314,35 @@ export class Renderer{
 		let tex = this._gl.createTexture();
 		
 		this._gl.bindTexture( this._gl.TEXTURE_2D, tex );
-		this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image );
-		this._gl.generateMipmap( this._gl.TEXTURE_2D );
+
+		if( texture.image != null ){
+			
+			this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image );
+			this._gl.generateMipmap( this._gl.TEXTURE_2D );
+
+		}else{
+
+			this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture.width, texture.height, 0, this._gl.RGBA, this._gl.UNSIGNED_BYTE, null );
+			
+		}
+		
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this._gl.CLAMP_TO_EDGE);
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this._gl.CLAMP_TO_EDGE);
+		
 
 		this._gl.bindTexture( this._gl.TEXTURE_2D, null );
 
-		return { texture: tex, unitID: this.textureCnt++ };
+		texture.webglTex = tex;
+		texture.unitID = this.textureCnt++;
+		
+	}
+
+	protected getFilter( glpFilter: number ){
+
+		if( glpFilter == FilterLinear ) return this._gl.LINEAR;
+		if( glpFilter == FilterNearest ) return this._gl.NEAREST;
 		
 	}
 
@@ -365,16 +408,66 @@ export class Renderer{
 
 		}
 
-
-
 	}
 
+	public setFrameBuffer( frameBuffer: FrameBuffer ){
+
+		this.renderTarget = frameBuffer;
+		
+		if( frameBuffer && !frameBuffer.buffer ){
+
+			this.createFrameBuffer( frameBuffer );
+			
+		}
+			
+		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, frameBuffer ? frameBuffer.buffer : null );
+		
+	}
+
+	protected createFrameBuffer( frameBuffer: FrameBuffer ){
+		
+		let buffer = this._gl.createFramebuffer();
+
+		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, buffer );
+
+		let depthBuffer = this._gl.createRenderbuffer();
+		this._gl.bindRenderbuffer( this._gl.RENDERBUFFER, depthBuffer );
+		this._gl.renderbufferStorage( this._gl.RENDERBUFFER, this._gl.DEPTH_COMPONENT16, frameBuffer.texture.width, frameBuffer.texture.height );
+		this._gl.framebufferRenderbuffer(this._gl.FRAMEBUFFER, this._gl.DEPTH_ATTACHMENT, this._gl.RENDERBUFFER, depthBuffer);
+
+		if( frameBuffer.texture.webglTex == null ){
+
+			this.createTexture( frameBuffer.texture );
+			
+		}
+
+		this._gl.framebufferTexture2D( this._gl.FRAMEBUFFER, this._gl.COLOR_ATTACHMENT0, this._gl.TEXTURE_2D, frameBuffer.texture.webglTex, 0 );
+
+		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, null );
+		this._gl.bindRenderbuffer( this._gl.RENDERBUFFER, null );
+
+		frameBuffer.buffer = buffer;
+		
+	}
+	
 	public render( scene: Scene, camera: Camera ){
 
-		camera.updateMatrix();		
-
-		this._gl.clear( this._gl.COLOR_BUFFER_BIT );
+		camera.updateMatrix();
 		
+		this._gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this._gl.clearDepth(1.0);
+		this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+
+		if( this.renderTarget ){
+
+			this._gl.viewport(0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height);
+
+		}else{
+
+			this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
+
+		}
+
 		for( let i = 0; i < scene.children.length; i++ ){
 
 			let obj = scene.children[i];
@@ -386,6 +479,7 @@ export class Renderer{
 			}
 
 		}
+
 		
 		this._gl.flush();
 

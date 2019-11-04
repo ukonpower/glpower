@@ -6,6 +6,8 @@ export declare interface TextureParam{
 	wrapT?: number;
 	magFilter?: number;
 	minFilter?: number;
+	width?: number;
+	height?: number;
 }
 
 export class Texture{
@@ -20,6 +22,9 @@ export class Texture{
 	
 	public image: HTMLImageElement;
 
+	public width: number;
+	public height: number;
+
 	public webglTex: WebGLTexture;
 
 	constructor( param?: TextureParam ){
@@ -32,6 +37,9 @@ export class Texture{
 		this.magFilter = param.magFilter || FilterLinear;
 		this.minFilter = param.magFilter || FilterLinear;
 
+		this.width = param.width || 0;
+		this.height = param.height || 0;
+
 	}
 
 	public loadImg( path: string, callBack: ( tex: Texture ) => void ){
@@ -41,6 +49,8 @@ export class Texture{
 		img.onload = () => {
 
 			this.image = img;
+			this.width = img.width;
+			this.height = img.height;
 
 			callBack( this );
 			
