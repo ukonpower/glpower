@@ -8,7 +8,7 @@ import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
 import { Points } from "../objects/Points";
 import { RenderingObject } from "../objects/RenderingObject";
-import { SideFront, SideDouble, SideBack, FilterLinear, FilterNearest } from "../Constants";
+import { SideFront, SideDouble, SideBack, FilterLinear, FilterNearest, WrapRepeat, WrapClamp, WrapMirror } from "../Constants";
 import { Texture } from "../textures/Texture";
 import { FrameBuffer } from "./FrameBuffer";
 
@@ -326,10 +326,10 @@ export class Renderer{
 			
 		}
 		
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this._gl.LINEAR);
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MAG_FILTER, this._gl.LINEAR);
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this._gl.CLAMP_TO_EDGE);
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this._gl.CLAMP_TO_EDGE);
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this.getFilter( texture.minFilter ) );
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this.getFilter( texture.magFilter ) );
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this.getWrap( texture.wrapS ) );
+		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this.getWrap( texture.wrapT ) );
 		
 
 		this._gl.bindTexture( this._gl.TEXTURE_2D, null );
@@ -343,6 +343,14 @@ export class Renderer{
 
 		if( glpFilter == FilterLinear ) return this._gl.LINEAR;
 		if( glpFilter == FilterNearest ) return this._gl.NEAREST;
+		
+	}
+
+	protected getWrap( wrap: number ){
+
+		if( wrap == WrapRepeat ) return this._gl.REPEAT;
+		if( wrap == WrapClamp ) return this._gl.CLAMP_TO_EDGE;
+		if( wrap == WrapMirror ) return this._gl.MIRRORED_REPEAT;
 		
 	}
 
