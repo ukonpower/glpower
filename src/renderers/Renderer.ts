@@ -8,9 +8,9 @@ import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
 import { Points } from "../objects/Points";
 import { RenderingObject } from "../objects/RenderingObject";
-import { SideFront, SideDouble, SideBack, FilterLinear, FilterNearest, WrapRepeat, WrapClamp, WrapMirror } from "../Constants";
 import { Texture } from "../textures/Texture";
 import { FrameBuffer } from "./FrameBuffer";
+import { TSMethodSignature } from "babel-types";
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
@@ -21,7 +21,7 @@ export type Uniformable = number | Vec2 | Vec3 | Mat4 | Texture | FrameBuffer;
 
 export class Renderer{
 
-	protected _gl: WebGLRenderingContext;
+	public gl: WebGLRenderingContext;
 
 	protected _canvas: HTMLCanvasElement;
 
@@ -55,9 +55,10 @@ export class Renderer{
 
 		this._canvas = canvas;
 
-		this._gl = this._canvas.getContext( 'webgl' );
+		this.gl = this._canvas.getContext( 'webgl' );
 
-		this._gl.enable( this._gl.DEPTH_TEST );
+		this.gl.enable( this.gl.DEPTH_TEST );
+		this.gl.enable( this.gl.BLEND );
 		
 	}
 
@@ -72,14 +73,14 @@ export class Renderer{
 
 		let mat = obj.material;
 
-		let prg = this._gl.createProgram();
+		let prg = this.gl.createProgram();
 
-		let vs = this.createShader( mat.vert, this._gl.VERTEX_SHADER );
-		let fs = this.createShader( mat.frag, this._gl.FRAGMENT_SHADER );
+		let vs = this.createShader( mat.vert, this.gl.VERTEX_SHADER );
+		let fs = this.createShader( mat.frag, this.gl.FRAGMENT_SHADER );
 
-		this._gl.attachShader( prg, vs );
-		this._gl.attachShader( prg, fs );
-		this._gl.linkProgram( prg );
+		this.gl.attachShader( prg, vs );
+		this.gl.attachShader( prg, fs );
+		this.gl.linkProgram( prg );
 
 		obj.program = prg;
 
@@ -87,12 +88,12 @@ export class Renderer{
 
 	protected createShader( src: string, type: number ){
 		
-		let shader = this._gl.createShader( type );
+		let shader = this.gl.createShader( type );
 
-		this._gl.shaderSource( shader, src );
-		this._gl.compileShader( shader );
+		this.gl.shaderSource( shader, src );
+		this.gl.compileShader( shader );
 
-		if (this._gl.getShaderParameter(shader, this._gl.COMPILE_STATUS)) {
+		if (this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
 
 			return shader;
 			
@@ -125,7 +126,7 @@ export class Renderer{
 
 			}else{
 
-				attr.location = this._gl.getAttribLocation( prg, key.toString() );
+				attr.location = this.gl.getAttribLocation( prg, key.toString() );
 				attr.vbo = this.createBufferObject( attr.vertices, false );
 				
 			}
@@ -136,16 +137,16 @@ export class Renderer{
 
 	protected createBufferObject( vertices: number[], isIndex: boolean = false ){
 
-		let vbo = this._gl.createBuffer();
+		let vbo = this.gl.createBuffer();
 		
-		let target = isIndex ? this._gl.ELEMENT_ARRAY_BUFFER : this._gl.ARRAY_BUFFER;
+		let target = isIndex ? this.gl.ELEMENT_ARRAY_BUFFER : this.gl.ARRAY_BUFFER;
 
 		let array = isIndex ? new Int16Array( vertices ) : new Float32Array( vertices );
 
-		this._gl.bindBuffer( target, vbo );
-		this._gl.bufferData( target, array, this._gl.STATIC_DRAW );
+		this.gl.bindBuffer( target, vbo );
+		this.gl.bufferData( target, array, this.gl.STATIC_DRAW );
 
-		this._gl.bindBuffer( target, null );
+		this.gl.bindBuffer( target, null );
 
 		return vbo;
 
@@ -166,15 +167,15 @@ export class Renderer{
 
 			if( key == 'index' ){
 
-				this._gl.bindBuffer( this._gl.ELEMENT_ARRAY_BUFFER, attr.vbo );
+				this.gl.bindBuffer( this.gl.ELEMENT_ARRAY_BUFFER, attr.vbo );
 
 			}else{
 
 				if( attr.location !== -1 ){
 				
-					this._gl.bindBuffer( this._gl.ARRAY_BUFFER, attr.vbo );
-					this._gl.enableVertexAttribArray( attr.location );
-					this._gl.vertexAttribPointer( attr.location, attr.stride, this._gl.FLOAT, false, 0, 0 );
+					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attr.vbo );
+					this.gl.enableVertexAttribArray( attr.location );
+					this.gl.vertexAttribPointer( attr.location, attr.stride, this.gl.FLOAT, false, 0, 0 );
 
 				}
 				
@@ -188,7 +189,7 @@ export class Renderer{
 
 		for ( let i = 0; i < this.attributeCnt; i++ ) {
 			
-			this._gl.disableVertexAttribArray( i );
+			this.gl.disableVertexAttribArray( i );
 			
 		}
 
@@ -206,7 +207,7 @@ export class Renderer{
 
 			let uni = uniforms[key];
 			
-			uni.location = this._gl.getUniformLocation( program, key.toString() );			
+			uni.location = this.gl.getUniformLocation( program, key.toString() );			
 
 		}
 
@@ -268,8 +269,8 @@ export class Renderer{
 				
 			}
 			
-			this._gl.activeTexture( this._gl.TEXTURE0 + value.unitID );
-			this._gl.bindTexture( this._gl.TEXTURE_2D, value.webglTex );
+			this.gl.activeTexture( this.gl.TEXTURE0 + value.unitID );
+			this.gl.bindTexture( this.gl.TEXTURE_2D, value.webglTex );
 			
 			input = value.unitID;
 			
@@ -283,9 +284,9 @@ export class Renderer{
 				
 			}
 
-			this._gl.activeTexture( this._gl.TEXTURE0 + value.texture.unitID );
+			this.gl.activeTexture( this.gl.TEXTURE0 + value.texture.unitID );
 			
-			this._gl.bindTexture( this._gl.TEXTURE_2D, value.texture.webglTex );
+			this.gl.bindTexture( this.gl.TEXTURE_2D, value.texture.webglTex );
 
 			input = value.texture.unitID;
 
@@ -297,11 +298,11 @@ export class Renderer{
 
 			if( isMat ){
 
-				this._gl[type]( location, false, input );
+				this.gl[type]( location, false, input );
 
 			}else{
 				
-				this._gl[type]( location, input );
+				this.gl[type]( location, input );
 				
 			}
 
@@ -311,46 +312,30 @@ export class Renderer{
 
 	protected createTexture( texture: Texture ){
 
-		let tex = this._gl.createTexture();
+		let tex = this.gl.createTexture();
 		
-		this._gl.bindTexture( this._gl.TEXTURE_2D, tex );
+		this.gl.bindTexture( this.gl.TEXTURE_2D, tex );
 
 		if( texture.image != null ){
 			
-			this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, this._gl.RGBA, this._gl.UNSIGNED_BYTE, texture.image );
-			this._gl.generateMipmap( this._gl.TEXTURE_2D );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.image );
+			this.gl.generateMipmap( this.gl.TEXTURE_2D );
 
 		}else{
 
-			this._gl.texImage2D( this._gl.TEXTURE_2D, 0, this._gl.RGBA, texture.width, texture.height, 0, this._gl.RGBA, this._gl.UNSIGNED_BYTE, null );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, texture.width, texture.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null );
 			
 		}
 		
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this.getFilter( texture.minFilter ) );
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_MIN_FILTER, this.getFilter( texture.magFilter ) );
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_S, this.getWrap( texture.wrapS ) );
-		this._gl.texParameteri(this._gl.TEXTURE_2D, this._gl.TEXTURE_WRAP_T, this.getWrap( texture.wrapT ) );
-		
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.minFilter || this.gl.LINEAR );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.magFilter || this.gl.LINEAR );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, texture.wrapS || this.gl.CLAMP_TO_EDGE );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, texture.wrapT || this.gl.CLAMP_TO_EDGE );
 
-		this._gl.bindTexture( this._gl.TEXTURE_2D, null );
+		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
 		texture.webglTex = tex;
 		texture.unitID = this.textureCnt++;
-		
-	}
-
-	protected getFilter( glpFilter: number ){
-
-		if( glpFilter == FilterLinear ) return this._gl.LINEAR;
-		if( glpFilter == FilterNearest ) return this._gl.NEAREST;
-		
-	}
-
-	protected getWrap( wrap: number ){
-
-		if( wrap == WrapRepeat ) return this._gl.REPEAT;
-		if( wrap == WrapClamp ) return this._gl.CLAMP_TO_EDGE;
-		if( wrap == WrapMirror ) return this._gl.MIRRORED_REPEAT;
 		
 	}
 
@@ -377,28 +362,26 @@ export class Renderer{
 
 		}
 
-		if( mat.side == SideDouble ){
+		// curring
 
-			this._gl.disable( this._gl.CULL_FACE );
+		if( mat.culling ){
+
+			this.gl.enable( this.gl.CULL_FACE );
+
+			this.gl.frontFace( mat.culling );
 			
-		}else if( mat.side == SideFront ){
-
-			this._gl.frontFace( this._gl.CCW );
-
-			this._gl.enable( this._gl.CULL_FACE );
-
-		}else if( mat.side == SideBack ){
-
-			this._gl.frontFace( this._gl.CW );
-
-			this._gl.enable( this._gl.CULL_FACE );
-
 		}else{
 
+			this.gl.disable( this.gl.CULL_FACE );
 			
 		}
+
+
+		// blend
+
+		this.gl.blendFunc( mat.blendSrc || this.gl.SRC_ALPHA, mat.blendDst || this.gl.ONE_MINUS_SRC_ALPHA );
 		
-		this._gl.useProgram( obj.program );
+		this.gl.useProgram( obj.program );
 
 		this.applyUniforms( mat.uniforms );
 
@@ -408,11 +391,11 @@ export class Renderer{
 
 		if( ( obj as Mesh ).isMesh ){
 
-			this._gl.drawElements( this._gl.TRIANGLES, geo.attributes.index.vertices.length, this._gl.UNSIGNED_SHORT, 0 );
+			this.gl.drawElements( this.gl.TRIANGLES, geo.attributes.index.vertices.length, this.gl.UNSIGNED_SHORT, 0 );
 
 		}else if( ( obj as Points ).isPoints ){
 
-			this._gl.drawArrays( this._gl.POINTS, 0, geo.attributes.position.vertices.length / 3 );
+			this.gl.drawArrays( this.gl.POINTS, 0, geo.attributes.position.vertices.length / 3 );
 
 		}
 
@@ -428,20 +411,20 @@ export class Renderer{
 			
 		}
 			
-		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, frameBuffer ? frameBuffer.buffer : null );
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, frameBuffer ? frameBuffer.buffer : null );
 		
 	}
 
 	protected createFrameBuffer( frameBuffer: FrameBuffer ){
 		
-		let buffer = this._gl.createFramebuffer();
+		let buffer = this.gl.createFramebuffer();
 
-		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, buffer );
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, buffer );
 
-		let depthBuffer = this._gl.createRenderbuffer();
-		this._gl.bindRenderbuffer( this._gl.RENDERBUFFER, depthBuffer );
-		this._gl.renderbufferStorage( this._gl.RENDERBUFFER, this._gl.DEPTH_COMPONENT16, frameBuffer.texture.width, frameBuffer.texture.height );
-		this._gl.framebufferRenderbuffer(this._gl.FRAMEBUFFER, this._gl.DEPTH_ATTACHMENT, this._gl.RENDERBUFFER, depthBuffer);
+		let depthBuffer = this.gl.createRenderbuffer();
+		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, depthBuffer );
+		this.gl.renderbufferStorage( this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, frameBuffer.texture.width, frameBuffer.texture.height );
+		this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer);
 
 		if( frameBuffer.texture.webglTex == null ){
 
@@ -449,10 +432,10 @@ export class Renderer{
 			
 		}
 
-		this._gl.framebufferTexture2D( this._gl.FRAMEBUFFER, this._gl.COLOR_ATTACHMENT0, this._gl.TEXTURE_2D, frameBuffer.texture.webglTex, 0 );
+		this.gl.framebufferTexture2D( this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, frameBuffer.texture.webglTex, 0 );
 
-		this._gl.bindFramebuffer( this._gl.FRAMEBUFFER, null );
-		this._gl.bindRenderbuffer( this._gl.RENDERBUFFER, null );
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, null );
 
 		frameBuffer.buffer = buffer;
 		
@@ -462,17 +445,17 @@ export class Renderer{
 
 		camera.updateMatrix();
 		
-		this._gl.clearColor(0.0, 0.0, 0.0, 1.0);
-		this._gl.clearDepth(1.0);
-		this._gl.clear(this._gl.COLOR_BUFFER_BIT | this._gl.DEPTH_BUFFER_BIT);
+		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+		this.gl.clearDepth(1.0);
+		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
 		if( this.renderTarget ){
 
-			this._gl.viewport(0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height);
+			this.gl.viewport(0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height);
 
 		}else{
 
-			this._gl.viewport(0, 0, this._gl.canvas.width, this._gl.canvas.height);
+			this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
 
 		}
 
@@ -489,7 +472,7 @@ export class Renderer{
 		}
 
 		
-		this._gl.flush();
+		this.gl.flush();
 
 	}
 

@@ -1,5 +1,3 @@
-export * from './Constants';
-
 export * from './renderers/Renderer';
 export * from './renderers/FrameBuffer';
 export * from './renderers/Material';

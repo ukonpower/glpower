@@ -2,10 +2,14 @@ import * as GLP from '../../../../src';
 
 import vert from './shaders/cube.vs';
 import frag from './shaders/cube.fs';
+import transparentFrag from './shaders/transparent.fs';
 
 export class APP{
 
 	private renderer: GLP.Renderer;
+
+	private gl: WebGLRenderingContext;
+	
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
@@ -20,6 +24,8 @@ export class APP{
 			retina: true
 		});
 
+		this.gl = this.renderer.gl;
+		
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 		this.initScene();
@@ -41,12 +47,21 @@ export class APP{
 			frag: frag,
 			vert: vert,
 			uniforms: {},
-			side: GLP.SideFront
+			culling: this.gl.CCW
 		});
 
 		this.cube = new GLP.Mesh( new GLP.CubeGeometry(), mat );
 		this.scene.add( this.cube );
 
+		let alphaMat = new GLP.Material({
+			frag: transparentFrag,
+			vert: vert,
+		});
+		
+		let plane = new GLP.Mesh( new GLP.PlaneGeometry( 1.5, 1.5 ), alphaMat );
+		plane.position.z = 2;
+		this.scene.add( plane );
+		
 	}
 
 	private animate(){
@@ -56,6 +71,11 @@ export class APP{
 		this.cube.rotation.x = this.time * 0.02;
 		this.cube.rotation.y = this.time * 0.02;
 
+		this.camera.position.x = Math.sin( this.time * 0.01 ) * 5;
+		this.camera.position.z = Math.cos( this.time * 0.01 ) * 5;
+
+		this.camera.rotation.y = this.time * 0.01;
+		
 		this.renderer.render( this.scene, this.camera );
 
 		requestAnimationFrame( this.animate.bind( this ) );

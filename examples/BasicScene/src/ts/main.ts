@@ -6,6 +6,8 @@ import frag from './shaders/cube.fs';
 export class APP{
 
 	private renderer: GLP.Renderer;
+	private gl: WebGLRenderingContext;
+	
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
@@ -19,6 +21,8 @@ export class APP{
 			canvas: document.querySelector( '#canvas' ),
 			retina: true
 		});
+
+		this.gl = this.renderer.gl;
 
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
@@ -41,7 +45,7 @@ export class APP{
 			frag: frag,
 			vert: vert,
 			uniforms: {},
-			side: GLP.SideFront
+			culling: this.gl.CCW,
 		});
 
 		this.cube = new GLP.Mesh( new GLP.CubeGeometry(), mat );
@@ -64,6 +68,7 @@ export class APP{
 
 	private resize(){
 
+		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 	}

@@ -5,8 +5,10 @@ import frag from './shaders/cube.fs';
 import { Texture } from '../../../../src/textures/Texture';
 
 export class APP{
-
+	
 	private renderer: GLP.Renderer;
+	private gl: WebGLRenderingContext;
+
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
@@ -24,6 +26,8 @@ export class APP{
 			retina: true
 		});
 
+		this.gl = this.renderer.gl;
+		
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 		this.initScene();
@@ -53,7 +57,7 @@ export class APP{
 			frag: frag,
 			vert: vert,
 			uniforms: uni1,
-			side: GLP.SideFront
+			culling: this.gl.CCW
 		});
 	
 		this.cube = new GLP.Mesh( new GLP.CubeGeometry(), mat );
@@ -79,7 +83,6 @@ export class APP{
 			frag: frag,
 			vert: vert,
 			uniforms: uni2,
-			side: GLP.SideFront
 		});
 
 		this.cube2 = new GLP.Mesh( new GLP.CubeGeometry(), mat2 );

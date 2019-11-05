@@ -9,13 +9,17 @@ export declare interface MaterialParam {
     frag: string;
     vert: string;
     uniforms?: Uniforms;
-    side?: number;
+    culling?: number;
+    blendSrc?: number;
+    blendDst?: number;
 }
 export declare class Material {
     uniforms: Uniforms;
     frag: string;
     vert: string;
-    side: number;
+    culling: number;
+    blendSrc: number;
+    blendDst: number;
     constructor(param: MaterialParam);
     clone(): Material;
 }

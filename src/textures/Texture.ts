@@ -1,5 +1,3 @@
-import { WrapClamp, FilterLinear } from "../Constants";
-
 export declare interface TextureParam{
 	texturePath?: string;
 	wrapS?: number;
@@ -31,11 +29,11 @@ export class Texture{
 
 		param = param || {};
 
-		this.wrapS = param.wrapS || WrapClamp;
-		this.wrapT = param.wrapT || WrapClamp;
+		this.wrapS = param.wrapS;
+		this.wrapT = param.wrapT;
 
-		this.magFilter = param.magFilter || FilterLinear;
-		this.minFilter = param.magFilter || FilterLinear;
+		this.magFilter = param.magFilter;
+		this.minFilter = param.magFilter;
 
 		this.width = param.width || 0;
 		this.height = param.height || 0;

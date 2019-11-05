@@ -14,7 +14,7 @@ export declare interface RendererParam {
 }
 export declare type Uniformable = number | Vec2 | Vec3 | Mat4 | Texture | FrameBuffer;
 export declare class Renderer {
-    protected _gl: WebGLRenderingContext;
+    gl: WebGLRenderingContext;
     protected _canvas: HTMLCanvasElement;
     protected pixelRatio: number;
     protected isRetina: boolean;
@@ -34,8 +34,6 @@ export declare class Renderer {
     protected applyUniforms(uniforms: Uniforms): void;
     protected setUniform(location: WebGLUniformLocation, value: Uniformable): void;
     protected createTexture(texture: Texture): void;
-    protected getFilter(glpFilter: number): number;
-    protected getWrap(wrap: number): number;
     protected renderObject(obj: RenderingObject, camera: Camera): void;
     setFrameBuffer(frameBuffer: FrameBuffer): void;
     protected createFrameBuffer(frameBuffer: FrameBuffer): void;

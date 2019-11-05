@@ -1,5 +1,3 @@
-import { SideFront } from "../Constants";
-
 export declare interface OUniform{
 	value: any;
 	location?: WebGLUniformLocation;
@@ -13,7 +11,9 @@ export declare interface MaterialParam{
 	frag: string;
 	vert: string;
 	uniforms?: Uniforms;
-	side?: number;
+	culling?: number;
+	blendSrc?: number;
+	blendDst?: number;
 }
 
 export class Material{
@@ -21,14 +21,18 @@ export class Material{
 	public uniforms: Uniforms;
 	public frag: string;
 	public vert: string;
-	public side: number;
-	
+	public culling: number;
+	public blendSrc: number;
+	public blendDst: number;
+
 	constructor( param: MaterialParam ){
 
 		this.uniforms = param.uniforms;
 		this.frag = param.frag;
 		this.vert = param.vert;
-		this.side = param.side || SideFront;
+		this.culling = param.culling;
+		this.blendSrc = param.blendSrc;
+		this.blendDst = param.blendSrc;
 
 	}
 
@@ -52,8 +56,10 @@ export class Material{
 		return new Material({
 			vert: this.vert,
 			frag: this.frag,
-			side: this.side,
-			uniforms: uni
+			culling: this.culling,
+			uniforms: uni,
+			blendSrc: this.blendSrc,
+			blendDst: this.blendDst,
 		});
 		
 	}
