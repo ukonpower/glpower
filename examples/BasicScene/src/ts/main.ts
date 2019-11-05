@@ -34,7 +34,7 @@ export class APP{
 		
 		this.scene = new GLP.Scene();
 
-		this.camera = new GLP.Camera( 50, 0.1, 1000 );
+		this.camera = new GLP.Camera( 50, 0.1, 1000, window.innerWidth / window.innerHeight );
 		this.camera.position.set( 0, 0, 5 );
 	
 		let mat = new GLP.Material({

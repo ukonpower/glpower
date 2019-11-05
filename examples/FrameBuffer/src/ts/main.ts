@@ -50,7 +50,7 @@ export class APP{
 		this.scene = new GLP.Scene();
 		this.renderScene = new GLP.Scene();
 
-		this.camera = new GLP.Camera( 50, 0.1, 1000 );
+		this.camera = new GLP.Camera( 50, 0.1, 1000, window.innerWidth / window.innerHeight );
 		this.camera.position.set( 0, 0, 5 );
 
 		//cube1
@@ -68,7 +68,7 @@ export class APP{
 			side: GLP.SideFront
 		});
 	
-		this.cube = new GLP.Mesh( new GLP.CubeGeometry( 1.5 ), mat );
+		this.cube = new GLP.Mesh( new GLP.CubeGeometry( 1.5, 1.5, 1.5 ), mat );
 		this.scene.add( this.cube );
 
 		let tex = new GLP.Texture();
@@ -108,10 +108,14 @@ export class APP{
 
 		this.renderCube.rotation.set( 0, rot, 0 );
 		
+		this.camera.aspect = 1;
+		
 		this.renderer.setFrameBuffer( this.fbuffer );
 		
 		this.renderer.render( this.scene, this.camera );
 
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		
 		this.renderer.setFrameBuffer( null );
 
 		this.renderer.render( this.renderScene, this.camera );

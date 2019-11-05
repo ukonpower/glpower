@@ -3,20 +3,22 @@ import { Mat4 } from "../math/Mat4";
 
 export class Camera extends Empty{
 
-	protected fov: number;
-	protected near: number;
-	protected far: number;
+	public fov: number;
+	public near: number;
+	public far: number;
+	public aspect: number;
 	
 	public projectionMatrix: Mat4;
 	public modelMatrixInverse: Mat4;
 	
-	constructor( fov: number, near: number, far: number ){
+	constructor( fov: number, near: number, far: number, aspect: number ){
 	
 		super();
 
 		this.fov = fov;
 		this.near = near;
 		this.far = far;
+		this.aspect = aspect;
 		
 		this.projectionMatrix = new Mat4();
 		this.modelMatrixInverse = new Mat4();
@@ -29,7 +31,7 @@ export class Camera extends Empty{
 
 		this.modelMatrixInverse.copy( this.modelMatrix.clone().inverse() );
 
-		this.projectionMatrix.perspective( this.fov, window.innerWidth / window.innerHeight, this.near, this.far );		
+		this.projectionMatrix.perspective( this.fov, this.aspect, this.near, this.far );		
 
 	}
 
