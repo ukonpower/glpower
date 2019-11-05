@@ -114,6 +114,7 @@ export class APP{
 
 	private resize(){
 
+		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 	}

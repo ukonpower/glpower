@@ -35,6 +35,7 @@ export declare class Renderer {
     protected setUniform(location: WebGLUniformLocation, value: Uniformable): void;
     protected createTexture(texture: Texture): void;
     protected getFilter(glpFilter: number): number;
+    protected getWrap(wrap: number): number;
     protected renderObject(obj: RenderingObject, camera: Camera): void;
     setFrameBuffer(frameBuffer: FrameBuffer): void;
     protected createFrameBuffer(frameBuffer: FrameBuffer): void;

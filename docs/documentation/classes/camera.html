@@ -92,13 +92,14 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#aspect" class="tsd-kind-icon">aspect</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#children" class="tsd-kind-icon">children</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="camera.html#far" class="tsd-kind-icon">far</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="camera.html#fov" class="tsd-kind-icon">fov</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#far" class="tsd-kind-icon">far</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#fov" class="tsd-kind-icon">fov</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#modelmatrix" class="tsd-kind-icon">model<wbr>Matrix</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#modelmatrixinverse" class="tsd-kind-icon">model<wbr>Matrix<wbr>Inverse</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="camera.html#near" class="tsd-kind-icon">near</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#near" class="tsd-kind-icon">near</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#position" class="tsd-kind-icon">position</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="camera.html#projectionmatrix" class="tsd-kind-icon">projection<wbr>Matrix</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="camera.html#rotation" class="tsd-kind-icon">rotation</a></li>
@@ -121,14 +122,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Camera<span class="tsd-signature-symbol">(</span>fov<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, near<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, far<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Camera<span class="tsd-signature-symbol">(</span>fov<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, near<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, far<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, aspect<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="empty.html">Empty</a>.<a href="empty.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L11">renderers/Camera.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L12">renderers/Camera.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,6 +143,9 @@
 								<li>
 									<h5>far: <span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5>aspect: <span class="tsd-signature-type">number</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="camera.html" class="tsd-signature-type">Camera</a></h4>
 						</li>
@@ -150,6 +154,16 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="aspect" class="tsd-anchor"></a>
+					<h3>aspect</h3>
+					<div class="tsd-signature tsd-kind-icon">aspect<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L9">renderers/Camera.ts:9</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="children" class="tsd-anchor"></a>
 					<h3>children</h3>
@@ -157,27 +171,27 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#children">children</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L7">objects/Empty.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L7">objects/Empty.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="far" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> far</h3>
+					<h3>far</h3>
 					<div class="tsd-signature tsd-kind-icon">far<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L8">renderers/Camera.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L8">renderers/Camera.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="fov" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> fov</h3>
+					<h3>fov</h3>
 					<div class="tsd-signature tsd-kind-icon">fov<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L6">renderers/Camera.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L6">renderers/Camera.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -188,7 +202,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#modelmatrix">modelMatrix</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L9">objects/Empty.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L9">objects/Empty.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -198,7 +212,7 @@
 					<div class="tsd-signature tsd-kind-icon">model<wbr>Matrix<wbr>Inverse<span class="tsd-signature-symbol">:</span> <a href="mat4.html" class="tsd-signature-type">Mat4</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L11">renderers/Camera.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L12">renderers/Camera.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -209,17 +223,17 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#modelviewmatrix">modelViewMatrix</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L10">objects/Empty.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L10">objects/Empty.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="near" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> near</h3>
+					<h3>near</h3>
 					<div class="tsd-signature tsd-kind-icon">near<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L7">renderers/Camera.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L7">renderers/Camera.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -230,7 +244,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#position">position</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L12">objects/Empty.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L12">objects/Empty.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -240,7 +254,7 @@
 					<div class="tsd-signature tsd-kind-icon">projection<wbr>Matrix<span class="tsd-signature-symbol">:</span> <a href="mat4.html" class="tsd-signature-type">Mat4</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L10">renderers/Camera.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L11">renderers/Camera.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -251,7 +265,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#rotation">rotation</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L13">objects/Empty.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L13">objects/Empty.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -262,7 +276,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#scale">scale</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L14">objects/Empty.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L14">objects/Empty.ts:14</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -280,7 +294,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="empty.html">Empty</a>.<a href="empty.html#add">add</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/objects/Empty.ts#L27">objects/Empty.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/objects/Empty.ts#L27">objects/Empty.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -304,7 +318,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="empty.html">Empty</a>.<a href="empty.html#updatematrix">updateMatrix</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/179625b/src/renderers/Camera.ts#L26">renderers/Camera.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7465080/src/renderers/Camera.ts#L28">renderers/Camera.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -331,13 +345,16 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="camera.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="camera.html#aspect" class="tsd-kind-icon">aspect</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="camera.html#children" class="tsd-kind-icon">children</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="camera.html#far" class="tsd-kind-icon">far</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="camera.html#fov" class="tsd-kind-icon">fov</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
@@ -349,7 +366,7 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="camera.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="camera.html#near" class="tsd-kind-icon">near</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">

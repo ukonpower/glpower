@@ -81,42 +81,42 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./examples/BasicScene/src/ts/main.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./examples/Materials/src/ts/main.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./examples/BasicScene/src/ts/main.ts":
-/*!********************************************!*\
-  !*** ./examples/BasicScene/src/ts/main.ts ***!
-  \********************************************/
+/***/ "./examples/Materials/src/ts/main.ts":
+/*!*******************************************!*\
+  !*** ./examples/Materials/src/ts/main.ts ***!
+  \*******************************************/
 /*! exports provided: APP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"APP\", function() { return APP; });\n/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../src */ \"./src/index.ts\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders/cube.vs */ \"./examples/BasicScene/src/ts/shaders/cube.vs\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shaders/cube.fs */ \"./examples/BasicScene/src/ts/shaders/cube.fs\");\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nvar APP = /** @class */ (function () {\n    function APP() {\n        this.time = 0;\n        this.renderer = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Renderer\"]({\n            canvas: document.querySelector('#canvas'),\n            retina: true\n        });\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n        this.initScene();\n        this.animate();\n        window.addEventListener('resize', this.resize.bind(this));\n    }\n    APP.prototype.initScene = function () {\n        this.scene = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Scene\"]();\n        this.camera = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Camera\"](50, 0.1, 1000, window.innerWidth / window.innerHeight);\n        this.camera.position.set(0, 0, 5);\n        var mat = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n            uniforms: {},\n            side: _src__WEBPACK_IMPORTED_MODULE_0__[\"SideFront\"]\n        });\n        this.cube = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Mesh\"](new _src__WEBPACK_IMPORTED_MODULE_0__[\"CubeGeometry\"](), mat);\n        this.scene.add(this.cube);\n    };\n    APP.prototype.animate = function () {\n        this.time += 1.0;\n        this.cube.rotation.x = this.time * 0.02;\n        this.cube.rotation.y = this.time * 0.02;\n        this.renderer.render(this.scene, this.camera);\n        requestAnimationFrame(this.animate.bind(this));\n    };\n    APP.prototype.resize = function () {\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n    };\n    return APP;\n}());\n\nwindow.addEventListener('load', function () {\n    var app = new APP();\n});\n\n\n//# sourceURL=webpack:///./examples/BasicScene/src/ts/main.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"APP\", function() { return APP; });\n/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../src */ \"./src/index.ts\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders/cube.vs */ \"./examples/Materials/src/ts/shaders/cube.vs\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shaders/cube.fs */ \"./examples/Materials/src/ts/shaders/cube.fs\");\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nvar APP = /** @class */ (function () {\n    function APP() {\n        this.time = 0;\n        this.renderer = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Renderer\"]({\n            canvas: document.querySelector('#canvas'),\n            retina: true\n        });\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n        this.initScene();\n        this.animate();\n        window.addEventListener('resize', this.resize.bind(this));\n    }\n    APP.prototype.initScene = function () {\n        this.scene = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Scene\"]();\n        this.camera = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Camera\"](50, 0.1, 1000, window.innerWidth / window.innerHeight);\n        this.camera.position.set(0, 0, 5);\n        var mat = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n            uniforms: {},\n            side: _src__WEBPACK_IMPORTED_MODULE_0__[\"SideFront\"]\n        });\n        this.cube = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Mesh\"](new _src__WEBPACK_IMPORTED_MODULE_0__[\"CubeGeometry\"](), mat);\n        this.scene.add(this.cube);\n    };\n    APP.prototype.animate = function () {\n        this.time += 1.0;\n        this.cube.rotation.x = this.time * 0.02;\n        this.cube.rotation.y = this.time * 0.02;\n        this.renderer.render(this.scene, this.camera);\n        requestAnimationFrame(this.animate.bind(this));\n    };\n    APP.prototype.resize = function () {\n        this.camera.aspect = window.innerWidth / window.innerHeight;\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n    };\n    return APP;\n}());\n\nwindow.addEventListener('load', function () {\n    var app = new APP();\n});\n\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/main.ts?");
 
 /***/ }),
 
-/***/ "./examples/BasicScene/src/ts/shaders/cube.fs":
-/*!****************************************************!*\
-  !*** ./examples/BasicScene/src/ts/shaders/cube.fs ***!
-  \****************************************************/
+/***/ "./examples/Materials/src/ts/shaders/cube.fs":
+/*!***************************************************!*\
+  !*** ./examples/Materials/src/ts/shaders/cube.fs ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"precision highp float;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tgl_FragColor = vec4( vColor, 1.0 );\\r\\n\\t\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/BasicScene/src/ts/shaders/cube.fs?");
+eval("module.exports = \"precision highp float;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tgl_FragColor = vec4( vColor, 1.0 );\\r\\n\\t\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/shaders/cube.fs?");
 
 /***/ }),
 
-/***/ "./examples/BasicScene/src/ts/shaders/cube.vs":
-/*!****************************************************!*\
-  !*** ./examples/BasicScene/src/ts/shaders/cube.vs ***!
-  \****************************************************/
+/***/ "./examples/Materials/src/ts/shaders/cube.vs":
+/*!***************************************************!*\
+  !*** ./examples/Materials/src/ts/shaders/cube.vs ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"precision highp float;\\r\\n\\r\\nattribute vec3 position;\\r\\nattribute vec3 color;\\r\\nattribute vec3 normal;\\r\\nattribute vec2 uv;\\r\\n\\r\\nuniform float time;\\r\\nuniform mat4 modelViewMatrix;\\r\\nuniform mat4 projectionMatrix;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\\r\\n    gl_Position = projectionMatrix * mvPosition;\\r\\n\\tgl_PointSize = 5.0;\\r\\n\\r\\n\\tvColor = vec3( uv, 1.0 ) + color;\\r\\n\\t// vColor = normal + 0.5;\\r\\n\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/BasicScene/src/ts/shaders/cube.vs?");
+eval("module.exports = \"precision highp float;\\r\\n\\r\\nattribute vec3 position;\\r\\nattribute vec3 color;\\r\\nattribute vec3 normal;\\r\\nattribute vec2 uv;\\r\\n\\r\\nuniform float time;\\r\\nuniform mat4 modelViewMatrix;\\r\\nuniform mat4 projectionMatrix;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\\r\\n    gl_Position = projectionMatrix * mvPosition;\\r\\n\\tgl_PointSize = 5.0;\\r\\n\\r\\n\\tvColor = vec3( uv, 1.0 ) + color;\\r\\n\\t// vColor = normal + 0.5;\\r\\n\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/shaders/cube.vs?");
 
 /***/ }),
 
