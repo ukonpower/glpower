@@ -12,8 +12,8 @@ export class APP{
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
-	private cube: GLP.Mesh;
-	private cube2: GLP.Mesh;
+	private cube: GLP.RenderingObject;
+	private cube2: GLP.RenderingObject;
 
 	private time: number = 0;
 
@@ -60,7 +60,11 @@ export class APP{
 			culling: this.gl.CCW
 		});
 	
-		this.cube = new GLP.Mesh( new GLP.CubeGeometry(), mat );
+		this.cube = new GLP.RenderingObject( { 
+			geo: new GLP.CubeGeometry(),
+			mat: mat
+		});
+
 		this.cube.position.x = -1;
 		this.scene.add( this.cube );
 
@@ -85,7 +89,11 @@ export class APP{
 			uniforms: uni2,
 		});
 
-		this.cube2 = new GLP.Mesh( new GLP.CubeGeometry(), mat2 );
+		this.cube2 = new GLP.RenderingObject({
+			geo: new GLP.CubeGeometry(),
+			mat: mat2
+		});
+
 		this.cube2.position.x = 1;
 		this.scene.add( this.cube2 );
 

@@ -13,7 +13,7 @@ export class APP{
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
-	private cube: GLP.Mesh;
+	private cube: GLP.RenderingObject;
 
 	private time: number = 0;
 
@@ -46,11 +46,14 @@ export class APP{
 		let mat = new GLP.Material({
 			frag: frag,
 			vert: vert,
-			uniforms: {},
 			culling: this.gl.CCW
 		});
 
-		this.cube = new GLP.Mesh( new GLP.CubeGeometry(), mat );
+		this.cube = new GLP.RenderingObject({
+			geo: new GLP.CubeGeometry(),
+			mat: mat
+		});
+		
 		this.scene.add( this.cube );
 
 		let alphaMat = new GLP.Material({
@@ -58,7 +61,11 @@ export class APP{
 			vert: vert,
 		});
 		
-		let plane = new GLP.Mesh( new GLP.PlaneGeometry( 1.5, 1.5 ), alphaMat );
+		let plane = new GLP.RenderingObject({
+			geo: new GLP.PlaneGeometry( 1.5, 1.5 ),
+			mat: alphaMat,
+		});
+
 		plane.position.z = 2;
 		this.scene.add( plane );
 		

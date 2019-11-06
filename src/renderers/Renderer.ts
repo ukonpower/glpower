@@ -1,12 +1,10 @@
 import { Material, MaterialParam, Uniforms } from "./Material";
 import { Scene } from "../objects/Scene";
 import { Camera } from "./Camera";
-import { Mesh } from "../objects/Mesh";
 import { Geometry } from "../geometries/Geometry";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
-import { Points } from "../objects/Points";
 import { RenderingObject } from "../objects/RenderingObject";
 import { Texture } from "../textures/Texture";
 import { FrameBuffer } from "./FrameBuffer";
@@ -235,7 +233,7 @@ export class Renderer{
 
 		if( value == null ) return;
 		
-		let type: string;
+		let type: string = 'uniform';
 		let isMat: boolean = false;
 		let input: any;
 
@@ -243,19 +241,19 @@ export class Renderer{
 
 		if( typeof( value ) == 'number' ){
 
-			type = 'uniform1f';
+			type += '1f';
 			
 		}else if( 'isVec2' in value ){
 
-			type = 'uniform2fv';
+			type += '2fv';
 
 		}else if( 'isVec3' in value ){
 
-			type = 'uniform3fv';
+			type += '3fv';
 
 		}else if( 'isMat4' in value ){
 
-			type = 'uniformMatrix4fv';
+			type += 'Matrix4fv';
 
 			input = value.element;
 
@@ -270,11 +268,12 @@ export class Renderer{
 			}
 			
 			this.gl.activeTexture( this.gl.TEXTURE0 + value.unitID );
+
 			this.gl.bindTexture( this.gl.TEXTURE_2D, value.webglTex );
 			
 			input = value.unitID;
 			
-			type = 'uniform1i';
+			type += '1i';
 
 		}else if( 'isFrameBuffer' in value ){
 
@@ -290,7 +289,7 @@ export class Renderer{
 
 			input = value.texture.unitID;
 
-			type = 'uniform1i';
+			type += '1i';
 
 		}
 
@@ -389,15 +388,7 @@ export class Renderer{
 
 		this.setAttributes( geo );
 
-		if( ( obj as Mesh ).isMesh ){
-
-			this.gl.drawElements( this.gl.TRIANGLES, geo.attributes.index.vertices.length, this.gl.UNSIGNED_SHORT, 0 );
-
-		}else if( ( obj as Points ).isPoints ){
-
-			this.gl.drawArrays( this.gl.POINTS, 0, geo.attributes.position.vertices.length / 3 );
-
-		}
+		this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vertices.length, this.gl.UNSIGNED_SHORT, 0 );
 
 	}
 

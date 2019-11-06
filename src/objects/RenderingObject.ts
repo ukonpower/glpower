@@ -2,6 +2,12 @@ import { Geometry } from "../geometries/Geometry";
 import { Material, Uniforms } from "../renderers/Material";
 import { Empty } from "./Empty";
 
+export declare interface RenderingObjectParam{
+	geo: Geometry;
+	mat: Material;
+	drawType?: number;
+}
+
 export class RenderingObject extends Empty{
 
 	public program: WebGLProgram;
@@ -9,13 +15,15 @@ export class RenderingObject extends Empty{
 
 	public geometry: Geometry;
 	public material: Material;
+	public drawType: number;
 	
-	constructor( geometry: Geometry, material: Material ){
+	constructor( param: RenderingObjectParam ){
 
 		super();
 		
-		this.geometry = geometry;
-		this.material = material;
+		this.geometry = param.geo;
+		this.material = param.mat;
+		this.drawType = param.drawType;
 
 		this.IndividualUniforms = {
 			modelViewMatrix: {
