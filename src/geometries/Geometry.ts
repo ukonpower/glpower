@@ -3,7 +3,6 @@ export declare interface Attribute{
 	location?: number;
 	stride?: number;
 	vbo?: WebGLBuffer;
-	dynamic?: boolean;
 }
 
 export declare interface Attributes{
@@ -18,12 +17,11 @@ export class Geometry{
 
 	}
 
-	public addAttributes( name: string, vertices: number[], stride: number, dynamic: boolean = false ){
+	public addAttributes( name: string, vertices: number[], stride: number ){
 		
 		this.attributes[name] = {
 			vertices: vertices,
 			stride: stride,
-			dynamic: dynamic
 		}
 
 	}
