@@ -3,7 +3,7 @@ import { Vec3 } from '../math/Vec3';
 
 export class CylinderGeometry extends Geometry{
 
-	constructor( radiusTop: number, radiusBottom: number, height: number, radSegments: number = 5, heightSegments: number = 1 ){
+	constructor( radiusTop: number = 0.5, radiusBottom: number = 0.5, height: number = 1, radSegments: number = 10, heightSegments: number = 1 ){
 
 		super();
 
@@ -48,12 +48,12 @@ export class CylinderGeometry extends Geometry{
 
 						indexArray.push(
 							i * radSegments + j,
-							i * radSegments + (j + 1) % radSegments,
 							( i + 1 ) * radSegments + (j + 1) % radSegments,
+							i * radSegments + (j + 1) % radSegments,
 
 							i * radSegments + j,
-							( i + 1 ) * radSegments + (j + 1) % radSegments,
 							( i + 1 ) * radSegments + j,
+							( i + 1 ) * radSegments + (j + 1) % radSegments,
 
 						);
 
@@ -84,9 +84,19 @@ export class CylinderGeometry extends Geometry{
 
 					if( j <= radSegments - 2 ){
 
-						indexArray.push(
-							offset, offset + j, offset + j + 1,
-						);
+						if( side == 0 ){
+
+							indexArray.push(
+								offset, offset + j, offset + j + 1,
+							);
+
+						}else{
+
+							indexArray.push(
+								offset, offset + j + 1, offset + j
+							);
+							
+						}
 
 					}
 					

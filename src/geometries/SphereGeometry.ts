@@ -48,12 +48,12 @@ export class SphereGeometry extends Geometry{
 				
 				indexArray.push(
 					i * widthSegments + j,
-					i * widthSegments + (j + 1) % widthSegments,
 					( i + 1 ) * widthSegments + (j + 1) % widthSegments,
+					i * widthSegments + (j + 1) % widthSegments,
 
 					i * widthSegments + j,
-					( i + 1 ) * widthSegments + (j + 1) % widthSegments,
 					( i + 1 ) * widthSegments + j,
+					( i + 1 ) * widthSegments + (j + 1) % widthSegments,
 
 				);
 				
