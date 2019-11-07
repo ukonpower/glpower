@@ -106,9 +106,7 @@ export class Renderer{
 
 	protected createAttributes( obj: RenderingObject ){
 
-		let mat = obj.material;
 		let geo = obj.geometry;
-
 		let prg = obj.program;
 
 		let keys = Object.keys( geo.attributes );
@@ -118,32 +116,22 @@ export class Renderer{
 			let key = keys[i];
 			let attr = geo.attributes[key];
 
-			if( key == 'index' ){
-
-				attr.vbo = this.createBufferObject( attr.vertices, true );
-
-			}else{
-
-				attr.location = this.gl.getAttribLocation( prg, key.toString() );
-				attr.vbo = this.createBufferObject( attr.vertices, false );
-				
-			}
+			attr.location = this.gl.getAttribLocation( prg, key.toString() );
+			attr.vbo = this.createBufferObject( attr.vertices, key == 'index' );
 			
 		}
 		
 	}
 
 	protected createBufferObject( vertices: number[], isIndex: boolean = false ){
-
-		let vbo = this.gl.createBuffer();
 		
 		let target = isIndex ? this.gl.ELEMENT_ARRAY_BUFFER : this.gl.ARRAY_BUFFER;
-
 		let array = isIndex ? new Int16Array( vertices ) : new Float32Array( vertices );
+		
+		let vbo = this.gl.createBuffer();
 
 		this.gl.bindBuffer( target, vbo );
 		this.gl.bufferData( target, array, this.gl.STATIC_DRAW );
-
 		this.gl.bindBuffer( target, null );
 
 		return vbo;
@@ -234,7 +222,6 @@ export class Renderer{
 		if( value == null ) return;
 		
 		let type: string = 'uniform';
-		let isMat: boolean = false;
 		let input: any;
 
 		input = value;
@@ -257,37 +244,35 @@ export class Renderer{
 
 			input = value.element;
 
-			isMat = true;
+		}else if( 'isTexture' in value || 'isFrameBuffer' in value ){
 
-		}else if( 'isTexture' in value ){
+			let tex: Texture;
 			
-			if( value.webglTex == null ){
+			if( 'isFrameBuffer' in value ){
 
-				this.createTexture( value );
+				tex = value.texture;
+				
+			}else{
+				
+				tex = value;
+
+				if( tex.needUpdate == true ){
+
+					this.createTexture( tex );
+
+					tex.needUpdate = false;
+					
+				}
 				
 			}
 			
-			this.gl.activeTexture( this.gl.TEXTURE0 + value.unitID );
+			tex.unitID = this.textureCnt;
 
-			this.gl.bindTexture( this.gl.TEXTURE_2D, value.webglTex );
+			this.gl.activeTexture( this.gl.TEXTURE0 + this.textureCnt++ );
 			
-			input = value.unitID;
-			
-			type += '1i';
+			this.gl.bindTexture( this.gl.TEXTURE_2D, tex.webglTex );
 
-		}else if( 'isFrameBuffer' in value ){
-
-			if( !value.texture.webglTex ){
-
-				return;
-				
-			}
-
-			this.gl.activeTexture( this.gl.TEXTURE0 + value.texture.unitID );
-			
-			this.gl.bindTexture( this.gl.TEXTURE_2D, value.texture.webglTex );
-
-			input = value.texture.unitID;
+			input = tex.unitID;
 
 			type += '1i';
 
@@ -295,7 +280,7 @@ export class Renderer{
 
 		if( type ){
 
-			if( isMat ){
+			if( type == 'uniformMatrix4fv' ){
 
 				this.gl[type]( location, false, input );
 
@@ -334,7 +319,6 @@ export class Renderer{
 		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
 		texture.webglTex = tex;
-		texture.unitID = this.textureCnt++;
 		
 	}
 
@@ -379,7 +363,7 @@ export class Renderer{
 		// blend
 
 		this.gl.blendFunc( mat.blendSrc || this.gl.SRC_ALPHA, mat.blendDst || this.gl.ONE_MINUS_SRC_ALPHA );
-		
+
 		this.gl.useProgram( obj.program );
 
 		this.applyUniforms( mat.uniforms );
@@ -436,17 +420,19 @@ export class Renderer{
 
 		camera.updateMatrix();
 		
-		this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-		this.gl.clearDepth(1.0);
-		this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+		this.textureCnt = 0;
+		
+		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+		this.gl.clearDepth( 1.0 );
+		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 
 		if( this.renderTarget ){
 
-			this.gl.viewport(0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height);
+			this.gl.viewport( 0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height );
 
 		}else{
 
-			this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
+			this.gl.viewport( 0, 0, this.gl.canvas.width, this.gl.canvas.height );
 
 		}
 

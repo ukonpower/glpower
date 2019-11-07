@@ -17,7 +17,8 @@ export declare class Texture {
     width: number;
     height: number;
     webglTex: WebGLTexture;
+    needUpdate: boolean;
     constructor(param?: TextureParam);
-    loadImg(path: string, callBack: (tex: Texture) => void): void;
+    loadImg(path: string, callBack?: (tex: Texture) => void): this;
     readonly isTexture: boolean;
 }

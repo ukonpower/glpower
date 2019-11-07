@@ -20,6 +20,6 @@ export declare class Material {
     culling: number;
     blendSrc: number;
     blendDst: number;
+    needUpdate: boolean;
     constructor(param: MaterialParam);
-    clone(): Material;
 }

@@ -3,6 +3,7 @@ export declare interface Attribute {
     location?: number;
     stride?: number;
     vbo?: WebGLBuffer;
+    dynamic?: boolean;
 }
 export declare interface Attributes {
     [key: string]: Attribute;
@@ -10,6 +11,5 @@ export declare interface Attributes {
 export declare class Geometry {
     attributes: Attributes;
     constructor();
-    clone(): Geometry;
-    addAttributes(name: string, vertices: number[], stride: number): void;
+    addAttributes(name: string, vertices: number[], stride: number, dynamic?: boolean): void;
 }

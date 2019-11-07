@@ -25,6 +25,8 @@ export class Texture{
 
 	public webglTex: WebGLTexture;
 
+	public needUpdate: boolean = true;
+
 	constructor( param?: TextureParam ){
 
 		param = param || {};
@@ -40,19 +42,28 @@ export class Texture{
 
 	}
 
-	public loadImg( path: string, callBack: ( tex: Texture ) => void ){
+	public loadImg( path: string, callBack?: ( tex: Texture ) => void ){
 		
 		let img = new Image();
 		img.src = path;
+		
 		img.onload = () => {
 
 			this.image = img;
 			this.width = img.width;
 			this.height = img.height;
 
-			callBack( this );
+			this.needUpdate = true;
+
+			if( callBack ){
+
+				callBack( this );
+
+			}
 			
 		}
+
+		return this;
 		
 	}
 

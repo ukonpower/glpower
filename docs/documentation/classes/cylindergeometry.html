@@ -99,7 +99,6 @@
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="cylindergeometry.html#addattributes" class="tsd-kind-icon">add<wbr>Attributes</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="cylindergeometry.html#clone" class="tsd-kind-icon">clone</a></li>
 							</ul>
 						</section>
 					</div>
@@ -118,7 +117,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="geometry.html">Geometry</a>.<a href="geometry.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/f795805/src/geometries/CylinderGeometry.ts#L4">geometries/CylinderGeometry.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/ab3d5e7/src/geometries/CylinderGeometry.ts#L4">geometries/CylinderGeometry.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -153,7 +152,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#attributes">attributes</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/f795805/src/geometries/Geometry.ts#L15">geometries/Geometry.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/ab3d5e7/src/geometries/Geometry.ts#L15">geometries/Geometry.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -164,14 +163,14 @@
 					<a name="addattributes" class="tsd-anchor"></a>
 					<h3>add<wbr>Attributes</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Attributes<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, vertices<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span>, stride<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Attributes<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, vertices<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span>, stride<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, dynamic<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#addattributes">addAttributes</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/f795805/src/geometries/Geometry.ts#L39">geometries/Geometry.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/ab3d5e7/src/geometries/Geometry.ts#L21">geometries/Geometry.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,26 +184,11 @@
 								<li>
 									<h5>stride: <span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> dynamic: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="clone" class="tsd-anchor"></a>
-					<h3>clone</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="geometry.html" class="tsd-signature-type">Geometry</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#clone">clone</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/f795805/src/geometries/Geometry.ts#L21">geometries/Geometry.ts:21</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="geometry.html" class="tsd-signature-type">Geometry</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -239,9 +223,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="cylindergeometry.html#addattributes" class="tsd-kind-icon">add<wbr>Attributes</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="cylindergeometry.html#clone" class="tsd-kind-icon">clone</a>
 							</li>
 						</ul>
 					</li>

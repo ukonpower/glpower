@@ -25,6 +25,8 @@ export class Material{
 	public blendSrc: number;
 	public blendDst: number;
 
+	public needUpdate: boolean = true;
+
 	constructor( param: MaterialParam ){
 
 		this.uniforms = param.uniforms;
@@ -34,34 +36,6 @@ export class Material{
 		this.blendSrc = param.blendSrc;
 		this.blendDst = param.blendSrc;
 
-	}
-
-
-	public clone(){
-
-		let uni: Uniforms = {};
-
-		let uniKeys = Object.keys( this.uniforms );
-
-		for( let i = 0; i < uniKeys.length; i++ ){
-
-			let key = uniKeys[i];
-
-			uni[key] = {
-				value: this.uniforms[key].value
-			}
-			
-		}
-		
-		return new Material({
-			vert: this.vert,
-			frag: this.frag,
-			culling: this.culling,
-			uniforms: uni,
-			blendSrc: this.blendSrc,
-			blendDst: this.blendDst,
-		});
-		
 	}
 
 }

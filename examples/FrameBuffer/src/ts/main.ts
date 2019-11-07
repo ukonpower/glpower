@@ -76,12 +76,7 @@ export class APP{
 
 		this.scene.add( this.cube );
 
-		let tex = new GLP.Texture();
-		tex.loadImg( './assets/Lenna.jpg', ( tex ) => {
-
-			uni1.texture.value = tex;
-
-		})
+		uni1.texture.value =  new GLP.Texture().loadImg( './assets/Lenna.jpg' );
 
 		//cube2
 
