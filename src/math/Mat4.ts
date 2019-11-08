@@ -2,7 +2,7 @@ import { Vec3 } from "./Vec3";
 
 export class Mat4{
 
-	public element: number[];
+	public elm: number[];
 
 	constructor(){
 		
@@ -18,7 +18,7 @@ export class Mat4{
 
 	public identity(){
 
-		this.element = [
+		this.elm = [
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
@@ -37,7 +37,7 @@ export class Mat4{
 
 	public copy( mat: Mat4 ){
 
-		this.element = mat.element.slice();
+		this.elm = mat.elm.slice();
 
 		return this;
 
@@ -48,7 +48,7 @@ export class Mat4{
 		var r = 1 / Math.tan(fov * Math.PI / 360);
         var d = far - near;
 		
-		this.element = [
+		this.elm = [
 			r / aspect, 0, 0, 0,
 			0, r, 0, 0,
 			0, 0, -(far + near) / d, -1,
@@ -65,7 +65,7 @@ export class Mat4{
 		let xAxis = up.clone().cross( zAxis ).normalize();
 		let yAxis = zAxis.clone().cross( xAxis ).normalize();
 		
-		this.element = [
+		this.elm = [
 		   xAxis.x, yAxis.x, zAxis.x, 0,
 		   xAxis.y, yAxis.y, zAxis.y, 0,
 		   xAxis.z, yAxis.z, zAxis.z, 0,
@@ -81,10 +81,10 @@ export class Mat4{
 
 	public inverse(){
 
-		let a = this.element[0],  b = this.element[1],  c = this.element[2],  d = this.element[3],
-			e = this.element[4],  f = this.element[5],  g = this.element[6],  h = this.element[7],
-			i = this.element[8],  j = this.element[9],  k = this.element[10], l = this.element[11],
-			m = this.element[12], n = this.element[13], o = this.element[14], p = this.element[15],
+		let a = this.elm[0],  b = this.elm[1],  c = this.elm[2],  d = this.elm[3],
+			e = this.elm[4],  f = this.elm[5],  g = this.elm[6],  h = this.elm[7],
+			i = this.elm[8],  j = this.elm[9],  k = this.elm[10], l = this.elm[11],
+			m = this.elm[12], n = this.elm[13], o = this.elm[14], p = this.elm[15],
 			q = a * f - b * e, r = a * g - c * e,
 			s = a * h - d * e, t = b * g - c * f,
 			u = b * h - d * f, v = c * h - d * g,
@@ -93,28 +93,28 @@ export class Mat4{
 			A = j * p - l * n, B = k * p - l * o,
 			ivd = 1 / (q * B - r * A + s * z + t * y - u * x + v * w);
 
-		this.element[0]  = ( f * B - g * A + h * z) * ivd;
-		this.element[1]  = (-b * B + c * A - d * z) * ivd;
-		this.element[2]  = ( n * v - o * u + p * t) * ivd;
-		this.element[3]  = (-j * v + k * u - l * t) * ivd;
-		this.element[4]  = (-e * B + g * y - h * x) * ivd;
-		this.element[5]  = ( a * B - c * y + d * x) * ivd;
-		this.element[6]  = (-m * v + o * s - p * r) * ivd;
-		this.element[7]  = ( i * v - k * s + l * r) * ivd;
-		this.element[8]  = ( e * A - f * y + h * w) * ivd;
-		this.element[9]  = (-a * A + b * y - d * w) * ivd;
-		this.element[10] = ( m * u - n * s + p * q) * ivd;
-		this.element[11] = (-i * u + j * s - l * q) * ivd;
-		this.element[12] = (-e * z + f * x - g * w) * ivd;
-		this.element[13] = ( a * z - b * x + c * w) * ivd;
-		this.element[14] = (-m * t + n * r - o * q) * ivd;
-		this.element[15] = ( i * t - j * r + k * q) * ivd;
+		this.elm[0]  = ( f * B - g * A + h * z) * ivd;
+		this.elm[1]  = (-b * B + c * A - d * z) * ivd;
+		this.elm[2]  = ( n * v - o * u + p * t) * ivd;
+		this.elm[3]  = (-j * v + k * u - l * t) * ivd;
+		this.elm[4]  = (-e * B + g * y - h * x) * ivd;
+		this.elm[5]  = ( a * B - c * y + d * x) * ivd;
+		this.elm[6]  = (-m * v + o * s - p * r) * ivd;
+		this.elm[7]  = ( i * v - k * s + l * r) * ivd;
+		this.elm[8]  = ( e * A - f * y + h * w) * ivd;
+		this.elm[9]  = (-a * A + b * y - d * w) * ivd;
+		this.elm[10] = ( m * u - n * s + p * q) * ivd;
+		this.elm[11] = (-i * u + j * s - l * q) * ivd;
+		this.elm[12] = (-e * z + f * x - g * w) * ivd;
+		this.elm[13] = ( a * z - b * x + c * w) * ivd;
+		this.elm[14] = (-m * t + n * r - o * q) * ivd;
+		this.elm[15] = ( i * t - j * r + k * q) * ivd;
 
 		return this;
 		
 	}
 
-	public createTransformMatrix( pos: Vec3, rot: Vec3, scale: Vec3 ){
+	public cTransform( pos: Vec3, rot: Vec3, scale: Vec3 ){
 
 		this.identity();
 
@@ -185,7 +185,7 @@ export class Mat4{
 
 				for( let k = 0; k < 4; k++ ){
 					
-					sum += this.element[k * 4 + j] * elm2[k + i * 4];
+					sum += this.elm[k * 4 + j] * elm2[k + i * 4];
 					
 				}
 
@@ -195,13 +195,13 @@ export class Mat4{
 			
 		}
 
-		this.element = dist;
+		this.elm = dist;
 
 	}
 	
 	public multiply( m: Mat4 ){
 		
-		this.matmul( m.element );
+		this.matmul( m.elm );
 
 		return this;
 
@@ -209,9 +209,9 @@ export class Mat4{
 
 	public multiplyScaler( a: number ){
 
-		for( let i = 0; i < this.element.length; i++ ){
+		for( let i = 0; i < this.elm.length; i++ ){
 
-			this.element[i] *= a;
+			this.elm[i] *= a;
 
 		}
 

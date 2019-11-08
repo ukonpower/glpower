@@ -72,14 +72,14 @@ export class Renderer{
 
 	}
 
-	protected createProgram( obj: RenderingObject ){
+	protected cPrg( obj: RenderingObject ){
 
 		let mat = obj.material;
 
 		let prg = this.gl.createProgram();
 
-		let vs = this.createShader( mat.vert, this.gl.VERTEX_SHADER );
-		let fs = this.createShader( mat.frag, this.gl.FRAGMENT_SHADER );
+		let vs = this.cShader( mat.vert, this.gl.VERTEX_SHADER );
+		let fs = this.cShader( mat.frag, this.gl.FRAGMENT_SHADER );
 
 		this.gl.attachShader( prg, vs );
 		this.gl.attachShader( prg, fs );
@@ -89,7 +89,7 @@ export class Renderer{
 
 	}
 
-	protected createShader( src: string, type: number ){
+	protected cShader( src: string, type: number ){
 		
 		let shader = this.gl.createShader( type );
 
@@ -109,7 +109,7 @@ export class Renderer{
 
 	}
 
-	protected createAttributes( obj: RenderingObject ){
+	protected cAttr( obj: RenderingObject ){
 
 		let geo = obj.geometry;
 		let prg = obj.program;
@@ -122,13 +122,13 @@ export class Renderer{
 			let attr = geo.attributes[key];
 
 			attr.location = this.gl.getAttribLocation( prg, key.toString() );
-			attr.vbo = this.createBufferObject( attr.vertices, key == 'index' );
+			attr.vbo = this.cVBO( attr.vertices, key == 'index' );
 			
 		}
 		
 	}
 
-	protected createBufferObject( vertices: number[], isIndex: boolean = false ){
+	protected cVBO( vertices: number[], isIndex: boolean = false ){
 		
 		let target = isIndex ? this.gl.ELEMENT_ARRAY_BUFFER : this.gl.ARRAY_BUFFER;
 		let array = isIndex ? new Int16Array( vertices ) : new Float32Array( vertices );
@@ -186,7 +186,7 @@ export class Renderer{
 
 	}
 
-	protected createUniforms( program: WebGLProgram, uniforms: Uniforms ){
+	protected cUni( program: WebGLProgram, uniforms: Uniforms ){
 
 		if( !uniforms ) return;
 		
@@ -247,7 +247,7 @@ export class Renderer{
 
 			type += 'Matrix4fv';
 
-			input = value.element;
+			input = value.elm;
 
 		}else if( 'isTexture' in value || 'isFrameBuffer' in value ){
 
@@ -255,7 +255,7 @@ export class Renderer{
 			
 			if( 'isFrameBuffer' in value ){
 
-				tex = value.texture;
+				tex = value.tex;
 				
 			}else{
 				
@@ -263,7 +263,7 @@ export class Renderer{
 
 				if( tex.needUpdate == true ){
 
-					this.createTexture( tex );
+					this.cTex( tex );
 
 					tex.needUpdate = false;
 					
@@ -275,7 +275,7 @@ export class Renderer{
 
 			this.gl.activeTexture( this.gl.TEXTURE0 + this.textureCnt++ );
 			
-			this.gl.bindTexture( this.gl.TEXTURE_2D, tex.webglTex );
+			this.gl.bindTexture( this.gl.TEXTURE_2D, tex.glTex );
 
 			input = tex.unitID;
 
@@ -299,7 +299,7 @@ export class Renderer{
 
 	}
 
-	protected createTexture( texture: Texture ){
+	protected cTex( texture: Texture ){
 
 		let tex = this.gl.createTexture();
 		
@@ -307,12 +307,12 @@ export class Renderer{
 
 		if( texture.image != null ){
 			
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, texture.textureType || this.gl.UNSIGNED_BYTE, texture.image );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, texture.texType || this.gl.UNSIGNED_BYTE, texture.image );
 			this.gl.generateMipmap( this.gl.TEXTURE_2D );
 
 		}else{
 
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, texture.width, texture.height, 0, this.gl.RGBA, texture.textureType || this.gl.UNSIGNED_BYTE, null );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, texture.width, texture.height, 0, this.gl.RGBA, texture.texType || this.gl.UNSIGNED_BYTE, null );
 			
 		}
 		
@@ -323,7 +323,7 @@ export class Renderer{
 
 		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
-		texture.webglTex = tex;
+		texture.glTex = tex;
 		
 	}
 
@@ -340,13 +340,13 @@ export class Renderer{
 
 		if( !obj.program ){
 
-			this.createProgram( obj );
+			this.cPrg( obj );
 
-			this.createUniforms( obj.program, mat.uniforms );
+			this.cUni( obj.program, mat.uniforms );
 
-			this.createUniforms( obj.program, obj.IndividualUniforms );
+			this.cUni( obj.program, obj.IndividualUniforms );
 
-			this.createAttributes( obj );
+			this.cAttr( obj );
 
 		}
 
@@ -387,7 +387,7 @@ export class Renderer{
 		
 		if( frameBuffer && !frameBuffer.buffer ){
 
-			this.createFrameBuffer( frameBuffer );
+			this.cFBuffer( frameBuffer );
 			
 		}
 			
@@ -395,7 +395,7 @@ export class Renderer{
 		
 	}
 
-	protected createFrameBuffer( frameBuffer: FrameBuffer ){
+	protected cFBuffer( frameBuffer: FrameBuffer ){
 		
 		let buffer = this.gl.createFramebuffer();
 
@@ -403,16 +403,16 @@ export class Renderer{
 
 		let depthBuffer = this.gl.createRenderbuffer();
 		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, depthBuffer );
-		this.gl.renderbufferStorage( this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, frameBuffer.texture.width, frameBuffer.texture.height );
+		this.gl.renderbufferStorage( this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, frameBuffer.tex.width, frameBuffer.tex.height );
 		this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, depthBuffer);
 
-		if( frameBuffer.texture.webglTex == null ){
+		if( frameBuffer.tex.glTex == null ){
 
-			this.createTexture( frameBuffer.texture );
+			this.cTex( frameBuffer.tex );
 			
 		}
 
-		this.gl.framebufferTexture2D( this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, frameBuffer.texture.webglTex, 0 );
+		this.gl.framebufferTexture2D( this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, frameBuffer.tex.glTex, 0 );
 
 		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, null );
@@ -433,7 +433,7 @@ export class Renderer{
 
 		if( this.renderTarget ){
 
-			this.gl.viewport( 0, 0, this.renderTarget.texture.width, this.renderTarget.texture.height );
+			this.gl.viewport( 0, 0, this.renderTarget.tex.width, this.renderTarget.tex.height );
 
 		}else{
 

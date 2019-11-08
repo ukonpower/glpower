@@ -81,42 +81,53 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./examples/FrameBuffer/src/ts/main.ts");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./examples/Materials/src/ts/main.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./examples/FrameBuffer/src/ts/main.ts":
-/*!*********************************************!*\
-  !*** ./examples/FrameBuffer/src/ts/main.ts ***!
-  \*********************************************/
+/***/ "./examples/Materials/src/ts/main.ts":
+/*!*******************************************!*\
+  !*** ./examples/Materials/src/ts/main.ts ***!
+  \*******************************************/
 /*! exports provided: APP */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"APP\", function() { return APP; });\n/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../src */ \"./src/index.ts\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders/cube.vs */ \"./examples/FrameBuffer/src/ts/shaders/cube.vs\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shaders/cube.fs */ \"./examples/FrameBuffer/src/ts/shaders/cube.fs\");\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__);\n\n\n\nvar APP = /** @class */ (function () {\n    function APP() {\n        this.time = 0;\n        this.renderer = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Renderer\"]({\n            canvas: document.querySelector('#canvas'),\n            retina: true\n        });\n        this.gl = this.renderer.gl;\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n        this.fbuffer = new _src__WEBPACK_IMPORTED_MODULE_0__[\"FrameBuffer\"]({\n            width: 1024,\n            height: 512,\n        });\n        this.initScene();\n        this.animate();\n        window.addEventListener('resize', this.resize.bind(this));\n    }\n    APP.prototype.initScene = function () {\n        this.scene = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Scene\"]();\n        this.renderScene = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Scene\"]();\n        this.camera = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Camera\"](50, 0.1, 1000, window.innerWidth / window.innerHeight);\n        this.camera.position.set(0, 0, 5);\n        //cube1\n        var uni1 = {\n            texture: {\n                value: null\n            }\n        };\n        var mat = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n            uniforms: uni1,\n            culling: this.gl.CCW\n        });\n        this.cube = new _src__WEBPACK_IMPORTED_MODULE_0__[\"RenderingObject\"]({\n            geo: new _src__WEBPACK_IMPORTED_MODULE_0__[\"CubeGeometry\"](1.5, 1.5, 1.5),\n            mat: mat\n        });\n        this.scene.add(this.cube);\n        uni1.texture.value = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Texture\"]().loadImg('./assets/Lenna.jpg');\n        //cube2\n        this.uniform = {\n            texture: {\n                value: this.fbuffer\n            }\n        };\n        var mat2 = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n            uniforms: this.uniform,\n        });\n        this.renderCube = new _src__WEBPACK_IMPORTED_MODULE_0__[\"RenderingObject\"]({\n            geo: new _src__WEBPACK_IMPORTED_MODULE_0__[\"PlaneGeometry\"](1.5, 1.5),\n            mat: mat2\n        });\n        this.renderScene.add(this.renderCube);\n    };\n    APP.prototype.animate = function () {\n        this.time += 1.0;\n        var rot = this.time * 0.02;\n        this.cube.rotation.set(rot, rot, 0);\n        this.renderCube.rotation.set(0, rot, 0);\n        this.camera.aspect = 1;\n        this.renderer.setFrameBuffer(this.fbuffer);\n        this.renderer.render(this.scene, this.camera);\n        this.camera.aspect = window.innerWidth / window.innerHeight;\n        this.renderer.setFrameBuffer(null);\n        this.renderer.render(this.renderScene, this.camera);\n        requestAnimationFrame(this.animate.bind(this));\n    };\n    APP.prototype.resize = function () {\n        this.camera.aspect = window.innerWidth / window.innerHeight;\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n    };\n    return APP;\n}());\n\nwindow.addEventListener('load', function () {\n    var app = new APP();\n});\n\n\n//# sourceURL=webpack:///./examples/FrameBuffer/src/ts/main.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, \"APP\", function() { return APP; });\n/* harmony import */ var _src__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../../src */ \"./src/index.ts\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./shaders/cube.vs */ \"./examples/Materials/src/ts/shaders/cube.vs\");\n/* harmony import */ var _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shaders/cube.fs */ \"./examples/Materials/src/ts/shaders/cube.fs\");\n/* harmony import */ var _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2__);\n/* harmony import */ var _shaders_transparent_fs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shaders/transparent.fs */ \"./examples/Materials/src/ts/shaders/transparent.fs\");\n/* harmony import */ var _shaders_transparent_fs__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_shaders_transparent_fs__WEBPACK_IMPORTED_MODULE_3__);\n\n\n\n\nvar APP = /** @class */ (function () {\n    function APP() {\n        this.time = 0;\n        this.renderer = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Renderer\"]({\n            canvas: document.querySelector('#canvas'),\n            retina: true\n        });\n        this.gl = this.renderer.gl;\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n        this.initScene();\n        this.animate();\n        window.addEventListener('resize', this.resize.bind(this));\n    }\n    APP.prototype.initScene = function () {\n        this.scene = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Scene\"]();\n        this.camera = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Camera\"](50, 0.1, 1000, window.innerWidth / window.innerHeight);\n        this.camera.position.set(0, 0, 5);\n        var mat = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_cube_fs__WEBPACK_IMPORTED_MODULE_2___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n            culling: this.gl.CCW\n        });\n        this.cube = new _src__WEBPACK_IMPORTED_MODULE_0__[\"RenderingObject\"]({\n            geo: new _src__WEBPACK_IMPORTED_MODULE_0__[\"CubeGeometry\"](),\n            mat: mat\n        });\n        this.scene.add(this.cube);\n        var alphaMat = new _src__WEBPACK_IMPORTED_MODULE_0__[\"Material\"]({\n            frag: _shaders_transparent_fs__WEBPACK_IMPORTED_MODULE_3___default.a,\n            vert: _shaders_cube_vs__WEBPACK_IMPORTED_MODULE_1___default.a,\n        });\n        var plane = new _src__WEBPACK_IMPORTED_MODULE_0__[\"RenderingObject\"]({\n            geo: new _src__WEBPACK_IMPORTED_MODULE_0__[\"PlaneGeometry\"](1.5, 1.5),\n            mat: alphaMat,\n        });\n        plane.position.z = 2;\n        this.scene.add(plane);\n    };\n    APP.prototype.animate = function () {\n        this.time += 1.0;\n        this.cube.rotation.x = this.time * 0.02;\n        this.cube.rotation.y = this.time * 0.02;\n        this.camera.position.x = Math.sin(this.time * 0.01) * 5;\n        this.camera.position.z = Math.cos(this.time * 0.01) * 5;\n        this.camera.rotation.y = this.time * 0.01;\n        this.renderer.render(this.scene, this.camera);\n        requestAnimationFrame(this.animate.bind(this));\n    };\n    APP.prototype.resize = function () {\n        this.camera.aspect = window.innerWidth / window.innerHeight;\n        this.renderer.setSize(window.innerWidth, window.innerHeight);\n    };\n    return APP;\n}());\n\nwindow.addEventListener('load', function () {\n    var app = new APP();\n});\n\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/main.ts?");
 
 /***/ }),
 
-/***/ "./examples/FrameBuffer/src/ts/shaders/cube.fs":
-/*!*****************************************************!*\
-  !*** ./examples/FrameBuffer/src/ts/shaders/cube.fs ***!
-  \*****************************************************/
+/***/ "./examples/Materials/src/ts/shaders/cube.fs":
+/*!***************************************************!*\
+  !*** ./examples/Materials/src/ts/shaders/cube.fs ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"precision highp float;\\r\\n\\r\\nuniform sampler2D texture;\\r\\n\\r\\nvarying vec3 vColor;\\r\\nvarying vec2 vUv;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tvec3 c = texture2D( texture, vec2( vUv.x, 1.0 - vUv.y ) ).xyz;\\r\\n\\t\\r\\n\\tgl_FragColor = vec4( c + 0.1, 1.0 );\\r\\n\\t\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/FrameBuffer/src/ts/shaders/cube.fs?");
+eval("module.exports = \"precision highp float;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tgl_FragColor = vec4( vColor, 1.0 );\\r\\n\\t\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/shaders/cube.fs?");
 
 /***/ }),
 
-/***/ "./examples/FrameBuffer/src/ts/shaders/cube.vs":
-/*!*****************************************************!*\
-  !*** ./examples/FrameBuffer/src/ts/shaders/cube.vs ***!
-  \*****************************************************/
+/***/ "./examples/Materials/src/ts/shaders/cube.vs":
+/*!***************************************************!*\
+  !*** ./examples/Materials/src/ts/shaders/cube.vs ***!
+  \***************************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = \"precision highp float;\\r\\n\\r\\nattribute vec3 position;\\r\\nattribute vec3 color;\\r\\nattribute vec3 normal;\\r\\nattribute vec2 uv;\\r\\n\\r\\nuniform float time;\\r\\nuniform mat4 modelViewMatrix;\\r\\nuniform mat4 projectionMatrix;\\r\\n\\r\\nvarying vec3 vColor;\\r\\nvarying vec2 vUv;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\\r\\n    gl_Position = projectionMatrix * mvPosition;\\r\\n\\tgl_PointSize = 5.0;\\r\\n\\r\\n\\tvColor = vec3( uv, 1.0 ) + color;\\r\\n\\r\\n\\tvUv = uv;\\r\\n\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/FrameBuffer/src/ts/shaders/cube.vs?");
+eval("module.exports = \"precision highp float;\\r\\n\\r\\nattribute vec3 position;\\r\\nattribute vec3 color;\\r\\nattribute vec3 normal;\\r\\nattribute vec2 uv;\\r\\n\\r\\nuniform float time;\\r\\nuniform mat4 modelViewMatrix;\\r\\nuniform mat4 projectionMatrix;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tvec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );\\r\\n    gl_Position = projectionMatrix * mvPosition;\\r\\n\\tgl_PointSize = 5.0;\\r\\n\\r\\n\\tvColor = vec3( uv, 1.0 ) + color;\\r\\n\\t// vColor = normal + 0.5;\\r\\n\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/shaders/cube.vs?");
+
+/***/ }),
+
+/***/ "./examples/Materials/src/ts/shaders/transparent.fs":
+/*!**********************************************************!*\
+  !*** ./examples/Materials/src/ts/shaders/transparent.fs ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("module.exports = \"precision highp float;\\r\\n\\r\\nvarying vec3 vColor;\\r\\n\\r\\nvoid main( void ){\\r\\n\\t\\r\\n\\tgl_FragColor = vec4( vColor, 0.5 );\\r\\n\\t\\r\\n}\"\n\n//# sourceURL=webpack:///./examples/Materials/src/ts/shaders/transparent.fs?");
 
 /***/ }),
 
@@ -184,7 +195,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*!**********************!*\
   !*** ./src/index.ts ***!
   \**********************/
-/*! exports provided: Texture, Renderer, FrameBuffer, Material, Camera, Geometry, CubeGeometry, CylinderGeometry, PlaneGeometry, SphereGeometry, Scene, Empty, RenderingObject, Vec2, Vec3, Mat4 */
+/*! exports provided: FrameBuffer, Material, Camera, Geometry, CubeGeometry, CylinderGeometry, PlaneGeometry, SphereGeometry, Scene, Empty, RenderingObject, Vec2, Vec3, Mat4, Texture, Renderer */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

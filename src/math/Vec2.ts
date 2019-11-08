@@ -61,23 +61,19 @@ export class Vec2{
 		
 	}
 
-	public multiply( a: Vec2 )
-	
-	public multiply( a: number )
+	public multiply( a: number ){
 
-	public multiply( a: any ){
+		this.x *= a;
+		this.y *= a;
 
-		if( ( a as Vec2 ).isVec2 ){
+		return this;
+		
+	}
 
-			this.x *= a.x;
-			this.y *= a.y;
+	public devide( a: number ){
 
-		}else if( typeof( a ) == 'number' ){
-
-			this.x *= a;
-			this.y *= a;
-
-		}
+		this.x /= a;
+		this.y /= a;
 
 		return this;
 		

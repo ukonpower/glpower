@@ -5,13 +5,13 @@ export declare interface TextureParam {
     minFilter?: number;
     width?: number;
     height?: number;
-    textureType?: number;
+    texType?: number;
 }
 export declare class Texture {
     unitID: number;
-    webglTex: WebGLTexture;
+    glTex: WebGLTexture;
     image: HTMLImageElement;
-    textureType: number;
+    texType: number;
     wrapS: number;
     wrapT: number;
     magFilter: number;

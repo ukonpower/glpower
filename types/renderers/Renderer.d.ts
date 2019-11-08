@@ -24,18 +24,18 @@ export declare class Renderer {
     constructor(param: RendererParam);
     protected initContext(canvas: HTMLCanvasElement): void;
     setSize(width: number, height: number): void;
-    protected createProgram(obj: RenderingObject): void;
-    protected createShader(src: string, type: number): WebGLShader;
-    protected createAttributes(obj: RenderingObject): void;
-    protected createBufferObject(vertices: number[], isIndex?: boolean): WebGLBuffer;
+    protected cPrg(obj: RenderingObject): void;
+    protected cShader(src: string, type: number): WebGLShader;
+    protected cAttr(obj: RenderingObject): void;
+    protected cVBO(vertices: number[], isIndex?: boolean): WebGLBuffer;
     protected setAttributes(geo: Geometry): void;
     protected clearAttributes(): void;
-    protected createUniforms(program: WebGLProgram, uniforms: Uniforms): void;
+    protected cUni(program: WebGLProgram, uniforms: Uniforms): void;
     protected applyUniforms(uniforms: Uniforms): void;
     protected setUniform(location: WebGLUniformLocation, value: Uniformable): void;
-    protected createTexture(texture: Texture): void;
+    protected cTex(texture: Texture): void;
     protected renderObject(obj: RenderingObject, camera: Camera): void;
     setFrameBuffer(frameBuffer: FrameBuffer): void;
-    protected createFrameBuffer(frameBuffer: FrameBuffer): void;
+    protected cFBuffer(frameBuffer: FrameBuffer): void;
     render(scene: Scene, camera: Camera): void;
 }

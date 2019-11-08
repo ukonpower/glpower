@@ -36,7 +36,7 @@ export class Empty{
 
 	public updateMatrix(){
 
-		this.modelMatrix.createTransformMatrix( this.position, this.rotation, this.scale );
+		this.modelMatrix.cTransform( this.position, this.rotation, this.scale );
 
 	}
 

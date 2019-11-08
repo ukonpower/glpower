@@ -82,49 +82,21 @@ export class Vec3{
 		
 	}
 
-	public multiply( a: Vec3 ): Vec3
-	
-	public multiply( a: number ): Vec3
+	public multiply( a: number ){
 
-	public multiply( a: any ): Vec3 {
-
-		if( ( a as Vec3 ).isVec3 ){
-
-			this.x *= a.x;
-			this.y *= a.y;
-			this.z *= a.z;
-
-		}else if( typeof( a ) == 'number' ){
-
-			this.x *= a;
-			this.y *= a;
-			this.z *= a;
-
-		}
+		this.x *= a;
+		this.y *= a;
+		this.z *= a;
 
 		return this;
 		
 	}
 
-	public divide( a: Vec3 ): Vec3
-	
-	public divide( a: number ): Vec3
+	public divide( a: number ) {
 
-	public divide( a: any ): Vec3 {
-
-		if( ( a as Vec3 ).isVec3 ){
-
-			this.x /= a.x;
-			this.y /= a.y;
-			this.z /= a.z;
-
-		}else if( typeof( a ) == 'number' ){
-
-			this.x /= a;
-			this.y /= a;
-			this.z /= a;
-
-		}
+		this.x /= a;
+		this.y /= a;
+		this.z /= a;
 
 		return this;
 		

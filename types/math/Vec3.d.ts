@@ -10,12 +10,10 @@ export declare class Vec3 {
     add(a: number): Vec3;
     sub(a: Vec3): Vec3;
     sub(a: number): Vec3;
-    multiply(a: Vec3): Vec3;
-    multiply(a: number): Vec3;
-    divide(a: Vec3): Vec3;
-    divide(a: number): Vec3;
+    multiply(a: number): this;
+    divide(a: number): this;
     length(): number;
-    normalize(): Vec3;
+    normalize(): this;
     cross(v: Vec3): this;
     dot(v: Vec3): number;
 }

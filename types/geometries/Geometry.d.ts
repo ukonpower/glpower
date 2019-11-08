@@ -10,5 +10,5 @@ export declare interface Attributes {
 export declare class Geometry {
     attributes: Attributes;
     constructor();
-    addAttributes(name: string, vertices: number[], stride: number): void;
+    add(name: string, vertices: number[], stride: number): void;
 }

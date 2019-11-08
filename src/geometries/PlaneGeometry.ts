@@ -46,10 +46,10 @@ export class PlaneGeometry extends Geometry{
 			
 		}
 
-		this.addAttributes( 'position', posArray, 3 );
-		this.addAttributes( 'normal', normalArray, 3 );
-		this.addAttributes( 'uv', uvArray, 2 );
-		this.addAttributes( 'index', indexArray, 1 );
+		this.add( 'position', posArray, 3 );
+		this.add( 'normal', normalArray, 3 );
+		this.add( 'uv', uvArray, 2 );
+		this.add( 'index', indexArray, 1 );
 
 	}
 }

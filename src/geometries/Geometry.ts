@@ -17,7 +17,7 @@ export class Geometry{
 
 	}
 
-	public addAttributes( name: string, vertices: number[], stride: number ){
+	public add( name: string, vertices: number[], stride: number ){
 		
 		this.attributes[name] = {
 			vertices: vertices,

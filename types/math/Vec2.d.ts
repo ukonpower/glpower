@@ -8,6 +8,6 @@ export declare class Vec2 {
     add(a: number): any;
     sub(a: Vec2): any;
     sub(a: number): any;
-    multiply(a: Vec2): any;
-    multiply(a: number): any;
+    multiply(a: number): this;
+    devide(a: number): this;
 }
