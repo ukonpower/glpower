@@ -58,6 +58,11 @@ export class Renderer{
 		this.gl.enable( this.gl.DEPTH_TEST );
 		this.gl.enable( this.gl.BLEND );
 		
+		this.gl.getExtension( 'OES_texture_float_linear' );
+		this.gl.getExtension( 'OES_texture_half_float_linear' );
+		this.gl.getExtension( 'OES_texture_float' );
+		this.gl.getExtension( 'OES_texture_half_float' );
+		
 	}
 
 	public setSize( width: number, height: number ){
@@ -302,12 +307,12 @@ export class Renderer{
 
 		if( texture.image != null ){
 			
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, texture.image );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, texture.textureType || this.gl.UNSIGNED_BYTE, texture.image );
 			this.gl.generateMipmap( this.gl.TEXTURE_2D );
 
 		}else{
 
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, texture.width, texture.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, texture.width, texture.height, 0, this.gl.RGBA, texture.textureType || this.gl.UNSIGNED_BYTE, null );
 			
 		}
 		

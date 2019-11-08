@@ -17,8 +17,6 @@ export class APP{
 
 	private time: number = 0;
 
-	private uniform: GLP.Uniforms;
-
 	constructor(){
 
 		this.renderer = new GLP.Renderer({
@@ -68,12 +66,7 @@ export class APP{
 		this.cube.position.x = -1;
 		this.scene.add( this.cube );
 
-		let tex = new Texture();
-		tex.loadImg( './assets/Lenna.jpg', ( tex ) => {
-			
-			uni1.texture.value = tex;
-
-		});
+		uni1.texture.value = new Texture().loadImg( './assets/Lenna.jpg' );
 
 		//cube2
 

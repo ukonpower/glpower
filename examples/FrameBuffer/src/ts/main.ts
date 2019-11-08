@@ -35,7 +35,7 @@ export class APP{
 
 		this.fbuffer = new GLP.FrameBuffer({
 			width: 1024,
-			height: 512
+			height: 512,
 		})
 
 		this.initScene();

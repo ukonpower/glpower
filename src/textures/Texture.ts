@@ -1,30 +1,30 @@
 export declare interface TextureParam{
-	texturePath?: string;
 	wrapS?: number;
 	wrapT?: number;
 	magFilter?: number;
 	minFilter?: number;
 	width?: number;
 	height?: number;
+	textureType?: number;
 }
 
 export class Texture{
 
 	public unitID: number;
+	public webglTex: WebGLTexture;
 
+	public image: HTMLImageElement;
+
+	public textureType: number;
+	
 	public wrapS: number;
 	public wrapT: number;
-
 	public magFilter: number;
 	public minFilter: number;
 	
-	public image: HTMLImageElement;
-
 	public width: number;
 	public height: number;
-
-	public webglTex: WebGLTexture;
-
+	
 	public needUpdate: boolean = true;
 
 	constructor( param?: TextureParam ){
@@ -39,6 +39,8 @@ export class Texture{
 
 		this.width = param.width || 0;
 		this.height = param.height || 0;
+
+		this.textureType = param.textureType;
 
 	}
 
