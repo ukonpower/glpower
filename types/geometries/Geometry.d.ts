@@ -1,5 +1,6 @@
 export declare interface Attribute {
-    vertices: number[];
+    vert: number[];
+    instancing?: boolean;
     location?: number;
     stride?: number;
     vbo?: WebGLBuffer;
@@ -9,6 +10,8 @@ export declare interface Attributes {
 }
 export declare class Geometry {
     attributes: Attributes;
+    instancing: boolean;
+    instancingCnt: number;
     constructor();
-    add(name: string, vertices: number[], stride: number): void;
+    add(name: string, vert: number[], stride: number, instancing?: boolean): void;
 }

@@ -1,7 +1,8 @@
+import { Extensions } from './Extensions';
 import { Material, MaterialParam, Uniforms } from "./Material";
 import { Scene } from "../objects/Scene";
 import { Camera } from "./Camera";
-import { Geometry } from "../geometries/Geometry";
+import { Geometry, Attribute } from "../geometries/Geometry";
 import { Vec2 } from "../math/Vec2";
 import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
@@ -21,6 +22,8 @@ export class Renderer{
 
 	public gl: WebGLRenderingContext;
 
+	public ext: Extensions;
+
 	protected _canvas: HTMLCanvasElement;
 
 	protected pixelRatio: number;
@@ -38,6 +41,10 @@ export class Renderer{
 	// render
 
 	protected renderTarget: FrameBuffer;
+
+	// extensions
+
+	protected instancingExt: ANGLE_instanced_arrays;
 	
 	constructor( param: RendererParam ){
 
@@ -57,11 +64,14 @@ export class Renderer{
 
 		this.gl.enable( this.gl.DEPTH_TEST );
 		this.gl.enable( this.gl.BLEND );
+
+		this.ext = new Extensions( this.gl );
 		
-		this.gl.getExtension( 'OES_texture_float_linear' );
-		this.gl.getExtension( 'OES_texture_half_float_linear' );
-		this.gl.getExtension( 'OES_texture_float' );
-		this.gl.getExtension( 'OES_texture_half_float' );
+		this.ext.enableExtension( 'OES_texture_float_linear' );
+		this.ext.enableExtension( 'OES_texture_half_float_linear' );
+		this.ext.enableExtension( 'OES_texture_float' );
+		this.ext.enableExtension( 'OES_texture_half_float' );
+		this.ext.enableExtension( 'ANGLE_instanced_arrays' );
 		
 	}
 
@@ -102,8 +112,7 @@ export class Renderer{
 			
         } else {
 
-			
-			return null;
+			console.error( this.gl.getShaderInfoLog(shader) );
 			
         }
 
@@ -122,16 +131,16 @@ export class Renderer{
 			let attr = geo.attributes[key];
 
 			attr.location = this.gl.getAttribLocation( prg, key.toString() );
-			attr.vbo = this.cVBO( attr.vertices, key == 'index' );
+			attr.vbo = this.cVBO( attr, key == 'index' );
 			
 		}
 		
 	}
 
-	protected cVBO( vertices: number[], isIndex: boolean = false ){
+	protected cVBO( attr: Attribute, isIndex: boolean = false ){
 		
 		let target = isIndex ? this.gl.ELEMENT_ARRAY_BUFFER : this.gl.ARRAY_BUFFER;
-		let array = isIndex ? new Int16Array( vertices ) : new Float32Array( vertices );
+		let array = isIndex ? new Int16Array( attr.vert ) : new Float32Array( attr.vert );
 		
 		let vbo = this.gl.createBuffer();
 
@@ -143,9 +152,9 @@ export class Renderer{
 
 	}
 
-	protected setAttributes( geo: Geometry ){
+	protected setAttr( geo: Geometry ){
 
-		this.clearAttributes();
+		this.clearAttr();
 		
 		let keys = Object.keys( geo.attributes );
 		this.attributeCnt = keys.length;
@@ -168,6 +177,12 @@ export class Renderer{
 					this.gl.enableVertexAttribArray( attr.location );
 					this.gl.vertexAttribPointer( attr.location, attr.stride, this.gl.FLOAT, false, 0, 0 );
 
+					if( attr.instancing ){
+
+						this.ext.getExt( 'ANGLE_instanced_arrays' ).vertexAttribDivisorANGLE( attr.location, 1 );
+						
+					}
+
 				}
 				
 			}
@@ -176,7 +191,7 @@ export class Renderer{
 
 	}
 
-	protected clearAttributes(){
+	protected clearAttr(){
 
 		for ( let i = 0; i < this.attributeCnt; i++ ) {
 			
@@ -375,9 +390,18 @@ export class Renderer{
 
 		this.applyUniforms( obj.IndividualUniforms );
 
-		this.setAttributes( geo );
+		this.setAttr( geo );
 
-		this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vertices.length, this.gl.UNSIGNED_SHORT, 0 );
+		if( geo.instancing ){
+
+			this.ext.getExt( 'ANGLE_instanced_arrays' ).drawElementsInstancedANGLE( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0, geo.instancingCnt );
+
+		}else{
+
+			this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0 );
+
+		}
+		
 
 	}
 

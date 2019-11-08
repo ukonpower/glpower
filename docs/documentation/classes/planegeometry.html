@@ -93,6 +93,8 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="planegeometry.html#attributes" class="tsd-kind-icon">attributes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="planegeometry.html#instancing" class="tsd-kind-icon">instancing</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="planegeometry.html#instancingcnt" class="tsd-kind-icon">instancing<wbr>Cnt</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
@@ -117,7 +119,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="geometry.html">Geometry</a>.<a href="geometry.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/186e247/src/geometries/PlaneGeometry.ts#L3">geometries/PlaneGeometry.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/9e56767/src/geometries/PlaneGeometry.ts#L3">geometries/PlaneGeometry.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -149,7 +151,29 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#attributes">attributes</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/186e247/src/geometries/Geometry.ts#L14">geometries/Geometry.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/9e56767/src/geometries/Geometry.ts#L15">geometries/Geometry.ts:15</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="instancing" class="tsd-anchor"></a>
+					<h3>instancing</h3>
+					<div class="tsd-signature tsd-kind-icon">instancing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#instancing">instancing</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/9e56767/src/geometries/Geometry.ts#L16">geometries/Geometry.ts:16</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="instancingcnt" class="tsd-anchor"></a>
+					<h3>instancing<wbr>Cnt</h3>
+					<div class="tsd-signature tsd-kind-icon">instancing<wbr>Cnt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#instancingcnt">instancingCnt</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/9e56767/src/geometries/Geometry.ts#L17">geometries/Geometry.ts:17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -160,14 +184,14 @@
 					<a name="add" class="tsd-anchor"></a>
 					<h3>add</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, vertices<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span>, stride<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, vert<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span>, stride<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, instancing<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="geometry.html">Geometry</a>.<a href="geometry.html#add">add</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/186e247/src/geometries/Geometry.ts#L20">geometries/Geometry.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/9e56767/src/geometries/Geometry.ts#L23">geometries/Geometry.ts:23</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -176,10 +200,13 @@
 									<h5>name: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>vertices: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>vert: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
 									<h5>stride: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> instancing: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -211,6 +238,9 @@
 						<a href="empty.html" class="tsd-kind-icon">Empty</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="extensions.html" class="tsd-kind-icon">Extensions</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="framebuffer.html" class="tsd-kind-icon">Frame<wbr>Buffer</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -232,6 +262,12 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="planegeometry.html#attributes" class="tsd-kind-icon">attributes</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="planegeometry.html#instancing" class="tsd-kind-icon">instancing</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="planegeometry.html#instancingcnt" class="tsd-kind-icon">instancing<wbr>Cnt</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="planegeometry.html#add" class="tsd-kind-icon">add</a>
