@@ -14,3 +14,4 @@ export * from './math/Vec2';
 export * from './math/Vec3';
 export * from './math/Mat4';
 export * from './textures/Texture';
+export * from './Loaders/GLTFLoader';
