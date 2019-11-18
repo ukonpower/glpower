@@ -10,6 +10,7 @@ import { RenderingObject } from "../objects/RenderingObject";
 import { Texture } from "../textures/Texture";
 import { FrameBuffer } from "./FrameBuffer";
 import { TSMethodSignature } from "babel-types";
+import { Empty } from '../objects/Empty';
 
 export declare interface RendererParam{
 	canvas: HTMLCanvasElement;
@@ -445,6 +446,28 @@ export class Renderer{
 		
 	}
 	
+	private renderRecursive( scene: Scene | Empty | RenderingObject, camera: Camera ){
+
+		for( let i = 0; i < scene.children.length; i++ ){
+
+			let obj = scene.children[i];
+			
+			if( ( obj as RenderingObject ).isRenderingObject ){
+
+				this.renderObject( obj as RenderingObject, camera );
+
+			}
+
+			if( obj.children.length > 0 ){
+
+				this.renderRecursive( obj, camera );
+				
+			}
+
+		}
+
+	}
+	
 	public render( scene: Scene, camera: Camera ){
 
 		camera.updateMatrix();
@@ -465,18 +488,7 @@ export class Renderer{
 
 		}
 
-		for( let i = 0; i < scene.children.length; i++ ){
-
-			let obj = scene.children[i];
-			
-			if( ( obj as RenderingObject ).isRenderingObject ){
-
-				this.renderObject( obj as RenderingObject, camera );
-
-			}
-
-		}
-
+		this.renderRecursive( scene, camera );
 		
 		this.gl.flush();
 
