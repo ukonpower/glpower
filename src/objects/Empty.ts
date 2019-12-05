@@ -4,7 +4,7 @@ import { Camera } from "../renderers/Camera";
 
 export class Empty{
 
-	public children: Empty[] = [];
+	public children: Empty[];
 	
 	public modelMatrix: Mat4;
 	public modelViewMatrix: Mat4;
@@ -15,6 +15,8 @@ export class Empty{
 	
 	constructor(){
 
+		this.children = [];
+		
 		this.modelMatrix = new Mat4();
 		this.modelViewMatrix = new Mat4();
 
