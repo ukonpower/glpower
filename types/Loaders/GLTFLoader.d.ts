@@ -10,4 +10,5 @@ export declare interface GLTF {
 export declare class GLTFLoader {
     constructor();
     load(path: string, callBack?: (gltf: GLTF) => void): void;
+    private decodeURI;
 }

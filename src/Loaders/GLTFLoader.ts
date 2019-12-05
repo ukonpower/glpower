@@ -27,40 +27,18 @@ export class GLTFLoader{
 			let data = JSON.parse( request.response );
 
 			let uri = data.buffers[0].uri;
-<<<<<<< HEAD
 
 			let buffer = this.decodeURI( uri );
 
-=======
-			var dataUriRegex = /^data:(.*?)(;base64)?,(.*)$/;
-			var dataUriRegexResult = uri.match( dataUriRegex );
-
-			let d = atob( dataUriRegexResult[3] );
-
-			var view = new Uint8Array( d.length );
-
-			for ( var i = 0; i < d.length; i ++ ) {
-
-				view[ i ] = d.charCodeAt( i );
-
-			}
-			
->>>>>>> master
 			let result: GLTF = {}
 
 			let nkey = Object.keys( data.nodes );
 
 			for( let i = 0; i < nkey.length; i++ ){
 
-<<<<<<< HEAD
 				let m = data.nodes[nkey[i]];
 
 				let pri = data.meshes[m.mesh].primitives[0];
-=======
-				let m = data.nodes[i];
-
-				let pri = data.meshes[nkey[i]].primitives[0];
->>>>>>> master
 
 				let attrs: { [key: string]: AttrParam } = {};
 				
@@ -96,11 +74,7 @@ export class GLTFLoader{
 							break;
 					}
 
-<<<<<<< HEAD
 					let ArrayConstructor: any;
-=======
-					let ArrayConstructor;
->>>>>>> master
 					
 					switch( acs.componentType){
 						case 5126:
@@ -114,11 +88,7 @@ export class GLTFLoader{
 
 					attrs[attKey[k].toLocaleLowerCase()] = {
 						size: size,
-<<<<<<< HEAD
 						array: new ArrayConstructor( buffer, bv.byteOffset, acs.count * size  )
-=======
-						array: new ArrayConstructor( view.buffer, bv.byteOffset, acs.count * size  )
->>>>>>> master
 					}
 
 				}
@@ -136,7 +106,6 @@ export class GLTFLoader{
 		})
 		
 	}
-<<<<<<< HEAD
 
 	private decodeURI( uri: string ){
 
@@ -156,8 +125,5 @@ export class GLTFLoader{
 		return view.buffer;
 
 	}
-=======
-	
->>>>>>> master
 	
 }
