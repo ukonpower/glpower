@@ -95,7 +95,7 @@ export class Renderer{
 		this.gl.attachShader( prg, fs );
 		this.gl.linkProgram( prg );
 
-		obj.program = prg;
+		obj.material.program = prg;
 
 	}
 
@@ -121,7 +121,7 @@ export class Renderer{
 	protected cAttr( obj: RenderingObject ){
 
 		let geo = obj.geometry;
-		let prg = obj.program;
+		let prg = obj.material.program;
 
 		let keys = Object.keys( geo.attributes );
 
@@ -129,7 +129,7 @@ export class Renderer{
 
 			let key = keys[i];
 			let attr = geo.attributes[key];
-
+			
 			attr.location = this.gl.getAttribLocation( prg, key.toString() );
 			attr.vbo = this.cVBO( attr, key == 'index' );
 			
@@ -231,8 +231,12 @@ export class Renderer{
 
 			let uni = uniforms[key];
 
-			this.setUniform( uni.location, uni.value );
+			if( uni.location ){
 
+				this.setUniform( uni.location, uni.value );
+
+			}
+			
 		}
 
 	}
@@ -347,19 +351,21 @@ export class Renderer{
 		let mat = obj.material;
 		let geo = obj.geometry;
 
+		if( !mat || !geo ) return;
+		
 		obj.updateMatrix();
 
 		obj.modelViewMatrix.copy( camera.modelMatrixInverse.clone().multiply( obj.modelMatrix ) );
 
 		obj.IndividualUniforms.projectionMatrix.value = camera.projectionMatrix;
 
-		if( !obj.program ){
+		if( !obj.material.program ){
 
 			this.cPrg( obj );
 
-			this.cUni( obj.program, mat.uniforms );
+			this.cUni( obj.material.program, mat.uniforms );
 
-			this.cUni( obj.program, obj.IndividualUniforms );
+			this.cUni( obj.material.program, obj.IndividualUniforms );
 
 			this.cAttr( obj );
 
@@ -384,7 +390,7 @@ export class Renderer{
 
 		this.gl.blendFunc( mat.blendSrc || this.gl.SRC_ALPHA, mat.blendDst || this.gl.ONE_MINUS_SRC_ALPHA );
 
-		this.gl.useProgram( obj.program );
+		this.gl.useProgram( obj.material.program );
 
 		this.applyUniforms( mat.uniforms );
 

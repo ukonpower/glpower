@@ -18,6 +18,7 @@ export declare interface MaterialParam{
 
 export class Material{
 
+	public program: WebGLProgram;
 	public uniforms: Uniforms;
 	public frag: string;
 	public vert: string;

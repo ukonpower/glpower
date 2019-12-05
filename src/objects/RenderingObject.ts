@@ -3,14 +3,13 @@ import { Material, Uniforms } from "../renderers/Material";
 import { Empty } from "./Empty";
 
 export declare interface RenderingObjectParam{
-	geo: Geometry;
-	mat: Material;
+	geo?: Geometry;
+	mat?: Material;
 	drawType?: number;
 }
 
 export class RenderingObject extends Empty{
 
-	public program: WebGLProgram;
 	public IndividualUniforms: Uniforms;
 
 	public geometry: Geometry;
