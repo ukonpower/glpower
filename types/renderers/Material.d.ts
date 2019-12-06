@@ -14,7 +14,9 @@ export declare interface MaterialParam {
     blendDst?: number;
 }
 export declare class Material {
-    program: WebGLProgram;
+    programs: {
+        [key: string]: WebGLProgram;
+    };
     uniforms: Uniforms;
     frag: string;
     vert: string;

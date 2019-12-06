@@ -8,6 +8,7 @@ export declare interface RenderingObjectParam {
 }
 export declare class RenderingObject extends Empty {
     IndividualUniforms: Uniforms;
+    id: number;
     geometry: Geometry;
     material: Material;
     drawType: number;

@@ -12,6 +12,8 @@ export class RenderingObject extends Empty{
 
 	public IndividualUniforms: Uniforms;
 
+	public id: number;
+
 	public geometry: Geometry;
 	public material: Material;
 	public drawType: number;
@@ -23,6 +25,7 @@ export class RenderingObject extends Empty{
 		this.geometry = param.geo;
 		this.material = param.mat;
 		this.drawType = param.drawType;
+		this.material = param.mat;
 
 		this.IndividualUniforms = {
 			modelViewMatrix: {
@@ -34,7 +37,7 @@ export class RenderingObject extends Empty{
 		};
 		
 	}
-	
+
 	public get isRenderingObject(){
 
 		return true;

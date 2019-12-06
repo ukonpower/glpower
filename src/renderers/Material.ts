@@ -18,7 +18,7 @@ export declare interface MaterialParam{
 
 export class Material{
 
-	public program: WebGLProgram;
+	public programs: { [key:string] : WebGLProgram };
 	public uniforms: Uniforms;
 	public frag: string;
 	public vert: string;
@@ -36,6 +36,8 @@ export class Material{
 		this.culling = param.culling;
 		this.blendSrc = param.blendSrc;
 		this.blendDst = param.blendSrc;
+
+		this.programs = {};
 
 	}
 

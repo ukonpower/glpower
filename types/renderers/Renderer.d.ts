@@ -20,6 +20,7 @@ export declare class Renderer {
     protected _canvas: HTMLCanvasElement;
     protected pixelRatio: number;
     protected isRetina: boolean;
+    protected objectCnt: number;
     protected attributeCnt: number;
     protected textureCnt: number;
     protected renderTarget: FrameBuffer;
@@ -40,5 +41,6 @@ export declare class Renderer {
     protected renderObject(obj: RenderingObject, camera: Camera): void;
     setFrameBuffer(frameBuffer: FrameBuffer): void;
     protected cFBuffer(frameBuffer: FrameBuffer): void;
+    private renderRecursive;
     render(scene: Scene, camera: Camera): void;
 }

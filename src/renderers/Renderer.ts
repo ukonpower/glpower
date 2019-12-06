@@ -34,6 +34,8 @@ export class Renderer{
 
 	// count 
 
+	protected objectCnt: number = 0;
+	
 	protected attributeCnt: number = 0;
 
 	protected textureCnt: number = 0;
@@ -97,7 +99,7 @@ export class Renderer{
 		this.gl.attachShader( prg, fs );
 		this.gl.linkProgram( prg );
 
-		obj.material.program = prg;
+		obj.material.programs[ obj.id ] = prg;
 
 	}
 
@@ -123,7 +125,7 @@ export class Renderer{
 	protected cAttr( obj: RenderingObject ){
 
 		let geo = obj.geometry;
-		let prg = obj.material.program;
+		let prg = obj.material.programs[ obj.id ];
 
 		let keys = Object.keys( geo.attributes );
 
@@ -353,6 +355,12 @@ export class Renderer{
 		let mat = obj.material;
 		let geo = obj.geometry;
 
+		if( obj.id == null ){
+
+			obj.id = this.objectCnt++;
+
+		}
+
 		if( !mat || !geo ) return;
 		
 		obj.updateMatrix();
@@ -361,17 +369,19 @@ export class Renderer{
 
 		obj.IndividualUniforms.projectionMatrix.value = camera.projectionMatrix;
 
-		if( obj.material.needUpdate ){
+		if( !obj.material.programs[obj.id] ){
 
 			this.cPrg( obj );
 
-			this.cUni( obj.material.program, mat.uniforms );
+			this.cUni( obj.material.programs[ obj.id ], mat.uniforms );
 
-			this.cUni( obj.material.program, obj.IndividualUniforms );
+			this.cUni( obj.material.programs[ obj.id ], obj.IndividualUniforms );
 
 			this.cAttr( obj );
 
-			obj.material.needUpdate = false;
+			console.log( obj.id );
+			console.log( obj.material.programs );
+			
 			
 		}
 
@@ -393,7 +403,7 @@ export class Renderer{
 
 		this.gl.blendFunc( mat.blendSrc || this.gl.SRC_ALPHA, mat.blendDst || this.gl.ONE_MINUS_SRC_ALPHA );
 
-		this.gl.useProgram( obj.material.program );
+		this.gl.useProgram( obj.material.programs[ obj.id ] );
 
 		this.applyUniforms( mat.uniforms );
 
