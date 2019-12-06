@@ -48,7 +48,7 @@ export class Renderer{
 	
 	constructor( param: RendererParam ){
 
-		console.log( 'GLパワーを見せつけろ');
+		console.log( '%c GLパワーを見せつけろ' , 'padding: 5px 10px; background-color: black; color: white;font-size:13px;' );
 
 		this.initContext( param.canvas );
 

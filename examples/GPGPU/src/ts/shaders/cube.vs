@@ -25,7 +25,7 @@ void main( void ){
 
 	vec3 vel = texture2D( texVel, computeUV ).xyz;
 	
-	pos *= 0.2 + length( vel * 3.0 );
+	pos *= 0.1 + length( vel * 3.0 );
 	
 	pos.xy *= rotate( vel.x * 20.0 );
 	pos.yz *= rotate( vel.y * 20.0 );

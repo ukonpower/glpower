@@ -144,7 +144,7 @@ export class APP{
 				vert: standardVert,
 				uniforms: this.screenUni
 			}),
-			geo: new GLP.PlaneGeometry( 2.0, 2.0 )
+			geo: new GLP.CubeGeometry( 0.5, 0.5, 0.5 )
 		})
 
 		this.scene.add( screen );

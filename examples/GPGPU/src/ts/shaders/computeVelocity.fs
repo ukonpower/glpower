@@ -38,10 +38,10 @@ void main( void ){
 		
 	}else{
 
-		vel.xyz += createNoise( vec4( pos.xyz * 0.5 , time * 0.01 + sin( vUv.x * 2.0 + vUv.y ) * 0.2 ) ) * 0.12;
+		vel.xyz += createNoise( vec4( pos.xyz * 0.6 , time * 0.01 + sin( vUv.x * 5.0 + vUv.y ) * 0.3 ) ) * 0.12;
 		vel *= 0.89;
 
-		vel -= length( pos.xyz ) * 0.0005 * ( pos );
+		vel -= length( pos.xyz ) * 0.005 * ( pos );
 
 	}
 
