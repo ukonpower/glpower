@@ -22,8 +22,8 @@ module.exports = merge(baseConfig,{
 				test: /\.(glsl|vs|fs)$/,
 				loader: 'shader-loader',
 				options: {
-					glsl: {
-						chunkPath: "examples/shaders-chunks"
+					glsl: {	
+						chunkPath: "examples/glsl-chunks"
 					}
 				}
 			}

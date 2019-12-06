@@ -7,6 +7,6 @@ void main( void ){
 
 	vec3 c = texture2D( texture, vUv ).xyz;
 	
-	gl_FragColor = vec4( c + 0.1, 1.0 );
+	gl_FragColor = vec4( c, 1.0 );
 	
 }

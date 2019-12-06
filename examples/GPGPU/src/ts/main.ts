@@ -31,9 +31,11 @@ export class APP{
 
 	private time: number = 0;
 
-	private uniforms: GLP.Uniforms;
+	private boxUniforms: GLP.Uniforms;
 
 	private screenUni: GLP.Uniforms;
+
+	private boxResolution: GLP.Vec2 = new GLP.Vec2( 500, 500 );
 
 	constructor(){
 
@@ -58,7 +60,7 @@ export class APP{
 
 	private initComputing(){
 
-		this.gcon = new GPUComputationController( this.gl, this.renderer, new GLP.Vec2( 100, 100 ) );
+		this.gcon = new GPUComputationController( this.gl, this.renderer, this.boxResolution );
 
 		this.gdataPos = this.gcon.createData();
 		this.gdataVel = this.gcon.createData();
@@ -66,9 +68,11 @@ export class APP{
 		this.gKernelVel = this.gcon.createKernel( comVel );
 		this.gKernelPos = this.gcon.createKernel( comPos );
 
+		this.gKernelVel.uniforms.time = { value: 0 };
 		this.gKernelVel.uniforms.texVel = { value: null }
 		this.gKernelVel.uniforms.texPos = { value: null }
 
+		this.gKernelPos.uniforms.time = { value: 0 };
 		this.gKernelPos.uniforms.texVel = { value: null }
 		this.gKernelPos.uniforms.texPos = { value: null }
 
@@ -83,46 +87,51 @@ export class APP{
 
 		let geo = new GLP.CubeGeometry( 0.1, 0.1, 0.1 );
 		
-		let offsetPosArray = [];
 		let nArray = [];
+		let computeUVArray = [];
 
-		for( let i = 0; i < 1000; i ++ ){
+		for( let i = 0; i < this.boxResolution.y; i ++ ){
 
-			offsetPosArray.push(
-				( Math.random() - 0.5 ) * 3,
-				( Math.random() - 0.5 ) * 3,
-				( Math.random() - 0.5 ) * 3,
-			)
+			for( let j = 0; j < this.boxResolution.x; j++ ){
 
-			nArray.push( i );
+				nArray.push( i );
+				
+				computeUVArray.push( (j) / this.boxResolution.x, (i) / this.boxResolution.y );
+				
+			}
 			
 		}
 
-		geo.add( 'offsetPos', offsetPosArray, 3, true );
 		geo.add( 'n', nArray, 1, true );
+		geo.add( 'computeUV', computeUVArray, 2, true );
 		
-		this.uniforms = {
+		this.boxUniforms = {
 			time: {
 				value: 0
-			}
+			},
+			texPos: {
+				value: null
+			},
+			texVel: {
+				value: null
+			},
 		}
 		
 		let mat = new GLP.Material({
 			frag: frag,
 			vert: vert,
-			uniforms: this.uniforms,
+			uniforms: this.boxUniforms,
 			culling: this.gl.CCW,
 		});
 		
 		this.cube = new GLP.RenderingObject({
 			geo: geo,
-			mat: mat
+			mat: mat,
+			drawType: this.gl.TRIANGLES
 		});
 
-		// this.scene.add( this.cube );
+		this.scene.add( this.cube );
 
-		
-		
 		this.screenUni = {
 			texture: {
 				value: null
@@ -135,7 +144,7 @@ export class APP{
 				vert: standardVert,
 				uniforms: this.screenUni
 			}),
-			geo: new GLP.PlaneGeometry( 2.0, 2.0 )
+			geo: new GLP.CubeGeometry( 0.5, 0.5, 0.5 )
 		})
 
 		this.scene.add( screen );
@@ -145,10 +154,11 @@ export class APP{
 
 		this.time += 1.0;
 
-		this.uniforms.time.value = this.time;
+		this.boxUniforms.time.value = this.time;
+		this.gKernelPos.uniforms.time.value = this.time;
+		this.gKernelVel.uniforms.time.value = this.time;
 		
 		//gpgpu
-
 		this.gKernelVel.uniforms.texVel.value = this.gdataVel.buffer.tex;
 		this.gKernelVel.uniforms.texPos.value = this.gdataPos.buffer.tex;
 		this.gcon.compute( this.gKernelVel, this.gdataVel );
@@ -157,10 +167,10 @@ export class APP{
 		this.gKernelPos.uniforms.texPos.value = this.gdataPos.buffer.tex;
 		this.gcon.compute( this.gKernelPos, this.gdataPos );
 		
-		console.log( this.gdataPos.buffer);
+		//cube
+		this.boxUniforms.texPos.value = this.gdataPos.buffer.tex;
+		this.boxUniforms.texVel.value = this.gdataVel.buffer.tex;
 		
-		this.screenUni.texture.value = this.gdataPos.buffer.tex;
-
 		let theta = this.time * 0.01;
 		let r = 5;
 

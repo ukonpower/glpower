@@ -1,7 +1,6 @@
 precision highp float;
 
 attribute vec3 position;
-attribute vec3 offsetPos;
 attribute vec3 color;
 attribute vec3 normal;
 attribute vec2 uv;
@@ -11,26 +10,32 @@ uniform float time;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
+uniform sampler2D texPos;
+uniform sampler2D texVel;
+
+attribute vec2 computeUV;
+
 varying vec3 vColor;
 
-mat2 rotate(float rad) {
-  return mat2(cos(rad), sin(rad), -sin(rad), cos(rad));
-}
+$rotate
 
 void main( void ){
 
 	vec3 pos = position;
+
+	vec3 vel = texture2D( texVel, computeUV ).xyz;
 	
-	pos *= smoothstep( 0.0, 0.9, sin( sin( length( offsetPos ) * 2.0 + time * 0.05 ) ) ) * sin( n * 10.0) * 2.0;
+	pos *= 0.1 + length( vel * 3.0 );
 	
-	pos.xz *= rotate(  sin( length( offsetPos.xz ) * 3.0 + time * 0.02 ) * 4.0 );
-	pos.yz *= rotate(  sin( length( offsetPos.zy ) * 3.0 + time * 0.02 ) * 4.0 );
-	pos.xy *= rotate(  sin( length( offsetPos ) * 3.0 + time * 0.02 ) * 4.0 );
+	pos.xy *= rotate( vel.x * 20.0 );
+	pos.yz *= rotate( vel.y * 20.0 );
+	pos.xz *= rotate( vel.z * 20.0 );
+
+	pos += texture2D( texPos, computeUV ).xyz;
 	
-	vec4 mvPosition = modelViewMatrix * vec4( pos + offsetPos, 1.0 );
+	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
     gl_Position = projectionMatrix * mvPosition;
 	gl_PointSize = 5.0;
-
 	vColor = vec3( uv, 1.0 ) + color;
 
 }

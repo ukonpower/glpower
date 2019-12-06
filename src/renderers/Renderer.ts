@@ -49,7 +49,7 @@ export class Renderer{
 	
 	constructor( param: RendererParam ){
 
-		console.log( 'GLパワーを見せつけろ');
+		console.log( '%c GLパワーを見せつけろ' , 'padding: 5px 10px; background-color: black; color: white;font-size:13px;' );
 
 		this.initContext( param.canvas );
 
@@ -70,6 +70,7 @@ export class Renderer{
 		
 		this.ext.enableExtension( 'OES_texture_float_linear' );
 		this.ext.enableExtension( 'OES_texture_half_float_linear' );
+		this.ext.enableExtension( 'WEBGL_color_buffer_float' );
 		this.ext.enableExtension( 'OES_texture_float' );
 		this.ext.enableExtension( 'OES_texture_half_float' );
 		this.ext.enableExtension( 'ANGLE_instanced_arrays' );
@@ -197,7 +198,7 @@ export class Renderer{
 		for ( let i = 0; i < this.attributeCnt; i++ ) {
 			
 			this.gl.disableVertexAttribArray( i );
-			
+
 		}
 
 	}
@@ -336,8 +337,8 @@ export class Renderer{
 			
 		}
 		
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.minFilter || this.gl.LINEAR );
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.magFilter || this.gl.LINEAR );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.minFilter || this.gl.NEAREST );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, texture.magFilter || this.gl.NEAREST );
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, texture.wrapS || this.gl.CLAMP_TO_EDGE );
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, texture.wrapT || this.gl.CLAMP_TO_EDGE );
 
@@ -360,7 +361,7 @@ export class Renderer{
 
 		obj.IndividualUniforms.projectionMatrix.value = camera.projectionMatrix;
 
-		if( !obj.material.program ){
+		if( obj.material.needUpdate ){
 
 			this.cPrg( obj );
 
@@ -370,6 +371,8 @@ export class Renderer{
 
 			this.cAttr( obj );
 
+			obj.material.needUpdate = false;
+			
 		}
 
 		// curring
@@ -385,7 +388,6 @@ export class Renderer{
 			this.gl.disable( this.gl.CULL_FACE );
 			
 		}
-
 
 		// blend
 
@@ -408,7 +410,6 @@ export class Renderer{
 			this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0 );
 
 		}
-		
 
 	}
 
@@ -449,7 +450,9 @@ export class Renderer{
 		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, null );
 
 		frameBuffer.buffer = buffer;
-		
+
+		frameBuffer.tex.needUpdate = false;
+
 	}
 	
 	private renderRecursive( scene: Scene | Empty | RenderingObject, camera: Camera ){

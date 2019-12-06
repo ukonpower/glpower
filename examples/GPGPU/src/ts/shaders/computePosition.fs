@@ -7,6 +7,11 @@ varying vec2 vUv;
 
 void main( void ){
 
-	gl_FragColor = texture2D( texPos, vUv ) + 0.5;
-	
+	vec4 pos = texture2D( texPos, vUv );
+	vec4 vel = texture2D( texVel, vUv );
+
+	pos.xyz += vel.xyz;
+
+	gl_FragColor = pos ;
+
 }

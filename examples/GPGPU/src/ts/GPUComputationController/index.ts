@@ -47,13 +47,14 @@ export class GPUComputationController {
         });
 
         this.scene = new GLP.Scene();
-		this.camera = new GLP.Camera( 50, 0, 100, 1 );
+		this.camera = new GLP.Camera( 50, 0.01, 100, 1 );
         this.camera.position.z = 1;
         
         this.materials = [];
         this.mesh = new GLP.RenderingObject({
             geo: new GLP.PlaneGeometry( 2, 2 )
         });
+
 		this.scene.add( this.mesh );
 
     }
@@ -73,6 +74,7 @@ export class GPUComputationController {
             wrapT: textureParam.wrapT || this.gl.CLAMP_TO_EDGE,
             minFilter: textureParam.minFilter || this.gl.NEAREST,
             magFilter: textureParam.magFilter || this.gl.NEAREST,
+            texType: this.gl.FLOAT
         });
 
         let data = { buffer: buf };

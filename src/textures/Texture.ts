@@ -11,6 +11,7 @@ export declare interface TextureParam{
 export class Texture{
 
 	public unitID: number;
+	public id: number = 0;
 	public glTex: WebGLTexture;
 
 	public image: HTMLImageElement;
