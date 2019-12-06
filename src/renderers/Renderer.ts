@@ -69,6 +69,7 @@ export class Renderer{
 		
 		this.ext.enableExtension( 'OES_texture_float_linear' );
 		this.ext.enableExtension( 'OES_texture_half_float_linear' );
+		this.ext.enableExtension( 'WEBGL_color_buffer_float' );
 		this.ext.enableExtension( 'OES_texture_float' );
 		this.ext.enableExtension( 'OES_texture_half_float' );
 		this.ext.enableExtension( 'ANGLE_instanced_arrays' );
@@ -336,7 +337,7 @@ export class Renderer{
 		}
 		
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.minFilter || this.gl.NEAREST );
-		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, texture.magFilter || this.gl.NEAREST );
+		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, texture.magFilter || this.gl.NEAREST );
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, texture.wrapS || this.gl.CLAMP_TO_EDGE );
 		this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, texture.wrapT || this.gl.CLAMP_TO_EDGE );
 

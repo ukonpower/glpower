@@ -35,7 +35,7 @@ export class APP{
 
 	private screenUni: GLP.Uniforms;
 
-	private boxResolution: GLP.Vec2 = new GLP.Vec2( 100, 100 );
+	private boxResolution: GLP.Vec2 = new GLP.Vec2( 500, 500 );
 
 	constructor(){
 
@@ -68,11 +68,11 @@ export class APP{
 		this.gKernelVel = this.gcon.createKernel( comVel );
 		this.gKernelPos = this.gcon.createKernel( comPos );
 
-		this.gKernelVel.uniforms.time = this.boxUniforms.time;
+		this.gKernelVel.uniforms.time = { value: 0 };
 		this.gKernelVel.uniforms.texVel = { value: null }
 		this.gKernelVel.uniforms.texPos = { value: null }
 
-		this.gKernelPos.uniforms.time = this.boxUniforms.time;
+		this.gKernelPos.uniforms.time = { value: 0 };
 		this.gKernelPos.uniforms.texVel = { value: null }
 		this.gKernelPos.uniforms.texPos = { value: null }
 
@@ -96,7 +96,7 @@ export class APP{
 
 				nArray.push( i );
 				
-				computeUVArray.push( j / this.boxResolution.x, i / this.boxResolution.y );
+				computeUVArray.push( (j) / this.boxResolution.x, (i) / this.boxResolution.y );
 				
 			}
 			
@@ -111,7 +111,10 @@ export class APP{
 			},
 			texPos: {
 				value: null
-			}
+			},
+			texVel: {
+				value: null
+			},
 		}
 		
 		let mat = new GLP.Material({
@@ -124,7 +127,7 @@ export class APP{
 		this.cube = new GLP.RenderingObject({
 			geo: geo,
 			mat: mat,
-			drawType: this.gl.LINE_LOOP
+			drawType: this.gl.TRIANGLES
 		});
 
 		this.scene.add( this.cube );
@@ -152,6 +155,8 @@ export class APP{
 		this.time += 1.0;
 
 		this.boxUniforms.time.value = this.time;
+		this.gKernelPos.uniforms.time.value = this.time;
+		this.gKernelVel.uniforms.time.value = this.time;
 		
 		//gpgpu
 		this.gKernelVel.uniforms.texVel.value = this.gdataVel.buffer.tex;
@@ -164,6 +169,7 @@ export class APP{
 		
 		//cube
 		this.boxUniforms.texPos.value = this.gdataPos.buffer.tex;
+		this.boxUniforms.texVel.value = this.gdataVel.buffer.tex;
 		
 		let theta = this.time * 0.01;
 		let r = 5;

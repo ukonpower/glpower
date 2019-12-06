@@ -27,7 +27,7 @@ void main( void ){
 	vec4 pos = texture2D( texPos, vUv );
 	vec4 vel = texture2D( texVel, vUv );
 
-	if( time <= 1.0 ){
+	if( time < 1.2 ){
 
 		vel += vec4(
 			random( vUv * 10.0 ) - 0.5,
@@ -36,10 +36,14 @@ void main( void ){
 			0.0
 		) * 0.5;
 		
-	}
+	}else{
 
-	vel.xyz += createNoise( vec4( pos.xyz * 3.0, time * 0.1 ) );
-	vel *= 0.1;
+		vel.xyz += createNoise( vec4( pos.xyz * 0.5 , time * 0.01 + sin( vUv.x * 2.0 + vUv.y ) * 0.2 ) ) * 0.12;
+		vel *= 0.89;
+
+		vel -= length( pos.xyz ) * 0.0005 * ( pos );
+
+	}
 
 	gl_FragColor = vel;
 	

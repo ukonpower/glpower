@@ -40,14 +40,11 @@ export class GPUComputationController {
             minFilter: gl.LINEAR,
             magFilter: gl.LINEAR
         });
-        this.tempDataLinear.buffer.tex.id = 10;
 
         this.tempDataNear = this.createData({ 
             minFilter: gl.NEAREST,
             magFilter: gl.NEAREST
         });
-        this.tempDataNear.buffer.tex.id = 11;
-
 
         this.scene = new GLP.Scene();
 		this.camera = new GLP.Camera( 50, 0.01, 100, 1 );
@@ -57,6 +54,7 @@ export class GPUComputationController {
         this.mesh = new GLP.RenderingObject({
             geo: new GLP.PlaneGeometry( 2, 2 )
         });
+
 		this.scene.add( this.mesh );
 
     }
