@@ -379,10 +379,6 @@ export class Renderer{
 
 			this.cAttr( obj );
 
-			console.log( obj.id );
-			console.log( obj.material.programs );
-			
-			
 		}
 
 		// curring
