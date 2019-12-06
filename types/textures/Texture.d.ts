@@ -9,6 +9,7 @@ export declare interface TextureParam {
 }
 export declare class Texture {
     unitID: number;
+    id: number;
     glTex: WebGLTexture;
     image: HTMLImageElement;
     texType: number;

@@ -65,7 +65,8 @@ function buildExamples( cb ){
 
         for ( let i = 0; i < files.length; i++ ) {
 
-            if( files[i] == "shader.d.ts" ) continue;
+            if( files[i] == ".DS_Store" ) continue;
+            if( files[i] == "glsl-chunks" ) continue;
 
             //set webpack entry files
             conf.entry[files[i]] = exDir + files[i] + '/src/ts/main.ts';     

@@ -40,14 +40,17 @@ export class GPUComputationController {
             minFilter: gl.LINEAR,
             magFilter: gl.LINEAR
         });
+        this.tempDataLinear.buffer.tex.id = 10;
 
         this.tempDataNear = this.createData({ 
             minFilter: gl.NEAREST,
             magFilter: gl.NEAREST
         });
+        this.tempDataNear.buffer.tex.id = 11;
+
 
         this.scene = new GLP.Scene();
-		this.camera = new GLP.Camera( 50, 0, 100, 1 );
+		this.camera = new GLP.Camera( 50, 0.01, 100, 1 );
         this.camera.position.z = 1;
         
         this.materials = [];
@@ -73,6 +76,7 @@ export class GPUComputationController {
             wrapT: textureParam.wrapT || this.gl.CLAMP_TO_EDGE,
             minFilter: textureParam.minFilter || this.gl.NEAREST,
             magFilter: textureParam.magFilter || this.gl.NEAREST,
+            texType: this.gl.FLOAT
         });
 
         let data = { buffer: buf };
