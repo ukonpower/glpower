@@ -4,6 +4,7 @@ export declare interface Attribute{
 	location?: number;
 	stride?: number;
 	vbo?: WebGLBuffer;
+	divisor?: number;
 }
 
 export declare interface Attributes{
@@ -13,6 +14,7 @@ export declare interface Attributes{
 export class Geometry{
 	
 	public attributes: Attributes = {};
+	public vertCnt: number = 0;
 	public instancing: boolean = false;
 	public instancingCnt: number;
 	
@@ -20,18 +22,28 @@ export class Geometry{
 
 	}
 
-	public add( name: string, vert: number[], stride: number, instancing?: boolean ){
+	public add( name: string, vert: number[], stride: number, instancing?: boolean, divisor?: number ){
 		
 		this.attributes[name] = {
 			vert: vert,
 			stride: stride,
 			instancing: instancing,
+			divisor: divisor || 1
 		}
 
 		if( instancing ){
 
 			this.instancing = true;
 			this.instancingCnt = vert.length / stride;
+
+		}else{
+
+			if( name != 'index' ){
+				
+				this.vertCnt = vert.length / stride;
+
+			}
+			
 
 		}
 

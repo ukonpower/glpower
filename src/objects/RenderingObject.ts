@@ -17,7 +17,7 @@ export class RenderingObject extends Empty{
 	public geometry: Geometry;
 	public material: Material;
 	public drawType: number;
-	
+
 	constructor( param: RenderingObjectParam ){
 
 		super();

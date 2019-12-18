@@ -12,6 +12,9 @@ export class Empty{
 	public position: Vec3;
 	public rotation: Vec3;
 	public scale: Vec3;
+
+	public visible: boolean =true;
+	public name: string;
 	
 	constructor(){
 

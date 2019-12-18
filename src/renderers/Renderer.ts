@@ -9,7 +9,7 @@ import { Mat4 } from "../math/Mat4";
 import { RenderingObject } from "../objects/RenderingObject";
 import { Texture } from "../textures/Texture";
 import { FrameBuffer } from "./FrameBuffer";
-import { TSMethodSignature } from "babel-types";
+import { TSMethodSignature, isUserWhitespacable } from "babel-types";
 import { Empty } from '../objects/Empty';
 
 export declare interface RendererParam{
@@ -36,7 +36,7 @@ export class Renderer{
 
 	protected objectCnt: number = 0;
 	
-	protected attributeCnt: number = 0;
+	protected activeAttrs: number[] = [];
 
 	protected textureCnt: number = 0;
 
@@ -99,7 +99,17 @@ export class Renderer{
 		this.gl.attachShader( prg, fs );
 		this.gl.linkProgram( prg );
 
-		obj.material.programs[ obj.id ] = prg;
+		if( this.gl.getProgramParameter( prg, this.gl.LINK_STATUS ) ){
+		
+			obj.material.programs[ obj.id ] = prg;
+
+        }else{
+            
+			console.error( this.gl.getProgramInfoLog( prg ) );
+			
+		}
+		
+
 
 	}
 
@@ -114,11 +124,11 @@ export class Renderer{
 
 			return shader;
 			
-        } else {
+		} else {
 
-			console.error( this.gl.getShaderInfoLog(shader) );
-			
-        }
+				console.error( this.gl.getShaderInfoLog(shader) );
+				
+		}
 
 	}
 
@@ -131,10 +141,11 @@ export class Renderer{
 
 		for ( let i = 0; i < keys.length; i++ ){
 
-			let key = keys[i];
-			let attr = geo.attributes[key];
-			
-			attr.location = this.gl.getAttribLocation( prg, key.toString() );
+			let key = keys[ i ];
+			let attr = geo.attributes[ key ];
+
+			attr.location = this.gl.getAttribLocation( prg, key );
+
 			attr.vbo = this.cVBO( attr, key == 'index' );
 			
 		}
@@ -156,19 +167,22 @@ export class Renderer{
 
 	}
 
-	protected setAttr( geo: Geometry ){
-
-		this.clearAttr();
+	protected setAttr( geo: Geometry, obj: RenderingObject ){
 		
 		let keys = Object.keys( geo.attributes );
-		this.attributeCnt = keys.length;
+
+		console.log( '-----' );
+		console.log( obj.name );
+		console.log( '-----' );
 
 		for ( let i = 0; i < keys.length; i++ ){
 
-			let key = keys[i];
-			let attr = geo.attributes[key];
-
-
+			let key = keys[ i ];
+			let attr = geo.attributes[ key ];
+			
+			console.log( key );
+			console.log( this.gl.getActiveAttrib( obj.material.programs[ obj.id ], attr.location ) );
+			
 			if( key == 'index' ){
 
 				this.gl.bindBuffer( this.gl.ELEMENT_ARRAY_BUFFER, attr.vbo );
@@ -177,13 +191,14 @@ export class Renderer{
 
 				if( attr.location !== -1 ){
 				
-					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attr.vbo );
+					this.activeAttrs.push( attr.location );
 					this.gl.enableVertexAttribArray( attr.location );
+					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attr.vbo );
 					this.gl.vertexAttribPointer( attr.location, attr.stride, this.gl.FLOAT, false, 0, 0 );
 
-					if( attr.instancing ){
+					if( attr.instancing === true ){
 
-						this.ext.getExt( 'ANGLE_instanced_arrays' ).vertexAttribDivisorANGLE( attr.location, 1 );
+						this.ext.getExt( 'ANGLE_instanced_arrays' ).vertexAttribDivisorANGLE( attr.location, attr.divisor );
 						
 					}
 
@@ -197,9 +212,11 @@ export class Renderer{
 
 	protected clearAttr(){
 
-		for ( let i = 0; i < this.attributeCnt; i++ ) {
+		for ( let i = this.activeAttrs.length - 1; i >= 0 ; i-- ) {
 			
-			this.gl.disableVertexAttribArray( i );
+			this.gl.disableVertexAttribArray( this.activeAttrs[ i ] );
+
+			this.activeAttrs.pop();
 
 		}
 
@@ -213,9 +230,9 @@ export class Renderer{
 
 		for ( let i = 0; i < matUniKeys.length; i++ ) {
 
-			const key = matUniKeys[i];
+			const key = matUniKeys[ i ];
 
-			let uni = uniforms[key];
+			let uni = uniforms[ key ];
 			
 			uni.location = this.gl.getUniformLocation( program, key.toString() );			
 
@@ -223,7 +240,7 @@ export class Renderer{
 
 	}
 
-	protected applyUniforms( uniforms: Uniforms ){
+	protected setUni( uniforms: Uniforms ){
 
 		if( !uniforms ) return;
 
@@ -231,9 +248,9 @@ export class Renderer{
 
 		for ( let i = 0; i < keys.length; i++ ) {
 
-			const key = keys[i];
+			const key = keys[ i ];
 
-			let uni = uniforms[key];
+			let uni = uniforms[ key ];
 
 			if( uni.location ){
 
@@ -310,11 +327,11 @@ export class Renderer{
 
 			if( type == 'uniformMatrix4fv' ){
 
-				this.gl[type]( location, false, input );
+				this.gl[ type ]( location, false, input );
 
 			}else{
 				
-				this.gl[type]( location, input );
+				this.gl[ type ]( location, input );
 				
 			}
 
@@ -369,15 +386,21 @@ export class Renderer{
 
 		obj.IndividualUniforms.projectionMatrix.value = camera.projectionMatrix;
 
-		if( !obj.material.programs[obj.id] ){
+		if( !obj.material.programs[ obj.id ] ){
 
 			this.cPrg( obj );
 
+			this.gl.useProgram( obj.material.programs[ obj.id ] );
+			
+			this.cAttr( obj );
+			
 			this.cUni( obj.material.programs[ obj.id ], mat.uniforms );
 
 			this.cUni( obj.material.programs[ obj.id ], obj.IndividualUniforms );
 
-			this.cAttr( obj );
+		}else{
+
+				this.gl.useProgram( obj.material.programs[ obj.id ] );
 
 		}
 
@@ -395,26 +418,50 @@ export class Renderer{
 			
 		}
 
+		// depthTest
+
+		if( mat.depthTest ){
+
+			this.gl.enable( this.gl.DEPTH_TEST );
+
+			this.gl.depthFunc( mat.depthFunc || this.gl.LEQUAL );
+			
+		}else{
+
+			this.gl.disable( this.gl.DEPTH_TEST );
+			
+		}
+
 		// blend
 
 		this.gl.blendFunc( mat.blendSrc || this.gl.SRC_ALPHA, mat.blendDst || this.gl.ONE_MINUS_SRC_ALPHA );
 
-		this.gl.useProgram( obj.material.programs[ obj.id ] );
+		// uniforms
+		
+		this.setUni( mat.uniforms );
 
-		this.applyUniforms( mat.uniforms );
+		this.setUni( obj.IndividualUniforms );
 
-		this.applyUniforms( obj.IndividualUniforms );
+		// attributes
+		
+		this.clearAttr();
 
-		this.setAttr( geo );
-
+		// console.log( this.gl.ACTIVE_ATTRIBUTES );
+		// console.log( this.gl.( mat.programs[ obj.id ] ) );
+		console.log( this.gl.getProgramParameter( mat.programs[ obj.id ] , this.gl.ACTIVE_ATTRIBUTES ) );
+		
+		this.setAttr( geo, obj );
+		
+		// draw
+		
 		if( geo.instancing ){
-
+			
 			this.ext.getExt( 'ANGLE_instanced_arrays' ).drawElementsInstancedANGLE( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0, geo.instancingCnt );
 
 		}else{
 
 			this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0 );
-
+			
 		}
 
 	}
@@ -463,22 +510,18 @@ export class Renderer{
 	
 	private renderRecursive( scene: Scene | Empty | RenderingObject, camera: Camera ){
 
+		if( !scene.visible ) return;
+		
+		if( ( scene as RenderingObject ).isRenderingObject ){
+
+			this.renderObject( scene as RenderingObject, camera );
+			
+		}
+		
 		for( let i = 0; i < scene.children.length; i++ ){
 
-			let obj = scene.children[i];
-			
-			if( ( obj as RenderingObject ).isRenderingObject ){
-
-				this.renderObject( obj as RenderingObject, camera );
-
-			}
-
-			if( obj.children.length > 0 ){
-
-				this.renderRecursive( obj, camera );
+			this.renderRecursive( scene.children[i], camera );
 				
-			}
-
 		}
 
 	}

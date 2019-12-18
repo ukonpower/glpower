@@ -12,6 +12,8 @@ export declare interface MaterialParam{
 	vert: string;
 	uniforms?: Uniforms;
 	culling?: number;
+	depthTest?: boolean;
+	depthFunc?: number;
 	blendSrc?: number;
 	blendDst?: number;
 }
@@ -23,6 +25,8 @@ export class Material{
 	public frag: string;
 	public vert: string;
 	public culling: number;
+	public depthTest: boolean;
+	public depthFunc: number;
 	public blendSrc: number;
 	public blendDst: number;
 
@@ -34,9 +38,10 @@ export class Material{
 		this.frag = param.frag;
 		this.vert = param.vert;
 		this.culling = param.culling;
+		this.depthTest = param.depthTest !== undefined ? param.depthTest : true;
+		this.depthFunc = param.depthFunc;
 		this.blendSrc = param.blendSrc;
 		this.blendDst = param.blendSrc;
-
 		this.programs = {};
 
 	}
