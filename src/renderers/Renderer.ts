@@ -171,17 +171,10 @@ export class Renderer{
 		
 		let keys = Object.keys( geo.attributes );
 
-		console.log( '-----' );
-		console.log( obj.name );
-		console.log( '-----' );
-
 		for ( let i = 0; i < keys.length; i++ ){
 
 			let key = keys[ i ];
 			let attr = geo.attributes[ key ];
-			
-			console.log( key );
-			console.log( this.gl.getActiveAttrib( obj.material.programs[ obj.id ], attr.location ) );
 			
 			if( key == 'index' ){
 
@@ -206,6 +199,26 @@ export class Renderer{
 				
 			}
 
+		}
+
+	}
+
+	
+	protected resetAttr( geo: Geometry, obj: RenderingObject ){
+		
+		let keys = Object.keys( geo.attributes );
+
+		for ( let i = 0; i < keys.length; i++ ){
+
+			let key = keys[ i ];
+			let attr = geo.attributes[ key ];
+			
+			if( attr.location !== -1 && attr.instancing === true ){
+
+				this.ext.getExt( 'ANGLE_instanced_arrays' ).vertexAttribDivisorANGLE( attr.location, 0 );
+
+			}
+				
 		}
 
 	}
@@ -446,10 +459,6 @@ export class Renderer{
 		
 		this.clearAttr();
 
-		// console.log( this.gl.ACTIVE_ATTRIBUTES );
-		// console.log( this.gl.( mat.programs[ obj.id ] ) );
-		console.log( this.gl.getProgramParameter( mat.programs[ obj.id ] , this.gl.ACTIVE_ATTRIBUTES ) );
-		
 		this.setAttr( geo, obj );
 		
 		// draw
@@ -463,6 +472,8 @@ export class Renderer{
 			this.gl.drawElements( obj.drawType != null ? obj.drawType : this.gl.TRIANGLES, geo.attributes.index.vert.length, this.gl.UNSIGNED_SHORT, 0 );
 			
 		}
+
+		this.resetAttr( geo, obj );
 
 	}
 
