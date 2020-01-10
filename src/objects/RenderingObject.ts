@@ -31,6 +31,9 @@ export class RenderingObject extends Empty{
 			modelViewMatrix: {
 				value: this.modelViewMatrix
 			},
+			invMatrix: {
+				value: this.invModelMatrix
+			},
 			projectionMatrix: {
 				value: null
 			}

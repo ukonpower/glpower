@@ -7,6 +7,7 @@ export class Empty{
 	public children: Empty[];
 	
 	public modelMatrix: Mat4;
+	public invModelMatrix: Mat4;
 	public modelViewMatrix: Mat4;
 
 	public position: Vec3;
@@ -21,6 +22,7 @@ export class Empty{
 		this.children = [];
 		
 		this.modelMatrix = new Mat4();
+		this.invModelMatrix = new Mat4();
 		this.modelViewMatrix = new Mat4();
 
 		this.position = new Vec3();
@@ -38,6 +40,7 @@ export class Empty{
 	public updateMatrix(){
 
 		this.modelMatrix.cTransform( this.position, this.rotation, this.scale );
+		this.invModelMatrix.copy( this.modelMatrix.clone().inverse() );
 
 	}
 
