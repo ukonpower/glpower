@@ -2,13 +2,13 @@ import { Geometry } from "../geometries/Geometry";
 import { Material, Uniforms } from "../renderers/Material";
 import { Empty } from "./Empty";
 
-export declare interface RenderingObjectParam{
+export declare interface PowerObjParam{
 	geo?: Geometry;
 	mat?: Material;
 	drawType?: number;
 }
 
-export class RenderingObject extends Empty{
+export class PowerObj extends Empty {
 
 	public IndividualUniforms: Uniforms;
 
@@ -18,10 +18,10 @@ export class RenderingObject extends Empty{
 	public material: Material;
 	public drawType: number;
 
-	constructor( param: RenderingObjectParam ){
+	constructor( param: PowerObjParam ) {
 
 		super();
-		
+
 		this.geometry = param.geo;
 		this.material = param.mat;
 		this.drawType = param.drawType;
@@ -38,10 +38,10 @@ export class RenderingObject extends Empty{
 				value: null
 			}
 		};
-		
+
 	}
 
-	public get isRenderingObject(){
+	public get isPowerObj() {
 
 		return true;
 

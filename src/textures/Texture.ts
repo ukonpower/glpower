@@ -8,7 +8,7 @@ export declare interface TextureParam{
 	texType?: number;
 }
 
-export class Texture{
+export class Texture {
 
 	public unitID: number;
 	public id: number = 0;
@@ -17,18 +17,18 @@ export class Texture{
 	public image: HTMLImageElement;
 
 	public texType: number;
-	
+
 	public wrapS: number;
 	public wrapT: number;
 	public magFilter: number;
 	public minFilter: number;
-	
+
 	public width: number;
 	public height: number;
-	
+
 	public needUpdate: boolean = true;
 
-	constructor( param?: TextureParam ){
+	constructor( param?: TextureParam ) {
 
 		param = param || {};
 
@@ -45,11 +45,11 @@ export class Texture{
 
 	}
 
-	public loadImg( path: string, callBack?: ( tex: Texture ) => void ){
-		
+	public loadImg( path: string, callBack?: ( tex: Texture ) => void ) {
+
 		let img = new Image();
 		img.src = path;
-		
+
 		img.onload = () => {
 
 			this.image = img;
@@ -58,22 +58,22 @@ export class Texture{
 
 			this.needUpdate = true;
 
-			if( callBack ){
+			if ( callBack ) {
 
 				callBack( this );
 
 			}
-			
-		}
+
+		};
 
 		return this;
-		
+
 	}
 
-	public get isTexture(){
+	public get isTexture() {
 
 		return true;
 
 	}
-	
+
 }

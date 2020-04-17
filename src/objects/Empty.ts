@@ -1,11 +1,11 @@
-	import { Vec3 } from "../math/Vec3";
+import { Vec3 } from "../math/Vec3";
 import { Mat4 } from "../math/Mat4";
 import { Camera } from "../renderers/Camera";
 
-export class Empty{
+export class Empty {
 
 	public children: Empty[];
-	
+
 	public modelMatrix: Mat4;
 	public invModelMatrix: Mat4;
 	public modelViewMatrix: Mat4;
@@ -16,11 +16,11 @@ export class Empty{
 
 	public visible: boolean =true;
 	public name: string;
-	
-	constructor(){
+
+	constructor() {
 
 		this.children = [];
-		
+
 		this.modelMatrix = new Mat4();
 		this.invModelMatrix = new Mat4();
 		this.modelViewMatrix = new Mat4();
@@ -30,14 +30,14 @@ export class Empty{
 		this.scale = new Vec3( 1, 1, 1 );
 
 	}
-	
-	public add( obj: Empty ){
+
+	public add( obj: Empty ) {
 
 		this.children.push( obj );
 
 	}
 
-	public updateMatrix(){
+	public updateMatrix() {
 
 		this.modelMatrix.cTransform( this.position, this.rotation, this.scale );
 		this.invModelMatrix.copy( this.modelMatrix.clone().inverse() );

@@ -11,7 +11,7 @@ export * from './geometries/SphereGeometry';
 
 export * from './objects/Scene';
 export * from './objects/Empty';
-export * from './objects/RenderingObject';
+export * from './objects/PowerObj';
 
 export * from './math/Vec2';
 export * from './math/Vec3';

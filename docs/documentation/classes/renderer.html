@@ -88,7 +88,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#_canvas" class="tsd-kind-icon">_canvas</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#attributecnt" class="tsd-kind-icon">attribute<wbr>Cnt</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#activeattrs" class="tsd-kind-icon">active<wbr>Attrs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="renderer.html#ext" class="tsd-kind-icon">ext</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="renderer.html#gl" class="tsd-kind-icon">gl</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#instancingext" class="tsd-kind-icon">instancing<wbr>Ext</a></li>
@@ -102,7 +102,6 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#applyuniforms" class="tsd-kind-icon">apply<wbr>Uniforms</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#cattr" class="tsd-kind-icon">c<wbr>Attr</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#cfbuffer" class="tsd-kind-icon">cFBuffer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#cprg" class="tsd-kind-icon">c<wbr>Prg</a></li>
@@ -115,9 +114,11 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="renderer.html#render" class="tsd-kind-icon">render</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#renderobject" class="tsd-kind-icon">render<wbr>Object</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="renderer.html#renderrecursive" class="tsd-kind-icon">render<wbr>Recursive</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#resetattr" class="tsd-kind-icon">reset<wbr>Attr</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#setattr" class="tsd-kind-icon">set<wbr>Attr</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="renderer.html#setframebuffer" class="tsd-kind-icon">set<wbr>Frame<wbr>Buffer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="renderer.html#setsize" class="tsd-kind-icon">set<wbr>Size</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#setuni" class="tsd-kind-icon">set<wbr>Uni</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="renderer.html#setuniform" class="tsd-kind-icon">set<wbr>Uniform</a></li>
 							</ul>
 						</section>
@@ -136,7 +137,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L50">renderers/Renderer.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L47">renderers/Renderer.ts:47</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -158,17 +159,17 @@
 					<div class="tsd-signature tsd-kind-icon">_canvas<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">HTMLCanvasElement</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L28">renderers/Renderer.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L28">renderers/Renderer.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-					<a name="attributecnt" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> attribute<wbr>Cnt</h3>
-					<div class="tsd-signature tsd-kind-icon">attribute<wbr>Cnt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
+					<a name="activeattrs" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> active<wbr>Attrs</h3>
+					<div class="tsd-signature tsd-kind-icon">active<wbr>Attrs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L39">renderers/Renderer.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L38">renderers/Renderer.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -178,7 +179,7 @@
 					<div class="tsd-signature tsd-kind-icon">ext<span class="tsd-signature-symbol">:</span> <a href="extensions.html" class="tsd-signature-type">Extensions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L26">renderers/Renderer.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L26">renderers/Renderer.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -188,7 +189,7 @@
 					<div class="tsd-signature tsd-kind-icon">gl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WebGLRenderingContext</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L24">renderers/Renderer.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L24">renderers/Renderer.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -198,7 +199,7 @@
 					<div class="tsd-signature tsd-kind-icon">instancing<wbr>Ext<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ANGLE_instanced_arrays</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L50">renderers/Renderer.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L47">renderers/Renderer.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -208,7 +209,7 @@
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Retina<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L32">renderers/Renderer.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L32">renderers/Renderer.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -218,7 +219,7 @@
 					<div class="tsd-signature tsd-kind-icon">object<wbr>Cnt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L37">renderers/Renderer.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L36">renderers/Renderer.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -228,7 +229,7 @@
 					<div class="tsd-signature tsd-kind-icon">pixel<wbr>Ratio<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L30">renderers/Renderer.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L30">renderers/Renderer.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -238,7 +239,7 @@
 					<div class="tsd-signature tsd-kind-icon">render<wbr>Target<span class="tsd-signature-symbol">:</span> <a href="framebuffer.html" class="tsd-signature-type">FrameBuffer</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L46">renderers/Renderer.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L44">renderers/Renderer.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -248,7 +249,7 @@
 					<div class="tsd-signature tsd-kind-icon">texture<wbr>Cnt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L41">renderers/Renderer.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L40">renderers/Renderer.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -256,45 +257,22 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="applyuniforms" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> apply<wbr>Uniforms</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">apply<wbr>Uniforms<span class="tsd-signature-symbol">(</span>uniforms<span class="tsd-signature-symbol">: </span><a href="../interfaces/uniforms.html" class="tsd-signature-type">Uniforms</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L226">renderers/Renderer.ts:226</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>uniforms: <a href="../interfaces/uniforms.html" class="tsd-signature-type">Uniforms</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="cattr" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> c<wbr>Attr</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">c<wbr>Attr<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">c<wbr>Attr<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L125">renderers/Renderer.ts:125</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L132">renderers/Renderer.ts:132</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>obj: <a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a></h5>
+									<h5>obj: <a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -311,7 +289,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L436">renderers/Renderer.ts:436</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L491">renderers/Renderer.ts:491</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -328,19 +306,19 @@
 					<a name="cprg" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> c<wbr>Prg</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">c<wbr>Prg<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">c<wbr>Prg<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L89">renderers/Renderer.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L86">renderers/Renderer.ts:86</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>obj: <a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a></h5>
+									<h5>obj: <a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -357,7 +335,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L106">renderers/Renderer.ts:106</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L113">renderers/Renderer.ts:113</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -383,7 +361,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L325">renderers/Renderer.ts:325</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L352">renderers/Renderer.ts:352</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -406,7 +384,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L208">renderers/Renderer.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L235">renderers/Renderer.ts:235</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -432,7 +410,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L144">renderers/Renderer.ts:144</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L152">renderers/Renderer.ts:152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -458,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L198">renderers/Renderer.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L223">renderers/Renderer.ts:223</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -475,7 +453,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L62">renderers/Renderer.ts:62</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L59">renderers/Renderer.ts:59</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -498,7 +476,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L486">renderers/Renderer.ts:486</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L537">renderers/Renderer.ts:537</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -518,19 +496,19 @@
 					<a name="renderobject" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> render<wbr>Object</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Object<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a>, camera<span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Object<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a>, camera<span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L353">renderers/Renderer.ts:353</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L380">renderers/Renderer.ts:380</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>obj: <a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a></h5>
+									<h5>obj: <a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
 								</li>
 								<li>
 									<h5>camera: <a href="camera.html" class="tsd-signature-type">Camera</a></h5>
@@ -544,19 +522,19 @@
 					<a name="renderrecursive" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> render<wbr>Recursive</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">render<wbr>Recursive<span class="tsd-signature-symbol">(</span>scene<span class="tsd-signature-symbol">: </span><a href="scene.html" class="tsd-signature-type">Scene</a><span class="tsd-signature-symbol"> | </span><a href="empty.html" class="tsd-signature-type">Empty</a><span class="tsd-signature-symbol"> | </span><a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a>, camera<span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">render<wbr>Recursive<span class="tsd-signature-symbol">(</span>scene<span class="tsd-signature-symbol">: </span><a href="scene.html" class="tsd-signature-type">Scene</a><span class="tsd-signature-symbol"> | </span><a href="empty.html" class="tsd-signature-type">Empty</a><span class="tsd-signature-symbol"> | </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a>, camera<span class="tsd-signature-symbol">: </span><a href="camera.html" class="tsd-signature-type">Camera</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L464">renderers/Renderer.ts:464</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L519">renderers/Renderer.ts:519</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>scene: <a href="scene.html" class="tsd-signature-type">Scene</a><span class="tsd-signature-symbol"> | </span><a href="empty.html" class="tsd-signature-type">Empty</a><span class="tsd-signature-symbol"> | </span><a href="renderingobject.html" class="tsd-signature-type">RenderingObject</a></h5>
+									<h5>scene: <a href="scene.html" class="tsd-signature-type">Scene</a><span class="tsd-signature-symbol"> | </span><a href="empty.html" class="tsd-signature-type">Empty</a><span class="tsd-signature-symbol"> | </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
 								</li>
 								<li>
 									<h5>camera: <a href="camera.html" class="tsd-signature-type">Camera</a></h5>
@@ -567,22 +545,51 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-					<a name="setattr" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> set<wbr>Attr</h3>
+					<a name="resetattr" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> reset<wbr>Attr</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Attr<span class="tsd-signature-symbol">(</span>geo<span class="tsd-signature-symbol">: </span><a href="geometry.html" class="tsd-signature-type">Geometry</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">reset<wbr>Attr<span class="tsd-signature-symbol">(</span>geo<span class="tsd-signature-symbol">: </span><a href="geometry.html" class="tsd-signature-type">Geometry</a>, obj<span class="tsd-signature-symbol">: </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L159">renderers/Renderer.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L204">renderers/Renderer.ts:204</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>geo: <a href="geometry.html" class="tsd-signature-type">Geometry</a></h5>
+								</li>
+								<li>
+									<h5>obj: <a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="setattr" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> set<wbr>Attr</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Attr<span class="tsd-signature-symbol">(</span>geo<span class="tsd-signature-symbol">: </span><a href="geometry.html" class="tsd-signature-type">Geometry</a>, obj<span class="tsd-signature-symbol">: </span><a href="powerobj.html" class="tsd-signature-type">PowerObj</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L167">renderers/Renderer.ts:167</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>geo: <a href="geometry.html" class="tsd-signature-type">Geometry</a></h5>
+								</li>
+								<li>
+									<h5>obj: <a href="powerobj.html" class="tsd-signature-type">PowerObj</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -599,7 +606,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L422">renderers/Renderer.ts:422</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L477">renderers/Renderer.ts:477</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -622,7 +629,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L82">renderers/Renderer.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L79">renderers/Renderer.ts:79</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -639,6 +646,29 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="setuni" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> set<wbr>Uni</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Uni<span class="tsd-signature-symbol">(</span>uniforms<span class="tsd-signature-symbol">: </span><a href="../interfaces/uniforms.html" class="tsd-signature-type">Uniforms</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L253">renderers/Renderer.ts:253</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>uniforms: <a href="../interfaces/uniforms.html" class="tsd-signature-type">Uniforms</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 					<a name="setuniform" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> set<wbr>Uniform</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
@@ -648,7 +678,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/7030aea/src/renderers/Renderer.ts#L248">renderers/Renderer.ts:248</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/d4a33d1/src/renderers/Renderer.ts#L275">renderers/Renderer.ts:275</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -709,6 +739,9 @@
 					<li class=" tsd-kind-class">
 						<a href="planegeometry.html" class="tsd-kind-icon">Plane<wbr>Geometry</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="powerobj.html" class="tsd-kind-icon">Power<wbr>Obj</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class">
@@ -721,7 +754,7 @@
 								<a href="renderer.html#_canvas" class="tsd-kind-icon">_canvas</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-								<a href="renderer.html#attributecnt" class="tsd-kind-icon">attribute<wbr>Cnt</a>
+								<a href="renderer.html#activeattrs" class="tsd-kind-icon">active<wbr>Attrs</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="renderer.html#ext" class="tsd-kind-icon">ext</a>
@@ -746,9 +779,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 								<a href="renderer.html#texturecnt" class="tsd-kind-icon">texture<wbr>Cnt</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="renderer.html#applyuniforms" class="tsd-kind-icon">apply<wbr>Uniforms</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="renderer.html#cattr" class="tsd-kind-icon">c<wbr>Attr</a>
@@ -787,6 +817,9 @@
 								<a href="renderer.html#renderrecursive" class="tsd-kind-icon">render<wbr>Recursive</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="renderer.html#resetattr" class="tsd-kind-icon">reset<wbr>Attr</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="renderer.html#setattr" class="tsd-kind-icon">set<wbr>Attr</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -796,15 +829,15 @@
 								<a href="renderer.html#setsize" class="tsd-kind-icon">set<wbr>Size</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="renderer.html#setuni" class="tsd-kind-icon">set<wbr>Uni</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="renderer.html#setuniform" class="tsd-kind-icon">set<wbr>Uniform</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class">
-						<a href="renderingobject.html" class="tsd-kind-icon">Rendering<wbr>Object</a>
-					</li>
 					<li class=" tsd-kind-class">
 						<a href="scene.html" class="tsd-kind-icon">Scene</a>
 					</li>
@@ -842,10 +875,10 @@
 						<a href="../interfaces/ouniform.html" class="tsd-kind-icon">OUniform</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/rendererparam.html" class="tsd-kind-icon">Renderer<wbr>Param</a>
+						<a href="../interfaces/powerobjparam.html" class="tsd-kind-icon">Power<wbr>Obj<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/renderingobjectparam.html" class="tsd-kind-icon">Rendering<wbr>Object<wbr>Param</a>
+						<a href="../interfaces/rendererparam.html" class="tsd-kind-icon">Renderer<wbr>Param</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/textureparam.html" class="tsd-kind-icon">Texture<wbr>Param</a>

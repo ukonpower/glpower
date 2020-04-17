@@ -3,24 +3,24 @@ import * as GLP from '../../../../src';
 import vert from './shaders/cube.vs';
 import frag from './shaders/cube.fs';
 
-export class APP{
+export class APP {
 
 	private renderer: GLP.Renderer;
 	private gl: WebGLRenderingContext;
-	
+
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
-	private cube: GLP.RenderingObject;
+	private cube: GLP.PowerObj;
 
 	private time: number = 0;
 
-	constructor(){
+	constructor() {
 
-		this.renderer = new GLP.Renderer({
+		this.renderer = new GLP.Renderer( {
 			canvas: document.querySelector( '#canvas' ),
 			retina: true
-		});
+		} );
 
 		this.gl = this.renderer.gl;
 
@@ -34,30 +34,30 @@ export class APP{
 
 	}
 
-	private initScene(){
-		
+	private initScene() {
+
 		this.scene = new GLP.Scene();
 
 		this.camera = new GLP.Camera( 50, 0.1, 1000, window.innerWidth / window.innerHeight );
 		this.camera.position.set( 0, 0, 5 );
-	
-		let mat = new GLP.Material({
+
+		let mat = new GLP.Material( {
 			frag: frag,
 			vert: vert,
 			uniforms: {},
 			culling: this.gl.CCW,
-		});
+		} );
 
-		this.cube = new GLP.RenderingObject({
+		this.cube = new GLP.PowerObj( {
 			geo: new GLP.CubeGeometry(),
 			mat: mat
-		});
+		} );
 
 		this.scene.add( this.cube );
 
 	}
 
-	private animate(){
+	private animate() {
 
 		this.time += 1.0;
 
@@ -70,7 +70,7 @@ export class APP{
 
 	}
 
-	private resize(){
+	private resize() {
 
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -83,4 +83,4 @@ window.addEventListener( 'load', () => {
 
 	let app = new APP();
 
-});
+} );

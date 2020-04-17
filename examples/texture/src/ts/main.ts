@@ -4,28 +4,28 @@ import vert from './shaders/cube.vs';
 import frag from './shaders/cube.fs';
 import { Texture } from '../../../../src/textures/Texture';
 
-export class APP{
-	
+export class APP {
+
 	private renderer: GLP.Renderer;
 	private gl: WebGLRenderingContext;
 
 	private scene: GLP.Scene;
 	private camera: GLP.Camera;
 
-	private cube: GLP.RenderingObject;
-	private cube2: GLP.RenderingObject;
+	private cube: GLP.PowerObj;
+	private cube2: GLP.PowerObj;
 
 	private time: number = 0;
 
-	constructor(){
+	constructor() {
 
-		this.renderer = new GLP.Renderer({
+		this.renderer = new GLP.Renderer( {
 			canvas: document.querySelector( '#canvas' ),
 			retina: true
-		});
+		} );
 
 		this.gl = this.renderer.gl;
-		
+
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
 
 		this.initScene();
@@ -36,8 +36,8 @@ export class APP{
 
 	}
 
-	private initScene(){
-		
+	private initScene() {
+
 		this.scene = new GLP.Scene();
 
 		this.camera = new GLP.Camera( 50, 0.1, 1000, window.innerWidth / window.innerHeight );
@@ -49,21 +49,21 @@ export class APP{
 			texture: {
 				value: null
 			}
-		}
-	
-		let mat = new GLP.Material({
+		};
+
+		let mat = new GLP.Material( {
 			frag: frag,
 			vert: vert,
 			uniforms: uni1,
 			culling: this.gl.CCW
-		});
-	
-		this.cube = new GLP.RenderingObject( { 
+		} );
+
+		this.cube = new GLP.PowerObj( {
 			geo: new GLP.CubeGeometry(),
 			mat: mat
-		});
+		} );
 
-		this.cube.position.x = -1;
+		this.cube.position.x = - 1;
 		this.scene.add( this.cube );
 
 		uni1.texture.value = new Texture().loadImg( './assets/Lenna.jpg' );
@@ -74,34 +74,34 @@ export class APP{
 			texture: {
 				value: null
 			}
-		}
+		};
 
-		let mat2 = new GLP.Material({
+		let mat2 = new GLP.Material( {
 			frag: frag,
 			vert: vert,
 			uniforms: uni2,
-		});
+		} );
 
-		this.cube2 = new GLP.RenderingObject({
+		this.cube2 = new GLP.PowerObj( {
 			geo: new GLP.CubeGeometry(),
 			mat: mat2
-		});
+		} );
 
 		this.cube2.position.x = 1;
 		this.scene.add( this.cube2 );
 
 		let tex2 = new Texture();
 		tex2.loadImg( './assets/Mandrill.jpg', ( tex ) => {
-			
+
 			uni2.texture.value = tex;
 
-		})
-		
-		
+		} );
+
+
 	}
 
-	private animate(){
-		
+	private animate() {
+
 		this.time += 1.0;
 
 		let rot = this.time * 0.02;
@@ -116,7 +116,7 @@ export class APP{
 
 	}
 
-	private resize(){
+	private resize() {
 
 		this.camera.aspect = window.innerWidth / window.innerHeight;
 		this.renderer.setSize( window.innerWidth, window.innerHeight );
@@ -129,4 +129,4 @@ window.addEventListener( 'load', () => {
 
 	let app = new APP();
 
-});
+} );

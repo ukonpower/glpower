@@ -1,8 +1,8 @@
 import { Empty } from './Empty';
 
-export class Scene extends Empty{
+export class Scene extends Empty {
 
-	constructor(){
+	constructor() {
 
 		super();
 

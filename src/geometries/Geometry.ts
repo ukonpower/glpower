@@ -11,39 +11,39 @@ export declare interface Attributes{
 	[key: string]: Attribute
 }
 
-export class Geometry{
-	
+export class Geometry {
+
 	public attributes: Attributes = {};
 	public vertCnt: number = 0;
 	public instancing: boolean = false;
 	public instancingCnt: number;
-	
-	constructor(){
+
+	constructor() {
 
 	}
 
-	public add( name: string, vert: number[], stride: number, instancing?: boolean, divisor?: number ){
-		
-		this.attributes[name] = {
+	public add( name: string, vert: number[], stride: number, instancing?: boolean, divisor?: number ) {
+
+		this.attributes[ name ] = {
 			vert: vert,
 			stride: stride,
 			instancing: instancing,
 			divisor: divisor || 1
-		}
+		};
 
-		if( instancing ){
+		if ( instancing ) {
 
 			this.instancing = true;
 			this.instancingCnt = vert.length / stride;
 
-		}else{
+		} else {
 
-			if( name != 'index' ){
-				
+			if ( name != 'index' ) {
+
 				this.vertCnt = vert.length / stride;
 
 			}
-			
+
 
 		}
 

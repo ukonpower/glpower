@@ -9,137 +9,137 @@ export interface GPUComputationKernel{
 }
 
 export interface GPUcomputationData{
-    buffer: GLP.FrameBuffer 
+    buffer: GLP.FrameBuffer
 }
 
 export class GPUComputationController {
 
     private gl: WebGLRenderingContext;
-    
+
     private renderer: GLP.Renderer;
     private resolution: GLP.Vec2
 
     private scene: GLP.Scene;
     private camera: GLP.Camera;
 
-    private mesh: GLP.RenderingObject;
+    private mesh: GLP.PowerObj;
     private materials: GLP.Material[];
 
     private tempDataLinear: GPUcomputationData;
     private tempDataNear: GPUcomputationData;
 
-    constructor( gl: WebGLRenderingContext, renderer: GLP.Renderer, resolution: GLP.Vec2 ){
+    constructor( gl: WebGLRenderingContext, renderer: GLP.Renderer, resolution: GLP.Vec2 ) {
 
-        this.gl = gl;
-        
-        this.renderer = renderer;
+    	this.gl = gl;
 
-        this.resolution = resolution;
+    	this.renderer = renderer;
 
-        this.tempDataLinear = this.createData({ 
-            minFilter: gl.LINEAR,
-            magFilter: gl.LINEAR
-        });
+    	this.resolution = resolution;
 
-        this.tempDataNear = this.createData({ 
-            minFilter: gl.NEAREST,
-            magFilter: gl.NEAREST
-        });
+    	this.tempDataLinear = this.createData( {
+    		minFilter: gl.LINEAR,
+    		magFilter: gl.LINEAR
+    	} );
 
-        this.scene = new GLP.Scene();
-		this.camera = new GLP.Camera( 50, 0.01, 100, 1 );
-        this.camera.position.z = 1;
-        
-        this.materials = [];
-        this.mesh = new GLP.RenderingObject({
-            geo: new GLP.PlaneGeometry( 2, 2 )
-        });
+    	this.tempDataNear = this.createData( {
+    		minFilter: gl.NEAREST,
+    		magFilter: gl.NEAREST
+    	} );
 
-		this.scene.add( this.mesh );
+    	this.scene = new GLP.Scene();
+    	this.camera = new GLP.Camera( 50, 0.01, 100, 1 );
+    	this.camera.position.z = 1;
 
-    }
+    	this.materials = [];
+    	this.mesh = new GLP.PowerObj( {
+    		geo: new GLP.PlaneGeometry( 2, 2 )
+    	} );
 
-    public createData( textureParam?: GLP.FrameBufferParam ): GPUcomputationData{
-
-        if( !textureParam ){
-
-            textureParam = {};
-            
-        }
-        
-        let buf = new GLP.FrameBuffer({
-            width: this.resolution.x,
-            height: this.resolution.y,
-            wrapS: textureParam.wrapS || this.gl.CLAMP_TO_EDGE,
-            wrapT: textureParam.wrapT || this.gl.CLAMP_TO_EDGE,
-            minFilter: textureParam.minFilter || this.gl.NEAREST,
-            magFilter: textureParam.magFilter || this.gl.NEAREST,
-            texType: this.gl.FLOAT
-        });
-
-        let data = { buffer: buf };
-
-        return data;
+    	this.scene.add( this.mesh );
 
     }
 
-    public createKernel( shader: string ): GPUComputationKernel{
-        
-        let uniforms: GLP.Uniforms = {
-            resolution: {
-                value: this.resolution
-            }
-        };
+    public createData( textureParam?: GLP.FrameBufferParam ): GPUcomputationData {
 
-        let mat = new GLP.Material({
-            vert: passThroughVert,
-            frag: shader,
-            uniforms: uniforms
-        });
+    	if ( ! textureParam ) {
 
-        this.materials.push(mat);
+    		textureParam = {};
 
-        let kernel: GPUComputationKernel = {
-            material: mat,
-            uniforms: uniforms
-        }
+    	}
 
-        return kernel;
+    	let buf = new GLP.FrameBuffer( {
+    		width: this.resolution.x,
+    		height: this.resolution.y,
+    		wrapS: textureParam.wrapS || this.gl.CLAMP_TO_EDGE,
+    		wrapT: textureParam.wrapT || this.gl.CLAMP_TO_EDGE,
+    		minFilter: textureParam.minFilter || this.gl.NEAREST,
+    		magFilter: textureParam.magFilter || this.gl.NEAREST,
+    		texType: this.gl.FLOAT
+    	} );
+
+    	let data = { buffer: buf };
+
+    	return data;
+
+    }
+
+    public createKernel( shader: string ): GPUComputationKernel {
+
+    	let uniforms: GLP.Uniforms = {
+    		resolution: {
+    			value: this.resolution
+    		}
+    	};
+
+    	let mat = new GLP.Material( {
+    		vert: passThroughVert,
+    		frag: shader,
+    		uniforms: uniforms
+    	} );
+
+    	this.materials.push( mat );
+
+    	let kernel: GPUComputationKernel = {
+    		material: mat,
+    		uniforms: uniforms
+    	};
+
+    	return kernel;
 
     }
 
-    public compute( kernel: GPUComputationKernel, variable: GPUcomputationData ){
+    public compute( kernel: GPUComputationKernel, variable: GPUcomputationData ) {
 
-        let temp: GPUcomputationData;
+    	let temp: GPUcomputationData;
 
-        if( variable.buffer.tex.magFilter == this.gl.LINEAR ){
-            
-            temp = this.tempDataLinear;
+    	if ( variable.buffer.tex.magFilter == this.gl.LINEAR ) {
 
-        }else{
+    		temp = this.tempDataLinear;
 
-            temp = this.tempDataNear;
-            
-        }
+    	} else {
 
-        this.mesh.material = kernel.material;
+    		temp = this.tempDataNear;
 
-        this.renderer.setFrameBuffer( temp.buffer );
+    	}
 
-        this.renderer.render( this.scene, this.camera );
-        
-        this.swapBuffers( variable, temp );
+    	this.mesh.material = kernel.material;
 
-        this.renderer.setFrameBuffer( null );
-        
-    }
+    	this.renderer.setFrameBuffer( temp.buffer );
 
-    private swapBuffers( b1: GPUcomputationData, b2: GPUcomputationData ){
+    	this.renderer.render( this.scene, this.camera );
 
-        let tmp = b1.buffer;
-        b1.buffer = b2.buffer;
-        b2.buffer = tmp;
+    	this.swapBuffers( variable, temp );
+
+    	this.renderer.setFrameBuffer( null );
 
     }
-    
+
+    private swapBuffers( b1: GPUcomputationData, b2: GPUcomputationData ) {
+
+    	let tmp = b1.buffer;
+    	b1.buffer = b2.buffer;
+    	b2.buffer = tmp;
+
+    }
+
 }

@@ -1,17 +1,17 @@
 import { Geometry } from "../geometries/Geometry";
 import { Material, Uniforms } from "../renderers/Material";
 import { Empty } from "./Empty";
-export declare interface RenderingObjectParam {
+export declare interface PowerObjParam {
     geo?: Geometry;
     mat?: Material;
     drawType?: number;
 }
-export declare class RenderingObject extends Empty {
+export declare class PowerObj extends Empty {
     IndividualUniforms: Uniforms;
     id: number;
     geometry: Geometry;
     material: Material;
     drawType: number;
-    constructor(param: RenderingObjectParam);
-    readonly isRenderingObject: boolean;
+    constructor(param: PowerObjParam);
+    readonly isPowerObj: boolean;
 }

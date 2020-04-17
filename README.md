@@ -62,7 +62,7 @@ export class APP{
 			doubleSide: true
 		});
 
-		this.cube = new GLP.RenderingObject( new GLP.CubeGeometry(), mat );
+		this.cube = new GLP.PowerObj( new GLP.CubeGeometry(), mat );
 		this.scene.add( this.cube );
 
 	}

@@ -18,7 +18,7 @@ export declare interface MaterialParam{
 	blendDst?: number;
 }
 
-export class Material{
+export class Material {
 
 	public programs: { [key:string] : WebGLProgram };
 	public uniforms: Uniforms;
@@ -32,7 +32,7 @@ export class Material{
 
 	public needUpdate: boolean = true;
 
-	constructor( param: MaterialParam ){
+	constructor( param: MaterialParam ) {
 
 		this.uniforms = param.uniforms;
 		this.frag = param.frag;

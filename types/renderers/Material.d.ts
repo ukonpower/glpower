@@ -10,6 +10,8 @@ export declare interface MaterialParam {
     vert: string;
     uniforms?: Uniforms;
     culling?: number;
+    depthTest?: boolean;
+    depthFunc?: number;
     blendSrc?: number;
     blendDst?: number;
 }
@@ -21,6 +23,8 @@ export declare class Material {
     frag: string;
     vert: string;
     culling: number;
+    depthTest: boolean;
+    depthFunc: number;
     blendSrc: number;
     blendDst: number;
     needUpdate: boolean;
