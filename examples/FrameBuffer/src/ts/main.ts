@@ -89,7 +89,7 @@ export class APP {
 			uniforms: this.uniform,
 		} );
 
-		this.renderCube = new GLP.PowerObj(  new GLP.PlaneGeometry( 1.5, 1.5 ), mat2 );
+		this.renderCube = new GLP.PowerObj( new GLP.PlaneGeometry( 1.5, 1.5 ), mat2 );
 
 		this.renderScene.add( this.renderCube );
 
