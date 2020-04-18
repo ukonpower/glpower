@@ -69,10 +69,7 @@ export class APP {
 			culling: this.gl.CCW
 		} );
 
-		this.cube = new GLP.PowerObj( {
-			geo: new GLP.CubeGeometry( 1.5, 1.5, 1.5 ),
-			mat: mat
-		} );
+		this.cube = new GLP.PowerObj( new GLP.CubeGeometry( 1.5, 1.5, 1.5 ), mat );
 
 		this.scene.add( this.cube );
 
@@ -92,10 +89,7 @@ export class APP {
 			uniforms: this.uniform,
 		} );
 
-		this.renderCube = new GLP.PowerObj( {
-			geo: new GLP.PlaneGeometry( 1.5, 1.5 ),
-			mat: mat2
-		} );
+		this.renderCube = new GLP.PowerObj(  new GLP.PlaneGeometry( 1.5, 1.5 ), mat2 );
 
 		this.renderScene.add( this.renderCube );
 

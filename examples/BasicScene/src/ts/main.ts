@@ -48,10 +48,7 @@ export class APP {
 			culling: this.gl.CCW,
 		} );
 
-		this.cube = new GLP.PowerObj( {
-			geo: new GLP.CubeGeometry(),
-			mat: mat
-		} );
+		this.cube = new GLP.PowerObj( new GLP.CubeGeometry(), mat );
 
 		this.scene.add( this.cube );
 

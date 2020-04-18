@@ -124,11 +124,7 @@ export class APP {
 			culling: this.gl.CCW,
 		} );
 
-		this.cube = new GLP.PowerObj( {
-			geo: geo,
-			mat: mat,
-			drawType: this.gl.TRIANGLES
-		} );
+		this.cube = new GLP.PowerObj( geo, mat, this.gl.TRIANGLES );
 
 		this.scene.add( this.cube );
 
@@ -138,14 +134,14 @@ export class APP {
 			}
 		};
 
-		let screen = new GLP.PowerObj( {
-			mat: new GLP.Material( {
+		let screen = new GLP.PowerObj(
+			new GLP.CubeGeometry( 0.5, 0.5, 0.5 ),
+			new GLP.Material( {
 				frag: texFrag,
 				vert: standardVert,
 				uniforms: this.screenUni
-			} ),
-			geo: new GLP.CubeGeometry( 0.5, 0.5, 0.5 )
-		} );
+			} )
+		);
 
 		this.scene.add( screen );
 

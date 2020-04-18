@@ -51,9 +51,7 @@ export class GPUComputationController {
     	this.camera.position.z = 1;
 
     	this.materials = [];
-    	this.mesh = new GLP.PowerObj( {
-    		geo: new GLP.PlaneGeometry( 2, 2 )
-    	} );
+    	this.mesh = new GLP.PowerObj( new GLP.PlaneGeometry( 2, 2 ) );
 
     	this.scene.add( this.mesh );
 

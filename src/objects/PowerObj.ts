@@ -2,12 +2,6 @@ import { Geometry } from "../geometries/Geometry";
 import { Material, Uniforms } from "../renderers/Material";
 import { Empty } from "./Empty";
 
-export declare interface PowerObjParam{
-	geo?: Geometry;
-	mat?: Material;
-	drawType?: number;
-}
-
 export class PowerObj extends Empty {
 
 	public IndividualUniforms: Uniforms;
@@ -18,14 +12,13 @@ export class PowerObj extends Empty {
 	public material: Material;
 	public drawType: number;
 
-	constructor( param: PowerObjParam ) {
+	constructor( geo?: Geometry, mat?: Material, drawType?: number ) {
 
 		super();
 
-		this.geometry = param.geo;
-		this.material = param.mat;
-		this.drawType = param.drawType;
-		this.material = param.mat;
+		this.geometry = geo;
+		this.material = mat;
+		this.drawType = drawType;
 
 		this.IndividualUniforms = {
 			modelViewMatrix: {

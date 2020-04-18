@@ -60,10 +60,7 @@ export class APP {
 			geo.add( 'uv', data.Suzanne.texcoord_0.array, data.Suzanne.texcoord_0.size );
 			geo.add( 'index', data.Suzanne.indices.array, data.Suzanne.indices.size );
 
-			this.model = new GLP.PowerObj( {
-				geo: geo,
-				mat: mat
-			} );
+			this.model = new GLP.PowerObj( geo, mat );
 
 			this.scene.add( this.model );
 

@@ -47,10 +47,10 @@ export class APP {
 			uniforms: {},
 		} );
 
-		this.objs.push( new GLP.PowerObj( { geo: new GLP.PlaneGeometry(), mat: mat } ) );
-		this.objs.push( new GLP.PowerObj( { geo: new GLP.SphereGeometry(), mat: mat } ) );
-		this.objs.push( new GLP.PowerObj( { geo: new GLP.CylinderGeometry(), mat: mat } ) );
-		this.objs.push( new GLP.PowerObj( { geo: new GLP.CubeGeometry(), mat: mat } ) );
+		this.objs.push( new GLP.PowerObj( new GLP.PlaneGeometry(), mat ) );
+		this.objs.push( new GLP.PowerObj( new GLP.SphereGeometry(), mat ) );
+		this.objs.push( new GLP.PowerObj( new GLP.CylinderGeometry(), mat ) );
+		this.objs.push( new GLP.PowerObj( new GLP.CubeGeometry(), mat ) );
 
 		let distance = 1.5;
 

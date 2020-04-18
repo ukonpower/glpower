@@ -49,10 +49,7 @@ export class APP {
 			culling: this.gl.CCW
 		} );
 
-		this.cube = new GLP.PowerObj( {
-			geo: new GLP.CubeGeometry(),
-			mat: mat
-		} );
+		this.cube = new GLP.PowerObj( new GLP.CubeGeometry(), mat );
 
 		this.scene.add( this.cube );
 
@@ -61,10 +58,7 @@ export class APP {
 			vert: vert,
 		} );
 
-		let plane = new GLP.PowerObj( {
-			geo: new GLP.PlaneGeometry( 1.5, 1.5 ),
-			mat: alphaMat,
-		} );
+		let plane = new GLP.PowerObj( new GLP.PlaneGeometry( 1.5, 1.5 ), alphaMat );
 
 		plane.position.z = 2;
 		this.scene.add( plane );
