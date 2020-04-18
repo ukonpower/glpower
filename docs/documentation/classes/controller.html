@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Vec2 | glpower</title>
+	<title>Controller | glpower</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="vec2.html">Vec2</a>
+					<a href="controller.html">Controller</a>
 				</li>
 			</ul>
-			<h1>Class Vec2</h1>
+			<h1>Class Controller</h1>
 		</div>
 	</div>
 </header>
@@ -70,7 +70,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Vec2</span>
+						<span class="target">Controller</span>
 					</li>
 				</ul>
 			</section>
@@ -81,33 +81,31 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="vec2.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="controller.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vec2.html#x" class="tsd-kind-icon">x</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vec2.html#y" class="tsd-kind-icon">y</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="vec2.html#z" class="tsd-kind-icon">z</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Accessors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="vec2.html#isvec2" class="tsd-kind-icon">is<wbr>Vec2</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controller.html#currentscene" class="tsd-kind-icon">current<wbr>Scene</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controller.html#cursor" class="tsd-kind-icon">cursor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controller.html#gprops" class="tsd-kind-icon">g<wbr>Props</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="controller.html#renderer" class="tsd-kind-icon">renderer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="controller.html#timemem" class="tsd-kind-icon">time<wbr>Mem</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#add" class="tsd-kind-icon">add</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#clone" class="tsd-kind-icon">clone</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#copy" class="tsd-kind-icon">copy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#divide" class="tsd-kind-icon">divide</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#multiply" class="tsd-kind-icon">multiply</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#set" class="tsd-kind-icon">set</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="vec2.html#sub" class="tsd-kind-icon">sub</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#bindscene" class="tsd-kind-icon">bind<wbr>Scene</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#onhover" class="tsd-kind-icon">on<wbr>Hover</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#onorientationdevice" class="tsd-kind-icon">on<wbr>Orientation<wbr>Device</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#ontouchend" class="tsd-kind-icon">on<wbr>Touch<wbr>End</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#ontouchmove" class="tsd-kind-icon">on<wbr>Touch<wbr>Move</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#ontouchstart" class="tsd-kind-icon">on<wbr>Touch<wbr>Start</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="controller.html#onwheel" class="tsd-kind-icon">on<wbr>Wheel</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="controller.html#onwindowresize" class="tsd-kind-icon">on<wbr>Window<wbr>Resize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="controller.html#tick" class="tsd-kind-icon">tick</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,28 +117,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Vec2<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, z<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vec2.html" class="tsd-signature-type">Vec2</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Controller<span class="tsd-signature-symbol">(</span>parameter<span class="tsd-signature-symbol">: </span><a href="../interfaces/controllerparam.html" class="tsd-signature-type">ControllerParam</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="controller.html" class="tsd-signature-type">Controller</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L7">math/Vec2.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L32">utils/Controller.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> x: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> y: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> z: <span class="tsd-signature-type">number</span></h5>
+									<h5>parameter: <a href="../interfaces/controllerparam.html" class="tsd-signature-type">ControllerParam</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="vec2.html" class="tsd-signature-type">Vec2</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="controller.html" class="tsd-signature-type">Controller</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -148,243 +140,238 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="x" class="tsd-anchor"></a>
-					<h3>x</h3>
-					<div class="tsd-signature tsd-kind-icon">x<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="currentscene" class="tsd-anchor"></a>
+					<h3>current<wbr>Scene</h3>
+					<div class="tsd-signature tsd-kind-icon">current<wbr>Scene<span class="tsd-signature-symbol">:</span> <a href="basescene.html" class="tsd-signature-type">BaseScene</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L5">math/Vec2.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L26">utils/Controller.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="y" class="tsd-anchor"></a>
-					<h3>y</h3>
-					<div class="tsd-signature tsd-kind-icon">y<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="cursor" class="tsd-anchor"></a>
+					<h3>cursor</h3>
+					<div class="tsd-signature tsd-kind-icon">cursor<span class="tsd-signature-symbol">:</span> <a href="cursor.html" class="tsd-signature-type">Cursor</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L6">math/Vec2.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L29">utils/Controller.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="z" class="tsd-anchor"></a>
-					<h3>z</h3>
-					<div class="tsd-signature tsd-kind-icon">z<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="gprops" class="tsd-anchor"></a>
+					<h3>g<wbr>Props</h3>
+					<div class="tsd-signature tsd-kind-icon">g<wbr>Props<span class="tsd-signature-symbol">:</span> <a href="../interfaces/globalproperties.html" class="tsd-signature-type">GlobalProperties</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L7">math/Vec2.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L32">utils/Controller.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Accessors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="isvec2" class="tsd-anchor"></a>
-					<h3>is<wbr>Vec2</h3>
-					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isVec2<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L16">math/Vec2.ts:16</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="renderer" class="tsd-anchor"></a>
+					<h3>renderer</h3>
+					<div class="tsd-signature tsd-kind-icon">renderer<span class="tsd-signature-symbol">:</span> <a href="renderer.html" class="tsd-signature-type">Renderer</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L28">utils/Controller.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+					<a name="timemem" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> time<wbr>Mem</h3>
+					<div class="tsd-signature tsd-kind-icon">time<wbr>Mem<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L30">utils/Controller.ts:30</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="add" class="tsd-anchor"></a>
-					<h3>add</h3>
+					<a name="bindscene" class="tsd-anchor"></a>
+					<h3>bind<wbr>Scene</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-						<li class="tsd-signature tsd-kind-icon">add<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">bind<wbr>Scene<span class="tsd-signature-symbol">(</span>scene<span class="tsd-signature-symbol">: </span><a href="basescene.html" class="tsd-signature-type">BaseScene</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L31">math/Vec2.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L81">utils/Controller.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>a: <a href="vec2.html" class="tsd-signature-type">Vec2</a></h5>
+									<h5>scene: <a href="basescene.html" class="tsd-signature-type">BaseScene</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L33">math/Vec2.ts:33</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>a: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="clone" class="tsd-anchor"></a>
-					<h3>clone</h3>
+					<a name="onhover" class="tsd-anchor"></a>
+					<h3>on<wbr>Hover</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">clone<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="vec2.html" class="tsd-signature-type">Vec2</a></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Hover<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L103">math/Vec2.ts:103</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L150">utils/Controller.ts:150</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="vec2.html" class="tsd-signature-type">Vec2</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="copy" class="tsd-anchor"></a>
-					<h3>copy</h3>
+					<a name="onorientationdevice" class="tsd-anchor"></a>
+					<h3>on<wbr>Orientation<wbr>Device</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol"> | </span><a href="vec3.html" class="tsd-signature-type">Vec3</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Orientation<wbr>Device<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L94">math/Vec2.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L114">utils/Controller.ts:114</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>a: <a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol"> | </span><a href="vec3.html" class="tsd-signature-type">Vec3</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="divide" class="tsd-anchor"></a>
-					<h3>divide</h3>
+					<a name="ontouchend" class="tsd-anchor"></a>
+					<h3>on<wbr>Touch<wbr>End</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">divide<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Touch<wbr>End<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MouseEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L85">math/Vec2.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L140">utils/Controller.ts:140</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>a: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="vec2.html" class="tsd-signature-type">Vec2</a></h5>
+									<h5>e: <span class="tsd-signature-type">MouseEvent</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="multiply" class="tsd-anchor"></a>
-					<h3>multiply</h3>
+					<a name="ontouchmove" class="tsd-anchor"></a>
+					<h3>on<wbr>Touch<wbr>Move</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">multiply<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Touch<wbr>Move<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MouseEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L75">math/Vec2.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L130">utils/Controller.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>a: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="vec2.html" class="tsd-signature-type">Vec2</a></h5>
+									<h5>e: <span class="tsd-signature-type">MouseEvent</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="set" class="tsd-anchor"></a>
-					<h3>set</h3>
+					<a name="ontouchstart" class="tsd-anchor"></a>
+					<h3>on<wbr>Touch<wbr>Start</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Touch<wbr>Start<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MouseEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L22">math/Vec2.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L120">utils/Controller.ts:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>x: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5>y: <span class="tsd-signature-type">number</span></h5>
+									<h5>e: <span class="tsd-signature-type">MouseEvent</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="sub" class="tsd-anchor"></a>
-					<h3>sub</h3>
+					<a name="onwheel" class="tsd-anchor"></a>
+					<h3>on<wbr>Wheel</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">sub<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><a href="vec2.html" class="tsd-signature-type">Vec2</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-						<li class="tsd-signature tsd-kind-icon">sub<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Wheel<span class="tsd-signature-symbol">(</span>e<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">WheelEvent</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L53">math/Vec2.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L160">utils/Controller.ts:160</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>a: <a href="vec2.html" class="tsd-signature-type">Vec2</a></h5>
+									<h5>e: <span class="tsd-signature-type">WheelEvent</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="onwindowresize" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> on<wbr>Window<wbr>Resize</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Window<wbr>Resize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/math/Vec2.ts#L55">math/Vec2.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L91">utils/Controller.ts:91</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>a: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+					<a name="tick" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> tick</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">tick<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/ukonpower/glpower/blob/98b006a/src/utils/Controller.ts#L63">utils/Controller.ts:63</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -406,9 +393,60 @@
 					<li class=" tsd-kind-class">
 						<a href="camera.html" class="tsd-kind-icon">Camera</a>
 					</li>
-					<li class=" tsd-kind-class">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
 						<a href="controller.html" class="tsd-kind-icon">Controller</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="controller.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="controller.html#currentscene" class="tsd-kind-icon">current<wbr>Scene</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="controller.html#cursor" class="tsd-kind-icon">cursor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="controller.html#gprops" class="tsd-kind-icon">g<wbr>Props</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="controller.html#renderer" class="tsd-kind-icon">renderer</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
+								<a href="controller.html#timemem" class="tsd-kind-icon">time<wbr>Mem</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#bindscene" class="tsd-kind-icon">bind<wbr>Scene</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#onhover" class="tsd-kind-icon">on<wbr>Hover</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#onorientationdevice" class="tsd-kind-icon">on<wbr>Orientation<wbr>Device</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#ontouchend" class="tsd-kind-icon">on<wbr>Touch<wbr>End</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#ontouchmove" class="tsd-kind-icon">on<wbr>Touch<wbr>Move</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#ontouchstart" class="tsd-kind-icon">on<wbr>Touch<wbr>Start</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="controller.html#onwheel" class="tsd-kind-icon">on<wbr>Wheel</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="controller.html#onwindowresize" class="tsd-kind-icon">on<wbr>Window<wbr>Resize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
+								<a href="controller.html#tick" class="tsd-kind-icon">tick</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="cubegeometry.html" class="tsd-kind-icon">Cube<wbr>Geometry</a>
 					</li>
@@ -457,51 +495,9 @@
 					<li class=" tsd-kind-class">
 						<a href="texture.html" class="tsd-kind-icon">Texture</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class">
+					<li class=" tsd-kind-class">
 						<a href="vec2.html" class="tsd-kind-icon">Vec2</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="vec2.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="vec2.html#x" class="tsd-kind-icon">x</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="vec2.html#y" class="tsd-kind-icon">y</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="vec2.html#z" class="tsd-kind-icon">z</a>
-							</li>
-							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="vec2.html#isvec2" class="tsd-kind-icon">is<wbr>Vec2</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#add" class="tsd-kind-icon">add</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#clone" class="tsd-kind-icon">clone</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#copy" class="tsd-kind-icon">copy</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#divide" class="tsd-kind-icon">divide</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#multiply" class="tsd-kind-icon">multiply</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#set" class="tsd-kind-icon">set</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="vec2.html#sub" class="tsd-kind-icon">sub</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="vec3.html" class="tsd-kind-icon">Vec3</a>
 					</li>

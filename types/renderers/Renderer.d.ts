@@ -28,6 +28,7 @@ export declare class Renderer {
     constructor(param: RendererParam);
     protected initContext(canvas: HTMLCanvasElement): void;
     setSize(width: number, height: number): void;
+    getSize(): Vec2;
     protected cPrg(obj: PowerObj): void;
     protected cShader(src: string, type: number): WebGLShader;
     protected cAttr(obj: PowerObj): void;

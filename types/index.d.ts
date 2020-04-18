@@ -15,3 +15,6 @@ export * from './math/Vec3';
 export * from './math/Mat4';
 export * from './textures/Texture';
 export * from './Loaders/GLTFLoader';
+export * from './utils/Controller';
+export * from './utils/Cursor';
+export * from './utils/BaseScene';
