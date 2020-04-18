@@ -1,3 +1,5 @@
+import { Vec2 } from "./Vec2";
+
 export class Vec3 {
 
 	public x: number;
@@ -15,12 +17,6 @@ export class Vec3 {
 	public get isVec3() {
 
 		return true;
-
-	}
-
-	public clone() {
-
-		return new Vec3( this.x, this.y, this.z );
 
 	}
 
@@ -130,6 +126,22 @@ export class Vec3 {
 	public dot( v: Vec3 ) {
 
 		return this.x * v.x + this.y * v.y + this.z * v.z;
+
+	}
+
+	public copy( a: Vec2 | Vec3 ) {
+
+		this.x = a.x;
+		this.y = a.y;
+		this.z = a.z || 0;
+
+		return this;
+
+	}
+
+	public clone() {
+
+		return new Vec3( this.x, this.y, this.z );
 
 	}
 

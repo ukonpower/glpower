@@ -48,7 +48,7 @@ export class Renderer {
 
 	constructor( param: RendererParam ) {
 
-		console.log( '%c GLパワーを見せつけろ', 'padding: 5px 10px; background-color: black; color: white;font-size:13px;' );
+		console.log( '%c GLパワーを見せつけろ', 'padding: 5px 10px; background-color: black; color: white;font-size:8px;' );
 
 		this.initContext( param.canvas );
 
@@ -80,6 +80,12 @@ export class Renderer {
 
 		this._canvas.width = width * ( this.isRetina ? window.devicePixelRatio : 1 );
 		this._canvas.height = height * ( this.isRetina ? window.devicePixelRatio : 1 );
+
+	}
+
+	public getSize() {
+
+		return new Vec2( this._canvas.width, this._canvas.height );
 
 	}
 
