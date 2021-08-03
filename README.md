@@ -4,7 +4,7 @@ Javascript オレオレ3D library
 You can get the library from [npm]( https://www.npmjs.com/package/glpower ).
 
 ```bash
-$ npm install ore-three-ts
+$ npm install glpower
 ```
 
 ### Import
