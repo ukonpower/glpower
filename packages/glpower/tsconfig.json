@@ -8,12 +8,12 @@
 		"sourceMap": true,
 		"resolveJsonModule": true,
 		"isolatedModules": true,
+		"emitDeclarationOnly": true,
 		"allowSyntheticDefaultImports": true,
-		"noEmit": true,
-		"rootDir": "./",
-		"baseUrl": ".",
-		"paths": {
-		  "@glpower" : ["./packages/glpower/src"]
-		}
+		"declaration": true,
+		"declarationMap": true,
+		"declarationDir": "./types/",
+		"rootDir": "./src"
 	},
+	"include": ["./src/**/*"],
 }
