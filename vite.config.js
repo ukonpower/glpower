@@ -46,7 +46,7 @@ export default defineConfig( {
 	plugins: [
 		{
 			...glslify( {
-				basedir: './src/glsl/',
+				basedir: './src/ts/glsl/',
 				transform: [
 					[ 'glslify-hex' ],
 					[ 'glslify-import' ]
