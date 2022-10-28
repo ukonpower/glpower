@@ -6,8 +6,9 @@ import { Vector3 } from "./Math/Vector3";
 export type Uniformable = boolean | number | number[] | Vector2 | Vector2[] | Vector3 | Vector3[] | Matrix4;
 
 type Uniform = {
+	name: string,
 	type: string,
-	data: Uniformable
+	value: Uniformable
 }
 
 type Attribute = {
@@ -165,6 +166,14 @@ export class Program {
 
 	public setUniform( name: string, value: Uniformable ) {
 
+		const uni: Uniform = {
+			name,
+			value,
+			type: ''
+		};
+
+		this.uniformList.push( uni );
+
 	}
 
 	/*-------------------------------
@@ -173,7 +182,37 @@ export class Program {
 
 	public prepare() {
 
+		if ( ! this.program ) return;
 
+		this.gl.useProgram( this.program );
+
+		// attributes
+
+		for ( let i = 0; i < this.attributeList.length; i ++ ) {
+
+			const attr = this.attributeList[ i ];
+
+			this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attr.buffer.buffer );
+			this.gl.enableVertexAttribArray( attr.location );
+			this.gl.vertexAttribPointer( attr.location, 3, this.gl.FLOAT, false, 0, 0 );
+
+		}
+
+		// uniforms
+
+		for ( let i = 0; i < this.uniformList.length; i ++ ) {
+
+			const uni = this.uniformList[ i ];
+
+			const location = this.gl.getUniformLocation( this.program, uni.name );
+
+			this.gl.uniformMatrix4fv( location, false, ( uni.value as any ).elm );
+
+		}
+
+	}
+
+	public clean() {
 
 	}
 

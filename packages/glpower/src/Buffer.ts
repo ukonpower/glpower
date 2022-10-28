@@ -1,7 +1,7 @@
 export class Buffer {
 
 	private gl: WebGL2RenderingContext;
-	private buffer: WebGLBuffer | null;
+	public buffer: WebGLBuffer | null;
 
 	constructor( gl: WebGL2RenderingContext ) {
 

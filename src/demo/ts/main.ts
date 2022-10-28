@@ -47,6 +47,10 @@ export class Demo {
 			0.0, 0.0, 1.0
 		] ) ) );
 
+		program.setUniform( 'modelViewMatrix', modelViewMatrix );
+		program.setUniform( 'projectionMatrix', projectionMatrix );
+
+
 		// animate
 
 		const animate = () => {
@@ -58,30 +62,12 @@ export class Demo {
 			modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 			modelViewMatrix.identity().multiply( viewMatrix ).multiply( modelMatrix );
 
-			// if ( positionBuffer ) {
-
-			// 	const positionAttribLocation = this.gl.getAttribLocation( prg, 'position' );
-
-			// 	this.gl.bindBuffer( this.gl.ARRAY_BUFFER, positionBuffer );
-			// 	this.gl.enableVertexAttribArray( positionAttribLocation );
-			// 	this.gl.vertexAttribPointer( positionAttribLocation, 3, this.gl.FLOAT, false, 0, 0 );
-
-			// 	const colorAttribLocation = this.gl.getAttribLocation( prg, 'color' );
-			// 	this.gl.bindBuffer( this.gl.ARRAY_BUFFER, colorBuffer );
-			// 	this.gl.enableVertexAttribArray( colorAttribLocation );
-			// 	this.gl.vertexAttribPointer( colorAttribLocation, 3, this.gl.FLOAT, false, 0, 0 );
-
-			// }
-
-			// const modelViewMatrixLocation = this.gl.getUniformLocation( prg, 'modelViewMatrix' );
-			// const projectionMatrixLocation = this.gl.getUniformLocation( prg, 'projectionMatrix' );
-
-			// this.gl.uniformMatrix4fv( modelViewMatrixLocation, false, modelViewMatrix.elm );
-			// this.gl.uniformMatrix4fv( projectionMatrixLocation, false, projectionMatrix.elm );
+			program.prepare();
 
 			this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );
-
 			this.gl.flush();
+
+			program.clean();
 
 			window.requestAnimationFrame( animate );
 
