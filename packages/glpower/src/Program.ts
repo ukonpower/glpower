@@ -15,6 +15,7 @@ type Attribute = {
 	name: string;
 	location: number;
 	buffer: Buffer;
+	size: number,
 }
 
 export class Program {
@@ -22,6 +23,7 @@ export class Program {
 	protected gl: WebGL2RenderingContext;
 	protected program: WebGLProgram | null;
 
+	protected indexBuffer: Buffer | null = null;
 	protected attributeList: Attribute[] = [];
 	protected uniformList: Uniform[] = [];
 
@@ -98,12 +100,13 @@ export class Program {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: Buffer ) {
+	public setAttribute( name: string, buffer: Buffer, size: number ) {
 
 		const attribute: Attribute = {
 			name,
 			buffer,
-			location: - 1
+			location: - 1,
+			size: size
 		};
 
 		const existIndex = this.attributeList.findIndex( attrib => attrib.name == name );
@@ -161,10 +164,22 @@ export class Program {
 	}
 
 	/*-------------------------------
+		Index
+	-------------------------------*/
+
+	public setIndex( indexBuffer: Buffer | null ) {
+
+		this.indexBuffer = indexBuffer;
+
+	}
+
+	/*-------------------------------
 		Uniforms
 	-------------------------------*/
 
 	public setUniform( name: string, value: Uniformable ) {
+
+		const index = this.uniformList.findIndex( uniform =>uniform.name == name );
 
 		const uni: Uniform = {
 			name,
@@ -172,7 +187,15 @@ export class Program {
 			type: ''
 		};
 
-		this.uniformList.push( uni );
+		if ( index > - 1 ) {
+
+			this.uniformList[ index ] = uni;
+
+		} else {
+
+			this.uniformList.push( uni );
+
+		}
 
 	}
 
@@ -194,7 +217,15 @@ export class Program {
 
 			this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attr.buffer.buffer );
 			this.gl.enableVertexAttribArray( attr.location );
-			this.gl.vertexAttribPointer( attr.location, 3, this.gl.FLOAT, false, 0, 0 );
+			this.gl.vertexAttribPointer( attr.location, attr.size, this.gl.FLOAT, false, 0, 0 );
+
+		}
+
+		// index
+
+		if ( this.indexBuffer ) {
+
+			this.gl.bindBuffer( this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer.buffer );
 
 		}
 

@@ -4,3 +4,8 @@ export * from './Buffer';
 export * from './Math/Vector2';
 export * from './Math/Vector3';
 export * from './Math/Matrix4';
+export * from './Geometries/Geometry';
+export * from './Geometries/CubeGeometry';
+export * from './Geometries/CylinderGeometry';
+export * from './Geometries/PlaneGeometry';
+export * from './Geometries/SphereGeometry';

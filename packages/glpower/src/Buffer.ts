@@ -1,3 +1,5 @@
+type BufferType = 'vbo' | 'ibo';
+
 export class Buffer {
 
 	private gl: WebGL2RenderingContext;
@@ -11,13 +13,15 @@ export class Buffer {
 
 	}
 
-	public setData( data: Int8Array | Int16Array | Int32Array | Float32Array | Float64Array, usage?: number ) {
+	public setData( data: Int8Array | Int16Array | Int32Array | Float32Array | Float64Array, type: BufferType = 'vbo', usage?: number ) {
 
-		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.buffer );
+		const target = type == 'vbo' ? this.gl.ARRAY_BUFFER : this.gl.ELEMENT_ARRAY_BUFFER;
 
-		this.gl.bufferData( this.gl.ARRAY_BUFFER, data, usage || this.gl.STATIC_DRAW );
+		this.gl.bindBuffer( target, this.buffer );
 
-		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, null );
+		this.gl.bufferData( target, data, usage || this.gl.STATIC_DRAW );
+
+		this.gl.bindBuffer( target, null );
 
 		return this;
 
