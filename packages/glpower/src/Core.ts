@@ -1,5 +1,6 @@
 import { Program } from "./Program";
 import { Buffer } from "./Buffer";
+import { VAO } from "./VAO";
 
 export class Core {
 
@@ -24,6 +25,14 @@ export class Core {
 		const vertexBuffer = new Buffer( this.gl );
 
 		return vertexBuffer;
+
+	}
+
+	public createVAO() {
+
+		const vao = new VAO( this.gl );
+
+		return vao;
 
 	}
 

@@ -37,20 +37,23 @@ export class Hello {
 		const program = this.core.createProgram();
 		program.setShader( basicVert, basicFrag );
 
-		program.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( [
+		program.setUniform( 'modelViewMatrix', modelViewMatrix );
+		program.setUniform( 'projectionMatrix', this.projectionMatrix );
+
+		const vao = this.core.createVAO();
+		vao.setProgram( program.getProgram()! );
+
+		vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( [
 			0.0, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			- 1.0, 0.0, 0.0,
 		] ) ), 3 );
 
-		program.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
 			1.0, 0.0, 0.0,
 			0.0, 1.0, 0.0,
 			0.0, 0.0, 1.0
 		] ) ), 3 );
-
-		program.setUniform( 'modelViewMatrix', modelViewMatrix );
-		program.setUniform( 'projectionMatrix', this.projectionMatrix );
 
 		// animate
 
@@ -65,6 +68,7 @@ export class Hello {
 
 			program.prepare();
 
+			this.gl.bindVertexArray( vao.getVAO() );
 			this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );
 			this.gl.flush();
 

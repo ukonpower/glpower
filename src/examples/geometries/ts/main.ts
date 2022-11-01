@@ -13,9 +13,9 @@ export class Hello {
 	private projectionMatrix: GLP.Matrix4;
 
 	private objList: {
-		program: GLP.Program;
 		modelMatrix: GLP.Matrix4;
 		geometry: GLP.Geometry;
+		vao: GLP.VAO;
 	}[] = [];
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
@@ -45,26 +45,29 @@ export class Hello {
 			new GLP.CylinderGeometry(),
 		];
 
+		const program = this.core.createProgram();
+		program.setShader( basicVert, basicFrag );
+
 		geometries.forEach( ( geometry, i ) => {
 
-			const program = this.core.createProgram();
-			program.setShader( basicVert, basicFrag );
+			const vao = this.core.createVAO();
+			vao.setProgram( program.getProgram()! );
 
 			const position = geometry.getAttribute( 'position' );
-			program.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size );
 
 			const uv = geometry.getAttribute( 'uv' );
-			program.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
 
 			const index = geometry.getAttribute( 'index' );
-			program.setIndex( this.core.createBuffer().setData( new Int16Array( index.array ), 'ibo' ) );
+			vao.setIndex( this.core.createBuffer().setData( new Int16Array( index.array ), 'ibo' ) );
 
 			const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
 			this.objList.push( {
-				program,
 				modelMatrix,
-				geometry
+				geometry,
+				vao: vao,
 			} );
 
 		} );
@@ -81,7 +84,6 @@ export class Hello {
 
 			this.objList.forEach( obj => {
 
-				const program = obj.program;
 				const modelMatrix = obj.modelMatrix;
 
 				modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
@@ -92,10 +94,9 @@ export class Hello {
 
 				program.prepare();
 
-				// this.gl.drawArrays( this.gl.TRIANGLES, 0, 10 );
-				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
+				this.gl.bindVertexArray( obj.vao.getVAO() );
 
-				program.clean();
+				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
 
 			} );
 
