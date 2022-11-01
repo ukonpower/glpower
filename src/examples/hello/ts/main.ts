@@ -10,6 +10,7 @@ export class Hello {
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
 	private core: GLP.Core;
+	private projectionMatrix: GLP.Matrix4;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
@@ -19,7 +20,7 @@ export class Hello {
 
 		// scene
 
-		const projectionMatrix = new GLP.Matrix4().perspective( 40, window.innerWidth / window.innerHeight, 0.01, 1000 );
+		this.projectionMatrix = new GLP.Matrix4();
 
 		const cameraMatrix = new GLP.Matrix4().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
@@ -40,16 +41,16 @@ export class Hello {
 			0.0, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			- 1.0, 0.0, 0.0,
-		] ) ) );
+		] ) ), 3 );
 
 		program.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
 			1.0, 0.0, 0.0,
 			0.0, 1.0, 0.0,
 			0.0, 0.0, 1.0
-		] ) ) );
+		] ) ), 3 );
 
 		program.setUniform( 'modelViewMatrix', modelViewMatrix );
-		program.setUniform( 'projectionMatrix', projectionMatrix );
+		program.setUniform( 'projectionMatrix', this.projectionMatrix );
 
 		// animate
 
@@ -84,6 +85,8 @@ export class Hello {
 	}
 
 	private resize() {
+
+		this.projectionMatrix.perspective( 50, window.innerWidth / window.innerHeight, 0.01, 1000 );
 
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
