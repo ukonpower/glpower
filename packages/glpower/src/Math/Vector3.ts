@@ -1,5 +1,11 @@
 import { Vector2 } from "./Vector2";
 
+export type Vector3Raw = {
+	x: number;
+	y: number;
+	z: number;
+}
+
 export class Vector3 {
 
 	public x: number;

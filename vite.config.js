@@ -40,7 +40,7 @@ export default defineConfig( {
 	},
 	resolve: {
 		alias: {
-			"@glpower": path.join( __dirname, "packages/glpower/src" )
+			"glpower": path.join( __dirname, "packages/glpower/src" )
 		},
 	},
 	plugins: [

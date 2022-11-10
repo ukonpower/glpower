@@ -1,4 +1,4 @@
-import * as GLP from '@glpower';
+import * as GLP from 'glpower';
 
 import basicVert from './shaders/basic.vs';
 import basicFrag from './shaders/basic.fs';

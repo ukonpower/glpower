@@ -1,7 +1,6 @@
-import * as GLP from '@glpower';
+import * as GLP from 'glpower';
 
-import basicVert from './shaders/basic.vs';
-import basicFrag from './shaders/basic.fs';
+import { Scene } from './Scene';
 
 export class Hello {
 
@@ -11,6 +10,8 @@ export class Hello {
 	private gl: WebGL2RenderingContext;
 	private core: GLP.Core;
 
+	private scene: Scene;
+
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
@@ -19,67 +20,24 @@ export class Hello {
 
 		// scene
 
-		const projectionMatrix = new GLP.Matrix4().perspective( 40, window.innerWidth / window.innerHeight, 0.01, 1000 );
-
-		const cameraMatrix = new GLP.Matrix4().setFromTransform(
-			new GLP.Vector3( 0.0, 0.0, 5.0 ),
-			new GLP.Vector3( 0.0, 0.0, 0.0 ),
-			new GLP.Vector3( 1.0, 1.0, 1.0 ),
-		);
-
-		const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( 0.0, - 0.3, 0.0 ) );
-		const viewMatrix = cameraMatrix.clone().inverse();
-		const modelViewMatrix = new GLP.Matrix4();
-
-		// program
-
-		const program = this.core.createProgram();
-		program.setShader( basicVert, basicFrag );
-
-		program.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( [
-			0.0, 1.0, 0.0,
-			1.0, 0.0, 0.0,
-			- 1.0, 0.0, 0.0,
-		] ) ) );
-
-		program.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
-			1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
-			0.0, 0.0, 1.0
-		] ) ) );
-
-		program.setUniform( 'modelViewMatrix', modelViewMatrix );
-		program.setUniform( 'projectionMatrix', projectionMatrix );
-
-		// animate
-
-		const animate = () => {
-
-			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-			this.gl.clearDepth( 1.0 );
-			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-
-			modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
-			modelViewMatrix.identity().multiply( viewMatrix ).multiply( modelMatrix );
-
-			program.prepare();
-
-			this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );
-			this.gl.flush();
-
-			program.clean();
-
-			window.requestAnimationFrame( animate );
-
-		};
-
-		animate();
+		this.scene = new Scene();
 
 		// events
 
 		window.addEventListener( 'resize', this.resize.bind( this ) );
 		this.resize();
 
+		// animate
+
+		this.animate();
+
+	}
+
+	private animate() {
+
+		this.scene.update();
+
+		window.requestAnimationFrame( this.animate.bind( this ) );
 
 	}
 
