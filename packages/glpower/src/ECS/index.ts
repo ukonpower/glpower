@@ -1,6 +1,6 @@
-import { Component } from "./Component";
+import { BuiltinComponents, Component, Component, ComponentName } from "./Component";
 import { Entity } from "./Entity";
-import { ECSGroup, System } from "./System";
+import { EntityQuery, System } from "./System";
 import { World } from "./World";
 
 export interface ECSUpdateEvent {
@@ -59,7 +59,7 @@ export class ECS {
 
 	// component
 
-	public addComponent<T extends Component >( world: World, entity: Entity, componentName: string, component: T ) {
+	public addComponent<T extends BuiltinComponents | Component >( world: World, entity: Entity, componentName: ComponentName, component: T ) {
 
 		let componentArray = world.components.get( componentName );
 
@@ -81,7 +81,7 @@ export class ECS {
 
 	}
 
-	public removeComponent( world: World, entity: Entity, componentName: string ) {
+	public removeComponent( world: World, entity: Entity, componentName: ComponentName ) {
 
 		const componentArray = world.components.get( componentName );
 
@@ -93,6 +93,20 @@ export class ECS {
 
 	}
 
+	public getComponent( world: World, entity: Entity, componentName: ComponentName ) : Component | null {
+
+		const component = world.components.get( componentName );
+
+		if ( component !== undefined ) {
+
+			return component[ entity ] || null;
+
+		}
+
+		return null;
+
+	}
+
 	// system
 
 	public addSystem<T extends System >( world: World, systemName: string, system: T ) {
@@ -101,7 +115,7 @@ export class ECS {
 
 	}
 
-	public removeSystem( world: World, componentName: string ) {
+	public removeSystem( world: World, componentName: ComponentName ) {
 
 		world.systems.delete( componentName );
 
@@ -132,9 +146,29 @@ export class ECS {
 
 	// entities
 
-	public getEntities( world: World, group: ECSGroup ) {
+	public getEntities( world: World, query: EntityQuery ): Entity[] {
 
-		return null;
+		const entities = world.entities.filter( entt => {
+
+			for ( let i = 0; i < query.length; i ++ ) {
+
+				const componentName = query[ i ];
+
+				const component = world.components.get( componentName );
+
+				if ( component === undefined || component[ entt ] === undefined ) {
+
+					return false;
+
+				}
+
+			}
+
+			return true;
+
+		} );
+
+		return entities;
 
 	}
 

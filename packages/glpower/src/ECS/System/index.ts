@@ -1,6 +1,8 @@
 import { ECS, ECSUpdateEvent } from "..";
+import { ComponentName } from "../Component";
+import { Entity } from "../Entity";
 
-export type ECSGroup = string[]
+export type EntityQuery = ComponentName[]
 
 export interface SystemUpdateEvent extends ECSUpdateEvent {
 	ecs: ECS
@@ -8,19 +10,19 @@ export interface SystemUpdateEvent extends ECSUpdateEvent {
 
 export class System {
 
-	protected groupList: {name: string, group: ECSGroup}[];
+	protected queries: {name: string, query: EntityQuery}[];
 
-	constructor( groupList: {[key: string]:ECSGroup} ) {
+	constructor( queries: {[key: string]:EntityQuery} ) {
 
-		this.groupList = [];
+		this.queries = [];
 
-		const keys = Object.keys( groupList );
+		const keys = Object.keys( queries );
 
 		for ( let i = 0; i < keys.length; i ++ ) {
 
 			const name = keys[ i ];
 
-			this.groupList.push( { name, group: groupList[ name ] } );
+			this.queries.push( { name, query: queries[ name ] } );
 
 		}
 
@@ -28,17 +30,25 @@ export class System {
 
 	public update( event: SystemUpdateEvent ): void {
 
-		for ( let i = 0; i < this.groupList.length; i ++ ) {
+		for ( let i = 0; i < this.queries.length; i ++ ) {
 
-			const g = this.groupList[ i ];
+			const q = this.queries[ i ];
 
-			const entities = event.ecs.getEntities( event.world, g.group );
+			const entities = event.ecs.getEntities( event.world, q.query );
+
+			for ( let j = 0; j < entities.length; j ++ ) {
+
+				this.updateImpl( q.name, entities[ i ], {
+					...event
+				} );
+
+			}
 
 		}
 
 	}
 
-	public updateImpl( name: string, event: SystemUpdateEvent ) { // eslint-disable-line
+	protected updateImpl( logicName: string, entity: Entity, event: SystemUpdateEvent ) { // eslint-disable-line
 	}
 
 }

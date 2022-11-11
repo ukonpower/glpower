@@ -1,4 +1,4 @@
-import * as GLP from 'glpower';
+import { ECS } from '../ECS';
 
 export class SceneGraph {
 
