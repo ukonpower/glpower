@@ -2,7 +2,7 @@ import * as GLP from 'glpower';
 
 import { Scene } from './Scene';
 
-export class Hello {
+export class Demo {
 
 	// contexts
 
@@ -66,6 +66,6 @@ window.addEventListener( 'DOMContentLoaded', () => {
 
 	}
 
-	new Hello( canvas, gl );
+	new Demo( canvas, gl );
 
 } );

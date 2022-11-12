@@ -1,6 +1,12 @@
 import { Vector2 } from "./Vector2";
 
 
+export type Vec3 = {
+	x: number,
+	y: number,
+	z: number
+}
+
 export class Vector3 {
 
 	public x: number;

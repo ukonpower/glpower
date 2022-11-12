@@ -59,7 +59,7 @@ export class ECS {
 
 	// component
 
-	public addComponent<T extends BuiltinComponents | Component >( world: World, entity: Entity, componentName: ComponentName, component: T ) {
+	public addComponent<T extends Component >( world: World, entity: Entity, componentName: ComponentName, component: T ) {
 
 		let componentArray = world.components.get( componentName );
 
@@ -93,13 +93,13 @@ export class ECS {
 
 	}
 
-	public getComponent( world: World, entity: Entity, componentName: ComponentName ) : Component | null {
+	public getComponent<T extends Component >( world: World, entity: Entity, componentName: ComponentName ): T | null {
 
 		const component = world.components.get( componentName );
 
 		if ( component !== undefined ) {
 
-			return component[ entity ] || null;
+			return ( component[ entity ] || null ) as T;
 
 		}
 

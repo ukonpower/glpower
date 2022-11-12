@@ -20,25 +20,25 @@ export class Scene {
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj1, 'position', { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj1, 'rotation', { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj1, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentMatrix4>( this.world, obj1, 'matrix', { elm: [] } );
+		this.ecs.addComponent<GLP.ComponentMatrix>( this.world, obj1, 'matrix', { local: [], world: [] } );
 
 		const obj2 = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj2, 'position', { x: 0, y: 0, z: 0 } );
+		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj2, 'position', { x: 1, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj2, 'rotation', { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj2, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentMatrix4>( this.world, obj2, 'matrix', { elm: [] } );
+		this.ecs.addComponent<GLP.ComponentMatrix>( this.world, obj2, 'matrix', { local: [], world: [] } );
 
 		const obj3 = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj3, 'position', { x: 0, y: 0, z: 0 } );
+		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj3, 'position', { x: 1, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj3, 'rotation', { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, obj3, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentMatrix4>( this.world, obj3, 'matrix', { elm: [] } );
+		this.ecs.addComponent<GLP.ComponentMatrix>( this.world, obj3, 'matrix', { local: [], world: [] } );
 
 		// scene
 
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, obj1, 'sceneNode', { children: [ obj2 ] } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, obj2, 'sceneNode', { children: [ obj3 ] } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, obj3, 'sceneNode', { children: [] } );
+		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, obj2, 'sceneNode', { parent: obj1, children: [ obj3 ] } );
+		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, obj3, 'sceneNode', { parent: obj2, children: [] } );
 
 		// system
 

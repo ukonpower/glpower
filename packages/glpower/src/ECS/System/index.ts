@@ -38,7 +38,7 @@ export class System {
 
 			for ( let j = 0; j < entities.length; j ++ ) {
 
-				this.updateImpl( q.name, entities[ i ], {
+				this.updateImpl( q.name, entities[ j ], {
 					...event
 				} );
 

@@ -16,7 +16,7 @@ export class MoveSystem extends GLP.System {
 
 		if ( pos ) {
 
-			pos.x = Math.sin( event.time + entity * 0.2 );
+			// pos.x = Math.sin( event.time + entity * 0.2 );
 
 		}
 

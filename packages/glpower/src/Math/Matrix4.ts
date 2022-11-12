@@ -1,10 +1,10 @@
-import { Vector3 } from "./Vector3";
+import { Vec3, Vector3 } from "./Vector3";
 
 export class Matrix4 {
 
 	public elm: number[];
 
-	constructor() {
+	constructor( elm?: number [] ) {
 
 		this.elm = [
 			1, 0, 0, 0,
@@ -12,6 +12,12 @@ export class Matrix4 {
 			0, 0, 1, 0,
 			0, 0, 0, 1,
 		];
+
+		if ( elm ) {
+
+			this.set( elm );
+
+		}
 
 	}
 
@@ -42,7 +48,7 @@ export class Matrix4 {
 
 	public copy( mat: Matrix4 ) {
 
-		this.elm = mat.elm.slice();
+		this.set( mat.elm );
 
 		return this;
 
@@ -122,7 +128,17 @@ export class Matrix4 {
 
 	}
 
-	public setFromTransform( pos: Vector3, rot: Vector3, scale: Vector3 ) {
+	public set( elm: number[] ) {
+
+		for ( let i = 0; i < this.elm.length; i ++ ) {
+
+			this.elm[ i ] = elm[ i ] ?? 0;
+
+		}
+
+	}
+
+	public setFromTransform( pos: Vec3, rot: Vec3, scale: Vec3 ) {
 
 		this.identity();
 
@@ -136,7 +152,19 @@ export class Matrix4 {
 
 	}
 
-	public applyPosition( position: Vector3 ) {
+	public decompose( pos?: Vec3, rot?: Vec3, scale?: Vec3 ) {
+
+		if ( pos ) {
+
+			pos.x = this.elm[ 12 ];
+			pos.y = this.elm[ 13 ];
+			pos.z = this.elm[ 14 ];
+
+		}
+
+	}
+
+	public applyPosition( position: Vec3 ) {
 
 		this.matmul( [
 			1, 0, 0, 0,
@@ -149,7 +177,7 @@ export class Matrix4 {
 
 	}
 
-	public applyRot( rotation: Vector3 ) {
+	public applyRot( rotation: Vec3 ) {
 
 		let c = Math.cos( rotation.x ), s = Math.sin( rotation.x );
 
@@ -182,7 +210,7 @@ export class Matrix4 {
 
 	}
 
-	public applyScale( scale: Vector3 ) {
+	public applyScale( scale: Vec3 ) {
 
 		this.matmul( [
 			scale.x, 0, 0, 0,
@@ -194,7 +222,6 @@ export class Matrix4 {
 		return this;
 
 	}
-
 
 	protected matmul( elm2: number[] ) {
 
@@ -229,5 +256,32 @@ export class Matrix4 {
 		return this;
 
 	}
+
+	public preMultiply( m: Matrix4 ) {
+
+		const tmp = this.copyToArray( [] );
+
+		this.set( m.elm );
+
+		this.matmul( tmp );
+
+		return this;
+
+	}
+
+	public copyToArray( array: number[] ) {
+
+		array.length = this.elm.length;
+
+		for ( let i = 0; i < this.elm.length; i ++ ) {
+
+			array[ i ] = this.elm[ i ];
+
+		}
+
+		return array;
+
+	}
+
 
 }
