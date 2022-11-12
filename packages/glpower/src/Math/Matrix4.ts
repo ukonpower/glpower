@@ -136,6 +136,8 @@ export class Matrix4 {
 
 		}
 
+		return this;
+
 	}
 
 	public setFromTransform( pos: Vec3, rot: Vec3, scale: Vec3 ) {

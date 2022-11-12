@@ -28,13 +28,5 @@ export class Core {
 
 	}
 
-	public createVAO() {
-
-		const vao = new VAO( this.gl );
-
-		return vao;
-
-	}
-
 }
 

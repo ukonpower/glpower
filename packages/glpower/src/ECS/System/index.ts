@@ -36,19 +36,27 @@ export class System {
 
 			const entities = event.ecs.getEntities( event.world, q.query );
 
+			this.beforeUpdateImpl( q.name, event );
+
 			for ( let j = 0; j < entities.length; j ++ ) {
 
-				this.updateImpl( q.name, entities[ j ], {
-					...event
-				} );
+				this.updateImpl( q.name, entities[ j ], event );
 
 			}
+
+			this.afterUpdateImpl( q.name, event );
 
 		}
 
 	}
 
+	protected beforeUpdateImpl( logicName: string, event: SystemUpdateEvent ) { // eslint-disable-line
+	}
+
 	protected updateImpl( logicName: string, entity: Entity, event: SystemUpdateEvent ) { // eslint-disable-line
+	}
+
+	protected afterUpdateImpl( logicName: string, event: SystemUpdateEvent ) { // eslint-disable-line
 	}
 
 }

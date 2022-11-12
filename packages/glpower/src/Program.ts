@@ -2,10 +2,11 @@ import { Buffer } from "./Buffer";
 import { Matrix4 } from "./Math/Matrix4";
 import { Vector2 } from "./Math/Vector2";
 import { Vector3 } from "./Math/Vector3";
+import { VAO } from "./VAO";
 
 export type Uniformable = boolean | number | number[] | Vector2 | Vector2[] | Vector3 | Vector3[] | Matrix4;
 
-type Uniform = {
+export type Uniform = {
 	name: string;
 	location: WebGLUniformLocation | null;
 	value: Uniformable;
@@ -16,6 +17,8 @@ export class Program {
 	public gl: WebGL2RenderingContext;
 	public program: WebGLProgram | null;
 
+	private vao: Map<string, VAO>;
+
 	protected indexBuffer: Buffer | null = null;
 	protected uniformList: Uniform[] = [];
 
@@ -24,6 +27,8 @@ export class Program {
 		this.gl = gl;
 
 		this.program = this.gl.createProgram();
+
+		this.vao = new Map();
 
 	}
 
@@ -113,7 +118,6 @@ export class Program {
 
 		}
 
-
 	}
 
 	private updateUniformLocations( force?: boolean ) {
@@ -129,6 +133,26 @@ export class Program {
 			}
 
 		} );
+
+	}
+
+	/*-------------------------------
+		VAO
+	-------------------------------*/
+
+	public getVAO( id: string = '_' ) {
+
+		if ( ! this.program ) return null;
+
+		let vao = this.vao.get( id );
+
+		if ( vao ) return vao;
+
+		vao = new VAO( this.gl, this.program );
+
+		this.vao.set( id, vao );
+
+		return vao;
 
 	}
 

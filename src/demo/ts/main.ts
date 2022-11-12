@@ -20,7 +20,7 @@ export class Demo {
 
 		// scene
 
-		this.scene = new Scene();
+		this.scene = new Scene( this.core );
 
 		// events
 

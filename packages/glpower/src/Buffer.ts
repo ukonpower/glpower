@@ -1,4 +1,5 @@
-type BufferType = 'vbo' | 'ibo';
+export type BufferType = 'vbo' | 'ibo';
+export type TArrayBuffer = Uint8Array | Uint16Array | Uint32Array | Float32Array | Float64Array
 
 export class Buffer {
 
@@ -13,7 +14,7 @@ export class Buffer {
 
 	}
 
-	public setData( data: Int8Array | Int16Array | Int32Array | Float32Array | Float64Array, type: BufferType = 'vbo', usage?: number ) {
+	public setData( data: TArrayBuffer, type: BufferType = 'vbo', usage?: number ) {
 
 		const target = type == 'vbo' ? this.gl.ARRAY_BUFFER : this.gl.ELEMENT_ARRAY_BUFFER;
 

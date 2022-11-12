@@ -1,10 +1,19 @@
 import { Buffer } from "./Buffer";
 
-type Attribute = {
-	location: number | null;
-	buffer: Buffer;
+export type Attribute = {
+	array: number[];
 	size: number;
 }
+
+export type AttributeBuffer = {
+	buffer: Buffer;
+	size: number;
+	count: number;
+}
+
+export type AttributeBufferWithLocation = {
+	location: number | null;
+} & AttributeBuffer
 
 export class VAO {
 
@@ -12,15 +21,19 @@ export class VAO {
 
 	public vao: WebGLVertexArrayObject | null = null;
 
-	public program: WebGLProgram | null = null;
+	public program: WebGLProgram;
 
 	protected indexBuffer: Buffer | null = null;
 
-	protected attributes: {[key: string]: Attribute} = {};
+	protected attributes: {[key: string]: AttributeBufferWithLocation} = {};
 
-	constructor( gl: WebGL2RenderingContext ) {
+	public vertCount: number = 0;
+
+	constructor( gl: WebGL2RenderingContext, program: WebGLProgram ) {
 
 		this.gl = gl;
+
+		this.program = program;
 
 		this.vao = this.gl.createVertexArray();
 
@@ -30,15 +43,22 @@ export class VAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: Buffer, size: number ) {
+	public setAttribute( name: string, buffer: Buffer, size: number, count: number ) {
 
-		const attribute: Attribute = {
-			buffer,
-			location: null,
-			size: size
-		};
+		let attr = this.attributes[ name ];
 
-		this.attributes[ name ] = attribute;
+		if ( ! attr ) {
+
+			attr = {
+				buffer,
+				location: null,
+				size,
+				count
+			};
+
+			this.attributes[ name ] = attr;
+
+		}
 
 		this.updateAttributes();
 
@@ -58,6 +78,8 @@ export class VAO {
 
 		if ( ! this.vao ) return;
 
+		this.vertCount = 0;
+
 		const attrNameList = Object.keys( this.attributes );
 
 		this.gl.bindVertexArray( this.vao );
@@ -67,23 +89,18 @@ export class VAO {
 			const name = attrNameList[ i ];
 			const attribute = this.attributes[ name ];
 
-			if ( this.program ) {
+			if ( ( attribute.location === null || force ) ) {
 
-				if ( ( attribute.location === null || force ) ) {
+				attribute.location = this.gl.getAttribLocation( this.program, name );
 
-					attribute.location = this.gl.getAttribLocation( this.program, name );
-
-					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
-					this.gl.enableVertexAttribArray( attribute.location );
-					this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
-
-				}
-
-			} else {
-
-				attribute.location = null;
+				this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
+				this.gl.enableVertexAttribArray( attribute.location );
+				this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
 
 			}
+
+			this.vertCount = Math.max( this.vertCount, attribute.count );
+
 
 		}
 
@@ -107,18 +124,6 @@ export class VAO {
 
 		this.gl.bindVertexArray( null );
 
-
-	}
-
-	/*-------------------------------
-		Program
-	-------------------------------*/
-
-	public setProgram( program: WebGLProgram ) {
-
-		this.program = program;
-
-		this.updateAttributes( true );
 
 	}
 

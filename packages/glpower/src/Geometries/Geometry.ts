@@ -1,11 +1,8 @@
-
+import { BufferType } from "../Buffer";
+import { Core } from "../Core";
+import { Attribute, AttributeBuffer } from "../VAO";
 
 type DefaultAttributeName = 'position' | 'uv' | 'normal' | 'index';
-
-export type Attribute = {
-	array: number[];
-	size: number;
-}
 
 export class Geometry {
 
@@ -30,6 +27,18 @@ export class Geometry {
 	public getAttribute( name: DefaultAttributeName | ( string & {} ) ) {
 
 		return this.attributes[ name ];
+
+	}
+
+	public getAttributeBuffer( core: Core, name: DefaultAttributeName | ( string & {} ), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType: BufferType = 'vbo' ): AttributeBuffer {
+
+		const attr = this.getAttribute( name );
+
+		return {
+			buffer: core.createBuffer().setData( new constructor( attr.array ), bufferType ),
+			size: attr.size,
+			count: attr.array.length / attr.size
+		};
 
 	}
 
