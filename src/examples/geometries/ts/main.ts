@@ -50,7 +50,7 @@ export class Hello {
 
 		geometries.forEach( ( geometry, i ) => {
 
-			const vao = program.getVAO()!;
+			const vao = program.getVAO( i.toString() )!;
 
 			const position = geometry.getAttribute( 'position' );
 			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
@@ -90,6 +90,9 @@ export class Hello {
 
 				program.setUniform( 'modelViewMatrix', modelViewMatrix );
 				program.setUniform( 'projectionMatrix', this.projectionMatrix );
+
+				console.log( modelViewMatrix.elm );
+
 
 				program.prepare();
 

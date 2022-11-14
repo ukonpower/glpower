@@ -55,6 +55,8 @@ export class RenderSystem extends GLP.System {
 		this.gl.clearDepth( 1.0 );
 		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 
+		this.gl.enable( this.gl.DEPTH_TEST );
+
 		const cameraPerspective = event.ecs.getComponent<GLP.ComponentPerspectiveCamera>( event.world, this.camera, 'perspectiveCamera' );
 
 		if ( cameraPerspective ) {
@@ -108,6 +110,8 @@ export class RenderSystem extends GLP.System {
 				this.gl.bindVertexArray( vao.getVAO() );
 
 				this.gl.drawElements( this.gl.TRIANGLES, geometry.index.count, this.gl.UNSIGNED_SHORT, 0 );
+
+				this.gl.bindVertexArray( null );
 
 			}
 

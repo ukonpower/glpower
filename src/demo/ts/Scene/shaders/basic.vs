@@ -1,5 +1,4 @@
 attribute vec3 position;
-attribute vec3 color;
 attribute vec2 uv;
 
 uniform mat4 modelViewMatrix;
@@ -15,7 +14,7 @@ void main( void ) {
 	vec4 mvPosition = modelViewMatrix * vec4( pos, 1.0 );
 	gl_Position = projectionMatrix * mvPosition;
 
-	vColor = color;
 	vUv = uv;
+	vColor = vec3( uv, 1.0 );
 
 }

@@ -27,7 +27,7 @@ export class Scene {
 
 		// cube
 
-		const cubeGeometry = new GLP.PlaneGeometry();
+		const cubeGeometry = new GLP.CubeGeometry();
 
 		const cube = this.ecs.createEntity( this.world );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, cube, 'position', { x: 0, y: 0, z: 0 } );
@@ -47,7 +47,7 @@ export class Scene {
 
 		// sphere
 
-		const sphereGeometry = new GLP.PlaneGeometry();
+		const sphereGeometry = new GLP.SphereGeometry();
 
 		const sphere = this.ecs.createEntity( this.world );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, sphere, 'position', { x: 1, y: 0, z: 0 } );
@@ -96,7 +96,7 @@ export class Scene {
 		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, camera, 'matrix', { local: [], world: [] } );
 		this.ecs.addComponent<GLP.ComponentPerspectiveCamera>( this.world, camera, 'perspectiveCamera', {
 			near: 0.01,
-			far: 0.01,
+			far: 1000,
 			fov: 50,
 			aspectRatio: window.innerWidth / window.innerHeight,
 		} );
@@ -108,6 +108,7 @@ export class Scene {
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, cube, 'sceneNode', { children: [ sphere ] } );
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, sphere, 'sceneNode', { parent: cube, children: [ plane ] } );
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, plane, 'sceneNode', { parent: sphere, children: [] } );
+		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, camera, 'sceneNode', { children: [] } );
 
 		/*-------------------------------
 			System

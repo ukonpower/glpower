@@ -93,14 +93,17 @@ export class VAO {
 
 				attribute.location = this.gl.getAttribLocation( this.program, name );
 
-				this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
-				this.gl.enableVertexAttribArray( attribute.location );
-				this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
+				if ( attribute.location > - 1 ) {
+
+					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
+					this.gl.enableVertexAttribArray( attribute.location );
+					this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
+
+				}
 
 			}
 
 			this.vertCount = Math.max( this.vertCount, attribute.count );
-
 
 		}
 

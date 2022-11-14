@@ -128,6 +128,7 @@ export class ECS {
 		const now = new Date().getTime();
 		const deltaTime = ( now - this.lastUpdateTime ) / 1000;
 		this.time += deltaTime;
+		this.lastUpdateTime = now;
 
 		const systemList = world.systems;
 

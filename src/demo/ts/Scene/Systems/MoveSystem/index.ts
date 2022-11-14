@@ -5,7 +5,7 @@ export class MoveSystem extends GLP.System {
 	constructor() {
 
 		super( {
-			move: [ 'position' ]
+			move: [ 'position', 'rotation' ]
 		} );
 
 	}
@@ -13,10 +13,16 @@ export class MoveSystem extends GLP.System {
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
 		const pos = event.ecs.getComponent( event.world, entity, 'position' );
+		const rot = event.ecs.getComponent( event.world, entity, 'rotation' );
 
-		if ( pos ) {
+		if ( pos && rot ) {
 
-			// pos.x = Math.sin( event.time + entity * 0.2 );
+			if ( entity != 3 ) { // カメラを一旦避ける
+
+				rot.z += 0.01;
+				rot.y += 0.01;
+
+			}
 
 		}
 

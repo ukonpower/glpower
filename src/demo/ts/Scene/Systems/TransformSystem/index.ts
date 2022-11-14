@@ -48,7 +48,7 @@ export class TransformSystem extends GLP.System {
 
 			if ( parentMatrix ) {
 
-				this.matrix2.set( parentMatrix.local );
+				this.matrix2.set( parentMatrix.world );
 
 				this.matrix1.preMultiply( this.matrix2 );
 
