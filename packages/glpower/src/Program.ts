@@ -1,13 +1,15 @@
-import { Buffer } from "./Buffer";
 import { Matrix4 } from "./Math/Matrix4";
 import { Vector2 } from "./Math/Vector2";
 import { Vector3 } from "./Math/Vector3";
 import { VAO } from "./VAO";
 
 export type Uniformable = boolean | number | number[] | Vector2 | Vector2[] | Vector3 | Vector3[] | Matrix4;
+export type UniformType =
+	'1f' | '1fv' | '2f' | '2fv' | '3f' | '3fv' | '4f' | '4fv' |
+	'1i' | '1iv' | '2i' | '2iv' | '3i' | '3iv' | '4i' | '4iv' |
+	'Matrix2fv' | 'Matrix3fv' | 'Matrix4fv';
 
 export type Uniform = {
-	name: string;
 	location: WebGLUniformLocation | null;
 	value: Uniformable;
 	type: string;
@@ -18,9 +20,7 @@ export class Program {
 	public program: WebGLProgram | null;
 
 	private vao: Map<string, VAO>;
-
-	protected indexBuffer: Buffer | null = null;
-	protected uniformList: Uniform[] = [];
+	protected uniforms: Map<string, Uniform>;
 
 	constructor( gl: WebGL2RenderingContext ) {
 
@@ -29,6 +29,7 @@ export class Program {
 		this.program = this.gl.createProgram();
 
 		this.vao = new Map();
+		this.uniforms = new Map();
 
 	}
 
@@ -97,21 +98,21 @@ export class Program {
 		Uniforms
 	-------------------------------*/
 
-	public setUniform( name: string, value: Uniformable ) {
+	public setUniform( name: string, type: UniformType, value: Uniformable ) {
 
-		const index = this.uniformList.findIndex( uniform =>uniform.name == name );
+		const uniform = this.uniforms.get( name );
 
-		if ( index > - 1 ) {
+		if ( uniform ) {
 
-			this.uniformList[ index ].value = value;
+			uniform.type = type;
+			uniform.value = value;
 
 		} else {
 
-			this.uniformList.push( {
-				name,
+			this.uniforms.set( name, {
 				value,
-				type: '',
-				location: null
+				type: type,
+				location: null,
 			} );
 
 			this.updateUniformLocations();
@@ -124,13 +125,23 @@ export class Program {
 
 		if ( ! this.program ) return;
 
-		this.uniformList.forEach( uniform => {
+		this.uniforms.forEach( ( uniform, key ) => {
 
 			if ( uniform.location === null || force ) {
 
-				uniform.location = this.gl.getUniformLocation( this.program!, uniform.name );
+				uniform.location = this.gl.getUniformLocation( this.program!, key );
 
 			}
+
+		} );
+
+	}
+
+	public uploadUniforms() {
+
+		this.uniforms.forEach( uniform => {
+
+			( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, ( uniform.value as any ).elm );
 
 		} );
 
@@ -160,25 +171,17 @@ export class Program {
 		Draw??
 	-------------------------------*/
 
-	public prepare() {
+	public use() {
 
 		if ( ! this.program ) return;
 
 		this.gl.useProgram( this.program );
 
-		// uniforms
-
-		for ( let i = 0; i < this.uniformList.length; i ++ ) {
-
-			const uniform = this.uniformList[ i ];
-
-			this.gl.uniformMatrix4fv( uniform.location, false, ( uniform.value as any ).elm );
-
-		}
-
 	}
 
 	public clean() {
+
+		this.gl.useProgram( null );
 
 	}
 

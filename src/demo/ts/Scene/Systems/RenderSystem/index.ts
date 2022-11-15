@@ -85,27 +85,45 @@ export class RenderSystem extends GLP.System {
 
 			const program = this.programPool.create( material.vertexShader, material.fragmentShader );
 
+			// update uniforms
+
 			this.modelMatrix.set( matrix.world );
 			this.modelViewMatrix.copy( this.modelMatrix ).preMultiply( this.viewMatrix );
 
-			program.setUniform( 'modelViewMatrix', this.modelViewMatrix );
-			program.setUniform( 'projectionMatrix', this.projectionMatrix );
+			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
+
+			// update attributes
 
 			const vao = program.getVAO( entity.toString() );
 
 			if ( vao ) {
 
-				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
+				if ( geometry.needsUpdate === undefined || geometry.needsUpdate === true ) {
 
-					const attr = geometry.attributes[ i ];
+					for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
-					vao.setAttribute( attr.name, attr.buffer, attr.size, attr.count );
+						const attr = geometry.attributes[ i ];
+
+						vao.setAttribute( attr.name, attr.buffer, attr.size, attr.count );
+
+					}
+
+					vao.setIndex( geometry.index.buffer );
+
+					geometry.needsUpdate = false;
 
 				}
 
-				vao.setIndex( geometry.index.buffer );
+			}
 
-				program.prepare();
+			// draw
+
+			program.use();
+
+			program.uploadUniforms();
+
+			if ( vao ) {
 
 				this.gl.bindVertexArray( vao.getVAO() );
 
@@ -115,6 +133,7 @@ export class RenderSystem extends GLP.System {
 
 			}
 
+			program.clean();
 
 		}
 

@@ -37,23 +37,24 @@ export class Hello {
 		const program = this.core.createProgram();
 		program.setShader( basicVert, basicFrag );
 
-		program.setUniform( 'modelViewMatrix', modelViewMatrix );
-		program.setUniform( 'projectionMatrix', this.projectionMatrix );
+		program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix );
+		program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
 
-		const vao = this.core.createVAO();
-		vao.setProgram( program.getProgram()! );
+		const vao = program.getVAO();
+
+		if ( ! vao ) return;
 
 		vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( [
 			0.0, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			- 1.0, 0.0, 0.0,
-		] ) ), 3 );
+		] ) ), 3, 3 );
 
 		vao.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
 			1.0, 0.0, 0.0,
 			0.0, 1.0, 0.0,
 			0.0, 0.0, 1.0
-		] ) ), 3 );
+		] ) ), 3, 3 );
 
 		// animate
 
@@ -66,7 +67,9 @@ export class Hello {
 			modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 			modelViewMatrix.identity().multiply( viewMatrix ).multiply( modelMatrix );
 
-			program.prepare();
+			program.use();
+
+			program.uploadUniforms();
 
 			this.gl.bindVertexArray( vao.getVAO() );
 			this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );

@@ -59,7 +59,7 @@ export class Hello {
 			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
 
 			const index = geometry.getAttribute( 'index' );
-			vao.setIndex( this.core.createBuffer().setData( new Int16Array( index.array ), 'ibo' ) );
+			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
 			const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
@@ -81,24 +81,25 @@ export class Hello {
 
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.forEach( obj => {
+			this.objList.forEach( ( obj ) => {
 
 				const modelMatrix = obj.modelMatrix;
 
 				modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 
-				program.setUniform( 'modelViewMatrix', modelViewMatrix );
-				program.setUniform( 'projectionMatrix', this.projectionMatrix );
+				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix );
+				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
 
-				console.log( modelViewMatrix.elm );
+				program.use();
 
-
-				program.prepare();
+				program.uploadUniforms();
 
 				this.gl.bindVertexArray( obj.vao.getVAO() );
 
 				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
+
+				program.clean();
 
 			} );
 
