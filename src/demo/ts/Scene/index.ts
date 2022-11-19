@@ -3,6 +3,9 @@ import { MoveSystem } from './Systems/MoveSystem';
 import { RenderSystem } from './Systems/RenderSystem';
 import { TransformSystem } from './Systems/TransformSystem';
 
+import { Factory } from './Factory';
+import { SceneGraph } from 'glpower';
+
 import basicVert from './shaders/basic.vs';
 import basicFrag from './shaders/basic.fs';
 
@@ -12,115 +15,83 @@ export class Scene {
 
 	private ecs: GLP.ECS;
 	private world: GLP.World;
+	private factory: Factory;
+	private sceneGraph: SceneGraph;
 
 	constructor( core: GLP.Core ) {
 
+		// glp
+
 		this.core = core;
 
-		this.ecs = new GLP.ECS();
+		// esc
 
+		this.ecs = new GLP.ECS();
 		this.world = this.ecs.createWorld();
+		this.factory = new Factory( this.ecs, this.world );
 
 		/*-------------------------------
 			Entities
 		-------------------------------*/
 
+		// scene
+
+		const scene = this.factory.empty( {} );
+
 		// cube
 
-		const cubeGeometry = new GLP.CubeGeometry();
-
-		const cube = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, cube, 'position', { x: 0, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, cube, 'rotation', { x: 0, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, cube, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, cube, 'matrix', { local: [], world: [] } );
-
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, cube, 'material', { vertexShader: basicVert, fragmentShader: basicFrag } );
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, cube, 'geometry', {
-			attributes: [
-				{ name: 'position', ...cubeGeometry.getAttributeBuffer( this.core, 'position', Float32Array ) },
-				{ name: 'uv', ...cubeGeometry.getAttributeBuffer( this.core, 'uv', Float32Array ) },
-				{ name: 'normal', ...cubeGeometry.getAttributeBuffer( this.core, 'normal', Float32Array ) },
-			],
-			index: cubeGeometry.getAttributeBuffer( this.core, 'index', Uint16Array, 'ibo' )
+		const cube = this.factory.mesh( {
+			position: new GLP.Vector3( 0.0, 0.0, 0.0 ),
+			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			geometry: new GLP.CubeGeometry().getComponent( this.core )
 		} );
 
 		// sphere
 
-		const sphereGeometry = new GLP.SphereGeometry();
-
-		const sphere = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, sphere, 'position', { x: 1, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, sphere, 'rotation', { x: 0, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, sphere, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, sphere, 'material', { vertexShader: basicVert, fragmentShader: basicFrag } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, sphere, 'matrix', { local: [], world: [] } );
-
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, sphere, 'material', { vertexShader: basicVert, fragmentShader: basicFrag } );
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, sphere, 'geometry', {
-			attributes: [
-				{ name: 'position', ...sphereGeometry.getAttributeBuffer( this.core, 'position', Float32Array ) },
-				{ name: 'uv', ...sphereGeometry.getAttributeBuffer( this.core, 'uv', Float32Array ) },
-				{ name: 'normal', ...sphereGeometry.getAttributeBuffer( this.core, 'normal', Float32Array ) },
-			],
-			index: sphereGeometry.getAttributeBuffer( this.core, 'index', Uint16Array, 'ibo' )
+		const sphere = this.factory.mesh( {
+			position: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			geometry: new GLP.SphereGeometry().getComponent( this.core )
 		} );
 
 		// plane
 
-		const planeGeometry = new GLP.PlaneGeometry();
-
-		const plane = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, plane, 'position', { x: 1, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, plane, 'rotation', { x: 0, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, plane, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, plane, 'material', { vertexShader: basicVert, fragmentShader: basicFrag } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, plane, 'matrix', { local: [], world: [] } );
-
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, plane, 'material', { vertexShader: basicVert, fragmentShader: basicFrag } );
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, plane, 'geometry', {
-			attributes: [
-				{ name: 'position', ...planeGeometry.getAttributeBuffer( this.core, 'position', Float32Array ) },
-				{ name: 'uv', ...planeGeometry.getAttributeBuffer( this.core, 'uv', Float32Array ) },
-				{ name: 'normal', ...planeGeometry.getAttributeBuffer( this.core, 'normal', Float32Array ) },
-			],
-			index: planeGeometry.getAttributeBuffer( this.core, 'index', Uint16Array, 'ibo' )
+		const plane = this.factory.mesh( {
+			position: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			geometry: new GLP.PlaneGeometry().getComponent( this.core )
 		} );
 
 		// camera
 
-		const camera = this.ecs.createEntity( this.world );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, camera, 'position', { x: 0, y: 0, z: 5 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, camera, 'rotation', { x: 0, y: 0, z: 0 } );
-		this.ecs.addComponent<GLP.ComponentVector3>( this.world, camera, 'scale', { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, camera, 'matrix', { local: [], world: [] } );
-		this.ecs.addComponent<GLP.ComponentPerspectiveCamera>( this.world, camera, 'perspectiveCamera', {
-			near: 0.01,
-			far: 1000,
-			fov: 50,
-			aspectRatio: window.innerWidth / window.innerHeight,
+		const camera = this.factory.perspectiveCamera( {
+			position: new GLP.Vector3( 0.0, 0.0, 5.0 ),
 		} );
 
 		/*-------------------------------
 			Scene
 		-------------------------------*/
 
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, cube, 'sceneNode', { children: [ sphere ] } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, sphere, 'sceneNode', { parent: cube, children: [ plane ] } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, plane, 'sceneNode', { parent: sphere, children: [] } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, camera, 'sceneNode', { children: [] } );
+		this.sceneGraph = new SceneGraph( this.ecs, this.world );
+		this.sceneGraph.add( scene, cube );
+		this.sceneGraph.add( cube, sphere );
+		this.sceneGraph.add( sphere, plane );
+
+		this.sceneGraph.add( scene, camera );
 
 		/*-------------------------------
 			System
 		-------------------------------*/
 
 		this.ecs.addSystem( this.world, 'move', new MoveSystem() );
-		this.ecs.addSystem( this.world, 'transform', new TransformSystem() );
+		this.ecs.addSystem( this.world, 'transform', new TransformSystem( this.sceneGraph ) );
 		this.ecs.addSystem( this.world, 'render', new RenderSystem( this.core, camera ) );
 
 	}
 
 	public update() {
+
+		this.sceneGraph.getTransformUpdateOrder();
 
 		this.ecs.update( this.world );
 

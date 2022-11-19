@@ -1,37 +1,53 @@
 import * as GLP from 'glpower';
+import { SceneGraph } from 'glpower';
 
 export class TransformSystem extends GLP.System {
+
+	private sceneGraph: SceneGraph;
 
 	private matrix1: GLP.Matrix4;
 	private matrix2: GLP.Matrix4;
 
-	constructor() {
+	constructor( sceneGraph: SceneGraph ) {
 
 		super( {
 			'': [
 				'position',
 				"scale",
-				"sceneNode",
 				"matrix",
 			]
 		} );
+
+		this.sceneGraph = sceneGraph;
 
 		this.matrix1 = new GLP.Matrix4();
 		this.matrix2 = new GLP.Matrix4();
 
 	}
 
+	public update( event: GLP.SystemUpdateEvent ): void {
+
+		const entities = this.sceneGraph.getTransformUpdateOrder();
+
+		for ( let i = 0; i < entities.length; i ++ ) {
+
+			const entity = entities[ i ];
+
+			this.updateImpl( '_', entity, event );
+
+		}
+
+	}
+
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
 		const sceneNode = event.ecs.getComponent<GLP.ComponentSceneNode>( event.world, entity, 'sceneNode' );
-
 		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
-
 		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
 		const rotation = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'rotation' );
 		const scale = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
 
-		if ( ! sceneNode || ! position || ! rotation || ! scale || ! matrix ) return;
+		if ( ! position || ! rotation || ! scale || ! matrix ) return;
 
 		// calc self matrix
 
@@ -40,11 +56,9 @@ export class TransformSystem extends GLP.System {
 
 		// parent
 
-		const parent = sceneNode.parent;
+		if ( sceneNode && sceneNode.parent !== undefined ) {
 
-		if ( parent !== undefined ) {
-
-			const parentMatrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, parent, 'matrix' );
+			const parentMatrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, sceneNode.parent, 'matrix' );
 
 			if ( parentMatrix ) {
 

@@ -14,15 +14,12 @@ export class MoveSystem extends GLP.System {
 
 		const pos = event.ecs.getComponent( event.world, entity, 'position' );
 		const rot = event.ecs.getComponent( event.world, entity, 'rotation' );
+		const geo = event.ecs.getComponent( event.world, entity, 'geometry' );
 
-		if ( pos && rot ) {
+		if ( pos && rot && geo ) {
 
-			if ( entity != 3 ) { // カメラを一旦避ける
-
-				rot.z += 0.01;
-				rot.y += 0.01;
-
-			}
+			rot.z += 0.01;
+			rot.y += 0.01;
 
 		}
 

@@ -30,18 +30,6 @@ export class Geometry {
 
 	}
 
-	public getAttributeBuffer( core: Core, name: DefaultAttributeName | ( string & {} ), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType: BufferType = 'vbo' ): AttributeBuffer {
-
-		const attr = this.getAttribute( name );
-
-		return {
-			buffer: core.createBuffer().setData( new constructor( attr.array ), bufferType ),
-			size: attr.size,
-			count: attr.array.length / attr.size
-		};
-
-	}
-
 	private updateVertCount() {
 
 		const keys = Object.keys( this.attributes );
@@ -59,6 +47,33 @@ export class Geometry {
 			}
 
 		} );
+
+	}
+
+	// ecs
+
+	public getAttributeBuffer( core: Core, name: DefaultAttributeName | ( string & {} ), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType: BufferType = 'vbo' ): AttributeBuffer {
+
+		const attr = this.getAttribute( name );
+
+		return {
+			buffer: core.createBuffer().setData( new constructor( attr.array ), bufferType ),
+			size: attr.size,
+			count: attr.array.length / attr.size
+		};
+
+	}
+
+	public getComponent( core: Core ) {
+
+		return {
+			attributes: [
+				{ name: 'position', ...this.getAttributeBuffer( core, 'position', Float32Array ) },
+				{ name: 'uv', ...this.getAttributeBuffer( core, 'uv', Float32Array ) },
+				{ name: 'normal', ...this.getAttributeBuffer( core, 'normal', Float32Array ) },
+			],
+			index: this.getAttributeBuffer( core, 'index', Uint16Array, 'ibo' )
+		};
 
 	}
 
