@@ -140,7 +140,7 @@ export class Vector3 {
 
 		this.x = a.x;
 		this.y = a.y;
-		this.z = a.z || 0;
+		this.z = ( a as any ).z || 0;
 
 		return this;
 
@@ -149,6 +149,12 @@ export class Vector3 {
 	public clone() {
 
 		return new Vector3( this.x, this.y, this.z );
+
+	}
+
+	public get elm() {
+
+		return [ this.x, this.y, this.z ];
 
 	}
 

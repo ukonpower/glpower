@@ -1,4 +1,5 @@
 import * as GLP from 'glpower';
+import { Uniformable } from 'glpower';
 import { ProgramPool } from './ProgramPool';
 
 export class RenderSystem extends GLP.System {
@@ -99,9 +100,42 @@ export class RenderSystem extends GLP.System {
 
 				for ( let i = 0; i < keys.length; i ++ ) {
 
-					const uni = material.uniforms[ keys[ i ] ];
+					const name = keys[ i ];
+					const uni = material.uniforms[ name ];
+					const type = uni.type;
+					const value = uni.value;
 
-					program.setUniform( keys[ i ], uni.type, uni.value );
+					const arrayValue: ( number | boolean )[] = [];
+
+					const _ = ( v: Uniformable ) => {
+
+						if ( typeof v == 'number' || typeof v == 'boolean' ) {
+
+							arrayValue.push( v );
+
+						} else {
+
+							arrayValue.push( ...v.elm );
+
+						}
+
+					};
+
+					if ( Array.isArray( value ) ) {
+
+						for ( let j = 0; j < value.length; j ++ ) {
+
+							_( value[ i ] );
+
+						}
+
+					} else {
+
+						_( value );
+
+					}
+
+					program.setUniform( keys[ i ], type, arrayValue );
 
 				}
 

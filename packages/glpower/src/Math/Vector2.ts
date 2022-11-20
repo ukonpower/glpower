@@ -105,4 +105,10 @@ export class Vector2 {
 
 	}
 
+	public get elm() {
+
+		return [ this.x, this.y ];
+
+	}
+
 }

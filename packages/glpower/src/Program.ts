@@ -3,7 +3,7 @@ import { Vector2 } from "./Math/Vector2";
 import { Vector3 } from "./Math/Vector3";
 import { VAO } from "./VAO";
 
-export type Uniformable = boolean | number | number[] | Vector2 | Vector2[] | Vector3 | Vector3[] | Matrix4;
+export type Uniformable = boolean | number | Vector2 | Vector3 | Matrix4;
 export type UniformType =
 	'1f' | '1fv' | '2f' | '2fv' | '3f' | '3fv' | '4f' | '4fv' |
 	'1i' | '1iv' | '2i' | '2iv' | '3i' | '3iv' | '4i' | '4iv' |
@@ -11,7 +11,7 @@ export type UniformType =
 
 export type Uniform = {
 	location: WebGLUniformLocation | null;
-	value: Uniformable;
+	value: ( number|boolean )[];
 	type: string;
 }
 export class Program {
@@ -98,7 +98,7 @@ export class Program {
 		Uniforms
 	-------------------------------*/
 
-	public setUniform( name: string, type: UniformType, value: Uniformable ) {
+	public setUniform( name: string, type: UniformType, value: ( number | boolean )[] ) {
 
 		const uniform = this.uniforms.get( name );
 
@@ -141,7 +141,19 @@ export class Program {
 
 		this.uniforms.forEach( uniform => {
 
-			( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, ( uniform.value as any ) );
+			if ( /Matrix[2|3|4]fv/.test( uniform.type ) ) {
+
+				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, uniform.value );
+
+			} else if ( /[1|2|3|4]f/.test( uniform.type ) ) {
+
+				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, ...uniform.value );
+
+			} else {
+
+				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, uniform.value );
+
+			}
 
 		} );
 

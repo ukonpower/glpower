@@ -50,7 +50,7 @@ export type ComponentPerspectiveCamera = {
 export type ComponentMaterial = {
 	vertexShader: string;
 	fragmentShader: string;
-	uniforms?: {[key:string]: {value: Uniformable, type: UniformType}}
+	uniforms?: {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
 }
 
 export type ComponentGeometry = {
