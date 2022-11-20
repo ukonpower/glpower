@@ -11,8 +11,10 @@ export type UniformType =
 
 export type Uniform = {
 	location: WebGLUniformLocation | null;
-	value: ( number|boolean )[];
+	value: ( number | boolean )[];
 	type: string;
+	cache?: ( number | boolean )[];
+	needsUpdate?: boolean
 }
 export class Program {
 
@@ -107,12 +109,32 @@ export class Program {
 			uniform.type = type;
 			uniform.value = value;
 
+			if ( uniform.cache ) {
+
+				for ( let i = 0; i < value.length; i ++ ) {
+
+					if ( uniform.cache[ i ] !== value[ i ] ) {
+
+						uniform.needsUpdate = true;
+						break;
+
+					}
+
+				}
+
+			} else {
+
+				uniform.needsUpdate = true;
+
+			}
+
 		} else {
 
 			this.uniforms.set( name, {
 				value,
 				type: type,
 				location: null,
+				needsUpdate: true
 			} );
 
 			this.updateUniformLocations();
@@ -141,17 +163,24 @@ export class Program {
 
 		this.uniforms.forEach( uniform => {
 
-			if ( /Matrix[2|3|4]fv/.test( uniform.type ) ) {
+			if ( uniform.needsUpdate ) {
 
-				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, uniform.value );
+				if ( /Matrix[2|3|4]fv/.test( uniform.type ) ) {
 
-			} else if ( /[1|2|3|4]f/.test( uniform.type ) ) {
+					( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, uniform.value );
 
-				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, ...uniform.value );
+				} else if ( /[1|2|3|4]f$/.test( uniform.type ) ) {
 
-			} else {
+					( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, ...uniform.value );
 
-				( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, uniform.value );
+				} else {
+
+					( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, uniform.value );
+
+				}
+
+				uniform.cache = uniform.value.concat();
+				uniform.needsUpdate = false;
 
 			}
 
