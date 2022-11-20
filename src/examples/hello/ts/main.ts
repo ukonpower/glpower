@@ -37,8 +37,8 @@ export class Hello {
 		const program = this.core.createProgram();
 		program.setShader( basicVert, basicFrag );
 
-		program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix );
-		program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
+		program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
+		program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 
 		const vao = program.getVAO();
 

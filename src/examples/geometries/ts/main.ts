@@ -88,8 +88,8 @@ export class Hello {
 				modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 
-				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix );
-				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
+				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
+				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 
 				program.use();
 
