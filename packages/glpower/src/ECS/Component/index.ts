@@ -1,7 +1,5 @@
-import { Attribute } from "../../Geometries/Geometry";
 import { Vec3 } from "../../Math/Vector3";
-import { Buffer } from '../../Buffer';
-import { Uniform } from "../../Program";
+import { Uniform, Uniformable, UniformType } from "../../Program";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../VAO";
 
@@ -52,7 +50,7 @@ export type ComponentPerspectiveCamera = {
 export type ComponentMaterial = {
 	vertexShader: string;
 	fragmentShader: string;
-	uniforms?: Uniform[]
+	uniforms?: {[key:string]: {value: Uniformable, type: UniformType}}
 }
 
 export type ComponentGeometry = {

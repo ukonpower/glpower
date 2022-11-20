@@ -90,8 +90,22 @@ export class RenderSystem extends GLP.System {
 			this.modelMatrix.set( matrix.world );
 			this.modelViewMatrix.copy( this.modelMatrix ).preMultiply( this.viewMatrix );
 
-			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix );
-			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix );
+			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
+
+			if ( material.uniforms ) {
+
+				const keys = Object.keys( material.uniforms );
+
+				for ( let i = 0; i < keys.length; i ++ ) {
+
+					const uni = material.uniforms[ keys[ i ] ];
+
+					program.setUniform( keys[ i ], uni.type, uni.value );
+
+				}
+
+			}
 
 			// update attributes
 

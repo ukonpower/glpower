@@ -141,7 +141,7 @@ export class Program {
 
 		this.uniforms.forEach( uniform => {
 
-			( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, ( uniform.value as any ).elm );
+			( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, ( uniform.value as any ) );
 
 		} );
 

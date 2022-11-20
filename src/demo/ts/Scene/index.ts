@@ -42,7 +42,16 @@ export class Scene {
 
 		const cube = this.factory.mesh( {
 			position: new GLP.Vector3( 0.0, 0.0, 0.0 ),
-			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+						type: '3f'
+					}
+				}
+			},
 			geometry: new GLP.CubeGeometry().getComponent( this.core )
 		} );
 
@@ -50,7 +59,16 @@ export class Scene {
 
 		const sphere = this.factory.mesh( {
 			position: new GLP.Vector3( 1.0, 0.0, 0.0 ),
-			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 0.0, 1.0, 0.0 ),
+						type: '3f'
+					}
+				}
+			},
 			geometry: new GLP.SphereGeometry().getComponent( this.core )
 		} );
 
@@ -58,7 +76,16 @@ export class Scene {
 
 		const plane = this.factory.mesh( {
 			position: new GLP.Vector3( 1.0, 0.0, 0.0 ),
-			material: { vertexShader: basicVert, fragmentShader: basicFrag },
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 0.0, 0.0, 1.0 ),
+						type: '3f'
+					}
+				}
+			},
 			geometry: new GLP.PlaneGeometry().getComponent( this.core )
 		} );
 
