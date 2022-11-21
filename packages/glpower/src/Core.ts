@@ -1,6 +1,7 @@
 import { Program } from "./Program";
 import { Buffer } from "./Buffer";
 import { VAO } from "./VAO";
+import { Texture } from "./Texture";
 
 export class Core {
 
@@ -9,6 +10,8 @@ export class Core {
 	constructor( gl: WebGL2RenderingContext ) {
 
 		this.gl = gl;
+
+		this.gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
 
 	}
 
@@ -25,6 +28,14 @@ export class Core {
 		const vertexBuffer = new Buffer( this.gl );
 
 		return vertexBuffer;
+
+	}
+
+	public createTexture() {
+
+		const texture = new Texture( this.gl );
+
+		return texture;
 
 	}
 

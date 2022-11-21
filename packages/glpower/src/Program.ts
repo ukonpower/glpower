@@ -169,7 +169,7 @@ export class Program {
 
 					( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, false, uniform.value );
 
-				} else if ( /[1|2|3|4]f$/.test( uniform.type ) ) {
+				} else if ( /[1|2|3|4][f|i]$/.test( uniform.type ) ) {
 
 					( this.gl as any )[ 'uniform' + uniform.type ]( uniform.location, ...uniform.value );
 
