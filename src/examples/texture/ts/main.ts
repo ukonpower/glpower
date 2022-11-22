@@ -39,7 +39,7 @@ export class Hello {
 		// texture
 
 		const texture = this.core.createTexture();
-		texture.load( "./assets/lenna.jpg" );
+		texture.load( "/assets/lenna.jpg" );
 
 		const textureUnitId = 0;
 

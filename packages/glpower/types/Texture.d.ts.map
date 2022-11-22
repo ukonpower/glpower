@@ -1,0 +1,1 @@
+{"version":3,"file":"Texture.d.ts","sourceRoot":"","sources":["../src/Texture.ts"],"names":[],"mappings":"AAAA,qBAAa,OAAO;IAEnB,OAAO,CAAC,EAAE,CAAyB;IACnC,OAAO,CAAC,KAAK,CAA0B;IACvC,OAAO,CAAC,OAAO,CAAsB;gBAExB,EAAE,EAAE,sBAAsB;IAShC,IAAI,CAAE,GAAG,EAAE,MAAM;IAkBjB,MAAM,CAAE,MAAM,EAAE,MAAM;IAOtB,UAAU;CAMjB"}
