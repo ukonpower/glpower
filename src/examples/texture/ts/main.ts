@@ -1,9 +1,9 @@
 import * as GLP from 'glpower';
 
-import basicVert from './shaders/basic.vs';
-import textureFrag from './shaders/texture.fs';
+import basicVert from '../../shaders/basic.vs';
+import textureFrag from '../../shaders/texture.fs';
 
-export class Hello {
+class ExTexture {
 
 	// contexts
 
@@ -160,6 +160,6 @@ window.addEventListener( 'DOMContentLoaded', () => {
 
 	}
 
-	new Hello( canvas, gl );
+	new ExTexture( canvas, gl );
 
 } );

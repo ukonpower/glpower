@@ -1,9 +1,9 @@
 import * as GLP from 'glpower';
 
 import basicVert from '../../shaders/basic.vs';
-import basicFrag from '../../shaders/basic.fs';
+import textureFrag from '../../shaders/texture.fs';
 
-class ExGeometries {
+class ExFrameBuffer {
 
 	// contexts
 
@@ -36,17 +36,18 @@ class ExGeometries {
 
 		const viewMatrix = cameraMatrix.clone().inverse();
 
-		// program
+		// geometry
 
 		const geometries = [
-			new GLP.PlaneGeometry(),
-			new GLP.CubeGeometry(),
-			new GLP.SphereGeometry(),
-			new GLP.CylinderGeometry(),
+			new GLP.PlaneGeometry( 1.4, 1.4 ),
 		];
 
+		// program
+
 		const program = this.core.createProgram();
-		program.setShader( basicVert, basicFrag );
+		program.setShader( basicVert, textureFrag );
+
+		// create vao
 
 		geometries.forEach( ( geometry, i ) => {
 
@@ -146,6 +147,6 @@ window.addEventListener( 'DOMContentLoaded', () => {
 
 	}
 
-	new ExGeometries( canvas, gl );
+	new ExFrameBuffer( canvas, gl );
 
 } );
