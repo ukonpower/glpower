@@ -1,7 +1,7 @@
 import { Matrix4 } from "./Math/Matrix4";
 import { Vector2 } from "./Math/Vector2";
 import { Vector3 } from "./Math/Vector3";
-import { VAO } from "./GLPowerVAO";
+import { GLPowerVAO } from "./GLPowerVAO";
 
 export type Uniformable = boolean | number | Vector2 | Vector3 | Matrix4;
 export type UniformType =
@@ -22,7 +22,7 @@ export class GLPowerProgram {
 	public gl: WebGL2RenderingContext;
 	public program: WebGLProgram | null;
 
-	private vao: Map<string, VAO>;
+	private vao: Map<string, GLPowerVAO>;
 	protected uniforms: Map<string, Uniform>;
 
 	constructor( gl: WebGL2RenderingContext ) {
@@ -201,7 +201,7 @@ export class GLPowerProgram {
 
 		if ( vao ) return vao;
 
-		vao = new VAO( this.gl, this.program );
+		vao = new GLPowerVAO( this.gl, this.program );
 
 		this.vao.set( id, vao );
 

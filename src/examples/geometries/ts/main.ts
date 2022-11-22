@@ -15,7 +15,7 @@ class ExGeometries {
 	private objList: {
 		modelMatrix: GLP.Matrix4;
 		geometry: GLP.Geometry;
-		vao: GLP.VAO;
+		vao: GLP.GLPowerVAO;
 	}[] = [];
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
