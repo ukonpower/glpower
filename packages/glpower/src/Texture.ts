@@ -13,21 +13,13 @@ export class Texture {
 
 	}
 
-	public load( src: string ) {
+	public attach( img: HTMLImageElement ) {
 
-		const img = new Image();
+		this.image = img;
 
-		img.onload = () => {
-
-			this.image = img;
-
-			this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image );
-			this.gl.generateMipmap( this.gl.TEXTURE_2D );
-
-		};
-
-		img.src = src;
+		this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
+		this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image );
+		this.gl.generateMipmap( this.gl.TEXTURE_2D );
 
 	}
 
@@ -38,9 +30,49 @@ export class Texture {
 
 	}
 
+	public load( src: string ) {
+
+		const img = new Image();
+
+		img.onload = () => {
+
+			this.attach( img );
+
+		};
+
+		img.src = src;
+
+	}
+
 	public getTexture() {
 
 		return this.texture;
+
+	}
+
+	public loadAsync( src: string ) {
+
+		return new Promise( ( resolve, reject ) => {
+
+			const img = new Image();
+
+			img.onload = () => {
+
+				this.attach( img );
+
+				resolve( this );
+
+			};
+
+			img.onerror = () => {
+
+				reject( 'img error, ' + src );
+
+			};
+
+			img.src = src;
+
+		} );
 
 	}
 
