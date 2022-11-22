@@ -1,9 +1,8 @@
-import { Program } from "./Program";
-import { Buffer } from "./Buffer";
-import { VAO } from "./VAO";
-import { Texture } from "./Texture";
+import { GLPowerProgram } from "./GLPowerProgram";
+import { GLPowerBuffer } from "./GLPowerBuffer";
+import { GLPowerTexture } from "./GLPowerTexture";
 
-export class Core {
+export class Power {
 
 	public gl: WebGL2RenderingContext;
 
@@ -17,7 +16,7 @@ export class Core {
 
 	public createProgram() {
 
-		const program = new Program( this.gl );
+		const program = new GLPowerProgram( this.gl );
 
 		return program;
 
@@ -25,7 +24,7 @@ export class Core {
 
 	public createBuffer() {
 
-		const vertexBuffer = new Buffer( this.gl );
+		const vertexBuffer = new GLPowerBuffer( this.gl );
 
 		return vertexBuffer;
 
@@ -33,7 +32,7 @@ export class Core {
 
 	public createTexture() {
 
-		const texture = new Texture( this.gl );
+		const texture = new GLPowerTexture( this.gl );
 
 		return texture;
 

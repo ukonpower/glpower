@@ -8,7 +8,7 @@ export class Demo {
 
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Core;
+	private core: GLP.Power;
 
 	private scene: Scene;
 
@@ -16,7 +16,7 @@ export class Demo {
 
 		this.canvas = canvas;
 		this.gl = gl;
-		this.core = new GLP.Core( this.gl );
+		this.core = new GLP.Power( this.gl );
 
 		// scene
 

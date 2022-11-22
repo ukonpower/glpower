@@ -1,6 +1,6 @@
-import { BufferType } from "../Buffer";
-import { Core } from "../Core";
-import { Attribute, AttributeBuffer } from "../VAO";
+import { BufferType } from "../GLPowerBuffer";
+import { Power } from "../Power";
+import { Attribute, AttributeBuffer } from "../GLPowerVAO";
 
 type DefaultAttributeName = 'position' | 'uv' | 'normal' | 'index';
 
@@ -52,7 +52,7 @@ export class Geometry {
 
 	// ecs
 
-	public getAttributeBuffer( core: Core, name: DefaultAttributeName | ( string & {} ), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType: BufferType = 'vbo' ): AttributeBuffer {
+	public getAttributeBuffer( core: Power, name: DefaultAttributeName | ( string & {} ), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType: BufferType = 'vbo' ): AttributeBuffer {
 
 		const attr = this.getAttribute( name );
 
@@ -64,7 +64,7 @@ export class Geometry {
 
 	}
 
-	public getComponent( core: Core ) {
+	public getComponent( core: Power ) {
 
 		return {
 			attributes: [

@@ -1,4 +1,4 @@
-import { Buffer } from "./Buffer";
+import { GLPowerBuffer } from "./GLPowerBuffer";
 
 export type Attribute = {
 	array: number[];
@@ -6,7 +6,7 @@ export type Attribute = {
 }
 
 export type AttributeBuffer = {
-	buffer: Buffer;
+	buffer: GLPowerBuffer;
 	size: number;
 	count: number;
 }
@@ -23,7 +23,7 @@ export class VAO {
 
 	public program: WebGLProgram;
 
-	protected indexBuffer: Buffer | null = null;
+	protected indexBuffer: GLPowerBuffer | null = null;
 
 	protected attributes: {[key: string]: AttributeBufferWithLocation} = {};
 
@@ -43,7 +43,7 @@ export class VAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: Buffer, size: number, count: number ) {
+	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, count: number ) {
 
 		let attr = this.attributes[ name ];
 
@@ -115,7 +115,7 @@ export class VAO {
 		Index
 	-------------------------------*/
 
-	public setIndex( indexBuffer: Buffer | null ) {
+	public setIndex( indexBuffer: GLPowerBuffer | null ) {
 
 		this.indexBuffer = indexBuffer;
 

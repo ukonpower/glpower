@@ -9,14 +9,14 @@ export class Hello {
 
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Core;
+	private power: GLP.Power;
 	private projectionMatrix: GLP.Matrix4;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
 		this.gl = gl;
-		this.core = new GLP.Core( this.gl );
+		this.power = new GLP.Power( this.gl );
 
 		// scene
 
@@ -34,7 +34,7 @@ export class Hello {
 
 		// program
 
-		const program = this.core.createProgram();
+		const program = this.power.createProgram();
 		program.setShader( basicVert, basicFrag );
 
 		program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
@@ -44,13 +44,13 @@ export class Hello {
 
 		if ( ! vao ) return;
 
-		vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( [
 			0.0, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			- 1.0, 0.0, 0.0,
 		] ) ), 3, 3 );
 
-		vao.setAttribute( 'color', this.core.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'color', this.power.createBuffer().setData( new Float32Array( [
 			1.0, 0.0, 0.0,
 			0.0, 1.0, 0.0,
 			0.0, 0.0, 1.0

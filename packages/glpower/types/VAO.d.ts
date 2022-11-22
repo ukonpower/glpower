@@ -1,4 +1,4 @@
-import { Buffer } from "./Buffer";
+import { Buffer } from "./GLPowerBuffer";
 export declare type Attribute = {
     array: number[];
     size: number;

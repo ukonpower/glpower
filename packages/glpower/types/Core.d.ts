@@ -1,6 +1,6 @@
-import { Program } from "./Program";
-import { Buffer } from "./Buffer";
-import { Texture } from "./Texture";
+import { Program } from "./GLPowerProgram";
+import { Buffer } from "./GLPowerBuffer";
+import { Texture } from "./GLPowerTexture";
 export declare class Core {
     gl: WebGL2RenderingContext;
     constructor(gl: WebGL2RenderingContext);
