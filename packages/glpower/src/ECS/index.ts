@@ -1,4 +1,4 @@
-import { BuiltinComponents, Component, Component, ComponentName } from "./Component";
+import { Component, ComponentName } from "./Component";
 import { Entity } from "./Entity";
 import { EntityQuery, System } from "./System";
 import { World } from "./World";

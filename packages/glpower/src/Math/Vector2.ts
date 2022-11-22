@@ -16,7 +16,7 @@ export class Vector2 {
 
 		return true;
 
-	}1;
+	}
 
 	public set( x: number, y: number ) {
 
@@ -27,11 +27,11 @@ export class Vector2 {
 
 	}
 
-	public add( a: Vector2 )
+	public add( a: Vector2 ): Vector2
 
-	public add( a: number )
+	public add( a: number ): Vector2
 
-	public add( a: any ) {
+	public add( a: any ): Vector2 {
 
 		if ( ( a as Vector2 ).isVector2 ) {
 
@@ -49,11 +49,11 @@ export class Vector2 {
 
 	}
 
-	public sub( a: Vector2 )
+	public sub( a: Vector2 ): Vector2
 
-	public sub( a: number )
+	public sub( a: number ): Vector2
 
-	public sub( a: any ) {
+	public sub( a: any ): Vector2 {
 
 		if ( ( a as Vector2 ).isVector2 ) {
 
