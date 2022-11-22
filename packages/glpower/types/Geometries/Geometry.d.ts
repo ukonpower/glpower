@@ -1,6 +1,6 @@
-import { BufferType } from "../Buffer";
-import { Core } from "../Core";
-import { Attribute, AttributeBuffer } from "../VAO";
+import { BufferType } from "../GLPowerBuffer";
+import { Core } from "../Power";
+import { Attribute, AttributeBuffer } from "../GLPowerVAO";
 declare type DefaultAttributeName = 'position' | 'uv' | 'normal' | 'index';
 export declare class Geometry {
     count: number;
@@ -14,7 +14,7 @@ export declare class Geometry {
     getAttributeBuffer(core: Core, name: DefaultAttributeName | (string & {}), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType?: BufferType): AttributeBuffer;
     getComponent(core: Core): {
         attributes: {
-            buffer: import("../Buffer").Buffer;
+            buffer: import("../GLPowerBuffer").Buffer;
             size: number;
             count: number;
             name: string;

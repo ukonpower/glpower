@@ -1,4 +1,4 @@
-export class Texture {
+export class GLPowerTexture {
 
 	private gl: WebGL2RenderingContext;
 	private image: HTMLImageElement | null;

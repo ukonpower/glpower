@@ -5,7 +5,7 @@ import { ProgramPool } from './ProgramPool';
 export class RenderSystem extends GLP.System {
 
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Core;
+	private core: GLP.Power;
 
 	// program
 
@@ -22,7 +22,7 @@ export class RenderSystem extends GLP.System {
 	private modelMatrix: GLP.Matrix4;
 	private modelViewMatrix: GLP.Matrix4;
 
-	constructor( core: GLP.Core, camera: GLP.Entity ) {
+	constructor( core: GLP.Power, camera: GLP.Entity ) {
 
 		super( {
 			'': [

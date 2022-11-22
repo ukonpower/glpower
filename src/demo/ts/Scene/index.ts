@@ -11,14 +11,14 @@ import basicFrag from './shaders/basic.fs';
 
 export class Scene {
 
-	private core: GLP.Core;
+	private core: GLP.Power;
 
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 	private factory: Factory;
 	private sceneGraph: SceneGraph;
 
-	constructor( core: GLP.Core ) {
+	constructor( core: GLP.Power ) {
 
 		// glp
 

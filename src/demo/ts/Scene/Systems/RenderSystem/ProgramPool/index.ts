@@ -2,12 +2,12 @@ import * as GLP from 'glpower';
 
 export class ProgramPool {
 
-	private core: GLP.Core;
+	private core: GLP.Power;
 	private gl: WebGL2RenderingContext;
 
-	private pool: Map<string, GLP.Program>;
+	private pool: Map<string, GLP.GLPowerProgram>;
 
-	constructor( core: GLP.Core ) {
+	constructor( core: GLP.Power ) {
 
 		this.core = core;
 		this.gl = this.core.gl;

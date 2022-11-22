@@ -1,7 +1,7 @@
 export type BufferType = 'vbo' | 'ibo';
 export type TArrayBuffer = Uint8Array | Uint16Array | Uint32Array | Float32Array | Float64Array
 
-export class Buffer {
+export class GLPowerBuffer {
 
 	private gl: WebGL2RenderingContext;
 	public buffer: WebGLBuffer | null;

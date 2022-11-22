@@ -1,7 +1,7 @@
 import { Vec3 } from "../../Math/Vector3";
-import { Uniformable, UniformType } from "../../Program";
+import { Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
-import { AttributeBuffer } from "../../VAO";
+import { AttributeBuffer } from "../../GLPowerVAO";
 export interface Component {
     [key: string]: any;
 }

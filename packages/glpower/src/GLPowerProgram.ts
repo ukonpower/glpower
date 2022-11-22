@@ -1,7 +1,7 @@
 import { Matrix4 } from "./Math/Matrix4";
 import { Vector2 } from "./Math/Vector2";
 import { Vector3 } from "./Math/Vector3";
-import { VAO } from "./VAO";
+import { VAO } from "./GLPowerVAO";
 
 export type Uniformable = boolean | number | Vector2 | Vector3 | Matrix4;
 export type UniformType =
@@ -16,7 +16,8 @@ export type Uniform = {
 	cache?: ( number | boolean )[];
 	needsUpdate?: boolean
 }
-export class Program {
+
+export class GLPowerProgram {
 
 	public gl: WebGL2RenderingContext;
 	public program: WebGLProgram | null;
