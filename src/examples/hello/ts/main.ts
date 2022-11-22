@@ -1,9 +1,9 @@
 import * as GLP from 'glpower';
 
-import basicVert from './shaders/basic.vs';
-import basicFrag from './shaders/basic.fs';
+import basicVert from '../../shaders/basic.vs';
+import basicFrag from '../../shaders/basic.fs';
 
-export class Hello {
+class ExHello {
 
 	// contexts
 
@@ -50,9 +50,9 @@ export class Hello {
 			- 1.0, 0.0, 0.0,
 		] ) ), 3, 3 );
 
-		vao.setAttribute( 'color', this.power.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( [
+			0.5, 1.0, 0.0,
 			1.0, 0.0, 0.0,
-			0.0, 1.0, 0.0,
 			0.0, 0.0, 1.0
 		] ) ), 3, 3 );
 
@@ -118,6 +118,6 @@ window.addEventListener( 'DOMContentLoaded', () => {
 
 	}
 
-	new Hello( canvas, gl );
+	new ExHello( canvas, gl );
 
 } );
