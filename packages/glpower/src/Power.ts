@@ -1,6 +1,7 @@
 import { GLPowerProgram } from "./GLPowerProgram";
 import { GLPowerBuffer } from "./GLPowerBuffer";
 import { GLPowerTexture } from "./GLPowerTexture";
+import { GLPowerFrameBuffer } from "./GLPowerFrameBuffer";
 
 export class Power {
 
@@ -35,6 +36,15 @@ export class Power {
 		const texture = new GLPowerTexture( this.gl );
 
 		return texture;
+
+	}
+
+	public createFrameBuffer() {
+
+		const frameBuffer = new GLPowerFrameBuffer( this.gl );
+		frameBuffer.attachTexture( this.createTexture() );
+
+		return frameBuffer;
 
 	}
 

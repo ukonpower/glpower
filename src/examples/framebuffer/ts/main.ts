@@ -9,20 +9,20 @@ class ExFrameBuffer {
 
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Power;
+	private power: GLP.Power;
 	private projectionMatrix: GLP.Matrix4;
 
 	private objList: {
 		modelMatrix: GLP.Matrix4;
 		geometry: GLP.Geometry;
-		vao: GLP.VAO;
+		vao: GLP.GLPowerVAO;
 	}[] = [];
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
 		this.gl = gl;
-		this.core = new GLP.Power( this.gl );
+		this.power = new GLP.Power( this.gl );
 
 		// scene
 
@@ -36,40 +36,37 @@ class ExFrameBuffer {
 
 		const viewMatrix = cameraMatrix.clone().inverse();
 
-		// geometry
+		// frameBuffer
 
-		const geometries = [
-			new GLP.PlaneGeometry( 1.4, 1.4 ),
-		];
+		const frameBuffer = this.power.createFrameBuffer();
+		frameBuffer.setSize( 1024, 1024 );
 
 		// program
 
-		const program = this.core.createProgram();
+		const program = this.power.createProgram();
 		program.setShader( basicVert, textureFrag );
 
 		// create vao
 
-		geometries.forEach( ( geometry, i ) => {
+		const planeGeometry = new GLP.PlaneGeometry( 1.4, 1.4 );
 
-			const vao = program.getVAO( i.toString() )!;
+		const vao = program.getVAO()!;
 
-			const position = geometry.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
+		const position = planeGeometry.getAttribute( 'position' );
+		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
 
-			const uv = geometry.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
+		const uv = planeGeometry.getAttribute( 'uv' );
+		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
 
-			const index = geometry.getAttribute( 'index' );
-			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+		const index = planeGeometry.getAttribute( 'index' );
+		vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
-			const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
+		const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) );
 
-			this.objList.push( {
-				modelMatrix,
-				geometry,
-				vao: vao,
-			} );
-
+		this.objList.push( {
+			modelMatrix,
+			geometry: planeGeometry,
+			vao: vao,
 		} );
 
 		// animate

@@ -9,20 +9,20 @@ class ExTexture {
 
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Power;
+	private power: GLP.Power;
 	private projectionMatrix: GLP.Matrix4;
 
 	private objList: {
 		modelMatrix: GLP.Matrix4;
 		geometry: GLP.Geometry;
-		vao: GLP.VAO;
+		vao: GLP.GLPowerVAO;
 	}[] = [];
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
 		this.gl = gl;
-		this.core = new GLP.Power( this.gl );
+		this.power = new GLP.Power( this.gl );
 
 		// scene
 
@@ -38,12 +38,10 @@ class ExTexture {
 
 		// texture
 
-		const texture = this.core.createTexture();
+		const texture = this.power.createTexture();
+
 		texture.load( "/assets/lenna.jpg" );
 
-		const textureUnitId = 0;
-
-		texture.active( textureUnitId );
 
 		// geometry
 
@@ -53,12 +51,8 @@ class ExTexture {
 
 		// program
 
-		const program = this.core.createProgram();
+		const program = this.power.createProgram();
 		program.setShader( basicVert, textureFrag );
-
-		// uniforms
-
-		program.setUniform( 'uTexture', '1i', [ textureUnitId ] );
 
 		// create vao
 
@@ -67,13 +61,13 @@ class ExTexture {
 			const vao = program.getVAO( i.toString() )!;
 
 			const position = geometry.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
+			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
 
 			const uv = geometry.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
+			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
 
 			const index = geometry.getAttribute( 'index' );
-			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
 			const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
@@ -104,6 +98,9 @@ class ExTexture {
 
 				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
 				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
+
+				texture.active( 0 );
+				program.setUniform( 'uTexture', '1i', [ texture.unit ] );
 
 				program.use();
 

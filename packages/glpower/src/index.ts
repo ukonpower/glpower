@@ -4,6 +4,8 @@ export * from './Power';
 export * from './GLPowerProgram';
 export * from './GLPowerBuffer';
 export * from './GLPowerVAO';
+export * from './GLPowerFrameBuffer';
+export * from './GLPowerTexture';
 export * from './Math/Vector2';
 export * from './Math/Vector3';
 export * from './Math/Matrix4';

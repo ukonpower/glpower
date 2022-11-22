@@ -15,7 +15,7 @@ export type AttributeBufferWithLocation = {
 	location: number | null;
 } & AttributeBuffer
 
-export class VAO {
+export class GLPowerVAO {
 
 	private gl: WebGL2RenderingContext;
 
