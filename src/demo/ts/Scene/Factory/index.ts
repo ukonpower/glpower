@@ -1,5 +1,8 @@
 import * as GLP from 'glpower';
 
+import basicVert from './shaders/basic.vs';
+import basicFrag from './shaders/basic.fs';
+
 interface EmptyProps {
 	position?: GLP.ComponentVector3;
 	rotation?: GLP.ComponentVector3;
@@ -17,11 +20,13 @@ interface CameraProps extends EmptyProps {
 
 export class Factory {
 
+	private power: GLP.Power;
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
-	constructor( ecs: GLP.ECS, world: GLP.World ) {
+	constructor( power: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
+		this.power = power;
 		this.ecs = ecs;
 		this.world = world;
 
@@ -48,6 +53,25 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', props.geometry );
 
 		return entity;
+
+	}
+
+	public cube( props: EmptyProps ) {
+
+		return this.mesh( {
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+						type: '3f'
+					}
+				}
+			},
+			geometry: new GLP.CubeGeometry( 2, 2, 2 ).getComponent( this.power ),
+			...props
+		} );
 
 	}
 

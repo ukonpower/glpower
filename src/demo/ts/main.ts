@@ -10,6 +10,8 @@ export class Demo {
 	private gl: WebGL2RenderingContext;
 	private core: GLP.Power;
 
+	// scene
+
 	private scene: Scene;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {

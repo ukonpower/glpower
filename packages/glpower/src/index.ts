@@ -26,3 +26,16 @@ export * from './ECS/World';
 // scene graph
 
 export * from './SceneGraph';
+
+// animation
+
+export * from './Animation/AnimationAction';
+export * from './Animation/Bezier';
+export * from './Animation/Easings';
+export * from './Animation/FCurve';
+export * from './Animation/FCurveGroup';
+export * from './Animation/FCurveKeyFrame';
+
+// bridege
+
+export * from './BLidge';

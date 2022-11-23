@@ -1,4 +1,9 @@
-import { Vector3 } from "./Vector3";
+import { Vec3, Vector3 } from "./Vector3";
+
+export type Vec2 = {
+	x: number,
+	y: number,
+}
 
 export class Vector2 {
 
@@ -27,7 +32,7 @@ export class Vector2 {
 
 	}
 
-	public add( a: Vector2 ): Vector2
+	public add( a: Vector2 | Vec2 ): Vector2
 
 	public add( a: number ): Vector2
 
@@ -49,7 +54,7 @@ export class Vector2 {
 
 	}
 
-	public sub( a: Vector2 ): Vector2
+	public sub( a: Vector2 | Vec2 ): Vector2
 
 	public sub( a: number ): Vector2
 
@@ -71,7 +76,7 @@ export class Vector2 {
 
 	}
 
-	public multiply( a: number | Vector2 ) {
+	public multiply( a: number | Vector2 | Vec2 ) {
 
 		this.x *= ( a as Vector2 ).x | ( a as number );
 		this.y *= ( a as Vector2 ).y | ( a as number );
@@ -81,7 +86,7 @@ export class Vector2 {
 
 	}
 
-	public divide( a: number | Vector2 ) {
+	public divide( a: number | Vector2 | Vec2 ) {
 
 		this.x /= ( a as Vector2 ).x | ( a as number );
 		this.y /= ( a as Vector2 ).y | ( a as number );
@@ -90,7 +95,7 @@ export class Vector2 {
 
 	}
 
-	public copy( a: Vector2 | Vector3 ) {
+	public copy( a: Vector2 | Vec2 | Vector3 | Vec3 ) {
 
 		this.x = a.x;
 		this.y = a.y;
