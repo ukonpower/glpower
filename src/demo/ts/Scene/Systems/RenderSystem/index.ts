@@ -13,7 +13,7 @@ export class RenderSystem extends GLP.System {
 
 	// camera
 
-	private camera: GLP.Entity;
+	private camera: GLP.Entity | null;
 
 	// matrix
 
@@ -22,7 +22,7 @@ export class RenderSystem extends GLP.System {
 	private modelMatrix: GLP.Matrix4;
 	private modelViewMatrix: GLP.Matrix4;
 
-	constructor( core: GLP.Power, camera: GLP.Entity ) {
+	constructor( core: GLP.Power ) {
 
 		super( {
 			'': [
@@ -39,7 +39,7 @@ export class RenderSystem extends GLP.System {
 
 		// camera
 
-		this.camera = camera;
+		this.camera = null;
 
 		// matrix
 
@@ -51,6 +51,8 @@ export class RenderSystem extends GLP.System {
 	}
 
 	protected beforeUpdateImpl( _: string, event: GLP.SystemUpdateEvent ): void {
+
+		if ( this.camera === null ) return;
 
 		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 		this.gl.clearDepth( 1.0 );
@@ -77,6 +79,8 @@ export class RenderSystem extends GLP.System {
 	}
 
 	protected updateImpl( _: string, entity: number, event: GLP.SystemUpdateEvent ): void {
+
+		if ( this.camera === null ) return;
 
 		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
 		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, entity, 'material' );
@@ -175,7 +179,7 @@ export class RenderSystem extends GLP.System {
 
 				this.gl.bindVertexArray( vao.getVAO() );
 
-				this.gl.drawElements( this.gl.TRIANGLES, geometry.index.count, this.gl.UNSIGNED_SHORT, 0 );
+				this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
 
 				this.gl.bindVertexArray( null );
 
@@ -189,7 +193,15 @@ export class RenderSystem extends GLP.System {
 
 	protected afterUpdateImpl( _: string, event: GLP.SystemUpdateEvent ): void {
 
+		if ( this.camera === null ) return;
+
 		this.gl.flush();
+
+	}
+
+	public setCamera( camera: GLP.Entity | null ) {
+
+		this.camera = camera;
 
 	}
 

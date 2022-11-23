@@ -1,4 +1,4 @@
-import { Vector2 } from "./Vector2";
+import { Vec2, Vector2 } from "./Vector2";
 
 
 export type Vec3 = {
@@ -37,7 +37,7 @@ export class Vector3 {
 
 	}
 
-	public add( a: Vector3 ): Vector3
+	public add( a: Vector3 | Vec3 ): Vector3
 
 	public add( a: number ): Vector3
 
@@ -61,7 +61,7 @@ export class Vector3 {
 
 	}
 
-	public sub( a: Vector3 ): Vector3
+	public sub( a: Vector3 | Vec3 ): Vector3
 
 	public sub( a: number ): Vector3
 
@@ -117,7 +117,7 @@ export class Vector3 {
 
 	}
 
-	public cross( v: Vector3 ) {
+	public cross( v: Vector3 | Vec3 ) {
 
 		const ax = this.x, ay = this.y, az = this.z;
 		const bx = v.x, by = v.y, bz = v.z;
@@ -130,13 +130,13 @@ export class Vector3 {
 
 	}
 
-	public dot( v: Vector3 ) {
+	public dot( v: Vector3 | Vec3 ) {
 
 		return this.x * v.x + this.y * v.y + this.z * v.z;
 
 	}
 
-	public copy( a: Vector2 | Vector3 ) {
+	public copy( a: Vector2 | Vec2 | Vector3 | Vec3 ) {
 
 		this.x = a.x;
 		this.y = a.y;
