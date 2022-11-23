@@ -19,15 +19,16 @@ export class GLPowerVAO {
 
 	private gl: WebGL2RenderingContext;
 
-	public vao: WebGLVertexArrayObject | null = null;
+	public vao: WebGLVertexArrayObject | null;
 
 	public program: WebGLProgram;
 
-	protected indexBuffer: GLPowerBuffer | null = null;
+	protected indexBuffer: GLPowerBuffer | null;
 
-	protected attributes: {[key: string]: AttributeBufferWithLocation} = {};
+	protected attributes: {[key: string]: AttributeBufferWithLocation};
 
-	public vertCount: number = 0;
+	public vertCount: number;
+	public indexCount: number;
 
 	constructor( gl: WebGL2RenderingContext, program: WebGLProgram ) {
 
@@ -36,6 +37,11 @@ export class GLPowerVAO {
 		this.program = program;
 
 		this.vao = this.gl.createVertexArray();
+		this.attributes = {};
+		this.indexBuffer = null;
+
+		this.vertCount = 0;
+		this.indexCount = 0;
 
 	}
 
@@ -126,6 +132,12 @@ export class GLPowerVAO {
 		this.gl.bindBuffer( this.gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer ? this.indexBuffer.buffer : null );
 
 		this.gl.bindVertexArray( null );
+
+		if ( this.indexBuffer && this.indexBuffer.array ) {
+
+			this.indexCount = this.indexBuffer.array.length;
+
+		}
 
 
 	}
