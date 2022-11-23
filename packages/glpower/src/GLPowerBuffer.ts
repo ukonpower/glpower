@@ -5,12 +5,15 @@ export class GLPowerBuffer {
 
 	private gl: WebGL2RenderingContext;
 	public buffer: WebGLBuffer | null;
+	public array: TArrayBuffer | null;
 
 	constructor( gl: WebGL2RenderingContext ) {
 
 		this.gl = gl;
 
 		this.buffer = this.gl.createBuffer();
+
+		this.array = null;
 
 	}
 
@@ -23,6 +26,8 @@ export class GLPowerBuffer {
 		this.gl.bufferData( target, data, usage || this.gl.STATIC_DRAW );
 
 		this.gl.bindBuffer( target, null );
+
+		this.array = data;
 
 		return this;
 

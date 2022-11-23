@@ -1,6 +1,7 @@
 import * as GLP from 'glpower';
 
 import basicVert from '../../shaders/basic.vs';
+import basicFrag from '../../shaders/basic.fs';
 import textureFrag from '../../shaders/texture.fs';
 
 class ExFrameBuffer {
@@ -12,21 +13,24 @@ class ExFrameBuffer {
 	private power: GLP.Power;
 	private projectionMatrix: GLP.Matrix4;
 
-	private objList: {
+	private objList: {[key:string]: {
 		modelMatrix: GLP.Matrix4;
-		geometry: GLP.Geometry;
+		// geometry: GLP.Geometry;
 		vao: GLP.GLPowerVAO;
-	}[] = [];
+		program: GLP.GLPowerProgram
+	}};
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
 		this.gl = gl;
 		this.power = new GLP.Power( this.gl );
+		this.objList = {};
 
 		// scene
 
 		this.projectionMatrix = new GLP.Matrix4();
+		const projectionMatrixFrame = new GLP.Matrix4().perspective( 50, 1.0, 0.01, 1000 );
 
 		const cameraMatrix = new GLP.Matrix4().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
@@ -40,66 +44,101 @@ class ExFrameBuffer {
 
 		const frameBuffer = this.power.createFrameBuffer();
 		frameBuffer.setSize( 1024, 1024 );
+		frameBuffer.texture.active( 0 );
 
 		// program
 
-		const program = this.power.createProgram();
-		program.setShader( basicVert, textureFrag );
+		const basicProgram = this.power.createProgram();
+		basicProgram.setShader( basicVert, basicFrag );
 
-		// create vao
+		const frameProgram = this.power.createProgram();
+		frameProgram.setShader( basicVert, textureFrag );
 
-		const planeGeometry = new GLP.PlaneGeometry( 1.4, 1.4 );
+		// vao
 
-		const vao = program.getVAO()!;
+		const setVao = ( vao: GLP.GLPowerVAO, geo: GLP.Geometry ) => {
 
-		const position = planeGeometry.getAttribute( 'position' );
-		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
+			const position = geo.getAttribute( 'position' );
+			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
 
-		const uv = planeGeometry.getAttribute( 'uv' );
-		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
+			const uv = geo.getAttribute( 'uv' );
+			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
 
-		const index = planeGeometry.getAttribute( 'index' );
-		vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+			const index = geo.getAttribute( 'index' );
+			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
-		const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) );
+			return vao;
 
-		this.objList.push( {
-			modelMatrix,
-			geometry: planeGeometry,
-			vao: vao,
-		} );
+		};
+
+		this.objList.cube = {
+			modelMatrix: new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
+			vao: setVao( basicProgram.getVAO()!, new GLP.CubeGeometry() ),
+			program: basicProgram
+		};
+
+		this.objList.plane = {
+			modelMatrix: new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
+			vao: setVao( frameProgram.getVAO()!, new GLP.PlaneGeometry( 2.0, 2.0 ) ),
+			program: frameProgram
+		};
 
 		// animate
 
 		const animate = () => {
 
+			// cube
+
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, frameBuffer.getFrameBuffer() );
+			this.gl.viewport( 0, 0, frameBuffer.size.x, frameBuffer.size.y );
+
+			this.gl.clearColor( 0.1, 0.1, 0.1, 1.0 );
+			this.gl.clearDepth( 1.0 );
+			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
+			gl.enable( gl.DEPTH_TEST );
+
+			this.objList.cube.modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
+
+			this.objList.cube.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.cube.modelMatrix ).elm );
+			this.objList.cube.program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrixFrame.elm );
+
+			this.objList.cube.program.use();
+
+			this.objList.cube.program.uploadUniforms();
+
+			this.gl.bindVertexArray( this.objList.cube.vao.getVAO() );
+
+			this.gl.drawElements( this.gl.TRIANGLES, this.objList.cube.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
+
+			this.objList.cube.program.clean();
+
+			this.gl.flush();
+
+			// plane
+
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+			this.gl.viewport( 0, 0, this.canvas.width, this.canvas.height );
+
 			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 			this.gl.clearDepth( 1.0 );
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.forEach( ( obj ) => {
+			this.objList.plane.modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 
-				const modelMatrix = obj.modelMatrix;
+			this.objList.plane.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.plane.modelMatrix ).elm );
+			this.objList.plane.program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
+			this.objList.plane.program.setUniform( 'uTexture', '1i', [ frameBuffer.texture.unit ] );
 
-				modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
-				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
+			this.objList.plane.program.use();
 
-				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
-				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
+			this.objList.plane.program.uploadUniforms();
 
-				program.use();
+			this.gl.bindVertexArray( this.objList.plane.vao.getVAO() );
 
-				program.uploadUniforms();
+			this.gl.drawElements( this.gl.TRIANGLES, this.objList.plane.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
 
-				this.gl.bindVertexArray( obj.vao.getVAO() );
-
-				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
-
-				program.clean();
-
-			} );
+			this.objList.plane.program.clean();
 
 			this.gl.flush();
 
@@ -123,8 +162,6 @@ class ExFrameBuffer {
 
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
-
-		this.gl.viewport( 0, 0, this.canvas.width, this.canvas.height );
 
 	}
 

@@ -42,7 +42,6 @@ export class Power {
 	public createFrameBuffer() {
 
 		const frameBuffer = new GLPowerFrameBuffer( this.gl );
-		frameBuffer.attachTexture( this.createTexture() );
 
 		return frameBuffer;
 
