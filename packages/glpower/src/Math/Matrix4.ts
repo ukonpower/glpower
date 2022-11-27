@@ -184,31 +184,25 @@ export class Matrix4 {
 	public applyQuaternion( q: Quaternion | Vec4 ) {
 
 		const x = q.x, y = q.y, z = q.z, w = q.w;
-		const xx = 2 * x * x, yy = 2 * y * y, zz = 2 * z * z;
-		const xy = 2 * x * y, xz = 2 * x * z, xw = 2 * x * w;
-		const yz = 2 * y * z, yw = 2 * y * w;
-		const zw = 2 * z * w;
+		const xx = x * x, yy = y * y, zz = z * z, ww = w * w;
+		const xy = x * y, xz = x * z, xw = x * w, yz = y * z, yw = y * w, zw = z * w;
 
 		this.matmul( [
-			1 - yy - zz,
-			xy + zw,
-			xz + yw,
+			xx - yy - zz + ww,
+			2 * ( xy + zw ),
+			2 * ( xz - yw ),
 			0,
 
-			xy - zw,
-			1 - xx - zz,
-			yz + xw,
+			2 * ( xy - zw ),
+			- xx + yy - zz + ww,
+			2 * ( yz + xw ),
 			0,
 
-			xz + yw,
-			yz - xw,
-			1.0 - xx - yy,
-			0,
+			2 * ( xz + yw ),
+			2 * ( yz - xw ),
+			- xx - yy + zz + ww,
 
-			0,
-			0,
-			0,
-			1,
+			0, 0, 0, 0, 1
 		] );
 
 		return this;

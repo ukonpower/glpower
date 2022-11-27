@@ -46,11 +46,6 @@ export class BLidgeSystem extends GLP.System {
 	}
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
-
-		const pos = event.ecs.getComponent( event.world, entity, 'position' );
-		const rot = event.ecs.getComponent( event.world, entity, 'rotation' );
-		const geo = event.ecs.getComponent( event.world, entity, 'geometry' );
-
 	}
 
 	private onSyncScene( blidge: GLP.BLidge ) {
@@ -89,31 +84,25 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			// const rotation = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'rotation' );
+			const rotation = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'rotation' );
 
-			// if ( rotation ) {
+			if ( rotation ) {
 
-			// 	rotation.x = obj.rotation.x;
-			// 	rotation.y = obj.rotation.y;
-			// 	rotation.z = obj.rotation.z;
+				rotation.x = obj.rotation.x;
+				rotation.y = obj.rotation.y;
+				rotation.z = obj.rotation.z;
 
-			// 	if ( isCamera ) {
+				if ( isCamera ) {
 
-			// 		rotation.x -= Math.PI / 2;
+					rotation.x -= Math.PI / 2;
 
-			// 	}
+				}
 
-			// }
+			}
 
 			const quaternion = this.ecs.getComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion' );
 
 			if ( quaternion ) {
-
-				// console.log( obj.name, quaternion );
-
-				// quaternion.x = obj.quaternion.x;
-				// quaternion.y = obj.quaternion.y;
-				// quaternion.z = obj.quaternion.z;
 
 				const rot = {
 					x: obj.rotation.x,
@@ -125,16 +114,14 @@ export class BLidgeSystem extends GLP.System {
 
 					rot.x -= Math.PI / 2;
 
-
 				}
 
+				const q = new GLP.Quaternion().euler( rot, 'YZX' );
 
-				const q = new GLP.Quaternion( ).euler( rot, 'ZYX' );
 				quaternion.x = q.x;
 				quaternion.y = q.y;
 				quaternion.z = q.z;
 				quaternion.w = q.w;
-
 
 			}
 
@@ -162,9 +149,6 @@ export class BLidgeSystem extends GLP.System {
 			this.sceneGraph.add( parentEntity ?? this.root, entity );
 
 		} );
-
-		console.log( this.world );
-
 
 	}
 
