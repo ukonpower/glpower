@@ -2,6 +2,8 @@ import { Vec3 } from "../../Math/Vector3";
 import { Uniform, Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
+import { Vec2 } from "../../Math/Vector2";
+import { Vec4 } from "../../Math/Vector4";
 
 export interface Component {[key:string]: any}
 
@@ -20,13 +22,14 @@ export type ComponentName =
 
 // math
 
+export type ComponentVector2 = {
+} & Vec2
+
 export type ComponentVector3 = {
 } & Vec3
 
-export type ComponentVector2 = {
-	x: number;
-	y: number;
-}
+export type ComponentVector4 = {
+} & Vec4
 
 export type ComponentsTransformMatrix = {
 	local: number[];

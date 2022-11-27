@@ -1,4 +1,5 @@
 import * as GLP from 'glpower';
+import { Quaternion } from 'glpower';
 
 import { Scene } from './Scene';
 
@@ -15,6 +16,12 @@ export class Demo {
 	private scene: Scene;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
+
+		const q = new Quaternion();
+		q.euler( new GLP.Vector3( Math.PI / 2, Math.PI / 2, Math.PI / 2 ) );
+		console.log( q );
+		console.log( new GLP.Matrix4().applyQuaternion( q ).elm );
+
 
 		this.canvas = canvas;
 		this.gl = gl;

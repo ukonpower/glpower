@@ -44,14 +44,15 @@ export class TransformSystem extends GLP.System {
 		const sceneNode = event.ecs.getComponent<GLP.ComponentSceneNode>( event.world, entity, 'sceneNode' );
 		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
 		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
-		const rotation = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'rotation' );
+		// const rotation = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'rotation' );
+		const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
 		const scale = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
 
-		if ( ! position || ! rotation || ! scale || ! matrix ) return;
+		if ( ! position || ! scale || ! matrix || ! quaternion ) return;
 
 		// calc self matrix
 
-		this.matrix1.setFromTransform( position, rotation, scale );
+		this.matrix1.setFromTransform( position, quaternion, scale );
 		this.matrix1.copyToArray( matrix.local );
 
 		// parent
