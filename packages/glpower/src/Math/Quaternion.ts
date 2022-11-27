@@ -6,7 +6,7 @@ export type Quat = {
 	z: number
 }
 
-export type EulerOrder = 'XYZ' | 'ZYX'
+export type EulerOrder = 'XYZ' | 'XZY' | 'ZYX' | 'YZX'
 
 export class Quaternion {
 
@@ -36,10 +36,24 @@ export class Quaternion {
 
 		if ( order == 'XYZ' ) {
 
-			this.x = sx * cy * cz + cx * sy * sz;
-			this.y = cx * sy * cz - sx * cy * sz;
+			this.x = cx * sy * sz + sx * cy * cz;
+			this.y = - sx * cy * sz + cx * sy * cz;
 			this.z = cx * cy * sz + sx * sy * cz;
-			this.w = cx * cy * cz - sx * sy * sz;
+			this.w = - sx * sy * sz + cx * cy * cz;
+
+		} else if ( order == 'XZY' ) {
+
+			this.x = - cx * sy * sz + sx * cy * cz;
+			this.y = cx * sy * cz - sx * cy * sz;
+			this.z = sx * sy * cz + cx * cy * sz;
+			this.w = sx * sy * sz + cx * cy * cz;
+
+		} else if ( order == 'YZX' ) {
+
+			this.x = sx * cy * cz + cx * sy * sz;
+			this.y = sx * cy * sz + cx * sy * cz;
+			this.z = - sx * sy * cz + cx * cy * sz;
+			this.w = - sx * sy * sz + cx * cy * cz;
 
 		} else if ( order == 'ZYX' ) {
 
