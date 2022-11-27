@@ -1,4 +1,6 @@
+import { Quaternion } from "./Quaternion";
 import { Vec3, Vector3 } from "./Vector3";
+import { Vec4 } from "./Vector4";
 
 export class Matrix4 {
 
@@ -140,13 +142,13 @@ export class Matrix4 {
 
 	}
 
-	public setFromTransform( pos: Vec3, rot: Vec3, scale: Vec3 ) {
+	public setFromTransform( pos: Vector3 | Vec3, qua: Quaternion | Vec4, scale: Vector3 | Vec3 ) {
 
 		this.identity();
 
 		this.applyPosition( pos );
 
-		this.applyRot( rot );
+		this.applyQuaternion( qua );
 
 		this.applyScale( scale );
 
@@ -179,33 +181,34 @@ export class Matrix4 {
 
 	}
 
-	public applyRot( rotation: Vec3 ) {
+	public applyQuaternion( q: Quaternion | Vec4 ) {
 
-		let c = Math.cos( rotation.x ), s = Math.sin( rotation.x );
-
-		this.matmul( [
-			1, 0, 0, 0,
-			0, c, s, 0,
-			0, - s, c, 0,
-			0, 0, 0, 1
-		] );
-
-		c = Math.cos( rotation.y ), s = Math.sin( rotation.y );
+		const x = q.x, y = q.y, z = q.z, w = q.w;
+		const xx = 2 * x * x, yy = 2 * y * y, zz = 2 * z * z;
+		const xy = 2 * x * y, xz = 2 * x * z, xw = 2 * x * w;
+		const yz = 2 * y * z, yw = 2 * y * w;
+		const zw = 2 * z * w;
 
 		this.matmul( [
-			c, 0, - s, 0,
-			0, 1, 0, 0,
-		    s, 0, c, 0,
-			0, 0, 0, 1
-		] );
+			1 - yy - zz,
+			xy + zw,
+			xz + yw,
+			0,
 
-		c = Math.cos( rotation.z ), s = Math.sin( rotation.z );
+			xy - zw,
+			1 - xx - zz,
+			yz + xw,
+			0,
 
-		this.matmul( [
-			c, s, 0, 0,
-			- s, c, 0, 0,
-			0, 0, 1, 0,
-			0, 0, 0, 1
+			xz + yw,
+			yz - xw,
+			1.0 - xx - yy,
+			0,
+
+			0,
+			0,
+			0,
+			1,
 		] );
 
 		return this;

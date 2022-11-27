@@ -89,19 +89,52 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const rotation = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'rotation' );
+			// const rotation = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'rotation' );
 
-			if ( rotation ) {
+			// if ( rotation ) {
 
-				rotation.x = obj.rotation.x;
-				rotation.y = obj.rotation.y;
-				rotation.z = obj.rotation.z;
+			// 	rotation.x = obj.rotation.x;
+			// 	rotation.y = obj.rotation.y;
+			// 	rotation.z = obj.rotation.z;
+
+			// 	if ( isCamera ) {
+
+			// 		rotation.x -= Math.PI / 2;
+
+			// 	}
+
+			// }
+
+			const quaternion = this.ecs.getComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion' );
+
+			if ( quaternion ) {
+
+				// console.log( obj.name, quaternion );
+
+				// quaternion.x = obj.quaternion.x;
+				// quaternion.y = obj.quaternion.y;
+				// quaternion.z = obj.quaternion.z;
+
+				const rot = {
+					x: obj.rotation.x,
+					y: obj.rotation.y,
+					z: obj.rotation.z,
+				};
 
 				if ( isCamera ) {
 
-					rotation.x -= Math.PI / 2;
+					rot.x -= Math.PI / 2;
+
 
 				}
+
+
+				const q = new GLP.Quaternion( ).euler( rot, 'ZYX' );
+				quaternion.x = q.x;
+				quaternion.y = q.y;
+				quaternion.z = q.z;
+				quaternion.w = q.w;
+
 
 			}
 
