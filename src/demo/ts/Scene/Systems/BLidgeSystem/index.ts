@@ -50,27 +50,39 @@ export class BLidgeSystem extends GLP.System {
 
 	private onSyncScene( blidge: GLP.BLidge ) {
 
+		console.log( blidge );
+
 		// create entity
 
 		blidge.objects.forEach( obj => {
 
 			let entity = this.objects.get( obj.name );
 
-			const isCamera = obj.name.indexOf( 'Camera' ) > - 1;
+			const type = obj.type;
 
 			if ( entity === undefined ) {
 
-				entity = isCamera ?
-					this.factory.perspectiveCamera( {} ) :
-					this.factory.cube( {} );
+				if ( type == 'cube' ) {
 
-				this.objects.set( obj.name, entity );
+					entity = this.factory.cube();
 
-				if ( isCamera ) {
+				} else if ( type == 'sphere' ) {
+
+					entity = this.factory.sphere();
+
+				} else if ( type == 'camera' ) {
+
+					entity = this.factory.perspectiveCamera();
 
 					if ( this.onCreateCamera ) this.onCreateCamera( entity );
 
+				} else {
+
+					entity = this.factory.empty();
+
 				}
+
+				this.objects.set( obj.name, entity );
 
 			}
 
@@ -84,22 +96,6 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const rotation = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'rotation' );
-
-			if ( rotation ) {
-
-				rotation.x = obj.rotation.x;
-				rotation.y = obj.rotation.y;
-				rotation.z = obj.rotation.z;
-
-				if ( isCamera ) {
-
-					rotation.x -= Math.PI / 2;
-
-				}
-
-			}
-
 			const quaternion = this.ecs.getComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion' );
 
 			if ( quaternion ) {
@@ -110,7 +106,7 @@ export class BLidgeSystem extends GLP.System {
 					z: obj.rotation.z,
 				};
 
-				if ( isCamera ) {
+				if ( type == 'camera' ) {
 
 					rot.x -= Math.PI / 2;
 
