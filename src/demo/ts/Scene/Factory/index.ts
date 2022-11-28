@@ -32,7 +32,7 @@ export class Factory {
 
 	}
 
-	public empty( props: EmptyProps ) {
+	public empty( props: EmptyProps = {} ) {
 
 		const entity = this.ecs.createEntity( this.world );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'position', props.position ?? { x: 0, y: 0, z: 0 } );
@@ -57,7 +57,7 @@ export class Factory {
 
 	}
 
-	public cube( props: EmptyProps ) {
+	public cube( props: EmptyProps = {} ) {
 
 		return this.mesh( {
 			material: {
@@ -76,7 +76,26 @@ export class Factory {
 
 	}
 
-	public perspectiveCamera( props: CameraProps ) {
+	public sphere( props: EmptyProps = {} ) {
+
+		return this.mesh( {
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+						type: '3f'
+					}
+				}
+			},
+			geometry: new GLP.SphereGeometry( 1 ).getComponent( this.power ),
+			...props
+		} );
+
+	}
+
+	public perspectiveCamera( props: CameraProps = {} ) {
 
 		const entity = this.empty( props );
 
