@@ -4,7 +4,6 @@ import { RenderSystem } from './Systems/RenderSystem';
 import { TransformSystem } from './Systems/TransformSystem';
 
 import { BLidgeSystem } from './Systems/BLidgeSystem';
-import { MoveSystem } from './Systems/MoveSystem';
 import EventEmitter from 'wolfy87-eventemitter';
 
 export class Scene extends EventEmitter {
