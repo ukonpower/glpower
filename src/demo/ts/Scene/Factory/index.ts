@@ -2,6 +2,7 @@ import * as GLP from 'glpower';
 
 import basicVert from './shaders/basic.vs';
 import basicFrag from './shaders/basic.fs';
+import { BLidgeObjectType, Entity } from 'glpower';
 
 interface EmptyProps {
 	position?: GLP.ComponentVector3;
@@ -16,6 +17,10 @@ interface MeshProps extends EmptyProps{
 
 interface CameraProps extends EmptyProps {
 	perspectiveCamera?: GLP.ComponentPerspectiveCamera
+}
+
+interface BLidgeProps extends EmptyProps {
+	type?: BLidgeObjectType
 }
 
 export class Factory {
@@ -46,9 +51,17 @@ export class Factory {
 
 	}
 
-	public mesh( props: MeshProps ) {
+	public blidge( props: BLidgeProps ) {
 
 		const entity = this.empty( props );
+
+		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', { type: props.type ?? 'empty' } );
+
+		return entity;
+
+	}
+
+	public appendMesh( entity: Entity, props: MeshProps ) {
 
 		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', props.material );
 		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', props.geometry );
@@ -57,9 +70,9 @@ export class Factory {
 
 	}
 
-	public cube( props: EmptyProps = {} ) {
+	public appendCube( entity: Entity ) {
 
-		return this.mesh( {
+		return this.appendMesh( entity, {
 			material: {
 				vertexShader: basicVert,
 				fragmentShader: basicFrag,
@@ -71,14 +84,13 @@ export class Factory {
 				}
 			},
 			geometry: new GLP.CubeGeometry( 2, 2, 2 ).getComponent( this.power ),
-			...props
 		} );
 
 	}
 
-	public sphere( props: EmptyProps = {} ) {
+	public appendSphere( entity: Entity ) {
 
-		return this.mesh( {
+		return this.appendMesh( entity, {
 			material: {
 				vertexShader: basicVert,
 				fragmentShader: basicFrag,
@@ -90,14 +102,11 @@ export class Factory {
 				}
 			},
 			geometry: new GLP.SphereGeometry( 1 ).getComponent( this.power ),
-			...props
 		} );
 
 	}
 
-	public perspectiveCamera( props: CameraProps = {} ) {
-
-		const entity = this.empty( props );
+	public appendPerspectiveCamera( entity: number, props: CameraProps = {} ) {
 
 		this.ecs.addComponent<GLP.ComponentPerspectiveCamera>( this.world, entity, 'perspectiveCamera', props.perspectiveCamera ?? {
 			near: 0.01,
@@ -105,8 +114,6 @@ export class Factory {
 			fov: 50,
 			aspectRatio: window.innerWidth / window.innerHeight,
 		} );
-
-		return entity;
 
 	}
 

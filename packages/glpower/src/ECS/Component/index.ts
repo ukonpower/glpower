@@ -4,6 +4,7 @@ import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
 import { Vec2 } from "../../Math/Vector2";
 import { Vec4 } from "../../Math/Vector4";
+import { BLidgeObjectType } from "../../BLidge";
 
 export interface Component {[key:string]: any}
 
@@ -18,6 +19,7 @@ export type ComponentName =
 	'perspectiveCamera' |
 	'material' |
 	'geometry' |
+	'blidge' |
 	( string & {} );
 
 // math
@@ -61,6 +63,10 @@ export type ComponentGeometry = {
 	attributes: ( {name: string } & AttributeBuffer )[]
 	index: AttributeBuffer
 	needsUpdate?: boolean
+}
+
+export type ComponentBLidge = {
+	type: BLidgeObjectType
 }
 
 // export type

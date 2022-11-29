@@ -180,6 +180,8 @@ export class RenderSystem extends GLP.System {
 
 					vao.setIndex( geometry.index.buffer );
 
+					vao.updateAttributes( true );
+
 					geometry.needsUpdate = false;
 
 				}
