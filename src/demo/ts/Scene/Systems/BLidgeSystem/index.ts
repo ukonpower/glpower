@@ -70,9 +70,16 @@ export class BLidgeSystem extends GLP.System {
 
 					entity = this.factory.sphere();
 
-				} else if ( type == 'camera' ) {
+				} else if ( type == 'camera' && obj.camera ) {
 
-					entity = this.factory.perspectiveCamera();
+					entity = this.factory.perspectiveCamera( {
+						perspectiveCamera: {
+							fov: obj.camera.fov,
+							near: 0.01,
+							far: 1000,
+							aspectRatio: window.innerWidth / window.innerHeight
+						}
+					} );
 
 					if ( this.onCreateCamera ) this.onCreateCamera( entity );
 

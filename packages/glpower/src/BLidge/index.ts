@@ -16,6 +16,10 @@ export type BLidgeSyncSceneMessage = {
 
 export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera'
 
+export type BLidgeCameraParams = {
+	fov: number
+}
+
 export type BLidgeObject = {
 	name: string,
 	parent: string,
@@ -24,7 +28,8 @@ export type BLidgeObject = {
 	position: Vec3,
 	rotation: Vec3,
 	scale: Vec3,
-	type: BLidgeObjectType
+	type: BLidgeObjectType,
+	camera?: BLidgeCameraParams,
 }
 
 export type BLidgeScene = {
