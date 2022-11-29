@@ -48,6 +48,7 @@ export type ComponentPerspectiveCamera = {
 	aspectRatio: number;
 	near: number;
 	far: number;
+	needsUpdate?: boolean;
 }
 
 export type ComponentMaterial = {

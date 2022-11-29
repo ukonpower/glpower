@@ -7,9 +7,19 @@ export class RenderSystem extends GLP.System {
 	private gl: WebGL2RenderingContext;
 	private core: GLP.Power;
 
+	// ecs
+
+	private ecs: GLP.ECS;
+	private world: GLP.World;
+
 	// program
 
 	private programPool: ProgramPool;
+
+	// render
+
+	private width: number;
+	private height: number;
 
 	// camera
 
@@ -22,7 +32,7 @@ export class RenderSystem extends GLP.System {
 	private modelMatrix: GLP.Matrix4;
 	private modelViewMatrix: GLP.Matrix4;
 
-	constructor( core: GLP.Power ) {
+	constructor( core: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
 		super( {
 			'': [
@@ -32,10 +42,17 @@ export class RenderSystem extends GLP.System {
 
 		this.core = core;
 		this.gl = this.core.gl;
+		this.ecs = ecs;
+		this.world = world;
 
 		// program
 
 		this.programPool = new ProgramPool( core );
+
+		// render
+
+		this.width = 1;
+		this.height = 1;
 
 		// camera
 
@@ -62,7 +79,7 @@ export class RenderSystem extends GLP.System {
 
 		const cameraPerspective = event.ecs.getComponent<GLP.ComponentPerspectiveCamera>( event.world, this.camera, 'perspectiveCamera' );
 
-		if ( cameraPerspective ) {
+		if ( cameraPerspective && cameraPerspective.needsUpdate ) {
 
 			this.projectionMatrix.perspective( cameraPerspective.fov, cameraPerspective.aspectRatio, cameraPerspective.near, cameraPerspective.far );
 
@@ -202,6 +219,28 @@ export class RenderSystem extends GLP.System {
 	public setCamera( camera: GLP.Entity | null ) {
 
 		this.camera = camera;
+
+		this.resize( this.width, this.height );
+
+	}
+
+	public resize( width: number, height: number ) {
+
+		this.width = width;
+		this.height = height;
+
+		if ( this.camera ) {
+
+			const perspective = this.ecs.getComponent<GLP.ComponentPerspectiveCamera>( this.world, this.camera, 'perspectiveCamera' );
+
+			if ( perspective ) {
+
+				perspective.aspectRatio = width / height;
+				perspective.needsUpdate = true;
+
+			}
+
+		}
 
 	}
 
