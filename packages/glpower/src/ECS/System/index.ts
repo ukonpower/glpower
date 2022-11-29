@@ -1,3 +1,4 @@
+import EventEmitter from "wolfy87-eventemitter";
 import { ECS, ECSUpdateEvent } from "..";
 import { ComponentName } from "../Component";
 import { Entity } from "../Entity";
@@ -8,11 +9,13 @@ export interface SystemUpdateEvent extends ECSUpdateEvent {
 	ecs: ECS
 }
 
-export class System {
+export class System extends EventEmitter {
 
 	protected queries: {name: string, query: EntityQuery}[];
 
 	constructor( queries: {[key: string]:EntityQuery} ) {
+
+		super();
 
 		this.queries = [];
 
@@ -57,6 +60,12 @@ export class System {
 	}
 
 	protected afterUpdateImpl( logicName: string, event: SystemUpdateEvent ) { // eslint-disable-line
+	}
+
+	public dispose() {
+
+		this.emitEvent( 'dispose' );
+
 	}
 
 }

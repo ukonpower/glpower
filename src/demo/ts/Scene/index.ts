@@ -5,15 +5,20 @@ import { TransformSystem } from './Systems/TransformSystem';
 
 import { BLidgeSystem } from './Systems/BLidgeSystem';
 import { MoveSystem } from './Systems/MoveSystem';
+import EventEmitter from 'wolfy87-eventemitter';
 
-export class Scene {
+export class Scene extends EventEmitter {
 
 	private power: GLP.Power;
 
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
+	private renderSystem:RenderSystem;
+
 	constructor( power: GLP.Power ) {
+
+		super();
 
 		// glp
 
@@ -36,26 +41,54 @@ export class Scene {
 
 		blidgeSystem.onCreateCamera = ( camera ) => {
 
-			renderSystem.setCamera( camera );
+			this.renderSystem.setCamera( camera );
 
 		};
 
 		// renderSystem
 
-		const renderSystem = new RenderSystem( this.power );
+		this.renderSystem = new RenderSystem( this.power, this.ecs, this.world );
 
 		// adddd
-		// this.ecs.addSystem( this.world, 'move', new MoveSystem() );0
-
 		this.ecs.addSystem( this.world, 'blidge', blidgeSystem );
 		this.ecs.addSystem( this.world, 'transform', new TransformSystem( blidgeSystem.sceneGraph ) );
-		this.ecs.addSystem( this.world, 'render', renderSystem );
+		this.ecs.addSystem( this.world, 'render', this.renderSystem );
+
+		/*-------------------------------
+			Events
+		-------------------------------*/
+
+		// resize
+
+		const onResize = this.onResize.bind( this );
+
+		window.addEventListener( 'resize', onResize );
+
+		this.onResize();
+
+		// dispose
+
+		this.addOnceListener( "dispose", () => {
+
+			window.removeEventListener( 'resize', onResize );
+
+		} );
 
 	}
 
 	public update() {
 
 		this.ecs.update( this.world );
+
+	}
+
+	public onResize() {
+
+		this.renderSystem.resize( window.innerWidth, window.innerHeight );
+
+	}
+
+	public dispose() {
 
 	}
 
