@@ -27,7 +27,7 @@ export class SphereGeometry extends Geometry {
 
 				const x = Math.cos( thetaJ ) * widthRadius;
 				const y = - Math.cos( thetaI ) * radius;
-				const z = Math.sin( thetaJ ) * widthRadius;
+				const z = - Math.sin( thetaJ ) * widthRadius;
 
 				posArray.push( x, y, z );
 

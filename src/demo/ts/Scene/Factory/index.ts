@@ -83,7 +83,7 @@ export class Factory {
 					}
 				}
 			},
-			geometry: new GLP.CubeGeometry( 2, 2, 2 ).getComponent( this.power ),
+			geometry: new GLP.CubeGeometry().getComponent( this.power ),
 		} );
 
 	}
@@ -101,7 +101,7 @@ export class Factory {
 					}
 				}
 			},
-			geometry: new GLP.SphereGeometry( 1 ).getComponent( this.power ),
+			geometry: new GLP.SphereGeometry().getComponent( this.power ),
 		} );
 
 	}

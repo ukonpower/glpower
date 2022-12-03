@@ -31,15 +31,15 @@ export class CubeGeometry extends Geometry {
 			- hx, - hy, - hz,
 			- hx, - hy, hz,
 
-			hx, hy, - hz,
-			hx, hy, hz,
 			- hx, hy, - hz,
+			hx, hy, - hz,
 			- hx, hy, hz,
+			hx, hy, hz,
 
-			- hx, - hy, - hz,
 			- hx, - hy, hz,
-			hx, - hy, - hz,
 			hx, - hy, hz,
+			- hx, - hy, - hz,
+			hx, - hy, - hz,
 
 		];
 
