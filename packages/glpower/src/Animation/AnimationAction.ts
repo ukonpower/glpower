@@ -1,6 +1,6 @@
 import EventEmitter from 'wolfy87-eventemitter';
-import { Vector2 } from '../Math/Vector2';
-import { Vector3 } from '../Math/Vector3';
+import { Vec2, Vector2 } from '../Math/Vector2';
+import { Vec3, Vector3 } from '../Math/Vector3';
 import { FCurveGroup } from './FCurveGroup';
 
 export type AnimationFrameInfo = {
@@ -128,13 +128,13 @@ export class AnimationAction extends EventEmitter {
 
 	}
 
-	public getValue<T extends Vector2 | Vector3 | number>( propertyName: string ): T | null;
+	public getValue<T extends Vector2 | Vec2 | Vector3 | Vec3 | number>( accessor: string ): T | null;
 
-	public getValue<T extends Vector2 | Vector3 >( propertyName: string, target: T ): T;
+	public getValue<T extends Vector2 | Vec2 | Vector3 | Vec3>( accessor: string, target: T ): T;
 
-	public getValue( propertyName: string, target?: Vector2 | Vector3 ): Vector2 | Vector3 | number | null {
+	public getValue( accessor: string, target?: Vector2 | Vector3 ): Vector2 | Vector3 | number | null {
 
-		const uniform = this.getUniforms( propertyName );
+		const uniform = this.getUniforms( accessor );
 
 		if ( ! uniform ) return target || null;
 

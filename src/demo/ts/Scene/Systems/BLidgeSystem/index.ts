@@ -15,6 +15,9 @@ export class BLidgeSystem extends GLP.System {
 	private root: GLP.Entity;
 	private objects: Map<string, GLP.Entity>;
 
+	// tmp
+	private tmpQuaternion: GLP.Quaternion;
+
 	constructor( power: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
 		super( {
@@ -43,9 +46,52 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.addListener( 'sync/scene', this.onSyncScene.bind( this ) );
 
+		// tmp
+
+		this.tmpQuaternion = new GLP.Quaternion();
+
 	}
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
+
+		const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( event.world, entity, 'blidge' );
+		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
+		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
+
+		if ( blidgeComponent && blidgeComponent.actions ) {
+
+			for ( let i = 0; i < blidgeComponent.actions.length; i ++ ) {
+
+				const action = blidgeComponent.actions[ i ];
+
+				if ( positionComponent ) {
+
+					action.getValue( action.name + '_location', positionComponent );
+
+				}
+
+				if ( rotationComponent ) {
+
+					const rot = action.getValue<GLP.Vector3>( action.name + '_rotation_euler' );
+
+					if ( rot ) {
+
+						// this.tmpQuaternion.euler( rot, 'YZX' );
+						this.tmpQuaternion.euler( { x: rot.x - Math.PI / 2, y: rot.y, z: rot.z }, 'YZX' ); //カメラが下向くねん
+
+						rotationComponent.x = this.tmpQuaternion.x;
+						rotationComponent.y = this.tmpQuaternion.y;
+						rotationComponent.z = this.tmpQuaternion.z;
+						rotationComponent.w = this.tmpQuaternion.w;
+
+					}
+
+				}
+
+			}
+
+		}
+
 	}
 
 	private onSyncScene( blidge: GLP.BLidge ) {
@@ -78,6 +124,8 @@ export class BLidgeSystem extends GLP.System {
 
 			if ( blidgeComponent && blidgeComponent.type != type ) {
 
+				// entity type
+
 				this.ecs.removeComponent( this.world, entity, 'geometry' );
 				this.ecs.removeComponent( this.world, entity, 'material' );
 				this.ecs.removeComponent( this.world, entity, 'perspectiveCamera' );
@@ -105,7 +153,26 @@ export class BLidgeSystem extends GLP.System {
 
 				}
 
+				// actions
+
+				blidgeComponent.actions = [];
+
+				for ( let i = 0; i < obj.actions.length; i ++ ) {
+
+					const action = this.blidge.actions.find( action => action.name == obj.actions[ i ] );
+
+					if ( action ) {
+
+						blidgeComponent.actions.push( action );
+
+					}
+
+				}
+
+
 			}
+
+			// transform
 
 			const position = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' );
 
