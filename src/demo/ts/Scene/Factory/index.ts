@@ -56,7 +56,11 @@ export class Factory {
 
 		const entity = this.empty( props );
 
-		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', { name: props.name, type: props.type ?? 'empty' } );
+		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', {
+			name: props.name,
+			type: props.type ?? 'empty',
+			animations: []
+		} );
 
 		return entity;
 

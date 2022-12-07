@@ -322,6 +322,14 @@ export class BLidge extends EventEmitter {
 		this.frameStart = start || this.frameStart;
 		this.frameEnd = end || this.frameEnd;
 
+		for ( let i = 0; i < this.actions.length; i ++ ) {
+
+			const action = this.actions[ i ];
+
+			action.updateFrame( this.frameCurrent );
+
+		}
+
 		this.emitEvent( 'sync/timeline', [ this.frameCurrent, this.frameStart, this.frameEnd ] );
 
 	}

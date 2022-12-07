@@ -5,6 +5,7 @@ import { AttributeBuffer } from "../../GLPowerVAO";
 import { Vec2 } from "../../Math/Vector2";
 import { Vec4 } from "../../Math/Vector4";
 import { BLidgeObjectType } from "../../BLidge";
+import { AnimationAction } from "../../Animation/AnimationAction";
 
 export interface Component {[key:string]: any}
 
@@ -68,7 +69,8 @@ export type ComponentGeometry = {
 export type ComponentBLidge = {
 	name: string
 	type: BLidgeObjectType
-	updateTime?: number
+	updateTime?: number,
+	actions?: AnimationAction[]
 }
 
 // export type
