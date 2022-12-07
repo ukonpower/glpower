@@ -50,6 +50,8 @@ export class BLidgeSystem extends GLP.System {
 
 	private onSyncScene( blidge: GLP.BLidge ) {
 
+		const timeStamp = new Date().getTime();
+
 		// create entity
 
 		blidge.objects.forEach( obj => {
@@ -60,15 +62,25 @@ export class BLidgeSystem extends GLP.System {
 
 			if ( entity === undefined ) {
 
-				entity = this.factory.blidge( { type: 'empty' } );
+				entity = this.factory.blidge( { name: obj.name, type: 'empty' } );
 
 				this.objects.set( obj.name, entity );
 
 			}
 
-			const blidgeComponent = this.ecs.getComponent( this.world, entity, 'blidge' );
+			const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge' );
+
+			if ( blidgeComponent ) {
+
+				blidgeComponent.updateTime = timeStamp;
+
+			}
 
 			if ( blidgeComponent && blidgeComponent.type != type ) {
+
+				this.ecs.removeComponent( this.world, entity, 'geometry' );
+				this.ecs.removeComponent( this.world, entity, 'material' );
+				this.ecs.removeComponent( this.world, entity, 'perspectiveCamera' );
 
 				if ( type == 'cube' ) {
 
@@ -91,14 +103,9 @@ export class BLidgeSystem extends GLP.System {
 
 					if ( this.onCreateCamera ) this.onCreateCamera( entity );
 
-				} else {
-
-					// delete hokano components
-
 				}
 
 			}
-
 
 			const position = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' );
 
@@ -142,6 +149,22 @@ export class BLidgeSystem extends GLP.System {
 				scale.x = obj.scale.x;
 				scale.y = obj.scale.y;
 				scale.z = obj.scale.z;
+
+			}
+
+		} );
+
+		// remove
+
+		this.ecs.getEntities( this.world, [ 'blidge' ] ).forEach( entity => {
+
+			const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge' );
+
+			if ( blidgeComponent && blidgeComponent.updateTime !== timeStamp ) {
+
+				this.objects.delete( blidgeComponent.name );
+
+				this.ecs.removeEntity( this.world, entity );
 
 			}
 

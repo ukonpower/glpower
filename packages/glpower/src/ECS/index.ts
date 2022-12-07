@@ -49,11 +49,25 @@ export class ECS {
 
 		const index = world.entities.findIndex( e => e == entity );
 
+		// remove entity
+
 		if ( index > - 1 ) {
 
 			world.entities.slice( index, 1 );
 
 		}
+
+		// remove components
+
+		world.components.forEach( component => {
+
+			if ( component[ entity ] !== null && component[ entity ] !== undefined ) {
+
+				component[ entity ] = null;
+
+			}
+
+		} );
 
 	}
 

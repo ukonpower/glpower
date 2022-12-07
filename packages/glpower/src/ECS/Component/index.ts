@@ -66,7 +66,9 @@ export type ComponentGeometry = {
 }
 
 export type ComponentBLidge = {
+	name: string
 	type: BLidgeObjectType
+	updateTime?: number
 }
 
 // export type
