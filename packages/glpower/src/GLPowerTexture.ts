@@ -39,7 +39,6 @@ export class GLPowerTexture {
 
 				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image );
 
-
 			} else {
 
 				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.image.width, this.image.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null );
@@ -57,12 +56,19 @@ export class GLPowerTexture {
 		this.gl.generateMipmap( this.gl.TEXTURE_2D );
 		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
+		return this;
+
 	}
 
-	public active( unitNumber: number ) {
+	public activate( unitNumber: number ) {
 
 		this.gl.activeTexture( this.gl.TEXTURE0 + unitNumber );
 		this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
+		// this.gl.bindTexture( this.gl.TEXTURE_2D, null );
+
+		this.unit = unitNumber;
+
+		return this;
 
 	}
 
@@ -79,6 +85,8 @@ export class GLPowerTexture {
 		};
 
 		img.src = src;
+
+		return this;
 
 	}
 

@@ -30,7 +30,7 @@ class ExTexture {
 
 		const cameraMatrix = new GLP.Matrix4().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
-			new GLP.Vector3( 0.0, 0.0, 0.0 ),
+			new GLP.Quaternion(),
 			new GLP.Vector3( 1.0, 1.0, 1.0 ),
 		);
 
@@ -93,13 +93,13 @@ class ExTexture {
 
 				const modelMatrix = obj.modelMatrix;
 
-				modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
+				modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 
 				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
 				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 
-				texture.active( 0 );
+				texture.activate( 0 );
 				program.setUniform( 'uTexture', '1i', [ texture.unit ] );
 
 				program.use();
