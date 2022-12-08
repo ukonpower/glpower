@@ -15,7 +15,6 @@ class ExFrameBuffer {
 
 	private objList: {[key:string]: {
 		modelMatrix: GLP.Matrix4;
-		// geometry: GLP.Geometry;
 		vao: GLP.GLPowerVAO;
 		program: GLP.GLPowerProgram
 	}};
@@ -34,7 +33,7 @@ class ExFrameBuffer {
 
 		const cameraMatrix = new GLP.Matrix4().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
-			new GLP.Vector3( 0.0, 0.0, 0.0 ),
+			new GLP.Quaternion(),
 			new GLP.Vector3( 1.0, 1.0, 1.0 ),
 		);
 
@@ -44,7 +43,15 @@ class ExFrameBuffer {
 
 		const frameBuffer = this.power.createFrameBuffer();
 		frameBuffer.setSize( 1024, 1024 );
-		frameBuffer.texture.active( 0 );
+
+		const texture = this.power.createTexture();
+
+		frameBuffer.setTexture( [
+			texture
+		] );
+
+		texture.activate( 0 );
+
 
 		// program
 
@@ -83,6 +90,7 @@ class ExFrameBuffer {
 			program: frameProgram
 		};
 
+
 		// animate
 
 		const animate = () => {
@@ -97,7 +105,7 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.cube.modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
+			this.objList.cube.modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.cube.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.cube.modelMatrix ).elm );
 			this.objList.cube.program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrixFrame.elm );
@@ -124,11 +132,11 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.plane.modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
+			this.objList.plane.modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.plane.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.plane.modelMatrix ).elm );
 			this.objList.plane.program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
-			this.objList.plane.program.setUniform( 'uTexture', '1i', [ frameBuffer.texture.unit ] );
+			this.objList.plane.program.setUniform( 'uTexture', '1i', [ frameBuffer.textures[ 0 ].unit ] );
 
 			this.objList.plane.program.use();
 

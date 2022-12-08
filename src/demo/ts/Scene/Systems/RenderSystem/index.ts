@@ -21,6 +21,11 @@ export class RenderSystem extends GLP.System {
 	private width: number;
 	private height: number;
 
+	// framebuffer
+
+	private defferedFrameBufferList: GLP.GLPowerFrameBuffer[];
+	private defferedFrameBufferAttachmentList: number[] = [];
+
 	// camera
 
 	private camera: GLP.Entity | null;
@@ -34,11 +39,7 @@ export class RenderSystem extends GLP.System {
 
 	constructor( core: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
-		super( {
-			'': [
-				'matrix',
-			]
-		} );
+		super( {} );
 
 		this.core = core;
 		this.gl = this.core.gl;
@@ -54,6 +55,23 @@ export class RenderSystem extends GLP.System {
 		this.width = 1;
 		this.height = 1;
 
+		// framebuffer
+
+		this.defferedFrameBufferList = [
+			this.core.createFrameBuffer(),
+			this.core.createFrameBuffer(),
+			this.core.createFrameBuffer(),
+		];
+
+		this.defferedFrameBufferAttachmentList = [];
+
+		this.defferedFrameBufferList.forEach( ( f, i ) => {
+
+			f.attachmentIndex = i;
+			this.defferedFrameBufferAttachmentList.push( this.gl.COLOR_ATTACHMENT0 + i );
+
+		} );
+
 		// camera
 
 		this.camera = null;
@@ -67,15 +85,16 @@ export class RenderSystem extends GLP.System {
 
 	}
 
-	protected beforeUpdateImpl( _: string, event: GLP.SystemUpdateEvent ): void {
+	public update( event: GLP.SystemUpdateEvent ): void {
 
 		if ( this.camera === null ) return;
 
 		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
 		this.gl.clearDepth( 1.0 );
 		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-
 		this.gl.enable( this.gl.DEPTH_TEST );
+
+		// camera
 
 		const cameraPerspective = event.ecs.getComponent<GLP.ComponentPerspectiveCamera>( event.world, this.camera, 'perspectiveCamera' );
 
@@ -92,6 +111,27 @@ export class RenderSystem extends GLP.System {
 			this.viewMatrix.set( cameraTransform.world ).inverse();
 
 		}
+
+		// deffered
+
+		const entitiesDeferredOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
+
+		for ( let j = 0; j < entitiesDeferredOrder.length; j ++ ) {
+
+			this.updateImpl( 'deferred', entitiesDeferredOrder[ j ], event );
+
+		}
+
+		// foward
+
+		// const entitiesForwardOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
+
+		// for ( let j = 0; j < entitiesForwardOrder.length; j ++ ) {
+
+		// 	this.updateImpl( 'forward', entitiesForwardOrder[ j ], event );
+
+		// }
+
 
 	}
 
@@ -230,6 +270,9 @@ export class RenderSystem extends GLP.System {
 
 		this.width = width;
 		this.height = height;
+
+		this.fbColorRoughness.setSize( width, height );
+		this.fbNormalDepth.setSize( width, height );
 
 		if ( this.camera ) {
 

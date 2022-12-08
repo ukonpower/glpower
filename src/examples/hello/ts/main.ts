@@ -64,7 +64,6 @@ class ExHello {
 			this.gl.clearDepth( 1.0 );
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 
-			modelMatrix.multiply( new GLP.Matrix4().applyRot( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) );
 			modelViewMatrix.identity().multiply( viewMatrix ).multiply( modelMatrix );
 
 			program.use();

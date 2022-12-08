@@ -20,6 +20,7 @@ export type ComponentName =
 	'perspectiveCamera' |
 	'material' |
 	'geometry' |
+	'directionalLight' |
 	'blidge' |
 	( string & {} );
 
@@ -66,11 +67,15 @@ export type ComponentGeometry = {
 	needsUpdate?: boolean
 }
 
+export type ComponentDirectionalLight = {
+	color: Vec3
+}
+
+// blidge
+
 export type ComponentBLidge = {
 	name: string
 	type: BLidgeObjectType
 	updateTime?: number,
 	actions?: AnimationAction[]
 }
-
-// export type
