@@ -23,8 +23,8 @@ export class RenderSystem extends GLP.System {
 
 	// framebuffer
 
-	private defferedFrameBufferList: GLP.GLPowerFrameBuffer[];
-	private defferedFrameBufferAttachmentList: number[] = [];
+	private defferedFrameBuffer: GLP.GLPowerFrameBuffer;
+	private defferedTextureList: GLP.GLPowerTexture[];
 
 	// camera
 
@@ -57,18 +57,18 @@ export class RenderSystem extends GLP.System {
 
 		// framebuffer
 
-		this.defferedFrameBufferList = [
-			this.core.createFrameBuffer(),
-			this.core.createFrameBuffer(),
-			this.core.createFrameBuffer(),
+		this.defferedTextureList = [
+			this.core.createTexture(),
+			this.core.createTexture(),
+			this.core.createTexture()
 		];
 
-		this.defferedFrameBufferAttachmentList = [];
+		this.defferedFrameBuffer = this.core.createFrameBuffer();
+		this.defferedFrameBuffer.setTexture( this.defferedTextureList );
 
-		this.defferedFrameBufferList.forEach( ( f, i ) => {
+		this.defferedTextureList.forEach( ( f, i ) => {
 
-			f.attachmentIndex = i;
-			this.defferedFrameBufferAttachmentList.push( this.gl.COLOR_ATTACHMENT0 + i );
+			f.activate( i );
 
 		} );
 
@@ -112,9 +112,14 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		// deffered
+		/*-------------------------------
+			Deffered
+		-------------------------------*/
 
 		const entitiesDeferredOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
+
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.defferedFrameBuffer.getFrameBuffer() );
+		this.gl.drawBuffers( this.defferedFrameBuffer.textureAttachmentList );
 
 		for ( let j = 0; j < entitiesDeferredOrder.length; j ++ ) {
 
@@ -122,7 +127,11 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		// foward
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.defferedFrameBuffer.getFrameBuffer() );
+
+		/*-------------------------------
+			Forward
+		-------------------------------*/
 
 		// const entitiesForwardOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
 
@@ -271,8 +280,7 @@ export class RenderSystem extends GLP.System {
 		this.width = width;
 		this.height = height;
 
-		this.fbColorRoughness.setSize( width, height );
-		this.fbNormalDepth.setSize( width, height );
+		this.defferedFrameBuffer.setSize( new GLP.Vector2( width, height ) );
 
 		if ( this.camera ) {
 

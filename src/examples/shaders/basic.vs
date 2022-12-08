@@ -1,11 +1,14 @@
-attribute vec3 position;
-attribute vec2 uv;
+#version 300 es
+precision highp float;
+
+layout ( location = 0 ) in vec3 position;
+layout ( location = 1 ) in vec3 uv;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 
-varying vec2 vUv;
-varying vec3 vColor;
+out vec2 vUv;
+out vec3 vColor;
 
 void main( void ) {
 

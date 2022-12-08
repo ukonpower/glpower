@@ -52,7 +52,6 @@ class ExFrameBuffer {
 
 		texture.activate( 0 );
 
-
 		// program
 
 		const basicProgram = this.power.createProgram();
