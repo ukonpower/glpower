@@ -14,7 +14,7 @@ export type BLidgeSyncSceneMessage = {
     data: BLidgeScene;
 }
 
-export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera'
+export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane'
 
 export type BLidgeCameraParams = {
 	fov: number
