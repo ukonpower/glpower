@@ -18,9 +18,9 @@ export class BLidgeSystem extends GLP.System {
 	// tmp
 	private tmpQuaternion: GLP.Quaternion;
 
-	constructor( power: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
+	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World ) {
 
-		super( {
+		super( ecs, {
 			move: [ 'position', 'rotation', 'scale' ]
 		} );
 
@@ -76,7 +76,6 @@ export class BLidgeSystem extends GLP.System {
 
 					if ( rot ) {
 
-						// this.tmpQuaternion.euler( rot, 'YZX' );
 						this.tmpQuaternion.euler( { x: rot.x - Math.PI / 2, y: rot.y, z: rot.z }, 'YZX' ); //カメラが下向くねん
 
 						rotationComponent.x = this.tmpQuaternion.x;
@@ -128,7 +127,8 @@ export class BLidgeSystem extends GLP.System {
 
 				this.ecs.removeComponent( this.world, entity, 'geometry' );
 				this.ecs.removeComponent( this.world, entity, 'material' );
-				this.ecs.removeComponent( this.world, entity, 'perspectiveCamera' );
+				this.ecs.removeComponent( this.world, entity, 'camera' );
+				this.ecs.removeComponent( this.world, entity, 'perspective' );
 
 				if ( type == 'cube' ) {
 
@@ -138,15 +138,66 @@ export class BLidgeSystem extends GLP.System {
 
 					this.factory.appendSphere( entity );
 
+				} else if ( type == 'plane' ) {
+
+					this.factory.appendPlane( entity );
+
 				} else if ( type == 'camera' && obj.camera ) {
 
+					// deferred
+
+					const deferredFrameBuffer = this.power.createFrameBuffer();
+
+					deferredFrameBuffer.setTexture( [
+						this.power.createTexture(),
+						this.power.createTexture(),
+						this.power.createTexture()
+					] );
+
+					deferredFrameBuffer.textures.forEach( ( f, i ) => {
+
+						f.activate( i );
+
+					} );
+
+					// forward
+
+					const forwardFrameBuffer = this.power.createFrameBuffer();
+
+					forwardFrameBuffer.setTexture( [
+						this.power.createTexture(),
+					] );
+
+					forwardFrameBuffer.textures.forEach( ( f, i ) => {
+
+						f.activate( i );
+
+					} );
+
 					this.factory.appendPerspectiveCamera( entity, {
-						perspectiveCamera: {
-							fov: obj.camera.fov,
-							near: 0.01,
-							far: 1000,
-							aspectRatio: window.innerWidth / window.innerHeight
-						}
+						fov: obj.camera.fov,
+						near: 0.01,
+						far: 1000,
+						renderPhases: [
+							{
+								type: 'deferred',
+								renderTarget: deferredFrameBuffer,
+								onResize: ( size, rt ) => {
+
+									if ( rt ) rt.setSize( size );
+
+								}
+							},
+							{
+								type: 'forward',
+								renderTarget: forwardFrameBuffer,
+								onResize: ( size, rt ) => {
+
+									if ( rt ) rt.setSize( size );
+
+								}
+							}
+						]
 					} );
 
 					if ( this.onCreateCamera ) this.onCreateCamera( entity );
@@ -251,6 +302,5 @@ export class BLidgeSystem extends GLP.System {
 		} );
 
 	}
-
 
 }

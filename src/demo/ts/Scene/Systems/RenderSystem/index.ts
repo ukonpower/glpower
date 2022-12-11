@@ -7,146 +7,91 @@ export class RenderSystem extends GLP.System {
 	private gl: WebGL2RenderingContext;
 	private core: GLP.Power;
 
-	// ecs
-
-	private ecs: GLP.ECS;
-	private world: GLP.World;
-
 	// program
 
 	private programPool: ProgramPool;
 
-	// render
-
-	private width: number;
-	private height: number;
-
-	// framebuffer
-
-	private defferedFrameBuffer: GLP.GLPowerFrameBuffer;
-	private defferedTextureList: GLP.GLPowerTexture[];
-
-	// camera
-
-	private camera: GLP.Entity | null;
-
 	// matrix
 
-	private projectionMatrix: GLP.Matrix4;
-	private viewMatrix: GLP.Matrix4;
 	private modelMatrix: GLP.Matrix4;
 	private modelViewMatrix: GLP.Matrix4;
 
-	constructor( core: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
+	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
-		super( {} );
+		super( ecs, {
+			"": [ "camera", "perspective" ],
+		} );
 
 		this.core = core;
 		this.gl = this.core.gl;
 		this.ecs = ecs;
-		this.world = world;
 
 		// program
 
 		this.programPool = new ProgramPool( core );
 
-		// render
-
-		this.width = 1;
-		this.height = 1;
-
-		// framebuffer
-
-		this.defferedTextureList = [
-			this.core.createTexture(),
-			this.core.createTexture(),
-			this.core.createTexture()
-		];
-
-		this.defferedFrameBuffer = this.core.createFrameBuffer();
-		this.defferedFrameBuffer.setTexture( this.defferedTextureList );
-
-		this.defferedTextureList.forEach( ( f, i ) => {
-
-			f.activate( i );
-
-		} );
-
-		// camera
-
-		this.camera = null;
-
 		// matrix
 
-		this.projectionMatrix = new GLP.Matrix4();
-		this.viewMatrix = new GLP.Matrix4();
 		this.modelMatrix = new GLP.Matrix4();
 		this.modelViewMatrix = new GLP.Matrix4();
 
 	}
 
-	public update( event: GLP.SystemUpdateEvent ): void {
+	protected updateImpl( _: string, camera: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
 
-		if ( this.camera === null ) return;
+		const cameraComponent = event.ecs.getComponent<GLP.ComponentCamera>( event.world, camera, 'camera' )!;
 
-		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-		this.gl.clearDepth( 1.0 );
-		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-		this.gl.enable( this.gl.DEPTH_TEST );
+		if ( ! cameraComponent.renderPhases ) return;
 
-		// camera
+		for ( let i = 0; i < cameraComponent.renderPhases.length; i ++ ) {
 
-		const cameraPerspective = event.ecs.getComponent<GLP.ComponentPerspectiveCamera>( event.world, this.camera, 'perspectiveCamera' );
+			const { type, renderTarget } = cameraComponent.renderPhases[ i ];
 
-		if ( cameraPerspective && cameraPerspective.needsUpdate ) {
+			if ( renderTarget ) {
 
-			this.projectionMatrix.perspective( cameraPerspective.fov, cameraPerspective.aspectRatio, cameraPerspective.near, cameraPerspective.far );
+				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, renderTarget.getFrameBuffer() );
+				this.gl.drawBuffers( renderTarget.textureAttachmentList );
+
+			} else {
+
+				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+
+			}
+
+			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+			this.gl.clearDepth( 1.0 );
+			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
+			this.gl.enable( this.gl.DEPTH_TEST );
+
+			if ( type == 'deferred' ) {
+
+				const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+
+				for ( let i = 0; i < meshes.length; i ++ ) {
+
+					this.draw( cameraComponent.viewMatrix, cameraComponent.projectionMatrix, meshes[ i ], event );
+
+				}
+
+			} else if ( type == 'forward' ) {
+
+				const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+
+				for ( let i = 0; i < meshes.length; i ++ ) {
+
+					this.draw( cameraComponent.viewMatrix, cameraComponent.projectionMatrix, meshes[ i ], event );
+
+				}
+
+			}
 
 		}
 
-		const cameraTransform = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, this.camera, 'matrix' );
-
-		if ( cameraTransform ) {
-
-			this.viewMatrix.set( cameraTransform.world ).inverse();
-
-		}
-
-		/*-------------------------------
-			Deffered
-		-------------------------------*/
-
-		const entitiesDeferredOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
-
-		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.defferedFrameBuffer.getFrameBuffer() );
-		this.gl.drawBuffers( this.defferedFrameBuffer.textureAttachmentList );
-
-		for ( let j = 0; j < entitiesDeferredOrder.length; j ++ ) {
-
-			this.updateImpl( 'deferred', entitiesDeferredOrder[ j ], event );
-
-		}
-
-		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.defferedFrameBuffer.getFrameBuffer() );
-
-		/*-------------------------------
-			Forward
-		-------------------------------*/
-
-		// const entitiesForwardOrder = event.ecs.getEntities( event.world, [ 'matrix', 'material', 'geometry' ] );
-
-		// for ( let j = 0; j < entitiesForwardOrder.length; j ++ ) {
-
-		// 	this.updateImpl( 'forward', entitiesForwardOrder[ j ], event );
-
-		// }
 
 
 	}
 
-	protected updateImpl( _: string, entity: number, event: GLP.SystemUpdateEvent ): void {
-
-		if ( this.camera === null ) return;
+	private draw( viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4, entity: number, event: GLP.SystemUpdateEvent ) {
 
 		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
 		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, entity, 'material' );
@@ -159,10 +104,10 @@ export class RenderSystem extends GLP.System {
 			// update uniforms
 
 			this.modelMatrix.set( matrix.world );
-			this.modelViewMatrix.copy( this.modelMatrix ).preMultiply( this.viewMatrix );
+			this.modelViewMatrix.copy( this.modelMatrix ).preMultiply( viewMatrix );
 
 			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
-			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrix.elm );
 
 			if ( material.uniforms ) {
 
@@ -261,39 +206,7 @@ export class RenderSystem extends GLP.System {
 
 	protected afterUpdateImpl( _: string, event: GLP.SystemUpdateEvent ): void {
 
-		if ( this.camera === null ) return;
-
 		this.gl.flush();
-
-	}
-
-	public setCamera( camera: GLP.Entity | null ) {
-
-		this.camera = camera;
-
-		this.resize( this.width, this.height );
-
-	}
-
-	public resize( width: number, height: number ) {
-
-		this.width = width;
-		this.height = height;
-
-		this.defferedFrameBuffer.setSize( new GLP.Vector2( width, height ) );
-
-		if ( this.camera ) {
-
-			const perspective = this.ecs.getComponent<GLP.ComponentPerspectiveCamera>( this.world, this.camera, 'perspectiveCamera' );
-
-			if ( perspective ) {
-
-				perspective.aspectRatio = width / height;
-				perspective.needsUpdate = true;
-
-			}
-
-		}
 
 	}
 

@@ -1,11 +1,13 @@
 import { Vec3 } from "../../Math/Vector3";
-import { Uniform, Uniformable, UniformType } from "../../GLPowerProgram";
+import { Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
-import { Vec2 } from "../../Math/Vector2";
+import { Vec2, Vector2 } from "../../Math/Vector2";
 import { Vec4 } from "../../Math/Vector4";
 import { BLidgeObjectType } from "../../BLidge";
 import { AnimationAction } from "../../Animation/AnimationAction";
+import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
+import { Matrix4 } from "../../Math/Matrix4";
 
 export interface Component {[key:string]: any}
 
@@ -17,7 +19,8 @@ export type ComponentName =
 	'scale' |
 	'matrix' |
 	'sceneNode' |
-	'perspectiveCamera' |
+	'camera' |
+	'perspective' |
 	'material' |
 	'geometry' |
 	'directionalLight' |
@@ -47,12 +50,24 @@ export type ComponentSceneNode = {
 	children: Entity[];
 }
 
-export type ComponentPerspectiveCamera = {
-	fov: number;
-	aspectRatio: number;
+export type RenderPhase = {
+	type: 'forward' | 'deferred' | 'shadowmap';
+	renderTarget: GLPowerFrameBuffer | null;
+	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null, camera: ComponentCamera ) => void
+}
+
+export type ComponentCamera = {
 	near: number;
 	far: number;
+	aspectRatio: number;
+	projectionMatrix: Matrix4,
+	viewMatrix: Matrix4,
 	needsUpdate?: boolean;
+	renderPhases?: RenderPhase[]
+}
+
+export type ComponentCameraPerspective = {
+	fov: number;
 }
 
 export type ComponentMaterial = {

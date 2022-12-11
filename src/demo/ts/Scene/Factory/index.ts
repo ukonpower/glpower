@@ -16,7 +16,10 @@ interface MeshProps extends EmptyProps{
 }
 
 interface CameraProps extends EmptyProps {
-	perspectiveCamera?: GLP.ComponentPerspectiveCamera
+	near?: number;
+	far?: number;
+	fov?: number;
+	renderPhases?: GLP.RenderPhase[]
 }
 
 interface BLidgeProps extends EmptyProps {
@@ -111,13 +114,37 @@ export class Factory {
 
 	}
 
+	public appendPlane( entity: Entity ) {
+
+		return this.appendMesh( entity, {
+			material: {
+				vertexShader: basicVert,
+				fragmentShader: basicFrag,
+				uniforms: {
+					uColor: {
+						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+						type: '3f'
+					}
+				}
+			},
+			geometry: new GLP.PlaneGeometry().getComponent( this.power ),
+		} );
+
+	}
+
 	public appendPerspectiveCamera( entity: number, props: CameraProps = {} ) {
 
-		this.ecs.addComponent<GLP.ComponentPerspectiveCamera>( this.world, entity, 'perspectiveCamera', props.perspectiveCamera ?? {
-			near: 0.01,
-			far: 1000,
-			fov: 50,
+		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
+			near: props.near ?? 0.001,
+			far: props.far ?? 1000,
 			aspectRatio: window.innerWidth / window.innerHeight,
+			projectionMatrix: new GLP.Matrix4(),
+			viewMatrix: new GLP.Matrix4(),
+			renderPhases: props.renderPhases
+		} );
+
+		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
+			fov: props.fov ?? 50,
 		} );
 
 	}
