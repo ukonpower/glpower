@@ -5,6 +5,7 @@ import { TransformSystem } from './Systems/TransformSystem';
 
 import { BLidgeSystem } from './Systems/BLidgeSystem';
 import EventEmitter from 'wolfy87-eventemitter';
+import { CameraSystem } from './Systems/CameraSystem';
 
 export class Scene extends EventEmitter {
 
@@ -13,7 +14,9 @@ export class Scene extends EventEmitter {
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
+	private blidgeSystem: BLidgeSystem;
 	private renderSystem:RenderSystem;
+	private cameraSystem:CameraSystem;
 
 	constructor( power: GLP.Power ) {
 
@@ -34,23 +37,14 @@ export class Scene extends EventEmitter {
 			System
 		-------------------------------*/
 
-		// blidgeSystem
-
-		const blidgeSystem = new BLidgeSystem( this.power, this.ecs, this.world );
-
-		blidgeSystem.onCreateCamera = ( camera ) => {
-
-			this.renderSystem.setCamera( camera );
-
-		};
-
-		// renderSystem
-
-		this.renderSystem = new RenderSystem( this.power, this.ecs, this.world );
+		this.cameraSystem = new CameraSystem( this.ecs );
+		this.renderSystem = new RenderSystem( this.ecs, this.power );
+		this.blidgeSystem = new BLidgeSystem( this.ecs, this.power, this.world );
 
 		// adddd
-		this.ecs.addSystem( this.world, 'blidge', blidgeSystem );
-		this.ecs.addSystem( this.world, 'transform', new TransformSystem( blidgeSystem.sceneGraph ) );
+		this.ecs.addSystem( this.world, 'blidge', this.blidgeSystem );
+		this.ecs.addSystem( this.world, 'transform', new TransformSystem( this.blidgeSystem.sceneGraph ) );
+		this.ecs.addSystem( this.world, 'camera', this.cameraSystem );
 		this.ecs.addSystem( this.world, 'render', this.renderSystem );
 
 		/*-------------------------------
@@ -59,11 +53,10 @@ export class Scene extends EventEmitter {
 
 		// resize
 
-		const onResize = this.onResize.bind( this );
-
-		window.addEventListener( 'resize', onResize );
-
 		this.onResize();
+
+		const onResize = this.onResize.bind( this );
+		window.addEventListener( 'resize', onResize );
 
 		// dispose
 
@@ -83,7 +76,8 @@ export class Scene extends EventEmitter {
 
 	public onResize() {
 
-		this.renderSystem.resize( window.innerWidth, window.innerHeight );
+		const size = new GLP.Vector2( window.innerWidth, window.innerHeight );
+		this.cameraSystem.resize( this.world, size );
 
 	}
 

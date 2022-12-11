@@ -11,23 +11,30 @@ export interface SystemUpdateEvent extends ECSUpdateEvent {
 
 export class System extends EventEmitter {
 
+	protected ecs: ECS;
 	protected queries: {name: string, query: EntityQuery}[];
 
-	constructor( queries: {[key: string]:EntityQuery} ) {
+	constructor( ecs: ECS, queries?: {[key: string]:EntityQuery} ) {
 
 		super();
 
+		this.ecs = ecs;
 		this.queries = [];
 
-		const keys = Object.keys( queries );
+		if ( queries ) {
 
-		for ( let i = 0; i < keys.length; i ++ ) {
+			const keys = Object.keys( queries );
 
-			const name = keys[ i ];
+			for ( let i = 0; i < keys.length; i ++ ) {
 
-			this.queries.push( { name, query: queries[ name ] } );
+				const name = keys[ i ];
+
+				this.queries.push( { name, query: queries[ name ] } );
+
+			}
 
 		}
+
 
 	}
 
