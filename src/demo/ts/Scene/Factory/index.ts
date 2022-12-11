@@ -2,6 +2,7 @@ import * as GLP from 'glpower';
 
 import basicVert from './shaders/basic.vs';
 import basicFrag from './shaders/basic.fs';
+
 import { BLidgeObjectType, Entity } from 'glpower';
 
 interface EmptyProps {
@@ -11,7 +12,7 @@ interface EmptyProps {
 }
 
 interface MeshProps extends EmptyProps{
-	material: GLP.ComponentMaterial
+	material?: GLP.ComponentMaterial
 	geometry: GLP.ComponentGeometry
 }
 
@@ -48,7 +49,7 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'rotation', props.rotation ?? { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion', { x: 0, y: 0, z: 0, w: 1 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'scale', props.scale ?? { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, entity, 'matrix', { local: [], world: [] } );
+		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, entity, 'matrix', { local: new GLP.Matrix4(), world: new GLP.Matrix4() } );
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, entity, 'sceneNode', { children: [] } );
 
 		return entity;
@@ -62,7 +63,6 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', {
 			name: props.name,
 			type: props.type ?? 'empty',
-			// animations: []
 		} );
 
 		return entity;
@@ -71,7 +71,18 @@ export class Factory {
 
 	public appendMesh( entity: Entity, props: MeshProps ) {
 
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', props.material );
+		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', props.material ??
+		{
+		 	vertexShader: basicVert,
+		 	fragmentShader: basicFrag,
+		 	uniforms: {
+		 		uColor: {
+		 			value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+		 			type: '3f'
+		 		}
+		 	},
+			renderType: 'forward',
+		 }, );
 		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', props.geometry );
 
 		return entity;
@@ -81,16 +92,6 @@ export class Factory {
 	public appendCube( entity: Entity ) {
 
 		return this.appendMesh( entity, {
-			material: {
-				vertexShader: basicVert,
-				fragmentShader: basicFrag,
-				uniforms: {
-					uColor: {
-						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
-						type: '3f'
-					}
-				}
-			},
 			geometry: new GLP.CubeGeometry().getComponent( this.power ),
 		} );
 
@@ -99,16 +100,6 @@ export class Factory {
 	public appendSphere( entity: Entity ) {
 
 		return this.appendMesh( entity, {
-			material: {
-				vertexShader: basicVert,
-				fragmentShader: basicFrag,
-				uniforms: {
-					uColor: {
-						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
-						type: '3f'
-					}
-				}
-			},
 			geometry: new GLP.SphereGeometry().getComponent( this.power ),
 		} );
 
@@ -117,18 +108,12 @@ export class Factory {
 	public appendPlane( entity: Entity ) {
 
 		return this.appendMesh( entity, {
-			material: {
-				vertexShader: basicVert,
-				fragmentShader: basicFrag,
-				uniforms: {
-					uColor: {
-						value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
-						type: '3f'
-					}
-				}
-			},
 			geometry: new GLP.PlaneGeometry().getComponent( this.power ),
 		} );
+
+	}
+
+	public appendPostProcessing( entity: Entity ) {
 
 	}
 

@@ -13,13 +13,13 @@ export class RenderSystem extends GLP.System {
 
 	// matrix
 
-	private modelMatrix: GLP.Matrix4;
 	private modelViewMatrix: GLP.Matrix4;
 
 	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
 		super( ecs, {
-			"": [ "camera", "perspective" ],
+			"renderCamera": [ "camera", "perspective" ],
+			"renderPostProcess": [ 'postprocess', 'material', 'geometry' ]
 		} );
 
 		this.core = core;
@@ -32,7 +32,6 @@ export class RenderSystem extends GLP.System {
 
 		// matrix
 
-		this.modelMatrix = new GLP.Matrix4();
 		this.modelViewMatrix = new GLP.Matrix4();
 
 	}
@@ -63,144 +62,137 @@ export class RenderSystem extends GLP.System {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			this.gl.enable( this.gl.DEPTH_TEST );
 
-			if ( type == 'deferred' ) {
+			const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
 
-				const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+			for ( let i = 0; i < meshes.length; i ++ ) {
 
-				for ( let i = 0; i < meshes.length; i ++ ) {
+				const mesh = meshes[ i ];
 
-					this.draw( cameraComponent.viewMatrix, cameraComponent.projectionMatrix, meshes[ i ], event );
+				const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, 'material' );
+				const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, mesh, 'geometry' );
+				const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, mesh, 'matrix' );
 
-				}
+				if ( material && geometry && matrix ) {
 
-			} else if ( type == 'forward' ) {
+					if ( material.renderType == type ) {
 
-				const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+						this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: cameraComponent.viewMatrix, projectionMatrix: cameraComponent.projectionMatrix } );
 
-				for ( let i = 0; i < meshes.length; i ++ ) {
-
-					this.draw( cameraComponent.viewMatrix, cameraComponent.projectionMatrix, meshes[ i ], event );
+					}
 
 				}
 
 			}
 
 		}
-
-
 
 	}
 
-	private draw( viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4, entity: number, event: GLP.SystemUpdateEvent ) {
+	private draw( entity: number, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: {modelMatrix: GLP.Matrix4, viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4} ) {
 
-		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
-		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, entity, 'material' );
-		const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, entity, 'geometry' );
+		const program = this.programPool.create( material.vertexShader, material.fragmentShader );
 
-		if ( matrix && material && geometry ) {
+		// update uniforms
 
-			const program = this.programPool.create( material.vertexShader, material.fragmentShader );
+		if ( matrix ) {
 
-			// update uniforms
-
-			this.modelMatrix.set( matrix.world );
-			this.modelViewMatrix.copy( this.modelMatrix ).preMultiply( viewMatrix );
+			this.modelViewMatrix.copy( matrix.modelMatrix ).preMultiply( matrix.viewMatrix );
 
 			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
-			program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
 
-			if ( material.uniforms ) {
+		}
 
-				const keys = Object.keys( material.uniforms );
+		if ( material.uniforms ) {
 
-				for ( let i = 0; i < keys.length; i ++ ) {
+			const keys = Object.keys( material.uniforms );
 
-					const name = keys[ i ];
-					const uni = material.uniforms[ name ];
-					const type = uni.type;
-					const value = uni.value;
+			for ( let i = 0; i < keys.length; i ++ ) {
 
-					const arrayValue: ( number | boolean )[] = [];
+				const name = keys[ i ];
+				const uni = material.uniforms[ name ];
+				const type = uni.type;
+				const value = uni.value;
 
-					const _ = ( v: Uniformable ) => {
+				const arrayValue: ( number | boolean )[] = [];
 
-						if ( typeof v == 'number' || typeof v == 'boolean' ) {
+				const _ = ( v: Uniformable ) => {
 
-							arrayValue.push( v );
+					if ( typeof v == 'number' || typeof v == 'boolean' ) {
 
-						} else {
-
-							arrayValue.push( ...v.elm );
-
-						}
-
-					};
-
-					if ( Array.isArray( value ) ) {
-
-						for ( let j = 0; j < value.length; j ++ ) {
-
-							_( value[ i ] );
-
-						}
+						arrayValue.push( v );
 
 					} else {
 
-						_( value );
+						arrayValue.push( ...v.elm );
 
 					}
 
-					program.setUniform( keys[ i ], type, arrayValue );
+				};
 
-				}
+				if ( Array.isArray( value ) ) {
 
-			}
+					for ( let j = 0; j < value.length; j ++ ) {
 
-			// update attributes
-
-			const vao = program.getVAO( entity.toString() );
-
-			if ( vao ) {
-
-				if ( geometry.needsUpdate === undefined || geometry.needsUpdate === true ) {
-
-					for ( let i = 0; i < geometry.attributes.length; i ++ ) {
-
-						const attr = geometry.attributes[ i ];
-
-						vao.setAttribute( attr.name, attr.buffer, attr.size, attr.count );
+						_( value[ i ] );
 
 					}
 
-					vao.setIndex( geometry.index.buffer );
+				} else {
 
-					vao.updateAttributes( true );
-
-					geometry.needsUpdate = false;
+					_( value );
 
 				}
 
-			}
-
-			// draw
-
-			program.use();
-
-			program.uploadUniforms();
-
-			if ( vao ) {
-
-				this.gl.bindVertexArray( vao.getVAO() );
-
-				this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
-
-				this.gl.bindVertexArray( null );
+				program.setUniform( keys[ i ], type, arrayValue );
 
 			}
-
-			program.clean();
 
 		}
+
+		// update attributes
+
+		const vao = program.getVAO( entity.toString() );
+
+		if ( vao ) {
+
+			if ( geometry.needsUpdate === undefined || geometry.needsUpdate === true ) {
+
+				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
+
+					const attr = geometry.attributes[ i ];
+
+					vao.setAttribute( attr.name, attr.buffer, attr.size, attr.count );
+
+				}
+
+				vao.setIndex( geometry.index.buffer );
+
+				vao.updateAttributes( true );
+
+				geometry.needsUpdate = false;
+
+			}
+
+		}
+
+		// draw
+
+		program.use();
+
+		program.uploadUniforms();
+
+		if ( vao ) {
+
+			this.gl.bindVertexArray( vao.getVAO() );
+
+			this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
+
+			this.gl.bindVertexArray( null );
+
+		}
+
+		program.clean();
 
 	}
 
