@@ -43,7 +43,7 @@ export class Scene extends EventEmitter {
 
 		// adddd
 		this.ecs.addSystem( this.world, 'blidge', this.blidgeSystem );
-		this.ecs.addSystem( this.world, 'transform', new TransformSystem( this.blidgeSystem.sceneGraph ) );
+		this.ecs.addSystem( this.world, 'transform', new TransformSystem( this.ecs, this.blidgeSystem.sceneGraph ) );
 		this.ecs.addSystem( this.world, 'camera', this.cameraSystem );
 		this.ecs.addSystem( this.world, 'render', this.renderSystem );
 

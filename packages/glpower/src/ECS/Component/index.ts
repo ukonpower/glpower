@@ -8,6 +8,7 @@ import { BLidgeObjectType } from "../../BLidge";
 import { AnimationAction } from "../../Animation/AnimationAction";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
 import { Matrix4 } from "../../Math/Matrix4";
+import { GLPowerTexture } from "../../GLPowerTexture";
 
 export interface Component {[key:string]: any}
 
@@ -21,6 +22,7 @@ export type ComponentName =
 	'sceneNode' |
 	'camera' |
 	'perspective' |
+	'postprocess' |
 	'material' |
 	'geometry' |
 	'directionalLight' |
@@ -39,8 +41,8 @@ export type ComponentVector4 = {
 } & Vec4
 
 export type ComponentsTransformMatrix = {
-	local: number[];
-	world: number[];
+	local: Matrix4;
+	world: Matrix4;
 }
 
 // render
@@ -50,10 +52,16 @@ export type ComponentSceneNode = {
 	children: Entity[];
 }
 
+export type RenderType = 'forward' | 'deferred' | 'shadowmap';
+
 export type RenderPhase = {
-	type: 'forward' | 'deferred' | 'shadowmap';
+	type: RenderType;
 	renderTarget: GLPowerFrameBuffer | null;
 	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null, camera: ComponentCamera ) => void
+}
+
+export type ComponentPostProcess = {
+	input: GLPowerTexture
 }
 
 export type ComponentCamera = {
@@ -74,12 +82,18 @@ export type ComponentMaterial = {
 	vertexShader: string;
 	fragmentShader: string;
 	uniforms?: {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
+	renderType?: RenderType;
 }
 
 export type ComponentGeometry = {
 	attributes: ( {name: string } & AttributeBuffer )[]
 	index: AttributeBuffer
 	needsUpdate?: boolean
+}
+
+export type CompoenntPostProcess = {
+	input: GLPowerTexture[];
+	target: GLPowerFrameBuffer | null;
 }
 
 export type ComponentDirectionalLight = {

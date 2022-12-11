@@ -21,7 +21,7 @@ export class CameraSystem extends GLP.System {
 
 		if ( transform ) {
 
-			camera.viewMatrix.set( transform.world ).inverse();
+			camera.viewMatrix.copy( transform.world ).inverse();
 
 		}
 

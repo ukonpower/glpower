@@ -5,12 +5,9 @@ export class TransformSystem extends GLP.System {
 
 	private sceneGraph: SceneGraph;
 
-	private matrix1: GLP.Matrix4;
-	private matrix2: GLP.Matrix4;
+	constructor( ecs: GLP.ECS, sceneGraph: SceneGraph ) {
 
-	constructor( sceneGraph: SceneGraph ) {
-
-		super( {
+		super( ecs, {
 			'': [
 				'position',
 				"scale",
@@ -19,9 +16,6 @@ export class TransformSystem extends GLP.System {
 		} );
 
 		this.sceneGraph = sceneGraph;
-
-		this.matrix1 = new GLP.Matrix4();
-		this.matrix2 = new GLP.Matrix4();
 
 	}
 
@@ -51,8 +45,8 @@ export class TransformSystem extends GLP.System {
 
 		// calc self matrix
 
-		this.matrix1.setFromTransform( position, quaternion, scale );
-		this.matrix1.copyToArray( matrix.local );
+		matrix.local.setFromTransform( position, quaternion, scale );
+		matrix.world.copy( matrix.local );
 
 		// parent
 
@@ -62,15 +56,11 @@ export class TransformSystem extends GLP.System {
 
 			if ( parentMatrix ) {
 
-				this.matrix2.set( parentMatrix.world );
-
-				this.matrix1.preMultiply( this.matrix2 );
+				matrix.world.preMultiply( parentMatrix.world );
 
 			}
 
 		}
-
-		this.matrix1.copyToArray( matrix.world );
 
 	}
 
