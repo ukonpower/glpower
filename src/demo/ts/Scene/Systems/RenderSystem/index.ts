@@ -18,8 +18,8 @@ export class RenderSystem extends GLP.System {
 	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
 		super( ecs, {
-			"renderCamera": [ "camera", "perspective" ],
-			"renderPostProcess": [ 'postprocess', 'material', 'geometry' ]
+			"camera": [ "camera", "perspective" ],
+			"postprocess": [ 'postprocess', 'material', 'geometry' ]
 		} );
 
 		this.core = core;
@@ -36,15 +36,29 @@ export class RenderSystem extends GLP.System {
 
 	}
 
-	protected updateImpl( _: string, camera: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
+	protected updateImpl( name: string, target: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
 
-		const cameraComponent = event.ecs.getComponent<GLP.ComponentCamera>( event.world, camera, 'camera' )!;
+		if ( name == 'camera' ) {
 
-		if ( ! cameraComponent.renderPhases ) return;
+			this.renderCamera( target, event );
 
-		for ( let i = 0; i < cameraComponent.renderPhases.length; i ++ ) {
+		} else if ( name == 'postprocess' ) {
 
-			const { type, renderTarget } = cameraComponent.renderPhases[ i ];
+			this.renderPostProcess( target, event );
+
+		}
+
+	}
+
+	private renderCamera( cameraEntity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+
+		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, cameraEntity, 'camera' )!;
+
+		if ( ! camera.renderPhases ) return;
+
+		for ( let i = 0; i < camera.renderPhases.length; i ++ ) {
+
+			const { type, renderTarget } = camera.renderPhases[ i ];
 
 			if ( renderTarget ) {
 
@@ -76,7 +90,7 @@ export class RenderSystem extends GLP.System {
 
 					if ( material.renderType == type ) {
 
-						this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: cameraComponent.viewMatrix, projectionMatrix: cameraComponent.projectionMatrix } );
+						this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix } );
 
 					}
 
@@ -85,6 +99,48 @@ export class RenderSystem extends GLP.System {
 			}
 
 		}
+
+	}
+
+	public renderPostProcess( postprocessEntity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+
+		const postprocess = event.ecs.getComponent<GLP.ComponentPostProcess>( event.world, postprocessEntity, 'postprocess' )!;
+		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, postprocessEntity, 'material' );
+		const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, postprocessEntity, 'geometry' );
+
+		if ( ! ( postprocess && material && geometry ) ) return;
+
+		if ( postprocess.input && material.uniforms ) {
+
+			for ( let i = 0; i < postprocess.input.length; i ++ ) {
+
+				postprocess.input[ i ].activate( i );
+
+				material.uniforms[ 'sampler' + i ] = {
+					type: '1i',
+					value: postprocess.input[ i ].unit
+				};
+
+			}
+
+		}
+
+		if ( postprocess.target ) {
+
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, postprocess.target.getFrameBuffer() );
+
+		} else {
+
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+
+		}
+
+		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+		this.gl.clearDepth( 1.0 );
+		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
+		this.gl.enable( this.gl.DEPTH_TEST );
+
+		this.draw( postprocessEntity, geometry, material, event );
 
 	}
 
