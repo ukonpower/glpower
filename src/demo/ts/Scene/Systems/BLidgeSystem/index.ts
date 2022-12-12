@@ -178,31 +178,15 @@ export class BLidgeSystem extends GLP.System {
 						fov: obj.camera.fov,
 						near: 0.01,
 						far: 1000,
-						renderPhases: [
-							{
-								type: 'deferred',
-								renderTarget: deferredFrameBuffer,
-								onResize: ( size, rt ) => {
-
-									if ( rt ) rt.setSize( size );
-
-								}
-							},
-							{
-								type: 'forward',
-								renderTarget: forwardFrameBuffer,
-								onResize: ( size, rt ) => {
-
-									if ( rt ) rt.setSize( size );
-
-								}
-							}
-						]
+						forwardRenderTarget: forwardFrameBuffer,
+						deferredRenderTarget: deferredFrameBuffer,
+						deferredCompositorRenderTarget: null
 					} );
+
 
 					// deferred compositor
 
-					this.factory.postprocess( deferredFrameBuffer.textures, null );
+					// this.factory.postprocess( deferredFrameBuffer.textures, null );
 
 				}
 

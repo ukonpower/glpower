@@ -23,7 +23,9 @@ interface CameraProps extends EmptyProps {
 	near?: number;
 	far?: number;
 	fov?: number;
-	renderPhases?: GLP.RenderPhase[]
+	deferredCompositorRenderTarget: GLP.GLPowerFrameBuffer | null,
+	forwardRenderTarget: GLP.GLPowerFrameBuffer,
+	deferredRenderTarget: GLP.GLPowerFrameBuffer,
 }
 
 interface BLidgeProps extends EmptyProps {
@@ -117,7 +119,7 @@ export class Factory {
 
 	}
 
-	public appendPerspectiveCamera( entity: number, props: CameraProps = {} ) {
+	public appendPerspectiveCamera( entity: number, props: CameraProps ) {
 
 		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
 			near: props.near ?? 0.001,
@@ -125,12 +127,44 @@ export class Factory {
 			aspectRatio: window.innerWidth / window.innerHeight,
 			projectionMatrix: new GLP.Matrix4(),
 			viewMatrix: new GLP.Matrix4(),
-			renderPhases: props.renderPhases
 		} );
 
 		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
 			fov: props.fov ?? 50,
 		} );
+
+		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraForward',
+			{
+				renderTarget: props.forwardRenderTarget,
+				onResize: ( size, rt ) => {
+
+					if ( rt ) rt.setSize( size );
+
+				}
+			}
+		);
+
+		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
+			{
+				renderTarget: props.deferredRenderTarget,
+				onResize: ( size, rt ) => {
+
+					if ( rt ) rt.setSize( size );
+
+				},
+				postprocess: {
+					vertexShader: quadVert,
+					fragmentShader: deferredShadingFrag,
+					renderTarget: null,
+					uniforms: {
+						uColor: {
+							value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+							type: '3f'
+						}
+					},
+				}
+			},
+		);
 
 	}
 
@@ -140,11 +174,7 @@ export class Factory {
 
 		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
 			input,
-			target
-		} );
-
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', new GLP.PlaneGeometry( 2, 2 ).getComponent( this.power ) );
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', {
+			renderTarget: target,
 			vertexShader: quadVert,
 		 	fragmentShader: deferredShadingFrag,
 		 	uniforms: {
@@ -154,6 +184,8 @@ export class Factory {
 		 		}
 		 	},
 		} );
+
+		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', new GLP.PlaneGeometry( 2, 2 ).getComponent( this.power ) );
 
 		return entity;
 

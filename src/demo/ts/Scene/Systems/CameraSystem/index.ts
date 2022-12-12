@@ -27,7 +27,7 @@ export class CameraSystem extends GLP.System {
 
 		if ( camera.needsUpdate === undefined ) {
 
-			this.resizeCamera( camera );
+			this.resizeCamera( entity, event.world );
 
 		}
 
@@ -44,20 +44,21 @@ export class CameraSystem extends GLP.System {
 
 	}
 
-	private resizeCamera( camera: GLP.ComponentCamera ) {
+	private resizeCamera( cameraEntity: GLP.Entity, world: GLP.World ) {
 
-		camera.aspectRatio = this.size.x / this.size.y;
-		camera.needsUpdate = true;
+		const camera = this.ecs.getComponent<GLP.ComponentCamera>( world, cameraEntity, 'camera' );
+		const renderCameraDeferred = this.ecs.getComponent<GLP.ComponentRenderCamera>( world, cameraEntity, 'renderCameraDeferred' );
+		const renderCameraForward = this.ecs.getComponent<GLP.ComponentRenderCamera>( world, cameraEntity, 'renderCameraForward' );
 
-		if ( camera.renderPhases ) {
+		if ( camera ) {
 
-			camera.renderPhases.forEach( setting => {
-
-				if ( setting.onResize ) setting.onResize( this.size, setting.renderTarget, camera );
-
-			} );
+			camera.aspectRatio = this.size.x / this.size.y;
+			camera.needsUpdate = true;
 
 		}
+
+		if ( renderCameraDeferred && renderCameraDeferred.onResize ) renderCameraDeferred.onResize( this.size, renderCameraDeferred.renderTarget );
+		if ( renderCameraForward && renderCameraForward.onResize ) renderCameraForward.onResize( this.size, renderCameraForward.renderTarget );
 
 	}
 
@@ -69,11 +70,9 @@ export class CameraSystem extends GLP.System {
 
 		const cameraEntities = this.ecs.getEntities( world, [ 'camera' ] );
 
-		cameraEntities.forEach( e => {
+		cameraEntities.forEach( camera => {
 
-			const camera = this.ecs.getComponent<GLP.ComponentCamera>( world, e, 'camera' );
-
-			if ( camera ) this.resizeCamera( camera );
+			this.resizeCamera( camera, world );
 
 		} );
 
