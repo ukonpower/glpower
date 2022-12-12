@@ -60,10 +60,6 @@ export type RenderPhase = {
 	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null, camera: ComponentCamera ) => void
 }
 
-export type ComponentPostProcess = {
-	input: GLPowerTexture
-}
-
 export type ComponentCamera = {
 	near: number;
 	far: number;
@@ -91,7 +87,7 @@ export type ComponentGeometry = {
 	needsUpdate?: boolean
 }
 
-export type CompoenntPostProcess = {
+export type ComponentPostProcess = {
 	input: GLPowerTexture[];
 	target: GLPowerFrameBuffer | null;
 }

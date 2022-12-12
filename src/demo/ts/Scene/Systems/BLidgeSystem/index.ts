@@ -200,7 +200,9 @@ export class BLidgeSystem extends GLP.System {
 						]
 					} );
 
-					if ( this.onCreateCamera ) this.onCreateCamera( entity );
+					// deferred compositor
+
+					this.factory.postprocess( deferredFrameBuffer.textures, null );
 
 				}
 

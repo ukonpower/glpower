@@ -3,6 +3,9 @@ import * as GLP from 'glpower';
 import basicVert from './shaders/basic.vs';
 import basicFrag from './shaders/basic.fs';
 
+import quadVert from './shaders/quad.vs';
+import deferredShadingFrag from './shaders/deferredShading.fs';
+
 import { BLidgeObjectType, Entity } from 'glpower';
 
 interface EmptyProps {
@@ -81,8 +84,9 @@ export class Factory {
 		 			type: '3f'
 		 		}
 		 	},
-			renderType: 'forward',
-		 }, );
+			renderType: 'deferred',
+		}, );
+
 		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', props.geometry );
 
 		return entity;
@@ -113,10 +117,6 @@ export class Factory {
 
 	}
 
-	public appendPostProcessing( entity: Entity ) {
-
-	}
-
 	public appendPerspectiveCamera( entity: number, props: CameraProps = {} ) {
 
 		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
@@ -131,6 +131,31 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
 			fov: props.fov ?? 50,
 		} );
+
+	}
+
+	public postprocess( input: GLP.GLPowerTexture[], target: GLP.GLPowerFrameBuffer | null ) {
+
+		const entity = this.ecs.createEntity( this.world );
+
+		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
+			input,
+			target
+		} );
+
+		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', new GLP.PlaneGeometry( 2, 2 ).getComponent( this.power ) );
+		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', {
+			vertexShader: quadVert,
+		 	fragmentShader: deferredShadingFrag,
+		 	uniforms: {
+		 		uColor: {
+		 			value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+		 			type: '3f'
+		 		}
+		 	},
+		} );
+
+		return entity;
 
 	}
 
