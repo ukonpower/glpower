@@ -18,7 +18,8 @@ export class RenderSystem extends GLP.System {
 	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
 		super( ecs, {
-			"camera": [ "camera", "perspective" ],
+			"deferred": [ "camera", "renderCameraDeferred" ],
+			"forward": [ "camera", "renderCameraForward" ],
 			"postprocess": [ 'postprocess', 'material', 'geometry' ]
 		} );
 
@@ -38,61 +39,54 @@ export class RenderSystem extends GLP.System {
 
 	protected updateImpl( name: string, target: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
 
-		if ( name == 'camera' ) {
-
-			this.renderCamera( target, event );
-
-		} else if ( name == 'postprocess' ) {
+		 if ( name == 'postprocess' ) {
 
 			this.renderPostProcess( target, event );
+
+		} else {
+
+			this.renderCamera( name, target, event );
 
 		}
 
 	}
 
-	private renderCamera( cameraEntity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+	private renderCamera( renderType: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
 
-		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, cameraEntity, 'camera' )!;
+		const { viewMatrix, projectionMatrix } = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
+		const { renderTarget, postprocess } = event.ecs.getComponent<GLP.ComponentRenderCamera>( event.world, entity, renderType == 'forward' ? 'renderCameraForward' : 'renderCameraDeferred' )!;
 
-		if ( ! camera.renderPhases ) return;
+		if ( renderTarget ) {
 
-		for ( let i = 0; i < camera.renderPhases.length; i ++ ) {
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, renderTarget.getFrameBuffer() );
+			this.gl.drawBuffers( renderTarget.textureAttachmentList );
 
-			const { type, renderTarget } = camera.renderPhases[ i ];
+		} else {
 
-			if ( renderTarget ) {
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
-				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, renderTarget.getFrameBuffer() );
-				this.gl.drawBuffers( renderTarget.textureAttachmentList );
+		}
 
-			} else {
+		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+		this.gl.clearDepth( 1.0 );
+		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
+		this.gl.enable( this.gl.DEPTH_TEST );
 
-				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+		const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
 
-			}
+		for ( let i = 0; i < meshes.length; i ++ ) {
 
-			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-			this.gl.clearDepth( 1.0 );
-			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-			this.gl.enable( this.gl.DEPTH_TEST );
+			const mesh = meshes[ i ];
 
-			const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+			const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, 'material' );
+			const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, mesh, 'geometry' );
+			const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, mesh, 'matrix' );
 
-			for ( let i = 0; i < meshes.length; i ++ ) {
+			if ( material && geometry && matrix ) {
 
-				const mesh = meshes[ i ];
+				if ( material.renderType == renderType ) {
 
-				const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, 'material' );
-				const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, mesh, 'geometry' );
-				const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, mesh, 'matrix' );
-
-				if ( material && geometry && matrix ) {
-
-					if ( material.renderType == type ) {
-
-						this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix } );
-
-					}
+					this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 				}
 
@@ -100,13 +94,19 @@ export class RenderSystem extends GLP.System {
 
 		}
 
+		if ( postprocess ) {
+
+			this.renderPostProcess( entity, event );
+
+		}
+
 	}
 
-	public renderPostProcess( postprocessEntity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+	public renderPostProcess( entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
 
-		const postprocess = event.ecs.getComponent<GLP.ComponentPostProcess>( event.world, postprocessEntity, 'postprocess' )!;
-		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, postprocessEntity, 'material' );
-		const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, postprocessEntity, 'geometry' );
+		const postprocess = event.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!;
+		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, entity, 'material' );
+		const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, entity, 'geometry' );
 
 		if ( ! ( postprocess && material && geometry ) ) return;
 
@@ -125,9 +125,9 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		if ( postprocess.target ) {
+		if ( postprocess.renderTarget ) {
 
-			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, postprocess.target.getFrameBuffer() );
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, postprocess.renderTarget.getFrameBuffer() );
 
 		} else {
 
@@ -140,7 +140,7 @@ export class RenderSystem extends GLP.System {
 		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 		this.gl.enable( this.gl.DEPTH_TEST );
 
-		this.draw( postprocessEntity, geometry, material, event );
+		this.draw( entity, geometry, material, event );
 
 	}
 

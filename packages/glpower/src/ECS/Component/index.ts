@@ -22,6 +22,8 @@ export type ComponentName =
 	'sceneNode' |
 	'camera' |
 	'perspective' |
+	"renderCameraDeferred" |
+	"renderCameraForward" |
 	'postprocess' |
 	'material' |
 	'geometry' |
@@ -52,27 +54,7 @@ export type ComponentSceneNode = {
 	children: Entity[];
 }
 
-export type RenderType = 'forward' | 'deferred' | 'shadowmap';
-
-export type RenderPhase = {
-	type: RenderType;
-	renderTarget: GLPowerFrameBuffer | null;
-	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null, camera: ComponentCamera ) => void
-}
-
-export type ComponentCamera = {
-	near: number;
-	far: number;
-	aspectRatio: number;
-	projectionMatrix: Matrix4,
-	viewMatrix: Matrix4,
-	needsUpdate?: boolean;
-	renderPhases?: RenderPhase[]
-}
-
-export type ComponentCameraPerspective = {
-	fov: number;
-}
+export type RenderType = 'forward' | 'deferred' | 'shadowmap' | 'postprocess';
 
 export type ComponentMaterial = {
 	vertexShader: string;
@@ -87,9 +69,28 @@ export type ComponentGeometry = {
 	needsUpdate?: boolean
 }
 
-export type ComponentPostProcess = {
+export type ComponentCamera = {
+	near: number;
+	far: number;
+	aspectRatio: number;
+	projectionMatrix: Matrix4,
+	viewMatrix: Matrix4,
+	needsUpdate?: boolean;
+}
+
+export type ComponentCameraPerspective = {
+	fov: number;
+}
+
+export type ComponentRenderCamera = {
+	renderTarget: GLPowerFrameBuffer | null;
+	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null ) => void,
+	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
+}
+
+export type ComponentPostProcess = ComponentMaterial & {
 	input: GLPowerTexture[];
-	target: GLPowerFrameBuffer | null;
+	renderTarget: GLPowerFrameBuffer | null;
 }
 
 export type ComponentDirectionalLight = {
