@@ -64,7 +64,6 @@ export class GLPowerTexture {
 
 		this.gl.activeTexture( this.gl.TEXTURE0 + unitNumber );
 		this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
-		// this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
 		this.unit = unitNumber;
 

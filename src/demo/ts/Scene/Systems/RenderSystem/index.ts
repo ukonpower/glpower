@@ -5,7 +5,7 @@ import { ProgramPool } from './ProgramPool';
 export class RenderSystem extends GLP.System {
 
 	private gl: WebGL2RenderingContext;
-	private core: GLP.Power;
+	private power: GLP.Power;
 
 	// program
 
@@ -15,16 +15,20 @@ export class RenderSystem extends GLP.System {
 
 	private modelViewMatrix: GLP.Matrix4;
 
+	// quad
+
+	private quad: GLP.ComponentGeometry;
+
 	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
 		super( ecs, {
 			"deferred": [ "camera", "renderCameraDeferred" ],
 			"forward": [ "camera", "renderCameraForward" ],
-			"postprocess": [ 'postprocess', 'material', 'geometry' ]
+			"postprocess": [ 'postprocess' ]
 		} );
 
-		this.core = core;
-		this.gl = this.core.gl;
+		this.power = core;
+		this.gl = this.power.gl;
 		this.ecs = ecs;
 
 		// program
@@ -35,17 +39,21 @@ export class RenderSystem extends GLP.System {
 
 		this.modelViewMatrix = new GLP.Matrix4();
 
+		// quad
+
+		this.quad = new GLP.PlaneGeometry( 2.0, 2.0 ).getComponent( this.power );
+
 	}
 
-	protected updateImpl( name: string, target: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
+	protected updateImpl( renderType: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
 
-		 if ( name == 'postprocess' ) {
+		 if ( renderType == 'postprocess' ) {
 
-			this.renderPostProcess( target, event );
+			this.renderPostProcess( entity + 'postprocess', this.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!, event );
 
 		} else {
 
-			this.renderCamera( name, target, event );
+			this.renderCamera( renderType, entity, event );
 
 		}
 
@@ -94,40 +102,22 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		if ( postprocess ) {
+		if ( postprocess && renderTarget ) {
 
-			this.renderPostProcess( entity, event );
+			this.renderPostProcess( entity + 'camerPostProcess', { ...postprocess, input: renderTarget.textures }, event );
 
 		}
 
 	}
 
-	public renderPostProcess( entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent ) {
 
-		const postprocess = event.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!;
-		const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, entity, 'material' );
-		const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, entity, 'geometry' );
-
-		if ( ! ( postprocess && material && geometry ) ) return;
-
-		if ( postprocess.input && material.uniforms ) {
-
-			for ( let i = 0; i < postprocess.input.length; i ++ ) {
-
-				postprocess.input[ i ].activate( i );
-
-				material.uniforms[ 'sampler' + i ] = {
-					type: '1i',
-					value: postprocess.input[ i ].unit
-				};
-
-			}
-
-		}
+		if ( ! postprocess ) return;
 
 		if ( postprocess.renderTarget ) {
 
 			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, postprocess.renderTarget.getFrameBuffer() );
+			this.gl.drawBuffers( postprocess.renderTarget.textureAttachmentList );
 
 		} else {
 
@@ -140,11 +130,26 @@ export class RenderSystem extends GLP.System {
 		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 		this.gl.enable( this.gl.DEPTH_TEST );
 
-		this.draw( entity, geometry, material, event );
+		if ( postprocess.input && postprocess.uniforms ) {
+
+			for ( let i = 0; i < postprocess.input.length; i ++ ) {
+
+				postprocess.input[ i ].activate( i );
+
+				postprocess.uniforms[ 'sampler' + i ] = {
+					type: '1i',
+					value: postprocess.input[ i ].unit
+				};
+
+			}
+
+		}
+
+		this.draw( entityId, this.quad, postprocess, event );
 
 	}
 
-	private draw( entity: number, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: {modelMatrix: GLP.Matrix4, viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4} ) {
+	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: {modelMatrix: GLP.Matrix4, viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4} ) {
 
 		const program = this.programPool.create( material.vertexShader, material.fragmentShader );
 
@@ -208,11 +213,13 @@ export class RenderSystem extends GLP.System {
 
 		// update attributes
 
-		const vao = program.getVAO( entity.toString() );
+		const vao = program.getVAO( entityId.toString() );
 
 		if ( vao ) {
 
-			if ( geometry.needsUpdate === undefined || geometry.needsUpdate === true ) {
+			if ( geometry.updateCache === undefined || ! geometry.updateCache[ entityId ] ) {
+
+				if ( ! geometry.updateCache ) geometry.updateCache = {};
 
 				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
@@ -226,7 +233,8 @@ export class RenderSystem extends GLP.System {
 
 				vao.updateAttributes( true );
 
-				geometry.needsUpdate = false;
+				geometry.updateCache[ entityId ] = true;
+
 
 			}
 
