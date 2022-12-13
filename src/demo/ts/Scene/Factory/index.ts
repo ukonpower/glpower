@@ -5,6 +5,7 @@ import basicFrag from './shaders/basic.fs';
 
 import quadVert from './shaders/quad.vs';
 import deferredShadingFrag from './shaders/deferredShading.fs';
+import postProcessFrag from './shaders/postprocess.fs';
 
 import { BLidgeObjectType, Entity } from 'glpower';
 
@@ -136,47 +137,46 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraForward',
 			{
 				renderTarget: props.forwardRenderTarget,
-				onResize: ( size, rt ) => {
+				onResize: ( size, c ) => {
 
-					if ( rt ) rt.setSize( size );
+					if ( c.renderTarget ) c.renderTarget.setSize( size );
 
-				}
+				},
 			}
 		);
 
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
 				renderTarget: props.deferredRenderTarget,
-				onResize: ( size, rt ) => {
-
-					if ( rt ) rt.setSize( size );
-
-				},
 				postprocess: {
 					vertexShader: quadVert,
 					fragmentShader: deferredShadingFrag,
-					renderTarget: null,
+					renderTarget: props.deferredCompositorRenderTarget,
 					uniforms: {
 						uColor: {
 							value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
 							type: '3f'
 						}
 					},
-				}
+				},
+				onResize: ( size, c ) => {
+
+					if ( c.renderTarget ) c.renderTarget.setSize( size );
+					if ( c.postprocess && c.postprocess.renderTarget ) c.postprocess.renderTarget.setSize( size );
+
+				},
 			},
 		);
 
 	}
 
-	public postprocess( input: GLP.GLPowerTexture[], target: GLP.GLPowerFrameBuffer | null ) {
-
-		const entity = this.ecs.createEntity( this.world );
+	public appendPostProcess( entity: GLP.Entity, input: GLP.GLPowerTexture[], target: GLP.GLPowerFrameBuffer | null ) {
 
 		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
 			input,
 			renderTarget: target,
 			vertexShader: quadVert,
-		 	fragmentShader: deferredShadingFrag,
+		 	fragmentShader: postProcessFrag,
 		 	uniforms: {
 		 		uColor: {
 		 			value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
@@ -184,8 +184,6 @@ export class Factory {
 		 		}
 		 	},
 		} );
-
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', new GLP.PlaneGeometry( 2, 2 ).getComponent( this.power ) );
 
 		return entity;
 

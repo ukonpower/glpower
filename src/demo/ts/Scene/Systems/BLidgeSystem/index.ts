@@ -129,6 +129,8 @@ export class BLidgeSystem extends GLP.System {
 				this.ecs.removeComponent( this.world, entity, 'material' );
 				this.ecs.removeComponent( this.world, entity, 'camera' );
 				this.ecs.removeComponent( this.world, entity, 'perspective' );
+				this.ecs.removeComponent( this.world, entity, 'renderCameraDeferred' );
+				this.ecs.removeComponent( this.world, entity, 'renderCameraForward' );
 
 				if ( type == 'cube' ) {
 
@@ -146,15 +148,24 @@ export class BLidgeSystem extends GLP.System {
 
 					// deferred
 
-					const deferredFrameBuffer = this.power.createFrameBuffer();
+					const deferredRenderTarget = this.power.createFrameBuffer();
 
-					deferredFrameBuffer.setTexture( [
+					deferredRenderTarget.setTexture( [
 						this.power.createTexture(),
 						this.power.createTexture(),
 						this.power.createTexture()
 					] );
 
-					deferredFrameBuffer.textures.forEach( ( f, i ) => {
+					deferredRenderTarget.textures.forEach( ( f, i ) => {
+
+						f.activate( i );
+
+					} );
+
+					const deferredCompositorRenderTarget = this.power.createFrameBuffer();
+					deferredCompositorRenderTarget.setTexture( [ this.power.createTexture() ] );
+
+					deferredCompositorRenderTarget.textures.forEach( ( f, i ) => {
 
 						f.activate( i );
 
@@ -162,13 +173,13 @@ export class BLidgeSystem extends GLP.System {
 
 					// forward
 
-					const forwardFrameBuffer = this.power.createFrameBuffer();
+					const forwardRenderTarget = this.power.createFrameBuffer();
 
-					forwardFrameBuffer.setTexture( [
+					forwardRenderTarget.setTexture( [
 						this.power.createTexture(),
 					] );
 
-					forwardFrameBuffer.textures.forEach( ( f, i ) => {
+					forwardRenderTarget.textures.forEach( ( f, i ) => {
 
 						f.activate( i );
 
@@ -178,15 +189,12 @@ export class BLidgeSystem extends GLP.System {
 						fov: obj.camera.fov,
 						near: 0.01,
 						far: 1000,
-						forwardRenderTarget: forwardFrameBuffer,
-						deferredRenderTarget: deferredFrameBuffer,
-						deferredCompositorRenderTarget: null
+						forwardRenderTarget: forwardRenderTarget,
+						deferredRenderTarget: deferredRenderTarget,
+						deferredCompositorRenderTarget: deferredCompositorRenderTarget
 					} );
 
-
-					// deferred compositor
-
-					// this.factory.postprocess( deferredFrameBuffer.textures, null );
+					this.factory.appendPostProcess( entity, deferredCompositorRenderTarget.textures, null );
 
 				}
 

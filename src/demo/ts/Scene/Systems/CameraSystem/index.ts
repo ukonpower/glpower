@@ -57,8 +57,8 @@ export class CameraSystem extends GLP.System {
 
 		}
 
-		if ( renderCameraDeferred && renderCameraDeferred.onResize ) renderCameraDeferred.onResize( this.size, renderCameraDeferred.renderTarget );
-		if ( renderCameraForward && renderCameraForward.onResize ) renderCameraForward.onResize( this.size, renderCameraForward.renderTarget );
+		if ( renderCameraDeferred && renderCameraDeferred.onResize ) renderCameraDeferred.onResize( this.size, renderCameraDeferred );
+		if ( renderCameraForward && renderCameraForward.onResize ) renderCameraForward.onResize( this.size, renderCameraForward );
 
 	}
 

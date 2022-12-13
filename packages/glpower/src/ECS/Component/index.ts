@@ -66,7 +66,7 @@ export type ComponentMaterial = {
 export type ComponentGeometry = {
 	attributes: ( {name: string } & AttributeBuffer )[]
 	index: AttributeBuffer
-	needsUpdate?: boolean
+	updateCache?: { [key:string]: boolean }
 }
 
 export type ComponentCamera = {
@@ -84,7 +84,7 @@ export type ComponentCameraPerspective = {
 
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
-	onResize?: ( size: Vector2, rt: GLPowerFrameBuffer | null ) => void,
+	onResize?: ( size: Vector2, component: ComponentRenderCamera ) => void,
 	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
 }
 
