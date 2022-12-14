@@ -10,10 +10,10 @@ class ExTexture {
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
-	private projectionMatrix: GLP.Matrix4;
+	private projectionMatrix: GLP.Matrix;
 
 	private objList: {
-		modelMatrix: GLP.Matrix4;
+		modelMatrix: GLP.Matrix;
 		geometry: GLP.Geometry;
 		vao: GLP.GLPowerVAO;
 	}[] = [];
@@ -26,9 +26,9 @@ class ExTexture {
 
 		// scene
 
-		this.projectionMatrix = new GLP.Matrix4();
+		this.projectionMatrix = new GLP.Matrix();
 
-		const cameraMatrix = new GLP.Matrix4().setFromTransform(
+		const cameraMatrix = new GLP.Matrix().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
 			new GLP.Quaternion(),
 			new GLP.Vector3( 1.0, 1.0, 1.0 ),
@@ -69,7 +69,7 @@ class ExTexture {
 			const index = geometry.getAttribute( 'index' );
 			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
-			const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
+			const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
 			this.objList.push( {
 				modelMatrix,
@@ -93,7 +93,7 @@ class ExTexture {
 
 				const modelMatrix = obj.modelMatrix;
 
-				modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
+				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 
 				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );

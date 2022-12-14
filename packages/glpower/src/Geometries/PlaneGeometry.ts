@@ -29,7 +29,7 @@ export class PlaneGeometry extends Geometry {
 
 				uvArray.push( x, y );
 
-				normalArray.push( 0, 1, 0 );
+				normalArray.push( 0, 0, 1 );
 
 				if ( i > 0 && j > 0 ) {
 

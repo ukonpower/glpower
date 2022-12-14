@@ -10,7 +10,7 @@ class ExHello {
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
-	private projectionMatrix: GLP.Matrix4;
+	private projectionMatrix: GLP.Matrix;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
@@ -20,17 +20,17 @@ class ExHello {
 
 		// scene
 
-		this.projectionMatrix = new GLP.Matrix4();
+		this.projectionMatrix = new GLP.Matrix();
 
-		const cameraMatrix = new GLP.Matrix4().setFromTransform(
+		const cameraMatrix = new GLP.Matrix().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
 			new GLP.Vector3( 0.0, 0.0, 0.0 ),
 			new GLP.Vector3( 1.0, 1.0, 1.0 ),
 		);
 
-		const modelMatrix = new GLP.Matrix4().applyPosition( new GLP.Vector3( 0.0, - 0.3, 0.0 ) );
+		const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector3( 0.0, - 0.3, 0.0 ) );
 		const viewMatrix = cameraMatrix.clone().inverse();
-		const modelViewMatrix = new GLP.Matrix4();
+		const modelViewMatrix = new GLP.Matrix();
 
 		// program
 

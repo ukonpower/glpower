@@ -10,7 +10,7 @@ export * from './GLPowerTexture';
 export * from './Math/Vector2';
 export * from './Math/Vector3';
 export * from './Math/Vector4';
-export * from './Math/Matrix4';
+export * from './Math/Matrix';
 export * from './Math/Quaternion';
 
 export * from './Geometries/Geometry';
@@ -43,3 +43,7 @@ export * from './Animation/FCurveKeyFrame';
 // bridege
 
 export * from './BLidge';
+
+// types
+
+export * from './types/index';
