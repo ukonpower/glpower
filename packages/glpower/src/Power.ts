@@ -13,6 +13,9 @@ export class Power {
 
 		this.gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
 
+		this.gl.getExtension( "EXT_color_buffer_float" );
+		this.gl.getExtension( "EXT_color_buffer_half_float" );
+
 	}
 
 	public createProgram() {

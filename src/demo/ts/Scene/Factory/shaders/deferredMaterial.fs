@@ -18,8 +18,8 @@ void main( void ) {
 	float roughness = 1.0;
 	float metalic = 0.0;
 
-	outColor0 = vec4( vNormal, depth );
-	outColor1 = vec4( vColor, roughness );
-	outColor2 = vec4( vPos, metalic );
+	outColor0 = vec4( vNormal, 1.0 );
+	outColor1 = vec4( vColor, 1.0 );
+	outColor2 = vec4( vPos, 1.0 );
 
 }
