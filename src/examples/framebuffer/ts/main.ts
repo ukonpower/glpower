@@ -11,10 +11,10 @@ class ExFrameBuffer {
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
-	private projectionMatrix: GLP.Matrix4;
+	private projectionMatrix: GLP.Matrix;
 
 	private objList: {[key:string]: {
-		modelMatrix: GLP.Matrix4;
+		modelMatrix: GLP.Matrix;
 		vao: GLP.GLPowerVAO;
 		program: GLP.GLPowerProgram
 	}};
@@ -28,10 +28,10 @@ class ExFrameBuffer {
 
 		// scene
 
-		this.projectionMatrix = new GLP.Matrix4();
-		const projectionMatrixFrame = new GLP.Matrix4().perspective( 50, 1.0, 0.01, 1000 );
+		this.projectionMatrix = new GLP.Matrix();
+		const projectionMatrixFrame = new GLP.Matrix().perspective( 50, 1.0, 0.01, 1000 );
 
-		const cameraMatrix = new GLP.Matrix4().setFromTransform(
+		const cameraMatrix = new GLP.Matrix().setFromTransform(
 			new GLP.Vector3( 0.0, 0.0, 5.0 ),
 			new GLP.Quaternion(),
 			new GLP.Vector3( 1.0, 1.0, 1.0 ),
@@ -78,13 +78,13 @@ class ExFrameBuffer {
 		};
 
 		this.objList.cube = {
-			modelMatrix: new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
+			modelMatrix: new GLP.Matrix().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
 			vao: setVao( basicProgram.getVAO()!, new GLP.CubeGeometry() ),
 			program: basicProgram
 		};
 
 		this.objList.plane = {
-			modelMatrix: new GLP.Matrix4().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
+			modelMatrix: new GLP.Matrix().applyPosition( new GLP.Vector3( 0, 0, 0 ) ),
 			vao: setVao( frameProgram.getVAO()!, new GLP.PlaneGeometry( 2.0, 2.0 ) ),
 			program: frameProgram
 		};
@@ -104,7 +104,7 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.cube.modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
+			this.objList.cube.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.cube.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.cube.modelMatrix ).elm );
 			this.objList.cube.program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrixFrame.elm );
@@ -131,7 +131,7 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.plane.modelMatrix.multiply( new GLP.Matrix4().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
+			this.objList.plane.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.plane.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.plane.modelMatrix ).elm );
 			this.objList.plane.program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );

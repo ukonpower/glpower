@@ -1,8 +1,13 @@
 import { Vector2 } from "./Math/Vector2";
+import { Types } from "./types";
 
 type ImagePretense = {
 	width: number,
 	height: number
+}
+
+type GLPowerTextureSetting = {
+	type: number
 }
 
 export class GLPowerTexture {
@@ -14,14 +19,30 @@ export class GLPowerTexture {
 	private gl: WebGL2RenderingContext;
 	private texture: WebGLTexture | null;
 
+	private _setting: GLPowerTextureSetting;
+
 	constructor( gl: WebGL2RenderingContext ) {
 
 		this.gl = gl;
 		this.image = null;
 		this.unit = 0;
 		this.size = new Vector2();
-
 		this.texture = this.gl.createTexture();
+
+		this._setting = {
+			type: this.gl.UNSIGNED_BYTE
+		};
+
+	}
+
+	public setting( param: Types.ToNullable<GLPowerTextureSetting> ) {
+
+		this._setting = {
+			...this._setting,
+			...param
+		};
+
+		return this;
 
 	}
 
@@ -37,11 +58,11 @@ export class GLPowerTexture {
 
 			if ( this.image instanceof HTMLImageElement ) {
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, this.image );
+				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this._setting.type, this.image );
 
 			} else {
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.image.width, this.image.height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null );
+				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.image.width, this.image.height, 0, this.gl.RGBA, this._setting.type, null );
 
 			}
 

@@ -13,7 +13,8 @@ export class RenderSystem extends GLP.System {
 
 	// matrix
 
-	private modelViewMatrix: GLP.Matrix4;
+	private modelViewMatrix: GLP.Matrix;
+	private normalMatrix: GLP.Matrix;
 
 	// quad
 
@@ -37,7 +38,8 @@ export class RenderSystem extends GLP.System {
 
 		// matrix
 
-		this.modelViewMatrix = new GLP.Matrix4();
+		this.modelViewMatrix = new GLP.Matrix();
+		this.normalMatrix = new GLP.Matrix();
 
 		// quad
 
@@ -94,7 +96,7 @@ export class RenderSystem extends GLP.System {
 
 				if ( material.renderType == renderType ) {
 
-					this.draw( meshes[ i ], geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+					this.draw( meshes[ i ] + 'camera', geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 				}
 
@@ -149,7 +151,7 @@ export class RenderSystem extends GLP.System {
 
 	}
 
-	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: {modelMatrix: GLP.Matrix4, viewMatrix: GLP.Matrix4, projectionMatrix: GLP.Matrix4} ) {
+	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: {modelMatrix: GLP.Matrix, viewMatrix: GLP.Matrix, projectionMatrix: GLP.Matrix} ) {
 
 		const program = this.programPool.create( material.vertexShader, material.fragmentShader );
 
@@ -158,9 +160,13 @@ export class RenderSystem extends GLP.System {
 		if ( matrix ) {
 
 			this.modelViewMatrix.copy( matrix.modelMatrix ).preMultiply( matrix.viewMatrix );
+			this.normalMatrix.copy( this.modelViewMatrix );
+			this.normalMatrix.inverse();
+			this.normalMatrix.transpose();
 
 			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
 			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
+			program.setUniform( 'normalMatrix', 'Matrix4fv', this.normalMatrix.elm );
 
 		}
 

@@ -2,7 +2,7 @@ import { Quaternion } from "./Quaternion";
 import { Vec3, Vector3 } from "./Vector3";
 import { Vec4 } from "./Vector4";
 
-export class Matrix4 {
+export class Matrix {
 
 	public elm: number[];
 
@@ -23,12 +23,6 @@ export class Matrix4 {
 
 	}
 
-	public get isMat4() {
-
-		return true;
-
-	}
-
 	public identity() {
 
 		this.elm = [
@@ -44,11 +38,11 @@ export class Matrix4 {
 
 	public clone() {
 
-		return new Matrix4().copy( this );
+		return new Matrix().copy( this );
 
 	}
 
-	public copy( mat: Matrix4 ) {
+	public copy( mat: Matrix ) {
 
 		this.set( mat.elm );
 
@@ -125,6 +119,30 @@ export class Matrix4 {
 		this.elm[ 13 ] = ( a * z - b * x + c * w ) * ivd;
 		this.elm[ 14 ] = ( - m * t + n * r - o * q ) * ivd;
 		this.elm[ 15 ] = ( i * t - j * r + k * q ) * ivd;
+
+		return this;
+
+	}
+
+	public transpose() {
+
+		// this.elm = [
+		// 	1, 0, 0, 0,
+		// 	0, 1, 0, 0,
+		// 	0, 0, 1, 0,
+		// 	0, 0, 0, 1,
+		// ];
+
+		const e11 = this.elm[ 0 ], e12 = this.elm[ 1 ], e13 = this.elm[ 2 ], e14 = this.elm[ 3 ],
+			e21 = this.elm[ 4 ], e22 = this.elm[ 5 ], e23 = this.elm[ 6 ], e24 = this.elm[ 7 ],
+			e31 = this.elm[ 8 ], e32 = this.elm[ 9 ], e33 = this.elm[ 10 ], e34 = this.elm[ 11 ],
+			e41 = this.elm[ 12 ], e42 = this.elm[ 13 ], e43 = this.elm[ 14 ], e44 = this.elm[ 15 ];
+
+
+		this.elm[ 0 ] = e11; this.elm[ 1 ] = e21; this.elm[ 2 ] = e31; this.elm[ 3 ] = e41;
+		this.elm[ 4 ] = e12; this.elm[ 5 ] = e22; this.elm[ 6 ] = e32; this.elm[ 7 ] = e42;
+		this.elm[ 8 ] = e13; this.elm[ 9 ] = e23; this.elm[ 10 ] = e33; this.elm[ 11 ] = e43;
+		this.elm[ 12 ] = e14; this.elm[ 13 ] = e24; this.elm[ 14 ] = e34; this.elm[ 15 ] = e44;
 
 		return this;
 
@@ -248,7 +266,7 @@ export class Matrix4 {
 
 	}
 
-	public multiply( m: Matrix4 ) {
+	public multiply( m: Matrix ) {
 
 		this.matmul( m.elm );
 
@@ -256,7 +274,7 @@ export class Matrix4 {
 
 	}
 
-	public preMultiply( m: Matrix4 ) {
+	public preMultiply( m: Matrix ) {
 
 		const tmp = this.copyToArray( [] );
 

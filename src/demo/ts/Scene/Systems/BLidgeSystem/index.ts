@@ -146,55 +146,11 @@ export class BLidgeSystem extends GLP.System {
 
 				} else if ( type == 'camera' && obj.camera ) {
 
-					// deferred
-
-					const deferredRenderTarget = this.power.createFrameBuffer();
-
-					deferredRenderTarget.setTexture( [
-						this.power.createTexture(),
-						this.power.createTexture(),
-						this.power.createTexture()
-					] );
-
-					deferredRenderTarget.textures.forEach( ( f, i ) => {
-
-						f.activate( i );
-
-					} );
-
-					const deferredCompositorRenderTarget = this.power.createFrameBuffer();
-					deferredCompositorRenderTarget.setTexture( [ this.power.createTexture() ] );
-
-					deferredCompositorRenderTarget.textures.forEach( ( f, i ) => {
-
-						f.activate( i );
-
-					} );
-
-					// forward
-
-					const forwardRenderTarget = this.power.createFrameBuffer();
-
-					forwardRenderTarget.setTexture( [
-						this.power.createTexture(),
-					] );
-
-					forwardRenderTarget.textures.forEach( ( f, i ) => {
-
-						f.activate( i );
-
-					} );
-
 					this.factory.appendPerspectiveCamera( entity, {
 						fov: obj.camera.fov,
 						near: 0.01,
 						far: 1000,
-						forwardRenderTarget: forwardRenderTarget,
-						deferredRenderTarget: deferredRenderTarget,
-						deferredCompositorRenderTarget: deferredCompositorRenderTarget
 					} );
-
-					this.factory.appendPostProcess( entity, deferredCompositorRenderTarget.textures, null );
 
 				}
 

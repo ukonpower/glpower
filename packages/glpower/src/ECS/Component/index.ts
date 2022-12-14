@@ -7,7 +7,7 @@ import { Vec4 } from "../../Math/Vector4";
 import { BLidgeObjectType } from "../../BLidge";
 import { AnimationAction } from "../../Animation/AnimationAction";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
-import { Matrix4 } from "../../Math/Matrix4";
+import { Matrix } from "../../Math/Matrix";
 import { GLPowerTexture } from "../../GLPowerTexture";
 
 export interface Component {[key:string]: any}
@@ -43,8 +43,8 @@ export type ComponentVector4 = {
 } & Vec4
 
 export type ComponentsTransformMatrix = {
-	local: Matrix4;
-	world: Matrix4;
+	local: Matrix;
+	world: Matrix;
 }
 
 // render
@@ -73,8 +73,8 @@ export type ComponentCamera = {
 	near: number;
 	far: number;
 	aspectRatio: number;
-	projectionMatrix: Matrix4,
-	viewMatrix: Matrix4,
+	projectionMatrix: Matrix,
+	viewMatrix: Matrix,
 	needsUpdate?: boolean;
 }
 
