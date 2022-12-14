@@ -164,6 +164,8 @@ export class RenderSystem extends GLP.System {
 			this.normalMatrix.inverse();
 			this.normalMatrix.transpose();
 
+			program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
+			program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
 			program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
 			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
 			program.setUniform( 'normalMatrix', 'Matrix4fv', this.normalMatrix.elm );

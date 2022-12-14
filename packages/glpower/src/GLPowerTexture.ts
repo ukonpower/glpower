@@ -7,7 +7,12 @@ type ImagePretense = {
 }
 
 type GLPowerTextureSetting = {
-	type: number
+	type: number,
+	internalFormat: number,
+	format: number,
+	magFilter: number,
+	minFilter: number,
+	generateMipmap: boolean
 }
 
 export class GLPowerTexture {
@@ -30,7 +35,12 @@ export class GLPowerTexture {
 		this.texture = this.gl.createTexture();
 
 		this._setting = {
-			type: this.gl.UNSIGNED_BYTE
+			type: this.gl.UNSIGNED_BYTE,
+			internalFormat: this.gl.RGBA,
+			format: this.gl.RGBA,
+			magFilter: this.gl.NEAREST,
+			minFilter: this.gl.NEAREST,
+			generateMipmap: false
 		};
 
 	}
@@ -41,6 +51,8 @@ export class GLPowerTexture {
 			...this._setting,
 			...param
 		};
+
+		this.attach( this.image );
 
 		return this;
 
@@ -58,11 +70,11 @@ export class GLPowerTexture {
 
 			if ( this.image instanceof HTMLImageElement ) {
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this._setting.type, this.image );
+				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this._setting.format, this._setting.type, this.image );
 
 			} else {
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.image.width, this.image.height, 0, this.gl.RGBA, this._setting.type, null );
+				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.image.width, this.image.height, 0, this._setting.format, this._setting.type, null );
 
 			}
 
@@ -70,11 +82,19 @@ export class GLPowerTexture {
 
 			this.size.set( 1, 1 );
 
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.size.x, this.size.y, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null );
+			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.size.x, this.size.y, 0, this._setting.format, this._setting.type, null );
 
 		}
 
-		this.gl.generateMipmap( this.gl.TEXTURE_2D );
+		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter );
+		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter );
+
+		if ( this._setting.generateMipmap ) {
+
+			this.gl.generateMipmap( this.gl.TEXTURE_2D );
+
+		}
+
 		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
 
 		return this;

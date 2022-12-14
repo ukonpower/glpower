@@ -85,11 +85,11 @@ export class GLPowerFrameBuffer {
 
 		this.setTexture( this.textures );
 
-		// this.textures.forEach( t => {
+		this.textures.forEach( t => {
 
-		// 	t.attach( { width: this.size.x, height: this.size.y } );
+			t.attach( { width: this.size.x, height: this.size.y } );
 
-		// } );
+		} );
 
 		if ( this.depthRenderBuffer ) {
 

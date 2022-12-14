@@ -131,7 +131,7 @@ export class Factory {
 		const deferredRenderTarget = this.power.createFrameBuffer();
 
 		deferredRenderTarget.setTexture( [
-			this.power.createTexture().setting( { type: this.gl.FLOAT } ),
+			this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ),
 			this.power.createTexture(),
 			this.power.createTexture()
 		] );
