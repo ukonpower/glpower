@@ -13,7 +13,7 @@ export class AnimationAction extends EventEmitter {
 
 	public name: string;
 	public curves: {[key:string]:FCurveGroup} = {};
-	private uniforms: {[key: string]: { value: IVector4}};
+	private uniforms: {[key: string]: { value: Types.Nullable<IVector4>}};
 
 	public frame: AnimationFrameInfo;
 
@@ -102,7 +102,7 @@ export class AnimationAction extends EventEmitter {
 
 	}
 
-	public getUniforms( propertyName: string ): Types.Uniform<IVector4> | null {
+	public getUniforms( propertyName: string ): Types.Uniform<Types.Nullable<IVector4>> | null {
 
 		if ( this.uniforms[ propertyName ] ) {
 
@@ -114,8 +114,8 @@ export class AnimationAction extends EventEmitter {
 
 		if ( curveGroup ) {
 
-			const uni: Types.Uniform<IVector4> = {
-				value: { x: 0, y: 0, z: 0, w: 0 }
+			const uni: Types.Uniform<Types.Nullable<IVector4>> = {
+				value: {}
 			};
 
 			this.uniforms[ propertyName ] = uni;
@@ -132,7 +132,7 @@ export class AnimationAction extends EventEmitter {
 
 	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target: T ): T;
 
-	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target?: T ): T | IVector4 | null {
+	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target?: T ): Types.Nullable<IVector4> | null {
 
 		const uniform = this.getUniforms( accessor );
 
@@ -142,10 +142,10 @@ export class AnimationAction extends EventEmitter {
 
 		if ( ! target ) return value;
 
-		target.x = value.x;
-		target.y = value.y;
-		target.z = value.z;
-		target.w = value.w;
+		target.x = value.x ?? target.x;
+		target.y = value.y ?? target.y;
+		target.z = value.z ?? target.z;
+		target.w = value.w ?? target.w;
 
 		return target;
 
