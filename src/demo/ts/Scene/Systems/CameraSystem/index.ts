@@ -2,7 +2,7 @@ import * as GLP from 'glpower';
 
 export class CameraSystem extends GLP.System {
 
-	private size: GLP.Vector2;
+	private size: GLP.Vector;
 
 	constructor( ecs: GLP.ECS ) {
 
@@ -10,7 +10,7 @@ export class CameraSystem extends GLP.System {
 			perspectiveCamera: [ "camera", "perspective" ]
 		} );
 
-		this.size = new GLP.Vector2();
+		this.size = new GLP.Vector();
 
 	}
 
@@ -62,7 +62,7 @@ export class CameraSystem extends GLP.System {
 
 	}
 
-	public resize( world: GLP.World, size: GLP.Vector2 ) {
+	public resize( world: GLP.World, size: GLP.Vector ) {
 
 		this.size.copy( size );
 

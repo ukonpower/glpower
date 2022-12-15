@@ -23,12 +23,12 @@ class ExHello {
 		this.projectionMatrix = new GLP.Matrix();
 
 		const cameraMatrix = new GLP.Matrix().setFromTransform(
-			new GLP.Vector3( 0.0, 0.0, 5.0 ),
-			new GLP.Vector3( 0.0, 0.0, 0.0 ),
-			new GLP.Vector3( 1.0, 1.0, 1.0 ),
+			new GLP.Vector( 0.0, 0.0, 5.0 ),
+			new GLP.Vector( 0.0, 0.0, 0.0 ),
+			new GLP.Vector( 1.0, 1.0, 1.0 ),
 		);
 
-		const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector3( 0.0, - 0.3, 0.0 ) );
+		const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector( 0.0, - 0.3, 0.0 ) );
 		const viewMatrix = cameraMatrix.clone().inverse();
 		const modelViewMatrix = new GLP.Matrix();
 

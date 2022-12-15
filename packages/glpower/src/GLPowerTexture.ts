@@ -1,4 +1,4 @@
-import { Vector2 } from "./Math/Vector2";
+import { Vector } from "./Math/Vector";
 import { Types } from "./types";
 
 type ImagePretense = {
@@ -19,7 +19,7 @@ export class GLPowerTexture {
 
 	public unit: number;
 	public image: HTMLImageElement | ImagePretense | null;
-	public size: Vector2;
+	public size: Vector;
 
 	private gl: WebGL2RenderingContext;
 	private texture: WebGLTexture | null;
@@ -31,7 +31,7 @@ export class GLPowerTexture {
 		this.gl = gl;
 		this.image = null;
 		this.unit = 0;
-		this.size = new Vector2();
+		this.size = new Vector();
 		this.texture = this.gl.createTexture();
 
 		this._setting = {
@@ -45,7 +45,7 @@ export class GLPowerTexture {
 
 	}
 
-	public setting( param: Types.ToNullable<GLPowerTextureSetting> ) {
+	public setting( param: Types.Nullable<GLPowerTextureSetting> ) {
 
 		this._setting = {
 			...this._setting,

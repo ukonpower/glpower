@@ -29,9 +29,9 @@ class ExGeometries {
 		this.projectionMatrix = new GLP.Matrix();
 
 		const cameraMatrix = new GLP.Matrix().setFromTransform(
-			new GLP.Vector3( 0.0, 0.0, 5.0 ),
+			new GLP.Vector( 0.0, 0.0, 5.0 ),
 			new GLP.Quaternion(),
-			new GLP.Vector3( 1.0, 1.0, 1.0 ),
+			new GLP.Vector( 1.0, 1.0, 1.0 ),
 		);
 
 		const viewMatrix = cameraMatrix.clone().inverse();
@@ -61,7 +61,7 @@ class ExGeometries {
 			const index = geometry.getAttribute( 'index' );
 			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
-			const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector3( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
+			const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
 			this.objList.push( {
 				modelMatrix,
@@ -85,7 +85,7 @@ class ExGeometries {
 
 				const modelMatrix = obj.modelMatrix;
 
-				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector3( 0.0, 0.01, 0.0 ) ) ) );
+				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
 
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 

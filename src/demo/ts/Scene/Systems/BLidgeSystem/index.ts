@@ -72,7 +72,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( rotationComponent ) {
 
-					const rot = action.getValue<GLP.Vector3>( action.name + '_rotation_euler' );
+					const rot = action.getValue( action.name + '_rotation_euler' );
 
 					if ( rot ) {
 

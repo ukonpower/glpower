@@ -1,20 +1,19 @@
 import EventEmitter from "wolfy87-eventemitter";
+import { IVector2, IVector3 } from "..";
 import { AnimationAction } from "../Animation/AnimationAction";
 import { FCurve } from "../Animation/FCurve";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation, FCurveKeyFrame } from "../Animation/FCurveKeyFrame";
-import { Vec2 } from "../Math/Vector2";
-import { Vec3 } from "../Math/Vector3";
 
 export type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage
-export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w' | 'scalar'
+export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
 
 export type BLidgeSyncSceneMessage = {
 	type: "sync/scene",
     data: BLidgeScene;
 }
 
-export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane'
+export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane';
 
 export type BLidgeCameraParams = {
 	fov: number
@@ -25,9 +24,9 @@ export type BLidgeObject = {
 	parent: string,
 	children: BLidgeObject[],
 	actions: string[],
-	position: Vec3,
-	rotation: Vec3,
-	scale: Vec3,
+	position: IVector3,
+	rotation: IVector3,
+	scale: IVector3,
 	type: BLidgeObjectType,
 	camera?: BLidgeCameraParams,
 }
@@ -48,9 +47,9 @@ export type BLidgeAnimationCurveParam = {
 }
 
 export type BLidgeAnimationCurveKeyFrameParam = {
-    c: Vec2;
-    h_l: Vec2;
-    h_r: Vec2;
+    c: IVector2;
+    h_l: IVector2;
+    h_r: IVector2;
     e: string;
     i: FCurveInterpolation;
 }

@@ -1,20 +1,20 @@
 import EventEmitter from 'wolfy87-eventemitter';
-import { Vec2 } from '../Math/Vector2';
+import { IVector2 } from '..';
 import { EasingFunc, Easings } from './Easings';
 
 export type FCurveInterpolation = "BEZIER" | "LINEAR";
 
 export class FCurveKeyFrame extends EventEmitter {
 
-	public coordinate: Vec2 = { x: 0, y: 0 };
-	public handleLeft: Vec2 = { x: 0, y: 0 };
-	public handleRight: Vec2 = { x: 0, y: 0 };
+	public coordinate: IVector2 = { x: 0, y: 0 };
+	public handleLeft: IVector2 = { x: 0, y: 0 };
+	public handleRight: IVector2 = { x: 0, y: 0 };
 	public interpolation: FCurveInterpolation = 'BEZIER';
 
 	private easing: EasingFunc | null = null;
 	private nextFrame: FCurveKeyFrame | null = null;
 
-	constructor( coordinate: Vec2, handleLeft?: Vec2, handleRight?: Vec2, interpolation?: FCurveInterpolation ) {
+	constructor( coordinate: IVector2, handleLeft?: IVector2, handleRight?: IVector2, interpolation?: FCurveInterpolation ) {
 
 		super();
 
@@ -22,7 +22,7 @@ export class FCurveKeyFrame extends EventEmitter {
 
 	}
 
-	public set( coordinate: Vec2, handleLeft?: Vec2, handleRight?: Vec2, interpolation?: FCurveInterpolation ) {
+	public set( coordinate: IVector2, handleLeft?: IVector2, handleRight?: IVector2, interpolation?: FCurveInterpolation ) {
 
 		this.coordinate = coordinate;
 		this.handleLeft = handleLeft || coordinate;
