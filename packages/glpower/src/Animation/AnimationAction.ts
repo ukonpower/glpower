@@ -128,7 +128,7 @@ export class AnimationAction extends EventEmitter {
 
 	}
 
-	public getValue( accessor: string ): IVector4 | null;
+	public getValue( accessor: string ): Types.Nullable<IVector4> | null;
 
 	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target: T ): T;
 

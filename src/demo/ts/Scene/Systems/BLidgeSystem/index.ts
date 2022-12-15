@@ -56,6 +56,7 @@ export class BLidgeSystem extends GLP.System {
 
 		const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( event.world, entity, 'blidge' );
 		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
+		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
 		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
 
 		if ( blidgeComponent && blidgeComponent.actions ) {
@@ -76,7 +77,11 @@ export class BLidgeSystem extends GLP.System {
 
 					if ( rot ) {
 
-						this.tmpQuaternion.euler( { x: rot.x - Math.PI / 2, y: rot.y, z: rot.z }, 'YZX' ); //カメラが下向くねん
+						this.tmpQuaternion.euler( {
+							x: rot.x ? rot.x + ( blidgeComponent.type == 'camera' ? - Math.PI / 2 : 0 ) : 0,
+							y: rot.y ?? 0,
+							z: rot.z ?? 0 },
+						'YZX' );
 
 						rotationComponent.x = this.tmpQuaternion.x;
 						rotationComponent.y = this.tmpQuaternion.y;
@@ -84,6 +89,12 @@ export class BLidgeSystem extends GLP.System {
 						rotationComponent.w = this.tmpQuaternion.w;
 
 					}
+
+				}
+
+				if ( scaleComponent ) {
+
+					action.getValue( action.name + '_scale', scaleComponent );
 
 				}
 
@@ -107,7 +118,7 @@ export class BLidgeSystem extends GLP.System {
 
 			if ( entity === undefined ) {
 
-				entity = this.factory.blidge( { name: obj.name, type: 'empty' } );
+				entity = this.factory.blidge( { name: obj.name, type: "empty" } );
 
 				this.objects.set( obj.name, entity );
 
@@ -122,6 +133,8 @@ export class BLidgeSystem extends GLP.System {
 			}
 
 			if ( blidgeComponent && blidgeComponent.type != type ) {
+
+				blidgeComponent.type = type;
 
 				// entity type
 

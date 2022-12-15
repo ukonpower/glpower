@@ -16,7 +16,7 @@ layout (location = 3) out vec4 outColor3; // roughness, metalic
 void main( void ) {
 
 	float depth = 0.0;
-	float roughness = 1.0;
+	float roughness = 0.2;
 	float metalic = 0.0;
 
 	outColor0 = vec4( vPos, 1.0 );
