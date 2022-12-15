@@ -78,7 +78,7 @@ export class Scene extends EventEmitter {
 
 	public onResize() {
 
-		const size = new GLP.Vector2( window.innerWidth, window.innerHeight );
+		const size = new GLP.Vector( window.innerWidth, window.innerHeight );
 		this.cameraSystem.resize( this.world, size );
 
 	}

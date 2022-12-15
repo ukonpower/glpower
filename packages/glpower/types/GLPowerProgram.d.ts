@@ -1,8 +1,7 @@
-import { Matrix4 } from "./Math/Matrix";
-import { Vector2 } from "./Math/Vector2";
-import { Vector3 } from "./Math/Vector3";
-import { VAO } from "./GLPowerVAO";
-export declare type Uniformable = boolean | number | Vector2 | Vector3 | Matrix4;
+import { Matrix } from "./Math/Matrix";
+import { Vector } from "./Math/Vector";
+import { GLPowerVAO } from "./GLPowerVAO";
+export declare type Uniformable = boolean | number | Vector | Matrix;
 export declare type UniformType = '1f' | '1fv' | '2f' | '2fv' | '3f' | '3fv' | '4f' | '4fv' | '1i' | '1iv' | '2i' | '2iv' | '3i' | '3iv' | '4i' | '4iv' | 'Matrix2fv' | 'Matrix3fv' | 'Matrix4fv';
 export declare type Uniform = {
     location: WebGLUniformLocation | null;
@@ -11,7 +10,7 @@ export declare type Uniform = {
     cache?: (number | boolean)[];
     needsUpdate?: boolean;
 };
-export declare class Program {
+export declare class GLPowerProgram {
     gl: WebGL2RenderingContext;
     program: WebGLProgram | null;
     private vao;
@@ -22,9 +21,9 @@ export declare class Program {
     setUniform(name: string, type: UniformType, value: (number | boolean)[]): void;
     private updateUniformLocations;
     uploadUniforms(): void;
-    getVAO(id?: string): VAO | null;
+    getVAO(id?: string): GLPowerVAO | null;
     use(): void;
     clean(): void;
     getProgram(): WebGLProgram | null;
 }
-//# sourceMappingURL=Program.d.ts.map
+//# sourceMappingURL=GLPowerProgram.d.ts.map

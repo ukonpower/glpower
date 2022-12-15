@@ -14,7 +14,7 @@ export declare class ECS {
     createWorld(): World;
     createEntity(world: World): Entity;
     removeEntity(world: World, entity: Entity): void;
-    addComponent<T extends Component>(world: World, entity: Entity, componentName: ComponentName, component: T): void;
+    addComponent<T extends Component>(world: World, entity: Entity, componentName: ComponentName, component: T): T;
     removeComponent(world: World, entity: Entity, componentName: ComponentName): void;
     getComponent<T extends Component>(world: World, entity: Entity, componentName: ComponentName): T | null;
     addSystem<T extends System>(world: World, systemName: string, system: T): void;

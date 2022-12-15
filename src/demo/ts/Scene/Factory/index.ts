@@ -12,9 +12,9 @@ import deferredShadingFrag from './shaders/deferredShading.fs';
 import { BLidgeObjectType, Entity } from 'glpower';
 
 interface EmptyProps {
-	position?: GLP.ComponentVector3;
-	rotation?: GLP.ComponentVector3;
-	scale?: GLP.ComponentVector3;
+	position?: GLP.IVector3;
+	rotation?: GLP.IVector3;
+	scale?: GLP.IVector3;
 }
 
 interface MeshProps extends EmptyProps{
@@ -85,7 +85,7 @@ export class Factory {
 		 	fragmentShader: deferredMaterialFrag,
 		 	uniforms: {
 		 		uColor: {
-		 			value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+		 			value: new GLP.Vector( 1.0, 0.0, 0.0 ),
 		 			type: '3f'
 		 		}
 		 	},
@@ -192,7 +192,7 @@ export class Factory {
 			}
 		);
 
-		const uniformCmaeraPos = new GLP.Vector3();
+		const uniformCmaeraPos = new GLP.Vector();
 
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
@@ -203,7 +203,7 @@ export class Factory {
 					renderTarget: deferredCompositorRenderTarget,
 					uniforms: {
 						uColor: {
-							value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+							value: new GLP.Vector( 1.0, 0.0, 0.0 ),
 							type: '3f'
 						},
 						uCameraPosition: {
@@ -250,7 +250,7 @@ export class Factory {
 		 	fragmentShader: postProcessFrag,
 		 	uniforms: {
 		 		uColor: {
-		 			value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
+		 			value: new GLP.Vector( 1.0, 0.0, 0.0 ),
 		 			type: '3f'
 		 		}
 		 	},

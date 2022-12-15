@@ -1,5 +1,5 @@
 import { Geometry } from './Geometry';
-import { Vector3 } from '../Math/Vector3';
+import { Vector } from '../Math/Vector';
 
 export class CylinderGeometry extends Geometry {
 
@@ -36,7 +36,7 @@ export class CylinderGeometry extends Geometry {
 						i / heightSegments
 					);
 
-					const normal = new Vector3( Math.cos( theta ), 0, Math.sin( theta ) ).normalize();
+					const normal = new Vector( Math.cos( theta ), 0, Math.sin( theta ) ).normalize();
 
 					normalArray.push(
 						normal.x,

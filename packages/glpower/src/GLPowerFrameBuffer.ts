@@ -1,9 +1,9 @@
 import { GLPowerTexture } from "./GLPowerTexture";
-import { Vector2 } from "./Math/Vector2";
+import { Vector } from "./Math/Vector";
 
 export class GLPowerFrameBuffer {
 
-	public size: Vector2;
+	public size: Vector;
 
 	private gl: WebGL2RenderingContext;
 	private frameBuffer: WebGLFramebuffer | null;
@@ -16,7 +16,7 @@ export class GLPowerFrameBuffer {
 
 		this.gl = gl;
 
-		this.size = new Vector2( 1, 1 );
+		this.size = new Vector( 1, 1 );
 
 		this.frameBuffer = this.gl.createFramebuffer();
 		this.depthRenderBuffer = this.gl.createRenderbuffer();
@@ -61,11 +61,11 @@ export class GLPowerFrameBuffer {
 
 	}
 
-	public setSize( size: Vector2 ): void
+	public setSize( size: Vector ): void
 
 	public setSize( width: number, height: number ) : void
 
-	public setSize( width_size: number | Vector2, height?: number ) {
+	public setSize( width_size: number | Vector, height?: number ) {
 
 		if ( typeof width_size == 'number' ) {
 

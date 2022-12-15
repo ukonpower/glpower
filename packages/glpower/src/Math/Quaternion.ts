@@ -1,4 +1,5 @@
-import { Vec3, Vector3 } from "./Vector3";
+import { IVector3 } from "..";
+import { Vector } from "./Vector";
 
 export type Quat = {
 	x: number,
@@ -24,7 +25,7 @@ export class Quaternion {
 
 	}
 
-	public euler( euler: Vector3 | Vec3, order: EulerOrder = 'XYZ' ) {
+	public euler( euler: Vector | IVector3, order: EulerOrder = 'XYZ' ) {
 
 		const sx = Math.sin( euler.x / 2 );
 		const sy = Math.sin( euler.y / 2 );

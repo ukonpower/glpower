@@ -8,6 +8,7 @@ const pageList = [
 	{ path: 'examples/hello' },
 	{ path: 'examples/geometries' },
 	{ path: 'examples/texture' },
+	{ path: 'examples/framebuffer' },
 	{ path: 'demo/' },
 ];
 

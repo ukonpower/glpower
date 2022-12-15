@@ -1,9 +1,7 @@
-import { Vec3 } from "../../Math/Vector3";
+import { IVector2, IVector3, IVector4, Vector } from "../../Math/Vector";
 import { Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
-import { Vec2, Vector2 } from "../../Math/Vector2";
-import { Vec4 } from "../../Math/Vector4";
 import { BLidgeObjectType } from "../../BLidge";
 import { AnimationAction } from "../../Animation/AnimationAction";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
@@ -11,8 +9,6 @@ import { Matrix } from "../../Math/Matrix";
 import { GLPowerTexture } from "../../GLPowerTexture";
 
 export interface Component {[key:string]: any}
-
-export type BuiltinComponents = ComponentVector2 | ComponentVector3 | ComponentTransformMatrix
 
 export type ComponentName =
 	'position' |
@@ -35,13 +31,13 @@ export type ComponentName =
 // math
 
 export type ComponentVector2 = {
-} & Vec2
+} & IVector2
 
 export type ComponentVector3 = {
-} & Vec3
+} & IVector3
 
 export type ComponentVector4 = {
-} & Vec4
+} & IVector4
 
 export type ComponentTransformMatrix = {
 	local: Matrix;
@@ -89,7 +85,7 @@ export type ComponentCameraPerspective = {
 
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
-	onResize?: ( size: Vector2, component: ComponentRenderCamera ) => void,
+	onResize?: ( size: Vector, component: ComponentRenderCamera ) => void,
 	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
 }
 
@@ -99,7 +95,7 @@ export type ComponentPostProcess = ComponentMaterial & {
 }
 
 export type ComponentDirectionalLight = {
-	color: Vec3
+	color: IVector4
 }
 
 // blidge

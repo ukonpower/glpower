@@ -1,5 +1,5 @@
 import { Geometry } from './Geometry';
-import { Vector3 } from '../Math/Vector3';
+import { Vector } from '../Math/Vector';
 
 export class SphereGeometry extends Geometry {
 
@@ -40,7 +40,7 @@ export class SphereGeometry extends Geometry {
 
 				//normal
 
-				const normal = new Vector3( x, y, z ).normalize();
+				const normal = new Vector( x, y, z ).normalize();
 
 				normalArray.push( normal.x, normal.y, normal.z );
 

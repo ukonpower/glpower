@@ -191,6 +191,10 @@ export class RenderSystem extends GLP.System {
 
 						arrayValue.push( v );
 
+					} else if ( 'isVector' in v ) {
+
+						arrayValue.push( ...v.getElm( 'vec3' ) ); //DEBUG
+
 					} else {
 
 						arrayValue.push( ...v.elm );

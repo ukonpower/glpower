@@ -37,9 +37,9 @@ export class TransformSystem extends GLP.System {
 
 		const sceneNode = event.ecs.getComponent<GLP.ComponentSceneNode>( event.world, entity, 'sceneNode' );
 		const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' );
-		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
+		const position = event.ecs.getComponent<GLP.ComponentVector>( event.world, entity, 'position' );
 		const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
-		const scale = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
+		const scale = event.ecs.getComponent<GLP.ComponentVector>( event.world, entity, 'scale' );
 
 		if ( ! position || ! scale || ! matrix || ! quaternion ) return;
 

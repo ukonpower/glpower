@@ -7,9 +7,7 @@ export * from './GLPowerVAO';
 export * from './GLPowerFrameBuffer';
 export * from './GLPowerTexture';
 
-export * from './Math/Vector2';
-export * from './Math/Vector3';
-export * from './Math/Vector4';
+export * from './Math/Vector';
 export * from './Math/Matrix';
 export * from './Math/Quaternion';
 

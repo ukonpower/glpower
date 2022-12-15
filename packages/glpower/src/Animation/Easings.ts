@@ -1,4 +1,4 @@
-import { Vec2 } from "../Math/Vector2";
+import { IVector2 } from "..";
 import { Bezier } from "./Bezier";
 
 export type EasingFunc = ( t: number ) => any
@@ -107,7 +107,7 @@ export namespace Easings {
 
   	}
 
-	export function bezier( c1: Vec2, h1: Vec2, h2: Vec2, c2: Vec2 ): EasingFunc {
+	export function bezier( c1: IVector2, h1: IVector2, h2: IVector2, c2: IVector2 ): EasingFunc {
 
 		var cache = new Array( Bezier.BEZIER_EASING_CACHE_SIZE );
 

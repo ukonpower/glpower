@@ -1,6 +1,6 @@
 import EventEmitter from 'wolfy87-eventemitter';
-import { Vec2, Vector2 } from '../Math/Vector2';
-import { Vec3, Vector3 } from '../Math/Vector3';
+import { Types } from '..';
+import { IVector4, Vector } from '../Math/Vector';
 import { FCurveGroup } from './FCurveGroup';
 
 export type AnimationFrameInfo = {
@@ -13,7 +13,7 @@ export class AnimationAction extends EventEmitter {
 
 	public name: string;
 	public curves: {[key:string]:FCurveGroup} = {};
-	private uniforms: any;
+	private uniforms: {[key: string]: { value: IVector4}};
 
 	public frame: AnimationFrameInfo;
 
@@ -102,7 +102,7 @@ export class AnimationAction extends EventEmitter {
 
 	}
 
-	public getUniforms<T extends Vector2 | Vector3 | number>( propertyName: string ): any | null {
+	public getUniforms( propertyName: string ): Types.Uniform<IVector4> | null {
 
 		if ( this.uniforms[ propertyName ] ) {
 
@@ -114,8 +114,8 @@ export class AnimationAction extends EventEmitter {
 
 		if ( curveGroup ) {
 
-			const uni = {
-				value: curveGroup.createInitValue() as T
+			const uni: Types.Uniform<IVector4> = {
+				value: { x: 0, y: 0, z: 0, w: 0 }
 			};
 
 			this.uniforms[ propertyName ] = uni;
@@ -128,11 +128,11 @@ export class AnimationAction extends EventEmitter {
 
 	}
 
-	public getValue<T extends Vector2 | Vec2 | Vector3 | Vec3 | number>( accessor: string ): T | null;
+	public getValue( accessor: string ): Vector | null;
 
-	public getValue<T extends Vector2 | Vec2 | Vector3 | Vec3>( accessor: string, target: T ): T;
+	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target: T ): T;
 
-	public getValue( accessor: string, target?: Vector2 | Vector3 ): Vector2 | Vector3 | number | null {
+	public getValue<T extends Types.Nullable<IVector4>>( accessor: string, target?: T ): T | IVector4 | null {
 
 		const uniform = this.getUniforms( accessor );
 
@@ -142,52 +142,34 @@ export class AnimationAction extends EventEmitter {
 
 		if ( ! target ) return value;
 
-		if ( typeof value == 'number' ) {
-
-			target.x = value;
-
-			return target;
-
-		}
-
 		target.x = value.x;
 		target.y = value.y;
+		target.z = value.z;
+		target.w = value.w;
 
-		if ( 'z' in target && 'z' in value ) {
-
-			target.z = value.z;
-
-		}
-
-		// if ( 'w' in target && 'w' in value ) {
-
-		// 	target.w = value.w;
-
-		// }
-
-		return target || null;
+		return target;
 
 	}
 
 	public getValueAt<T extends number>( propertyName: string, frame: number ): T | null;
 
-	public getValueAt<T extends Vector2 | Vector3 >( propertyName: string, frame: number, target: T ): T;
+	public getValueAt<T extends Vector | IVector4 >( propertyName: string, frame: number, target: T ): T;
 
-	public getValueAt( propertyName: string, frame: number, target?: Vector2 | Vector3 ): Vector2 | Vector3 | number | null {
+	public getValueAt( propertyName: string, frame: number, target?: Vector | IVector4 ): Vector | IVector4 | null {
 
-		const curve = this.getFCurveGroup( propertyName );
+		const curveGroup = this.getFCurveGroup( propertyName );
 
 		if ( target ) {
 
-			if ( ! curve ) return target;
+			if ( ! curveGroup ) return target;
 
-			return curve.getValue( frame || 0, target );
+			return curveGroup.getValue( frame || 0, target );
 
 		} else {
 
-			if ( ! curve ) return null;
+			if ( ! curveGroup ) return null;
 
-			return curve.getValue( frame );
+			return curveGroup.getValue( frame );
 
 		}
 
@@ -208,15 +190,7 @@ export class AnimationAction extends EventEmitter {
 
 			if ( ! uni ) continue;
 
-			if ( typeof uni.value == 'number' ) {
-
-				uni.value = fcurveGroup.getValue( frame ) || 0;
-
-			} else {
-
-				fcurveGroup.getValue( frame, uni.value );
-
-			}
+			fcurveGroup.getValue( frame, uni.value );
 
 		}
 

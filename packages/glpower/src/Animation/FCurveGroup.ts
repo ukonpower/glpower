@@ -1,21 +1,19 @@
 import EventEmitter from 'wolfy87-eventemitter';
-import { Vector2 } from '../Math/Vector2';
-import { Vector3 } from '../Math/Vector3';
-import { FCurve, FCurveAxis } from './FCurve';
-
-export type FCurveGroupType = 'scalar' | 'vec2' | 'vec3' | 'vec4'
+import { Types } from '..';
+import { IVector4 } from '../Math/Vector';
+import { FCurve } from './FCurve';
 
 export class FCurveGroup extends EventEmitter {
 
 	public name: string;
-	public curve: {[axis in FCurveAxis]: FCurve | null};
-	public type: FCurveGroupType = 'scalar';
+
+	private curves: Map<Types.RecommendString<Types.Axis>, FCurve>
 
 	public frameStart: number;
 	public frameEnd: number;
 	public frameDuration: number;
 
-	constructor( name?: string, x?: FCurve, y?: FCurve, z?: FCurve, w?: FCurve, scalar?: FCurve ) {
+	constructor( name?: string, x?: FCurve, y?: FCurve, z?: FCurve, w?: FCurve ) {
 
 		super();
 
@@ -25,89 +23,23 @@ export class FCurveGroup extends EventEmitter {
 		this.frameEnd = 0;
 		this.frameDuration = 0;
 
-		this.curve = {
-			x: null,
-			y: null,
-			z: null,
-			w: null,
-			scalar: null
-		};
+		this.curves = new Map();
 
-		if ( x ) {
-
-			this.setFCurve( x, 'x' );
-
-		}
-
-		if ( y ) {
-
-			this.setFCurve( y, 'y' );
-
-		}
-
-		if ( z ) {
-
-			this.setFCurve( z, 'z' );
-
-		}
-
-		if ( w ) {
-
-			this.setFCurve( w, 'w' );
-
-		}
+		if ( x ) this.setFCurve( x, 'x' );
+		if ( y ) this.setFCurve( y, 'y' );
+		if ( z ) this.setFCurve( z, 'z' );
+		if ( w ) this.setFCurve( w, 'w' );
 
 	}
 
-	public setFCurve( curve: FCurve, axis: FCurveAxis ) {
+	public setFCurve( curve: FCurve, axis: Types.RecommendString<Types.Axis> ) {
 
-		this.curve[ axis ] = curve;
-
-		this.calcType();
-		this.calcFrame();
-
-	}
-
-	public calcType() {
-
-		if ( this.curve.scalar ) {
-
-			this.type = 'scalar';
-
-		}
-
-		if ( this.curve.w ) {
-
-			this.type = 'vec4';
-
-		} else if ( this.curve.z ) {
-
-			this.type = 'vec3';
-
-		} else if ( this.curve.y ) {
-
-			this.type = 'vec2';
-
-		} else if ( this.curve.x ) {
-
-			this.type = 'scalar';
-
-		}
-
-	}
-
-	private calcFrame() {
-
-		const curveKeys = Object.keys( this.curve );
+		this.curves.set( axis, curve );
 
 		let minStart = Infinity;
 		let maxEnd = - Infinity;
 
-		for ( let i = 0; i < curveKeys.length; i ++ ) {
-
-			const curve = ( this.curve as {[key: string]: FCurve} )[ curveKeys[ i ] ];
-
-			if ( ! curve ) continue;
+		this.curves.forEach( curve => {
 
 			if ( curve.frameStart < minStart ) {
 
@@ -121,7 +53,7 @@ export class FCurveGroup extends EventEmitter {
 
 			}
 
-		}
+		} );
 
 		if ( minStart == - Infinity || maxEnd == Infinity ) {
 
@@ -136,69 +68,36 @@ export class FCurveGroup extends EventEmitter {
 
 	}
 
-	public createInitValue() {
 
-		if ( this.type == 'vec2' ) {
+	public getValue( frame: number ): IVector4 | null;
 
-			return new Vector2();
+	public getValue<T extends Types.Nullable<IVector4>>( frame: number, target: T ): T;
 
-		} else if ( this.type == 'vec3' ) {
+	public getValue<T extends Types.Nullable<IVector4>>( frame: number, target?: T ): T | IVector4 | null {
 
-			return new Vector3();
-
-		}
-
-		return 0;
-
-	}
-
-	public getValue<T extends Vector2 | Vector3>( frame: number, target: T ): T;
-
-	public getValue( frame: number ): number | null;
-
-	public getValue<T extends Vector2 | Vector3>( frame: number, target?: T ): T | number | null {
+		const x = this.curves.get( 'x' );
+		const y = this.curves.get( 'y' );
+		const z = this.curves.get( 'z' );
+		const w = this.curves.get( 'w' );
 
 		if ( target ) {
 
-			if ( this.curve.x ) {
-
-				target.x = this.curve.x.getValue( frame );
-
-			}
-
-			if ( this.curve.y ) {
-
-				target.y = this.curve.y.getValue( frame );
-
-			}
-
-			if ( this.curve.z && 'z' in target ) {
-
-				target.z = this.curve.z.getValue( frame );
-
-			}
-
-			// if ( this.curve.w && 'w' in target ) {
-
-			// 	target.w = this.curve.w.getValue( frame );
-
-			// }
+			if ( x ) target.x = x.getValue( frame );
+			if ( y ) target.y = y.getValue( frame );
+			if ( z ) target.z = z.getValue( frame );
+			if ( w ) target.w = w.getValue( frame );
 
 			return target;
 
-		} else {
-
-			if ( this.curve.scalar ) {
-
-				return this.curve.scalar.getValue( frame );
-
-			}
-
-			return null;
-
 		}
 
-	}
+		return {
+			x: x ? x.getValue( frame ) : 0,
+			y: y ? y.getValue( frame ) : 0,
+			z: z ? z.getValue( frame ) : 0,
+			w: w ? w.getValue( frame ) : 0,
+		};
 
+	}
 
 }

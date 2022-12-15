@@ -1,6 +1,6 @@
+import { IVector4 } from "..";
 import { Quaternion } from "./Quaternion";
-import { Vec3, Vector3 } from "./Vector3";
-import { Vec4 } from "./Vector4";
+import { IVector3, Vector } from "./Vector";
 
 export class Matrix {
 
@@ -66,7 +66,7 @@ export class Matrix {
 
 	}
 
-	public lookAt( eye: Vector3, target: Vector3, up: Vector3 ) {
+	public lookAt( eye: Vector, target: Vector, up: Vector ) {
 
 		const zAxis = eye.clone().sub( target ).normalize();
 		const xAxis = up.clone().cross( zAxis ).normalize();
@@ -160,7 +160,7 @@ export class Matrix {
 
 	}
 
-	public setFromTransform( pos: Vector3 | Vec3, qua: Quaternion | Vec4, scale: Vector3 | Vec3 ) {
+	public setFromTransform( pos: IVector3, qua: Quaternion | IVector4, scale: IVector3 ) {
 
 		this.identity();
 
@@ -174,7 +174,7 @@ export class Matrix {
 
 	}
 
-	public decompose( pos?: Vec3, rot?: Vec3, scale?: Vec3 ) {
+	public decompose( pos?: IVector3, rot?: IVector3, scale?: IVector3 ) {
 
 		if ( pos ) {
 
@@ -186,7 +186,7 @@ export class Matrix {
 
 	}
 
-	public applyPosition( position: Vec3 ) {
+	public applyPosition( position: IVector3 ) {
 
 		this.matmul( [
 			1, 0, 0, 0,
@@ -199,7 +199,7 @@ export class Matrix {
 
 	}
 
-	public applyQuaternion( q: Quaternion | Vec4 ) {
+	public applyQuaternion( q: Quaternion | IVector4 ) {
 
 		const x = q.x, y = q.y, z = q.z, w = q.w;
 		const xx = x * x, yy = y * y, zz = z * z, ww = w * w;
@@ -227,7 +227,7 @@ export class Matrix {
 
 	}
 
-	public applyScale( scale: Vec3 ) {
+	public applyScale( scale: IVector3 ) {
 
 		this.matmul( [
 			scale.x, 0, 0, 0,
