@@ -93,6 +93,8 @@ export class ECS {
 
 		componentArray[ entity ] = component;
 
+		return component;
+
 	}
 
 	public removeComponent( world: World, entity: Entity, componentName: ComponentName ) {

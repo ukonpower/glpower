@@ -17,7 +17,7 @@ export class CameraSystem extends GLP.System {
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
 		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
-		const transform = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
+		const transform = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' );
 
 		if ( transform ) {
 

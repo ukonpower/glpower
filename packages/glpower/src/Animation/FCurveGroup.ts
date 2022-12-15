@@ -146,10 +146,6 @@ export class FCurveGroup extends EventEmitter {
 
 			return new Vector3();
 
-		} else if ( this.type == 'vec4' ) {
-
-			return new Vector4();
-
 		}
 
 		return 0;
@@ -182,11 +178,11 @@ export class FCurveGroup extends EventEmitter {
 
 			}
 
-			if ( this.curve.w && 'w' in target ) {
+			// if ( this.curve.w && 'w' in target ) {
 
-				target.w = this.curve.w.getValue( frame );
+			// 	target.w = this.curve.w.getValue( frame );
 
-			}
+			// }
 
 			return target;
 

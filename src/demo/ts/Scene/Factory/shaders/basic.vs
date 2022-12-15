@@ -26,7 +26,7 @@ void main( void ) {
 
 	vUv = uv;
 	vColor = vec3( uv, 1.0 );
-	vNormal = normalize( mat3( normalMatrix ) * normal ) * 0.5 + 0.5;
+	vNormal = ( normalMatrix * vec4(normal, 1.0) ).xyz;
 	vPos = modelPosition.xyz;
 	
 }

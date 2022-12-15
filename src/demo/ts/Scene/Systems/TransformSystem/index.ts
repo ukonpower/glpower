@@ -36,7 +36,7 @@ export class TransformSystem extends GLP.System {
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
 		const sceneNode = event.ecs.getComponent<GLP.ComponentSceneNode>( event.world, entity, 'sceneNode' );
-		const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, entity, 'matrix' );
+		const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' );
 		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
 		const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
 		const scale = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
@@ -52,7 +52,7 @@ export class TransformSystem extends GLP.System {
 
 		if ( sceneNode && sceneNode.parent !== undefined ) {
 
-			const parentMatrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, sceneNode.parent, 'matrix' );
+			const parentMatrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, sceneNode.parent, 'matrix' );
 
 			if ( parentMatrix ) {
 
