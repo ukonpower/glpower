@@ -6,6 +6,7 @@ import { TransformSystem } from './Systems/TransformSystem';
 import { BLidgeSystem } from './Systems/BLidgeSystem';
 import EventEmitter from 'wolfy87-eventemitter';
 import { CameraSystem } from './Systems/CameraSystem';
+import { UpdateSystem } from './Systems/UpdateSystem';
 
 export class Scene extends EventEmitter {
 
@@ -45,6 +46,7 @@ export class Scene extends EventEmitter {
 		this.ecs.addSystem( this.world, 'blidge', this.blidgeSystem );
 		this.ecs.addSystem( this.world, 'transform', new TransformSystem( this.ecs, this.blidgeSystem.sceneGraph ) );
 		this.ecs.addSystem( this.world, 'camera', this.cameraSystem );
+		this.ecs.addSystem( this.world, 'update', new UpdateSystem( this.ecs ) );
 		this.ecs.addSystem( this.world, 'render', this.renderSystem );
 
 		/*-------------------------------

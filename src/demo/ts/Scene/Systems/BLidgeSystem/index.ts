@@ -148,7 +148,7 @@ export class BLidgeSystem extends GLP.System {
 
 					this.factory.appendPerspectiveCamera( entity, {
 						fov: obj.camera.fov,
-						near: 0.01,
+						near: 0.1,
 						far: 1000,
 					} );
 

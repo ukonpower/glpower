@@ -90,7 +90,7 @@ export class RenderSystem extends GLP.System {
 
 			const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, 'material' );
 			const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, mesh, 'geometry' );
-			const matrix = event.ecs.getComponent<GLP.ComponentsTransformMatrix>( event.world, mesh, 'matrix' );
+			const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, mesh, 'matrix' );
 
 			if ( material && geometry && matrix ) {
 

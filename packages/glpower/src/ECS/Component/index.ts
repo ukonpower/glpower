@@ -12,7 +12,7 @@ import { GLPowerTexture } from "../../GLPowerTexture";
 
 export interface Component {[key:string]: any}
 
-export type BuiltinComponents = ComponentVector2 | ComponentVector3 | ComponentsTransformMatrix
+export type BuiltinComponents = ComponentVector2 | ComponentVector3 | ComponentTransformMatrix
 
 export type ComponentName =
 	'position' |
@@ -20,6 +20,7 @@ export type ComponentName =
 	'scale' |
 	'matrix' |
 	'sceneNode' |
+	'event' |
 	'camera' |
 	'perspective' |
 	"renderCameraDeferred" |
@@ -42,9 +43,13 @@ export type ComponentVector3 = {
 export type ComponentVector4 = {
 } & Vec4
 
-export type ComponentsTransformMatrix = {
+export type ComponentTransformMatrix = {
 	local: Matrix;
 	world: Matrix;
+}
+
+export type ComponentEvent = {
+	onUpdate: ( event: { time: number, deltaTime: number} ) => void,
 }
 
 // render

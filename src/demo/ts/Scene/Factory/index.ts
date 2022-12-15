@@ -57,7 +57,7 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'rotation', props.rotation ?? { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion', { x: 0, y: 0, z: 0, w: 1 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'scale', props.scale ?? { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentsTransformMatrix>( this.world, entity, 'matrix', { local: new GLP.Matrix(), world: new GLP.Matrix() } );
+		this.ecs.addComponent<GLP.ComponentTransformMatrix>( this.world, entity, 'matrix', { local: new GLP.Matrix(), world: new GLP.Matrix() } );
 		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, entity, 'sceneNode', { children: [] } );
 
 		return entity;
@@ -132,8 +132,9 @@ export class Factory {
 
 		deferredRenderTarget.setTexture( [
 			this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ),
+			this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ),
 			this.power.createTexture(),
-			this.power.createTexture()
+			this.power.createTexture(),
 		] );
 
 		deferredRenderTarget.textures.forEach( ( f, i ) => {
@@ -191,6 +192,8 @@ export class Factory {
 			}
 		);
 
+		const uniformCmaeraPos = new GLP.Vector3();
+
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
 				renderTarget: deferredRenderTarget,
@@ -202,6 +205,10 @@ export class Factory {
 						uColor: {
 							value: new GLP.Vector3( 1.0, 0.0, 0.0 ),
 							type: '3f'
+						},
+						uCameraPosition: {
+							value: uniformCmaeraPos,
+							type: '3f'
 						}
 					},
 				},
@@ -211,6 +218,20 @@ export class Factory {
 					if ( c.postprocess && c.postprocess.renderTarget ) c.postprocess.renderTarget.setSize( size );
 
 				},
+			},
+		);
+
+		// event
+
+		const componentPosition = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' )!;
+
+		this.ecs.addComponent<GLP.ComponentEvent>( this.world, entity, 'event',
+			{
+				onUpdate: ( e ) => {
+
+					uniformCmaeraPos.copy( componentPosition );
+
+				}
 			},
 		);
 
