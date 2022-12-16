@@ -241,6 +241,16 @@ export class Factory {
 
 	}
 
+	public appendLight( entity: GLP.Entity ) {
+
+		this.ecs.addComponent<GLP.ComponentLight>( this.world, entity, 'light', {
+			type: 'directional',
+			color: new GLP.Vector( 1.0, 1.0, 1.0 ).multiply( Math.PI ),
+			intensity: Math.PI
+		} );
+
+	}
+
 	public appendPostProcess( entity: GLP.Entity, input: GLP.GLPowerTexture[], target: GLP.GLPowerFrameBuffer | null ) {
 
 		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
