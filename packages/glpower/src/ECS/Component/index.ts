@@ -24,11 +24,13 @@ export type ComponentName =
 	'postprocess' |
 	'material' |
 	'geometry' |
-	'directionalLight' |
+	'light' |
 	'blidge' |
 	( string & {} );
 
-// math
+/*-------------------------------
+	Math
+-------------------------------*/
 
 export type ComponentVector2 = {
 } & IVector2
@@ -39,6 +41,10 @@ export type ComponentVector3 = {
 export type ComponentVector4 = {
 } & IVector4
 
+/*-------------------------------
+	Object
+-------------------------------*/
+
 export type ComponentTransformMatrix = {
 	local: Matrix;
 	world: Matrix;
@@ -48,14 +54,17 @@ export type ComponentEvent = {
 	onUpdate: ( event: { time: number, deltaTime: number} ) => void,
 }
 
-// render
-
 export type ComponentSceneNode = {
 	parent?: Entity;
 	children: Entity[];
 }
 
+/*-------------------------------
+	Mesh
+-------------------------------*/
+
 export type RenderType = 'forward' | 'deferred' | 'shadowmap' | 'postprocess';
+
 
 export type ComponentMaterial = {
 	vertexShader: string;
@@ -69,6 +78,10 @@ export type ComponentGeometry = {
 	index: AttributeBuffer
 	updateCache?: { [key:string]: boolean }
 }
+
+/*-------------------------------
+	Camera
+-------------------------------*/
 
 export type ComponentCamera = {
 	near: number;
@@ -89,16 +102,30 @@ export type ComponentRenderCamera = {
 	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
 }
 
+/*-------------------------------
+	Light
+-------------------------------*/
+
+export type LightType = 'directional' | 'point'
+
+export type ComponentLight = {
+	type: LightType,
+	color: IVector3,
+	intensity: number
+}
+
+/*-------------------------------
+	PostProcess
+-------------------------------*/
+
 export type ComponentPostProcess = ComponentMaterial & {
 	input: GLPowerTexture[];
 	renderTarget: GLPowerFrameBuffer | null;
 }
 
-export type ComponentDirectionalLight = {
-	color: IVector4
-}
-
-// blidge
+/*-------------------------------
+	BLidge
+-------------------------------*/
 
 export type ComponentBLidge = {
 	name: string

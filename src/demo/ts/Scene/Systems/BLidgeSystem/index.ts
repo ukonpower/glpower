@@ -165,6 +165,10 @@ export class BLidgeSystem extends GLP.System {
 						far: 1000,
 					} );
 
+				} else if ( type == 'light' ) {
+
+					this.factory.appendLight( entity );
+
 				}
 
 				// actions

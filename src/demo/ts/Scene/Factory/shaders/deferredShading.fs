@@ -1,22 +1,6 @@
 #version 300 es
 precision highp float;
 
-uniform sampler2D sampler0; // position, depth
-uniform sampler2D sampler1; // normal 
-uniform sampler2D sampler2; // albedo
-uniform sampler2D sampler3; // roughness, metalic
-
-uniform vec3 uColor;
-uniform vec3 uCameraPosition;
-
-in vec2 vUv;
-
-layout (location = 0) out vec4 glFragOut;
-
-// requires
-
-#pragma glslify: import('./constants.glsl' )
-
 // types
 
 struct Geometry {
@@ -35,10 +19,36 @@ struct Material {
 	vec3 specularColor;
 };
 
+struct DirectionalLight {
+	vec3 direction;
+	vec3 color;
+};
+
 struct Light {
 	vec3 direction;
 	vec3 color;
 };
+
+// uniforms
+
+uniform sampler2D sampler0; // position, depth
+uniform sampler2D sampler1; // normal 
+uniform sampler2D sampler2; // albedo
+uniform sampler2D sampler3; // roughness, metalic
+
+uniform vec3 uColor;
+uniform vec3 uCameraPosition;
+uniform mat4 viewMatrix;
+
+uniform DirectionalLight directionalLight[3];
+
+in vec2 vUv;
+
+layout (location = 0) out vec4 glFragOut;
+
+// requires
+
+#pragma glslify: import('./constants.glsl' )
 
 float ggx( float dNH, float roughness ) {
 	
@@ -145,7 +155,19 @@ void main( void ) {
 
 	float w = clamp( dot( geo.normal, (vec3( 1.0, 1.0, 1.0 )) ), 0.0, 1.0 );
 
-	outColor += RE( geo, mat, Light( vec3( 1.0, 1.0, 1.0 ), vec3( 1.0, 1.0, 1.0 ) * 1.0) );
+	// direcitonalLight
+	
+	for( int i = 0; i < 1; i++ ){
+
+		Light light;
+		light.direction = directionalLight[i].direction;
+		light.color = directionalLight[i].color;
+
+		light.direction = ( mat3(viewMatrix) * light.direction ).xyz;
+
+		outColor += RE( geo, mat, light );
+		
+	} 
 
 	glFragOut = vec4( outColor, 1.0 );
 
