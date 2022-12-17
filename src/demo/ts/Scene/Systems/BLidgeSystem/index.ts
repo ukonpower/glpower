@@ -130,47 +130,6 @@ export class BLidgeSystem extends GLP.System {
 
 				blidgeComponent.updateTime = timeStamp;
 
-			}
-
-			if ( blidgeComponent && blidgeComponent.type != type ) {
-
-				blidgeComponent.type = type;
-
-				// entity type
-
-				this.ecs.removeComponent( this.world, entity, 'geometry' );
-				this.ecs.removeComponent( this.world, entity, 'material' );
-				this.ecs.removeComponent( this.world, entity, 'camera' );
-				this.ecs.removeComponent( this.world, entity, 'perspective' );
-				this.ecs.removeComponent( this.world, entity, 'renderCameraDeferred' );
-				this.ecs.removeComponent( this.world, entity, 'renderCameraForward' );
-
-				if ( type == 'cube' ) {
-
-					this.factory.appendCube( entity );
-
-				} else if ( type == 'sphere' ) {
-
-					this.factory.appendSphere( entity );
-
-				} else if ( type == 'plane' ) {
-
-					this.factory.appendPlane( entity );
-
-				} else if ( type == 'camera' && obj.camera ) {
-
-					this.factory.appendPerspectiveCamera( entity, {
-						fov: obj.camera.fov,
-						near: 0.1,
-						far: 1000,
-					} );
-
-				} else if ( type == 'light' ) {
-
-					this.factory.appendLight( entity );
-
-				}
-
 				// actions
 
 				blidgeComponent.actions = [];
@@ -187,6 +146,46 @@ export class BLidgeSystem extends GLP.System {
 
 				}
 
+				if ( blidgeComponent.type != type ) {
+
+					blidgeComponent.type = type;
+
+					// entity type
+
+					this.ecs.removeComponent( this.world, entity, 'geometry' );
+					this.ecs.removeComponent( this.world, entity, 'material' );
+					this.ecs.removeComponent( this.world, entity, 'camera' );
+					this.ecs.removeComponent( this.world, entity, 'perspective' );
+					this.ecs.removeComponent( this.world, entity, 'renderCameraDeferred' );
+					this.ecs.removeComponent( this.world, entity, 'renderCameraForward' );
+
+					if ( type == 'cube' ) {
+
+						this.factory.appendCube( entity );
+
+					} else if ( type == 'sphere' ) {
+
+						this.factory.appendSphere( entity );
+
+					} else if ( type == 'plane' ) {
+
+						this.factory.appendPlane( entity );
+
+					} else if ( type == 'camera' && obj.camera ) {
+
+						this.factory.appendPerspectiveCamera( entity, {
+							fov: obj.camera.fov,
+							near: 0.1,
+							far: 1000,
+						} );
+
+					} else if ( type == 'light' ) {
+
+						this.factory.appendLight( entity );
+
+					}
+
+				}
 
 			}
 
