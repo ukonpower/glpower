@@ -163,7 +163,7 @@ void main( void ) {
 		light.direction = directionalLight[i].direction;
 		light.color = directionalLight[i].color;
 
-		light.direction = ( mat3(viewMatrix) * light.direction ).xyz;
+		// light.direction = ( mat3(viewMatrix) * light.direction ).xyz;
 
 		outColor += RE( geo, mat, light );
 		

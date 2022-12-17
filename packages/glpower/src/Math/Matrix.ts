@@ -126,18 +126,10 @@ export class Matrix {
 
 	public transpose() {
 
-		// this.elm = [
-		// 	1, 0, 0, 0,
-		// 	0, 1, 0, 0,
-		// 	0, 0, 1, 0,
-		// 	0, 0, 0, 1,
-		// ];
-
 		const e11 = this.elm[ 0 ], e12 = this.elm[ 1 ], e13 = this.elm[ 2 ], e14 = this.elm[ 3 ],
 			e21 = this.elm[ 4 ], e22 = this.elm[ 5 ], e23 = this.elm[ 6 ], e24 = this.elm[ 7 ],
 			e31 = this.elm[ 8 ], e32 = this.elm[ 9 ], e33 = this.elm[ 10 ], e34 = this.elm[ 11 ],
 			e41 = this.elm[ 12 ], e42 = this.elm[ 13 ], e43 = this.elm[ 14 ], e44 = this.elm[ 15 ];
-
 
 		this.elm[ 0 ] = e11; this.elm[ 1 ] = e21; this.elm[ 2 ] = e31; this.elm[ 3 ] = e41;
 		this.elm[ 4 ] = e12; this.elm[ 5 ] = e22; this.elm[ 6 ] = e32; this.elm[ 7 ] = e42;
@@ -171,18 +163,6 @@ export class Matrix {
 		this.applyScale( scale );
 
 		return this;
-
-	}
-
-	public decompose( pos?: IVector3, rot?: IVector3, scale?: IVector3 ) {
-
-		if ( pos ) {
-
-			pos.x = this.elm[ 12 ];
-			pos.y = this.elm[ 13 ];
-			pos.z = this.elm[ 14 ];
-
-		}
 
 	}
 
@@ -299,6 +279,5 @@ export class Matrix {
 		return array;
 
 	}
-
 
 }

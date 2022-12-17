@@ -1,4 +1,4 @@
-import { Types } from "..";
+import { Matrix, Types } from "..";
 
 export type IVector2 = {
 	x: number,
@@ -97,23 +97,53 @@ export class Vector {
 
 	}
 
-	public multiply( a: number ) {
+	public multiply( a: number ): Vector;
 
-		this.x *= a;
-		this.y *= a;
-		this.z *= a;
-		this.w *= a;
+	public multiply( a: Vector ): Vector;
+
+	public multiply( a: number | Vector ) {
+
+		if ( typeof a == 'number' ) {
+
+			this.x *= a;
+			this.y *= a;
+			this.z *= a;
+			this.w *= a;
+
+		} else {
+
+			this.x *= a.x;
+			this.y *= a.y;
+			this.z *= a.z;
+			this.w *= a.w;
+
+		}
 
 		return this;
 
 	}
 
-	public divide( a: number ) {
+	public divide( a: number ): Vector;
 
-		this.x /= a;
-		this.y /= a;
-		this.z /= a;
-		this.w /= a;
+	public divide( a: Vector ): Vector;
+
+	public divide( a: number | Vector ) {
+
+		if ( typeof a == 'number' ) {
+
+			this.x /= a;
+			this.y /= a;
+			this.z /= a;
+			this.w /= a;
+
+		} else {
+
+			this.x /= a.x;
+			this.y /= a.y;
+			this.z /= a.z;
+			this.w /= a.w;
+
+		}
 
 		return this;
 
@@ -147,6 +177,50 @@ export class Vector {
 	public dot( v: Vector | IVector3 ) {
 
 		return this.x * v.x + this.y * v.y + this.z * v.z;
+
+	}
+
+	public applyMatrix3( mat: Matrix ) {
+
+		const elm = mat.elm;
+
+		const e11 = elm[ 0 ], e12 = elm[ 1 ], e13 = elm[ 2 ],
+			e21 = elm[ 4 ], e22 = elm[ 5 ], e23 = elm[ 6 ],
+			e31 = elm[ 8 ], e32 = elm[ 9 ], e33 = elm[ 10 ];
+
+		// const xx = this.x * e11 + this.y * e12 + this.z * e13;
+		// const yy = this.x * e21 + this.y * e22 + this.z * e23;
+		// const zz = this.x * e31 + this.y * e32 + this.z * e33;
+
+		const xx = this.x * e11 + this.y * e21 + this.z * e31;
+		const yy = this.x * e12 + this.y * e22 + this.z * e32;
+		const zz = this.x * e13 + this.y * e23 + this.z * e33;
+
+		this.x = xx;
+		this.y = yy;
+		this.z = zz;
+		this.w = 0;
+
+	}
+
+	public applyMatrix4( mat: Matrix ) {
+
+		const elm = mat.elm;
+
+		const e11 = elm[ 0 ], e12 = elm[ 1 ], e13 = elm[ 2 ], e14 = elm[ 3 ],
+			e21 = elm[ 4 ], e22 = elm[ 5 ], e23 = elm[ 6 ], e24 = elm[ 7 ],
+			e31 = elm[ 8 ], e32 = elm[ 9 ], e33 = elm[ 10 ], e34 = elm[ 11 ],
+			e41 = elm[ 12 ], e42 = elm[ 13 ], e43 = elm[ 14 ], e44 = elm[ 15 ];
+
+		const xx = this.x * e11 + this.y * e21 + this.z * e31 + this.w * e41;
+		const yy = this.x * e12 + this.y * e22 + this.z * e32 + this.w * e42;
+		const zz = this.x * e13 + this.y * e23 + this.z * e33 + this.w * e43;
+		const ww = this.x * e14 + this.y * e24 + this.z * e34 + this.w * e44;
+
+		this.x = xx;
+		this.y = yy;
+		this.z = zz;
+		this.w = ww;
 
 	}
 

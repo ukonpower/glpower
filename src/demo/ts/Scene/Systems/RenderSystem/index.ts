@@ -4,8 +4,8 @@ import { ProgramPool } from './ProgramPool';
 
 type CameraMatrix = {
 	modelMatrix?: GLP.Matrix,
-	viewMatrix?: GLP.Matrix,
-	projectionMatrix?: GLP.Matrix
+	viewMatrix: GLP.Matrix,
+	projectionMatrix: GLP.Matrix
 }
 
 export class RenderSystem extends GLP.System {
@@ -21,6 +21,11 @@ export class RenderSystem extends GLP.System {
 
 	private modelViewMatrix: GLP.Matrix;
 	private normalMatrix: GLP.Matrix;
+
+	// tmp
+
+	private lightPosition: GLP.Vector;
+	private lightDirection: GLP.Vector;
 
 	// quad
 
@@ -51,6 +56,11 @@ export class RenderSystem extends GLP.System {
 
 		this.modelViewMatrix = new GLP.Matrix();
 		this.normalMatrix = new GLP.Matrix();
+
+		// tmp
+
+		this.lightPosition = new GLP.Vector();
+		this.lightDirection = new GLP.Vector();
 
 		// quad
 
@@ -212,20 +222,23 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			if ( matrix.modelMatrix )program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
+			if ( matrix.modelMatrix ) program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
 
-			if ( matrix.viewMatrix )program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
+			program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
 
-			if ( matrix.projectionMatrix ) program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
 
-		}
+			for ( let i = 0; i < this.directionalLight.length; i ++ ) {
 
-		for ( let i = 0; i < this.directionalLight.length; i ++ ) {
+				const dLight = this.directionalLight[ i ];
 
-			const dLight = this.directionalLight[ i ];
+				this.lightPosition.copy( dLight.position );
+				this.lightDirection.copy( this.lightPosition ).normalize().applyMatrix3( matrix.viewMatrix );
 
-			program.setUniform( 'directionalLight[' + i + '].direction', '3fv', dLight.position.clone().normalize().getElm( 'vec3' ) );
-			program.setUniform( 'directionalLight[' + i + '].color', '3fv', dLight.color.getElm( 'vec3' ) );
+				program.setUniform( 'directionalLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
+				program.setUniform( 'directionalLight[' + i + '].color', '3fv', dLight.color.getElm( 'vec3' ) );
+
+			}
 
 		}
 
