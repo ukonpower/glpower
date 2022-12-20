@@ -183,6 +183,21 @@ export class BLidgeSystem extends GLP.System {
 
 						this.factory.appendLight( entity );
 
+					} else if ( type == 'mesh' && obj.mesh ) {
+
+						console.log( obj );
+
+						const geometry = new GLP.Geometry();
+						geometry.setAttribute( 'position', obj.mesh.position, 3 );
+						geometry.setAttribute( 'normal', obj.mesh.normal, 3 );
+						geometry.setAttribute( 'uv', obj.mesh.uv, 2 );
+						geometry.setAttribute( 'index', obj.mesh.index, 1 );
+
+						this.factory.appendMesh( entity, {
+							geometry: geometry.getComponent( this.power )
+						} );
+
+
 					}
 
 				}
