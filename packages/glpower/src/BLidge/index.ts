@@ -19,6 +19,13 @@ export type BLidgeCameraParams = {
 	fov: number
 }
 
+export type BlidgeMeshParams = {
+	position: number[],
+	uv: number[],
+	normal: number[],
+	index: number[],
+}
+
 export type BLidgeObject = {
 	name: string,
 	parent: string,
@@ -29,6 +36,7 @@ export type BLidgeObject = {
 	scale: IVector3,
 	type: BLidgeObjectType,
 	camera?: BLidgeCameraParams,
+	mesh?: BlidgeMeshParams,
 }
 
 export type BLidgeScene = {
