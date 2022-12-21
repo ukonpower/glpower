@@ -64,9 +64,13 @@ export class GLPowerVAO {
 
 			this.attributes[ name ] = attr;
 
-		}
+		} else {
 
-		this.updateAttributes();
+			attr.buffer = buffer;
+			attr.size = size;
+			attr.count = count;
+
+		}
 
 		return this;
 

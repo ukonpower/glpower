@@ -76,7 +76,7 @@ export type ComponentMaterial = {
 export type ComponentGeometry = {
 	attributes: ( {name: string } & AttributeBuffer )[]
 	index: AttributeBuffer
-	updateCache?: { [key:string]: boolean }
+	needsUpdate?: { [key:string]: boolean }
 }
 
 /*-------------------------------
