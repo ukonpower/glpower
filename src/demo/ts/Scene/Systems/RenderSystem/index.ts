@@ -90,7 +90,7 @@ export class RenderSystem extends GLP.System {
 
 		} else if ( phase == 'postprocess' ) {
 
-			this.renderPostProcess( entity + 'postprocess', this.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!, event );
+			this.renderPostProcess( entity + '_postprocess', this.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!, event );
 
 		} else {
 
@@ -147,7 +147,7 @@ export class RenderSystem extends GLP.System {
 
 				if ( material.renderType == renderPhase ) {
 
-					this.draw( meshes[ i ] + 'camera', geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+					this.draw( meshes[ i ] + '_camera', geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 				}
 
@@ -157,7 +157,7 @@ export class RenderSystem extends GLP.System {
 
 		if ( postprocess && renderTarget ) {
 
-			this.renderPostProcess( entity + 'camerPostProcess', { ...postprocess, input: renderTarget.textures }, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+			this.renderPostProcess( entity + '_cameraPostProcess', { ...postprocess, input: renderTarget.textures }, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 		}
 
@@ -299,9 +299,13 @@ export class RenderSystem extends GLP.System {
 
 		if ( vao ) {
 
-			if ( geometry.updateCache === undefined || ! geometry.updateCache[ entityId ] ) {
+			if ( geometry.needsUpdate === undefined ) {
 
-				if ( ! geometry.updateCache ) geometry.updateCache = {};
+				geometry.needsUpdate = {};
+
+			}
+
+			if ( geometry.needsUpdate[ entityId ] === undefined || geometry.needsUpdate[ entityId ] === true ) {
 
 				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
@@ -315,8 +319,7 @@ export class RenderSystem extends GLP.System {
 
 				vao.updateAttributes( true );
 
-				geometry.updateCache[ entityId ] = true;
-
+				geometry.needsUpdate[ entityId ] = false;
 
 			}
 

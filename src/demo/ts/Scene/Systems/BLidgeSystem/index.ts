@@ -146,7 +146,7 @@ export class BLidgeSystem extends GLP.System {
 
 				}
 
-				if ( blidgeComponent.type != type ) {
+				if ( blidgeComponent.type != type || type == 'mesh' ) {
 
 					blidgeComponent.type = type;
 
@@ -185,8 +185,6 @@ export class BLidgeSystem extends GLP.System {
 
 					} else if ( type == 'mesh' && obj.mesh ) {
 
-						console.log( obj );
-
 						const geometry = new GLP.Geometry();
 						geometry.setAttribute( 'position', obj.mesh.position, 3 );
 						geometry.setAttribute( 'normal', obj.mesh.normal, 3 );
@@ -196,7 +194,6 @@ export class BLidgeSystem extends GLP.System {
 						this.factory.appendMesh( entity, {
 							geometry: geometry.getComponent( this.power )
 						} );
-
 
 					}
 
