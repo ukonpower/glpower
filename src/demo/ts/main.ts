@@ -56,9 +56,6 @@ export class Demo {
 
 window.addEventListener( 'DOMContentLoaded', () => {
 
-	const x = new GLP.Vector( 1, 2, 3, 4 );
-	x.multiply( new GLP.Vector( 1, 2, 3, 4 ) );
-
 	const canvas = document.querySelector<HTMLCanvasElement>( '#canvas' )!;
 
 	const gl = canvas.getContext( 'webgl2' );
