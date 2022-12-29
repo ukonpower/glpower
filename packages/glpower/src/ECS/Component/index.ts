@@ -12,11 +12,10 @@ export interface Component {[key:string]: any}
 
 export type ComponentName =
 	'position' |
-	'rotation' |
 	'scale' |
 	'matrix' |
 	'sceneNode' |
-	'event' |
+	'events' |
 	'camera' |
 	'perspective' |
 	"renderCameraDeferred" |
@@ -50,10 +49,6 @@ export type ComponentTransformMatrix = {
 	world: Matrix;
 }
 
-export type ComponentEvent = {
-	onUpdate: ( event: { time: number, deltaTime: number} ) => void,
-}
-
 export type ComponentSceneNode = {
 	parent?: Entity;
 	children: Entity[];
@@ -64,7 +59,6 @@ export type ComponentSceneNode = {
 -------------------------------*/
 
 export type RenderType = 'forward' | 'deferred' | 'shadowmap' | 'postprocess';
-
 
 export type ComponentMaterial = {
 	vertexShader: string;
@@ -98,7 +92,6 @@ export type ComponentCameraPerspective = {
 
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
-	onResize?: ( size: Vector, component: ComponentRenderCamera ) => void,
 	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
 }
 
@@ -119,7 +112,7 @@ export type ComponentLight = {
 -------------------------------*/
 
 export type ComponentPostProcess = ComponentMaterial & {
-	input: GLPowerTexture[];
+	input: GLPowerTexture[] | null;
 	renderTarget: GLPowerFrameBuffer | null;
 }
 
@@ -132,4 +125,14 @@ export type ComponentBLidge = {
 	type: BLidgeObjectType
 	updateTime?: number,
 	actions?: AnimationAction[]
+}
+
+/*-------------------------------
+	Event
+-------------------------------*/
+
+export type ComponentEvents = {
+	inited?: boolean
+	onUpdate?: ( event: { time: number, deltaTime: number} ) => void,
+	onResize?: ( event: { size: Vector } ) => void,
 }

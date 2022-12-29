@@ -10,7 +10,7 @@ import { GLPowerTexture } from "../../GLPowerTexture";
 export interface Component {
     [key: string]: any;
 }
-export declare type ComponentName = 'position' | 'rotation' | 'scale' | 'matrix' | 'sceneNode' | 'event' | 'camera' | 'perspective' | "renderCameraDeferred" | "renderCameraForward" | 'postprocess' | 'material' | 'geometry' | 'directionalLight' | 'blidge' | (string & {});
+export declare type ComponentName = 'position' | 'rotation' | 'scale' | 'matrix' | 'sceneNode' | 'event' | 'camera' | 'perspective' | "renderCameraDeferred" | "renderCameraForward" | 'postprocess' | 'material' | 'geometry' | 'directionalLight' | 'blidge' | ( string & {} );
 export declare type ComponentVector2 = {} & IVector2;
 export declare type ComponentVector3 = {} & IVector3;
 export declare type ComponentVector4 = {} & IVector4;
@@ -19,10 +19,10 @@ export declare type ComponentTransformMatrix = {
     world: Matrix;
 };
 export declare type ComponentEvent = {
-    onUpdate: (event: {
+    onUpdate: ( event: {
         time: number;
         deltaTime: number;
-    }) => void;
+    } ) => void;
 };
 export declare type ComponentSceneNode = {
     parent?: Entity;
@@ -41,9 +41,9 @@ export declare type ComponentMaterial = {
     renderType?: RenderType;
 };
 export declare type ComponentGeometry = {
-    attributes: ({
+    attributes: ( {
         name: string;
-    } & AttributeBuffer)[];
+    } & AttributeBuffer )[];
     index: AttributeBuffer;
     updateCache?: {
         [key: string]: boolean;
@@ -62,7 +62,7 @@ export declare type ComponentCameraPerspective = {
 };
 export declare type ComponentRenderCamera = {
     renderTarget: GLPowerFrameBuffer | null;
-    onResize?: (size: Vector, component: ComponentRenderCamera) => void;
+    onResize?: ( size: Vector, component: ComponentRenderCamera ) => void;
     postprocess?: ComponentMaterial & {
         renderTarget: GLPowerFrameBuffer | null;
     };

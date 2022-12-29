@@ -10,34 +10,29 @@ export class BLidgeSystem extends GLP.System {
 	public sceneGraph: GLP.SceneGraph;
 	public blidge: GLP.BLidge;
 
-	public onCreateCamera?: ( entity: GLP.Entity ) => void;
-
 	private root: GLP.Entity;
+	private camera: GLP.Entity;
 	private objects: Map<string, GLP.Entity>;
 
 	// tmp
 	private tmpQuaternion: GLP.Quaternion;
 
-	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World ) {
+	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World, camera: GLP.Entity, sceneGraph: GLP.SceneGraph, factory: Factory ) {
 
 		super( ecs, {
-			move: [ 'position', 'rotation', 'scale' ]
+			move: [ 'blidge', 'position', 'quaternion', 'scale' ]
 		} );
 
 		this.power = power;
 		this.ecs = ecs;
 		this.world = world;
-
-		this.factory = new Factory( this.power, this.ecs, this.world );
-
-		this.root = this.factory.empty( {} );
-
-		// scenegraph
-
-		this.sceneGraph = new GLP.SceneGraph( this.ecs, this.world );
+		this.sceneGraph = sceneGraph;
+		this.factory = factory;
 
 		// objects
 
+		this.root = this.factory.empty();
+		this.camera = camera;
 		this.objects = new Map();
 
 		// blidge
@@ -112,13 +107,31 @@ export class BLidgeSystem extends GLP.System {
 
 		blidge.objects.forEach( obj => {
 
-			let entity = this.objects.get( obj.name );
-
 			const type = obj.type;
+			let entity = this.objects.get( obj.name );
 
 			if ( entity === undefined ) {
 
-				entity = this.factory.blidge( { name: obj.name, type: "empty" } );
+				if ( type == 'camera' ) {
+
+					entity = this.camera;
+
+					const componentCamera = this.ecs.getComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective' );
+
+					if ( componentCamera && obj.camera ) {
+
+						componentCamera.fov = obj.camera.fov;
+
+					}
+
+					entity = this.factory.appendBlidge( entity, { name: obj.name, type: "camera" } );
+
+				} else {
+
+					entity = this.factory.empty();
+					entity = this.factory.appendBlidge( entity, { name: obj.name, type: "empty" } );
+
+				}
 
 				this.objects.set( obj.name, entity );
 
@@ -154,10 +167,6 @@ export class BLidgeSystem extends GLP.System {
 
 					this.ecs.removeComponent( this.world, entity, 'geometry' );
 					this.ecs.removeComponent( this.world, entity, 'material' );
-					this.ecs.removeComponent( this.world, entity, 'camera' );
-					this.ecs.removeComponent( this.world, entity, 'perspective' );
-					this.ecs.removeComponent( this.world, entity, 'renderCameraDeferred' );
-					this.ecs.removeComponent( this.world, entity, 'renderCameraForward' );
 
 					if ( type == 'cube' ) {
 
@@ -170,14 +179,6 @@ export class BLidgeSystem extends GLP.System {
 					} else if ( type == 'plane' ) {
 
 						this.factory.appendPlane( entity );
-
-					} else if ( type == 'camera' && obj.camera ) {
-
-						this.factory.appendPerspectiveCamera( entity, {
-							fov: obj.camera.fov,
-							near: 0.1,
-							far: 1000,
-						} );
 
 					} else if ( type == 'light' ) {
 

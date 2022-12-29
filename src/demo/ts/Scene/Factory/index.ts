@@ -40,7 +40,6 @@ export class Factory {
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
-
 	constructor( power: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
 		this.power = power;
@@ -49,6 +48,10 @@ export class Factory {
 		this.world = world;
 
 	}
+
+	/*-------------------------------
+		Empty
+	-------------------------------*/
 
 	public empty( props: EmptyProps = {} ) {
 
@@ -64,9 +67,11 @@ export class Factory {
 
 	}
 
-	public blidge( props: BLidgeProps ) {
+	/*-------------------------------
+		BLidge
+	-------------------------------*/
 
-		const entity = this.empty( props );
+	public appendBlidge( entity: GLP.Entity, props: BLidgeProps ) {
 
 		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', {
 			name: props.name,
@@ -76,6 +81,10 @@ export class Factory {
 		return entity;
 
 	}
+
+	/*-------------------------------
+		Mesh
+	-------------------------------*/
 
 	public appendMesh( entity: Entity, props: MeshProps ) {
 
@@ -122,52 +131,17 @@ export class Factory {
 
 	}
 
-	public appendPerspectiveCamera( entity: number, props: CameraProps ) {
+	/*-------------------------------
+		Camera
+	-------------------------------*/
 
-		// -------- render target
+	public camera( props: CameraProps, rt: {
+		forwardRenderTarget: GLP.GLPowerFrameBuffer,
+		deferredRenderTarget: GLP.GLPowerFrameBuffer,
+		deferredCompositorRenderTarget: GLP.GLPowerFrameBuffer,
+	} ) {
 
-		// deferred
-
-		const deferredRenderTarget = this.power.createFrameBuffer();
-
-		deferredRenderTarget.setTexture( [
-			this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ),
-			this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ),
-			this.power.createTexture(),
-			this.power.createTexture(),
-		] );
-
-		deferredRenderTarget.textures.forEach( ( f, i ) => {
-
-			f.activate( i );
-
-		} );
-
-		const deferredCompositorRenderTarget = this.power.createFrameBuffer();
-
-		deferredCompositorRenderTarget.setTexture( [ this.power.createTexture() ] );
-
-		deferredCompositorRenderTarget.textures.forEach( ( f, i ) => {
-
-			f.activate( i );
-
-		} );
-
-		// forward
-
-		const forwardRenderTarget = this.power.createFrameBuffer();
-
-		forwardRenderTarget.setTexture( [
-			this.power.createTexture(),
-		] );
-
-		forwardRenderTarget.textures.forEach( ( f, i ) => {
-
-			f.activate( i );
-
-		} );
-
-		// -------- component
+		const entity = this.empty();
 
 		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
 			near: props.near ?? 0.001,
@@ -181,42 +155,29 @@ export class Factory {
 			fov: props.fov ?? 50,
 		} );
 
-		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraForward',
-			{
-				renderTarget: forwardRenderTarget,
-				onResize: ( size, c ) => {
+		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraForward', {
+			renderTarget: rt.forwardRenderTarget,
+		} );
 
-					if ( c.renderTarget ) c.renderTarget.setSize( size );
-
-				},
-			}
-		);
-
-		const uniformCmaeraPos = new GLP.Vector();
+		const uniformCameraPos = new GLP.Vector();
 
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
-				renderTarget: deferredRenderTarget,
+				renderTarget: rt.deferredRenderTarget,
 				postprocess: {
 					vertexShader: quadVert,
 					fragmentShader: deferredShadingFrag,
-					renderTarget: deferredCompositorRenderTarget,
+					renderTarget: rt.deferredCompositorRenderTarget,
 					uniforms: {
 						uColor: {
 							value: new GLP.Vector( 1.0, 0.0, 0.0 ),
 							type: '3f'
 						},
 						uCameraPosition: {
-							value: uniformCmaeraPos,
+							value: uniformCameraPos,
 							type: '3f'
 						}
 					},
-				},
-				onResize: ( size, c ) => {
-
-					if ( c.renderTarget ) c.renderTarget.setSize( size );
-					if ( c.postprocess && c.postprocess.renderTarget ) c.postprocess.renderTarget.setSize( size );
-
 				},
 			},
 		);
@@ -225,21 +186,30 @@ export class Factory {
 
 		const componentPosition = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' )!;
 
-		this.ecs.addComponent<GLP.ComponentEvent>( this.world, entity, 'event',
+		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events',
 			{
 				onUpdate: ( e ) => {
 
-					uniformCmaeraPos.copy( componentPosition );
+					uniformCameraPos.copy( componentPosition );
+
+				},
+				onResize: ( e ) => {
+
+					rt.forwardRenderTarget.setSize( e.size );
+					rt.deferredRenderTarget.setSize( e.size );
+					rt.deferredCompositorRenderTarget.setSize( e.size );
 
 				}
 			},
 		);
 
-		// postprocess
-
-		this.appendPostProcess( entity, deferredCompositorRenderTarget.textures, null );
+		return entity;
 
 	}
+
+	/*-------------------------------
+		Light
+	-------------------------------*/
 
 	public appendLight( entity: GLP.Entity ) {
 
@@ -251,22 +221,22 @@ export class Factory {
 
 	}
 
-	public appendPostProcess( entity: GLP.Entity, input: GLP.GLPowerTexture[], target: GLP.GLPowerFrameBuffer | null ) {
+	/*-------------------------------
+		PostProcess
+	-------------------------------*/
+
+	public postprocess( input: GLP.GLPowerFrameBuffer, out: GLP.GLPowerFrameBuffer | null ) {
+
+		const entity = this.empty();
 
 		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
-			input,
-			renderTarget: target,
+			input: input.textures,
+			renderTarget: out,
 			vertexShader: quadVert,
 		 	fragmentShader: postProcessFrag,
 		 	uniforms: {
-		 		uColor: {
-		 			value: new GLP.Vector( 1.0, 0.0, 0.0 ),
-		 			type: '3f'
-		 		}
 		 	},
 		} );
-
-		return entity;
 
 	}
 
