@@ -16,6 +16,7 @@ export * from './Geometries/CubeGeometry';
 export * from './Geometries/CylinderGeometry';
 export * from './Geometries/PlaneGeometry';
 export * from './Geometries/SphereGeometry';
+export * from './Geometries/MipMapGeometry';
 
 // ecs
 

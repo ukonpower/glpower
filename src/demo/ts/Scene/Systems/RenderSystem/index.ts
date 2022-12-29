@@ -157,7 +157,7 @@ export class RenderSystem extends GLP.System {
 
 		if ( postprocess && renderTarget ) {
 
-			this.renderPostProcess( entity + '_cameraPostProcess', { ...postprocess, input: renderTarget.textures }, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+			this.renderPostProcess( entity + '_cameraPostProcess', [ { ...postprocess, input: renderTarget.textures } ], event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 		}
 
@@ -165,40 +165,44 @@ export class RenderSystem extends GLP.System {
 
 	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, matrix?: CameraMatrix ) {
 
-		if ( ! postprocess ) return;
+		for ( let i = 0; i < postprocess.length; i ++ ) {
 
-		if ( postprocess.renderTarget ) {
+			const pp = postprocess[ i ];
 
-			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, postprocess.renderTarget.getFrameBuffer() );
-			this.gl.drawBuffers( postprocess.renderTarget.textureAttachmentList );
+			if ( pp.renderTarget ) {
 
-		} else {
+				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, pp.renderTarget.getFrameBuffer() );
+				this.gl.drawBuffers( pp.renderTarget.textureAttachmentList );
 
-			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
+			} else {
 
-		}
-
-		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-		this.gl.clearDepth( 1.0 );
-		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-		this.gl.enable( this.gl.DEPTH_TEST );
-
-		if ( postprocess.input && postprocess.uniforms ) {
-
-			for ( let i = 0; i < postprocess.input.length; i ++ ) {
-
-				postprocess.input[ i ].activate( i );
-
-				postprocess.uniforms[ 'sampler' + i ] = {
-					type: '1i',
-					value: postprocess.input[ i ].unit
-				};
+				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 			}
 
-		}
+			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
+			this.gl.clearDepth( 1.0 );
+			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
+			this.gl.enable( this.gl.DEPTH_TEST );
 
-		this.draw( entityId, this.quad, postprocess, event, matrix );
+			if ( pp.input && pp.uniforms ) {
+
+				for ( let i = 0; i < pp.input.length; i ++ ) {
+
+					pp.input[ i ].activate( i );
+
+					pp.uniforms[ 'sampler' + i ] = {
+						type: '1i',
+						value: pp.input[ i ].unit
+					};
+
+				}
+
+			}
+
+			this.draw( entityId + i, pp.customGeometry || this.quad, pp, event, matrix );
+
+		}
 
 	}
 

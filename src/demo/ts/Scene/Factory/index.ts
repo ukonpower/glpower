@@ -1,7 +1,6 @@
 import * as GLP from 'glpower';
 
 import basicVert from './shaders/basic.vs';
-import basicFrag from './shaders/basic.fs';
 
 import quadVert from './shaders/quad.vs';
 import postProcessFrag from './shaders/postprocess.fs';
@@ -9,7 +8,18 @@ import postProcessFrag from './shaders/postprocess.fs';
 import deferredMaterialFrag from './shaders/deferredMaterial.fs';
 import deferredShadingFrag from './shaders/deferredShading.fs';
 
-import { BLidgeObjectType, Entity } from 'glpower';
+//bloom shader
+import bloomBlurFrag from './shaders/bloomBlur.fs';
+import bloomBrightFrag from './shaders/bloomBright.fs';
+
+//smaa shaders
+import edgeDetectionVert from './shaders/smaa_edgeDetection.vs';
+import edgeDetectionFrag from './shaders/smaa_edgeDetection.fs';
+import blendingWeightCalculationVert from './shaders/smaa_blendingWeightCalculation.vs';
+import blendingWeightCalculationFrag from './shaders/smaa_blendingWeightCalculation.fs';
+import neiborhoodBlendingVert from './shaders/smaa_neiborhoodBlending.vs';
+import neiborhoodBlendingFrag from './shaders/smaa_neiborhoodBlending.fs';
+
 
 interface EmptyProps {
 	position?: GLP.IVector3;
@@ -30,7 +40,7 @@ interface CameraProps extends EmptyProps {
 
 interface BLidgeProps extends EmptyProps {
 	name: string,
-	type?: BLidgeObjectType
+	type?: GLP.BLidgeObjectType
 }
 
 export class Factory {
@@ -86,7 +96,7 @@ export class Factory {
 		Mesh
 	-------------------------------*/
 
-	public appendMesh( entity: Entity, props: MeshProps ) {
+	public appendMesh( entity: GLP.Entity, props: MeshProps ) {
 
 		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', props.material ??
 		{
@@ -107,7 +117,7 @@ export class Factory {
 
 	}
 
-	public appendCube( entity: Entity ) {
+	public appendCube( entity: GLP.Entity ) {
 
 		return this.appendMesh( entity, {
 			geometry: new GLP.CubeGeometry().getComponent( this.power ),
@@ -115,7 +125,7 @@ export class Factory {
 
 	}
 
-	public appendSphere( entity: Entity ) {
+	public appendSphere( entity: GLP.Entity ) {
 
 		return this.appendMesh( entity, {
 			geometry: new GLP.SphereGeometry().getComponent( this.power ),
@@ -123,7 +133,7 @@ export class Factory {
 
 	}
 
-	public appendPlane( entity: Entity ) {
+	public appendPlane( entity: GLP.Entity ) {
 
 		return this.appendMesh( entity, {
 			geometry: new GLP.PlaneGeometry().getComponent( this.power ),
@@ -229,13 +239,61 @@ export class Factory {
 
 		const entity = this.empty();
 
-		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', {
-			input: input.textures,
-			renderTarget: out,
-			vertexShader: quadVert,
-		 	fragmentShader: postProcessFrag,
-		 	uniforms: {
-		 	},
+		const rt1 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR } ) ] );
+		const rt2 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
+		const rt3 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
+
+		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', [
+			{
+				input: input.textures,
+				renderTarget: rt1,
+				vertexShader: quadVert,
+				fragmentShader: bloomBrightFrag,
+				uniforms: {
+					threshold: {
+						type: '1f',
+						value: 0.5,
+					},
+				},
+				customGeometry: new GLP.MipMapGeometry( 7 ).getComponent( this.power )
+			},
+			{
+				input: [
+					input.textures[ 0 ],
+					rt1.textures[ 0 ],
+				],
+				renderTarget: null,
+				vertexShader: quadVert,
+				fragmentShader: postProcessFrag,
+				uniforms: {
+				},
+			},
+			// {
+			// 	input: rt2.textures,
+			// 	renderTarget: rt1,
+			// 	vertexShader: quadVert,
+			// 	fragmentShader: postProcessFrag,
+			// 	uniforms: {
+			// 	}
+			// },
+			// {
+			// 	input: input.textures,
+			// 	renderTarget: rt1,
+			// 	vertexShader: quadVert,
+			// 	fragmentShader: postProcessFrag,
+			// 	uniforms: {
+			// 	}
+			// },
+		] );
+
+		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events', {
+			onResize: ( e ) => {
+
+				rt1.setSize( e.size );
+				rt2.setSize( e.size );
+				rt3.setSize( e.size );
+
+			}
 		} );
 
 	}

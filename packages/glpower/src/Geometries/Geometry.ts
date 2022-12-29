@@ -64,15 +64,31 @@ export class Geometry {
 
 	}
 
-	public getComponent( core: Power ) {
+	public getComponent( power: Power ) {
+
+		const attributes = [];
+
+		if ( this.getAttribute( 'position' ) ) {
+
+			attributes.push( { name: 'position', ...this.getAttributeBuffer( power, 'position', Float32Array ) } );
+
+		}
+
+		if ( this.getAttribute( 'uv' ) ) {
+
+			attributes.push( { name: 'uv', ...this.getAttributeBuffer( power, 'uv', Float32Array ) } );
+
+		}
+
+		if ( this.getAttribute( 'normal' ) ) {
+
+			attributes.push( { name: 'normal', ...this.getAttributeBuffer( power, 'normal', Float32Array ) } );
+
+		}
 
 		return {
-			attributes: [
-				{ name: 'position', ...this.getAttributeBuffer( core, 'position', Float32Array ) },
-				{ name: 'uv', ...this.getAttributeBuffer( core, 'uv', Float32Array ) },
-				{ name: 'normal', ...this.getAttributeBuffer( core, 'normal', Float32Array ) },
-			],
-			index: this.getAttributeBuffer( core, 'index', Uint16Array, 'ibo' )
+			attributes,
+			index: this.getAttributeBuffer( power, 'index', Uint16Array, 'ibo' )
 		};
 
 	}

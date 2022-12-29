@@ -59,6 +59,8 @@ export class GLPowerFrameBuffer {
 
 		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
+		return this;
+
 	}
 
 	public setSize( size: Vector ): void
