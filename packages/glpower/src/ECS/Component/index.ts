@@ -92,7 +92,7 @@ export type ComponentCameraPerspective = {
 
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
-	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null}
+	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null, geometry: ComponentGeometry }
 }
 
 /*-------------------------------
@@ -111,10 +111,11 @@ export type ComponentLight = {
 	PostProcess
 -------------------------------*/
 
-export type ComponentPostProcess = ComponentMaterial & {
+export type ComponentPostProcess = ( ComponentMaterial & {
 	input: GLPowerTexture[] | null;
 	renderTarget: GLPowerFrameBuffer | null;
-}
+	customGeometry?: ComponentGeometry;
+} )[]
 
 /*-------------------------------
 	BLidge
