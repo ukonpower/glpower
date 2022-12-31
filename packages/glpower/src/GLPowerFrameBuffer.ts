@@ -96,7 +96,7 @@ export class GLPowerFrameBuffer {
 		if ( this.depthRenderBuffer ) {
 
 			this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, this.depthRenderBuffer );
-			this.gl.renderbufferStorage( this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT16, this.size.x, this.size.y );
+			this.gl.renderbufferStorage( this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT32F, this.size.x, this.size.y );
 			this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, null );
 
 		}

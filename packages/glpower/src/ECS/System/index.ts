@@ -46,7 +46,7 @@ export class System extends EventEmitter {
 
 			const entities = event.ecs.getEntities( event.world, q.query );
 
-			this.beforeUpdateImpl( q.name, event );
+			this.beforeUpdateImpl( q.name, event, entities );
 
 			for ( let j = 0; j < entities.length; j ++ ) {
 
@@ -60,7 +60,7 @@ export class System extends EventEmitter {
 
 	}
 
-	protected beforeUpdateImpl( logicName: string, event: SystemUpdateEvent ) { // eslint-disable-line
+	protected beforeUpdateImpl( logicName: string, event: SystemUpdateEvent, entities: Entity[] ) { // eslint-disable-line
 	}
 
 	protected updateImpl( logicName: string, entity: Entity, event: SystemUpdateEvent ) { // eslint-disable-line

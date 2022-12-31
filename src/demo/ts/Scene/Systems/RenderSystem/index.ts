@@ -1,11 +1,17 @@
 import * as GLP from 'glpower';
-import { Uniformable } from 'glpower';
-import { ProgramPool } from './ProgramPool';
+import { Entity, Uniformable } from 'glpower';
+import { ProgramManager } from './ProgramManager';
 
 type CameraMatrix = {
 	modelMatrix?: GLP.Matrix,
 	viewMatrix: GLP.Matrix,
 	projectionMatrix: GLP.Matrix
+}
+
+export type Lights = {
+	needsUpdate: boolean
+	directionalLight: {position: GLP.Vector, color: GLP.Vector}[],
+	pointLight: {position: GLP.Vector, color: GLP.Vector}[]
 }
 
 export class RenderSystem extends GLP.System {
@@ -15,7 +21,7 @@ export class RenderSystem extends GLP.System {
 
 	// program
 
-	private programPool: ProgramPool;
+	private programManager: ProgramManager;
 
 	// matrix
 
@@ -33,12 +39,13 @@ export class RenderSystem extends GLP.System {
 
 	// lights
 
-	private directionalLight: {position: GLP.Vector, color: GLP.Vector}[];
+	private lights: Lights;
 
 	constructor( ecs: GLP.ECS, core: GLP.Power ) {
 
 		super( ecs, {
-			"light": [ 'light', 'position' ],
+			"directionalLight": [ 'directionalLight', 'position' ],
+			"pointLight": [ 'pointLight', 'position' ],
 			"deferred": [ "camera", "renderCameraDeferred" ],
 			"forward": [ "camera", "renderCameraForward" ],
 			"postprocess": [ 'postprocess' ]
@@ -50,7 +57,7 @@ export class RenderSystem extends GLP.System {
 
 		// program
 
-		this.programPool = new ProgramPool( core );
+		this.programManager = new ProgramManager( core );
 
 		// matrix
 
@@ -68,15 +75,29 @@ export class RenderSystem extends GLP.System {
 
 		// light
 
-		this.directionalLight = [];
+		this.lights = {
+			needsUpdate: false,
+			directionalLight: [],
+			pointLight: []
+		};
 
 	}
 
-	protected beforeUpdateImpl( phase: string, event: GLP.SystemUpdateEvent ): void {
+	protected beforeUpdateImpl( phase: string, event: GLP.SystemUpdateEvent, entities: Entity[] ): void {
 
-		if ( phase == 'light' ) {
+		this.lights.needsUpdate = false;
 
-			this.directionalLight.length = 0;
+		if ( phase == 'directionalLight' ) {
+
+			if ( this.lights.directionalLight.length != entities.length ) this.lights.needsUpdate = true;
+
+			this.lights.directionalLight.length = 0;
+
+		} else if ( phase == 'pointLight' ) {
+
+			if ( this.lights.pointLight.length != entities.length ) this.lights.needsUpdate = true;
+
+			this.lights.pointLight.length = 0;
 
 		}
 
@@ -84,9 +105,13 @@ export class RenderSystem extends GLP.System {
 
 	protected updateImpl( phase: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ): void {
 
-		if ( phase == 'light' ) {
+		if ( phase == 'directionalLight' ) {
 
-			this.collectLight( entity, event );
+			this.collectLight( entity, event, 'directional' );
+
+		} else if ( phase == 'pointLight' ) {
+
+			this.collectLight( entity, event, 'point' );
 
 		} else if ( phase == 'postprocess' ) {
 
@@ -100,15 +125,22 @@ export class RenderSystem extends GLP.System {
 
 	}
 
-	private collectLight( entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
+	protected afterUpdateImpl( phase: string, event: GLP.SystemUpdateEvent ): void {
+	}
 
-		const light = event.ecs.getComponent<GLP.ComponentLight>( event.world, entity, 'light' )!;
-		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
+	private collectLight( entity: GLP.Entity, event: GLP.SystemUpdateEvent, type: string ) {
 
-		this.directionalLight.push( {
-			position: new GLP.Vector( position.x, position.y, position.z ),
-			color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
-		} );
+		if ( type == 'directional' ) {
+
+			const light = event.ecs.getComponent<GLP.ComponentLightDirection>( event.world, entity, 'directionalLight' )!;
+			const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
+
+			this.lights.directionalLight.push( {
+				position: new GLP.Vector( position.x, position.y, position.z ),
+				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
+			} );
+
+		}
 
 	}
 
@@ -157,7 +189,7 @@ export class RenderSystem extends GLP.System {
 
 		if ( postprocess && renderTarget ) {
 
-			this.renderPostProcess( entity + '_cameraPostProcess', [ { ...postprocess, input: renderTarget.textures } ], event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 		}
 
@@ -171,11 +203,13 @@ export class RenderSystem extends GLP.System {
 
 			if ( pp.renderTarget ) {
 
+				this.gl.viewport( 0, 0, pp.renderTarget.size.x, pp.renderTarget.size.y );
 				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, pp.renderTarget.getFrameBuffer() );
 				this.gl.drawBuffers( pp.renderTarget.textureAttachmentList );
 
 			} else {
 
+				this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight );
 				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 			}
@@ -208,7 +242,17 @@ export class RenderSystem extends GLP.System {
 
 	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: CameraMatrix ) {
 
-		const program = this.programPool.create( material.vertexShader, material.fragmentShader );
+		// program
+
+		if ( material.__program === undefined || material.needsUpdate !== false || this.lights.needsUpdate ) {
+
+			material.__program = this.programManager.get( material, this.lights );
+
+			material.needsUpdate = false;
+
+		}
+
+		const program = material.__program;
 
 		// update uniforms
 
@@ -229,12 +273,11 @@ export class RenderSystem extends GLP.System {
 			if ( matrix.modelMatrix ) program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
 
 			program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
-
 			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
 
-			for ( let i = 0; i < this.directionalLight.length; i ++ ) {
+			for ( let i = 0; i < this.lights.directionalLight.length; i ++ ) {
 
-				const dLight = this.directionalLight[ i ];
+				const dLight = this.lights.directionalLight[ i ];
 
 				this.lightPosition.copy( dLight.position );
 				this.lightDirection.copy( this.lightPosition ).normalize().applyMatrix3( matrix.viewMatrix );
@@ -267,7 +310,7 @@ export class RenderSystem extends GLP.System {
 
 					} else if ( 'isVector' in v ) {
 
-						arrayValue.push( ...v.getElm( 'vec3' ) ); //DEBUG
+						arrayValue.push( ...v.getElm( ( 'vec' + type.charAt( 0 ) ) as any ) );
 
 					} else {
 
@@ -281,7 +324,7 @@ export class RenderSystem extends GLP.System {
 
 					for ( let j = 0; j < value.length; j ++ ) {
 
-						_( value[ i ] );
+						_( value[ j ] );
 
 					}
 
@@ -291,7 +334,7 @@ export class RenderSystem extends GLP.System {
 
 				}
 
-				program.setUniform( keys[ i ], type, arrayValue );
+				program.setUniform( name, type, arrayValue );
 
 			}
 
@@ -309,7 +352,7 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			if ( geometry.needsUpdate[ entityId ] === undefined || geometry.needsUpdate[ entityId ] === true ) {
+			if ( geometry.needsUpdate[ entityId ] !== false ) {
 
 				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
@@ -346,12 +389,6 @@ export class RenderSystem extends GLP.System {
 		}
 
 		program.clean();
-
-	}
-
-	protected afterUpdateImpl( _: string, event: GLP.SystemUpdateEvent ): void {
-
-		this.gl.flush();
 
 	}
 

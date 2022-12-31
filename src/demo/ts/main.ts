@@ -48,8 +48,6 @@ export class Demo {
 		this.canvas.width = window.innerWidth;
 		this.canvas.height = window.innerHeight;
 
-		this.gl.viewport( 0, 0, this.canvas.width, this.canvas.height );
-
 	}
 
 }

@@ -36,7 +36,7 @@ void main( void ) {
 
 	vec3 col = col1.xyz;
 
-	for( int i = 0; i < 7; i ++ ) {
+	for( int i = 0; i < BLOOM_COUNT; i ++ ) {
 
 		col += texture( sampler1, getMipmapUV( vUv, float( i ) ) ).xyz;
 		

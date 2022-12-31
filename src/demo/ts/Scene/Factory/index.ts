@@ -12,15 +12,6 @@ import deferredShadingFrag from './shaders/deferredShading.fs';
 import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
 
-//smaa shaders
-import edgeDetectionVert from './shaders/smaa_edgeDetection.vs';
-import edgeDetectionFrag from './shaders/smaa_edgeDetection.fs';
-import blendingWeightCalculationVert from './shaders/smaa_blendingWeightCalculation.vs';
-import blendingWeightCalculationFrag from './shaders/smaa_blendingWeightCalculation.fs';
-import neiborhoodBlendingVert from './shaders/smaa_neiborhoodBlending.vs';
-import neiborhoodBlendingFrag from './shaders/smaa_neiborhoodBlending.fs';
-
-
 interface EmptyProps {
 	position?: GLP.IVector3;
 	rotation?: GLP.IVector3;
@@ -174,7 +165,8 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
 				renderTarget: rt.deferredRenderTarget,
-				postprocess: {
+				postprocess: [ {
+					input: rt.deferredRenderTarget.textures,
 					vertexShader: quadVert,
 					fragmentShader: deferredShadingFrag,
 					renderTarget: rt.deferredCompositorRenderTarget,
@@ -188,7 +180,7 @@ export class Factory {
 							type: '3f'
 						}
 					},
-				},
+				} ],
 			},
 		);
 
@@ -223,8 +215,7 @@ export class Factory {
 
 	public appendLight( entity: GLP.Entity ) {
 
-		this.ecs.addComponent<GLP.ComponentLight>( this.world, entity, 'light', {
-			type: 'directional',
+		this.ecs.addComponent<GLP.ComponentLightDirection>( this.world, entity, 'directionalLight', {
 			color: new GLP.Vector( 1.0, 1.0, 1.0 ).multiply( Math.PI ),
 			intensity: Math.PI
 		} );
@@ -237,10 +228,13 @@ export class Factory {
 
 	public postprocess( input: GLP.GLPowerFrameBuffer, out: GLP.GLPowerFrameBuffer | null ) {
 
+		const resolution = new GLP.Vector();
+		const bloomRenderCount = 5;
+
 		const entity = this.empty();
 
-		const rt1 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR } ) ] );
-		const rt2 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
+		const rt1 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ) ] );
+		const rt2 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ) ] );
 		const rt3 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
 
 		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', [
@@ -255,39 +249,74 @@ export class Factory {
 						value: 0.5,
 					},
 				},
-				customGeometry: new GLP.MipMapGeometry( 7 ).getComponent( this.power )
+				customGeometry: new GLP.MipMapGeometry( bloomRenderCount ).getComponent( this.power )
+			},
+			{
+				input: rt1.textures,
+				renderTarget: rt2,
+				vertexShader: quadVert,
+				fragmentShader: bloomBlurFrag,
+				uniforms: {
+					uIsVertical: {
+						type: '1i',
+						value: true
+					},
+					uWeights: {
+						type: '1fv',
+						value: this.weight( bloomRenderCount )
+					},
+					uResolution: {
+						type: '2fv',
+						value: resolution,
+					}
+				},
+				defines: {
+					GAUSS_WEIGHTS: bloomRenderCount.toString()
+				}
+			},
+			{
+				input: rt2.textures,
+				renderTarget: rt1,
+				vertexShader: quadVert,
+				fragmentShader: bloomBlurFrag,
+				uniforms: {
+					uIsVertical: {
+						type: '1i',
+						value: false
+					},
+					uWeights: {
+						type: '1fv',
+						value: this.weight( bloomRenderCount )
+					},
+					uResolution: {
+						type: '2fv',
+						value: resolution,
+					}
+				},
+				defines: {
+					GAUSS_WEIGHTS: bloomRenderCount.toString()
+				}
 			},
 			{
 				input: [
 					input.textures[ 0 ],
 					rt1.textures[ 0 ],
 				],
-				renderTarget: null,
+				renderTarget: out,
 				vertexShader: quadVert,
 				fragmentShader: postProcessFrag,
 				uniforms: {
 				},
+				defines: {
+					BLOOM_COUNT: bloomRenderCount.toString()
+				}
 			},
-			// {
-			// 	input: rt2.textures,
-			// 	renderTarget: rt1,
-			// 	vertexShader: quadVert,
-			// 	fragmentShader: postProcessFrag,
-			// 	uniforms: {
-			// 	}
-			// },
-			// {
-			// 	input: input.textures,
-			// 	renderTarget: rt1,
-			// 	vertexShader: quadVert,
-			// 	fragmentShader: postProcessFrag,
-			// 	uniforms: {
-			// 	}
-			// },
 		] );
 
 		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events', {
 			onResize: ( e ) => {
+
+				resolution.copy( e.size );
 
 				rt1.setSize( e.size );
 				rt2.setSize( e.size );
@@ -295,6 +324,39 @@ export class Factory {
 
 			}
 		} );
+
+	}
+
+	private weight( num: number ) {
+
+		const weight = new Array( num );
+
+		// https://wgld.org/d/webgl/w057.html
+		let t = 0.0;
+		const d = 100;
+		for ( let i = 0; i < weight.length; i ++ ) {
+
+			const r = 1.0 + 2.0 * i;
+			let w = Math.exp( - 0.5 * ( r * r ) / d );
+			weight[ i ] = w;
+
+			if ( i > 0 ) {
+
+				w *= 2.0;
+
+			}
+
+			t += w;
+
+		}
+
+		for ( let i = 0; i < weight.length; i ++ ) {
+
+			weight[ i ] /= t;
+
+		}
+
+		return weight;
 
 	}
 
