@@ -1,5 +1,5 @@
 import { IVector2, IVector3, IVector4, Vector } from "../../Math/Vector";
-import { Uniformable, UniformType } from "../../GLPowerProgram";
+import { GLPowerProgram, Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
 import { BLidgeObjectType } from "../../BLidge";
@@ -23,7 +23,8 @@ export type ComponentName =
 	'postprocess' |
 	'material' |
 	'geometry' |
-	'light' |
+	'directionalLight' |
+	'pointLight' |
 	'blidge' |
 	( string & {} );
 
@@ -65,6 +66,9 @@ export type ComponentMaterial = {
 	fragmentShader: string;
 	uniforms?: {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
 	renderType?: RenderType;
+	defines?: {[key: string]: string}
+	needsUpdate?: boolean;
+	__program?: GLPowerProgram
 }
 
 export type ComponentGeometry = {
@@ -92,17 +96,19 @@ export type ComponentCameraPerspective = {
 
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
-	postprocess?: ComponentMaterial & { renderTarget: GLPowerFrameBuffer | null, geometry: ComponentGeometry }
+	postprocess?: ComponentPostProcess
 }
 
 /*-------------------------------
 	Light
 -------------------------------*/
 
-export type LightType = 'directional' | 'point'
+export type ComponentLightDirection = {
+	color: IVector3,
+	intensity: number
+}
 
-export type ComponentLight = {
-	type: LightType,
+export type ComponentLightPoint = {
 	color: IVector3,
 	intensity: number
 }
@@ -112,7 +118,7 @@ export type ComponentLight = {
 -------------------------------*/
 
 export type ComponentPostProcess = ( ComponentMaterial & {
-	input: GLPowerTexture[] | null;
+	input: GLPowerTexture[];
 	renderTarget: GLPowerFrameBuffer | null;
 	customGeometry?: ComponentGeometry;
 } )[]

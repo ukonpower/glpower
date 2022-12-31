@@ -245,7 +245,7 @@ export class Vector {
 
 		if ( type == 'vec2' ) {
 
-			return [ this.x, this.y, this.z ];
+			return [ this.x, this.y ];
 
 		} else if ( type == 'vec3' ) {
 

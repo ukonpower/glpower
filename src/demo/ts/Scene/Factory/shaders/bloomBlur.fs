@@ -1,28 +1,28 @@
+#version 300 es
+precision highp float;
+
 // https://qiita.com/aa_debdeb/items/26ab808de6745611df53
 
-varying vec2 vUv;
-uniform sampler2D backbuffer;
-uniform vec2 resolution;
+in vec2 vUv;
 
-uniform bool direction;
+uniform sampler2D sampler0;
+uniform vec2 uResolution;
+uniform bool uIsVertical;
 uniform float blurRange;
 
-#pragma glslify: blur13 = require( './gaussBlur13.glsl' )
-
+layout (location = 0) out vec4 outColor;
 
 // Gaussianブラーの重み
 uniform float[GAUSS_WEIGHTS] uWeights;
 
 void main(void) {
   vec2 coord = vec2(gl_FragCoord.xy);
-  vec2 size = resolution;
-
-  vec3 sum = uWeights[0] * texture2D(backbuffer, vUv).rgb;
+  vec3 sum = uWeights[0] * texture(sampler0, vUv).rgb;
   
   for (int i = 1; i < GAUSS_WEIGHTS; i++) {
-    vec2 offset = (direction ? vec2(i, 0) : vec2(0, i)) * blurRange;
-    sum += uWeights[i] * texture2D(backbuffer, vUv + offset / resolution).rgb;
-    sum += uWeights[i] * texture2D(backbuffer, vUv - offset / resolution).rgb;
+    vec2 offset = (uIsVertical ? vec2(0, i) : vec2(i, 0)) * 1.0;
+    sum += uWeights[i] * texture(sampler0, vUv + offset / uResolution).rgb;
+    sum += uWeights[i] * texture(sampler0, vUv - offset / uResolution).rgb;
   }
-  gl_FragColor = vec4(sum, 1.0);
+  outColor = vec4(sum, 1.0);
 }
