@@ -2,6 +2,7 @@
 precision highp float;
 
 uniform vec3 uColor;
+uniform vec4 uAlpha;
 
 in vec2 vUv;
 in vec3 vColor;
@@ -21,7 +22,7 @@ void main( void ) {
 
 	outColor0 = vec4( vPos, 1.0 );
 	outColor1 = vec4( normalize( vNormal * ( gl_FrontFacing ? 1.0 : -1.0 ) ), 1.0 );
-	outColor2 = vec4( vColor, 1.0 );
+	outColor2 = vec4( vColor * uAlpha.x, 1.0 );
 	outColor3 = vec4( roughness, metalic, 1.0, 1.0 );
 
 }

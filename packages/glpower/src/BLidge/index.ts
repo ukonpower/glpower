@@ -1,6 +1,5 @@
 import EventEmitter from "wolfy87-eventemitter";
 import { IVector2, IVector3 } from "..";
-import { AnimationAction } from "../Animation/AnimationAction";
 import { FCurve } from "../Animation/FCurve";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation, FCurveKeyFrame } from "../Animation/FCurveKeyFrame";
@@ -19,34 +18,35 @@ export type BLidgeCameraParams = {
 	fov: number
 }
 
-export type BlidgeMeshParams = {
+export type BLidgeMeshParams = {
 	position: number[],
 	uv: number[],
 	normal: number[],
 	index: number[],
 }
 
+export type BLidgeMaterialParams = {
+	name: string,
+	uniforms: {name:string, value: string}[]
+}
+
 export type BLidgeObject = {
 	name: string,
 	parent: string,
 	children: BLidgeObject[],
-	actions: string[],
+	animation: string[],
 	position: IVector3,
 	rotation: IVector3,
 	scale: IVector3,
 	type: BLidgeObjectType,
+	material: BLidgeMaterialParams
 	camera?: BLidgeCameraParams,
-	mesh?: BlidgeMeshParams,
+	mesh?: BLidgeMeshParams,
 }
 
 export type BLidgeScene = {
-	actions: BLidgeAnimationActionParam[];
+    animations: {[key: string]: BLidgeAnimationCurveParam[]};
 	scene: BLidgeObject
-}
-
-export type BLidgeAnimationActionParam = {
-    name: string;
-    fcurve_groups: {[key: string]: BLidgeAnimationCurveParam[]};
 }
 
 export type BLidgeAnimationCurveParam = {
@@ -90,7 +90,7 @@ export class BLidge extends EventEmitter {
 	// animation
 
 	public objects: BLidgeObject[] = [];
-	public actions: AnimationAction[] = [];
+	public curveGroups: FCurveGroup[] = [];
 	public scene: BLidgeObject | null;
 
 	constructor( url?: string ) {
@@ -152,44 +152,35 @@ export class BLidge extends EventEmitter {
 
 	private onSyncScene( data: BLidgeScene ) {
 
-		this.actions.length = 0;
+		this.curveGroups.length = 0;
 		this.objects.length = 0;
 
 		// actions
 
-		data.actions.forEach( actionData => {
+		const fcurveGroupNames = Object.keys( data.animations );
 
-			const action = new AnimationAction( actionData.name );
+		for ( let i = 0; i < fcurveGroupNames.length; i ++ ) {
 
-			const fcurveGroupNames = Object.keys( actionData.fcurve_groups );
+			const fcurveGroupName = fcurveGroupNames[ i ];
+			const fcurveGroup = new FCurveGroup( fcurveGroupName );
 
-			for ( let i = 0; i < fcurveGroupNames.length; i ++ ) {
+			data.animations[ fcurveGroupName ].forEach( fcurveData => {
 
-				const fcurveGroupName = fcurveGroupNames[ i ];
+				const curve = new FCurve();
 
-				const fcurveGroup = new FCurveGroup( fcurveGroupName );
+				curve.set( fcurveData.keyframes.map( frame => {
 
-				actionData.fcurve_groups[ fcurveGroupName ].forEach( fcurveData => {
+					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, frame.i );
 
-					const curve = new FCurve();
+				} ) );
 
-					curve.set( fcurveData.keyframes.map( frame => {
+				fcurveGroup.setFCurve( curve, fcurveData.axis );
 
-						return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, frame.i );
+			} );
 
-					} ) );
+			this.curveGroups.push( fcurveGroup );
 
-					fcurveGroup.setFCurve( curve, fcurveData.axis );
-
-				} );
-
-				action.addFcurveGroup( fcurveGroup.name, fcurveGroup );
-
-			}
-
-			this.actions.push( action );
-
-		} );
+		}
 
 		// objects
 
@@ -264,7 +255,7 @@ export class BLidge extends EventEmitter {
 
 			if ( this.objects[ i ].name == objectName ) {
 
-				return this.objects[ i ].actions;
+				return this.objects[ i ].animation;
 
 			}
 
@@ -274,68 +265,11 @@ export class BLidge extends EventEmitter {
 
 	}
 
-	public getAction( actionName: string ) {
-
-		for ( let i = 0; i < this.actions.length; i ++ ) {
-
-			if ( this.actions[ i ].name == actionName ) {
-
-				return this.actions[ i ];
-
-			}
-
-		}
-
-		return null;
-
-	}
-
-	public getActionList( objectName: string ) {
-
-		const actions: AnimationAction[] = [];
-		const actionNameList = this.getActionNameList( objectName );
-
-		actionNameList.forEach( actionName => {
-
-			const action = this.getAction( actionName );
-
-			if ( action ) {
-
-				actions.push( action );
-
-			}
-
-		} );
-
-		return actions;
-
-	}
-
-	public getActionContainsAccessor( accessor: string ) {
-
-		return this.actions.find( action => {
-
-			const curveKeys = Object.keys( action.curves );
-
-			return curveKeys.some( curveName => curveName == accessor );
-
-		} ) || null;
-
-	}
-
 	public setTimeline( current: number, start?:number, end?:number ) {
 
 		this.frameCurrent = current;
 		this.frameStart = start || this.frameStart;
 		this.frameEnd = end || this.frameEnd;
-
-		for ( let i = 0; i < this.actions.length; i ++ ) {
-
-			const action = this.actions[ i ];
-
-			action.updateFrame( this.frameCurrent );
-
-		}
 
 		this.emitEvent( 'sync/timeline', [ this.frameCurrent, this.frameStart, this.frameEnd ] );
 

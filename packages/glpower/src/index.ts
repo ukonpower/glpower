@@ -32,7 +32,6 @@ export * from './SceneGraph';
 
 // animation
 
-export * from './Animation/AnimationAction';
 export * from './Animation/Bezier';
 export * from './Animation/Easings';
 export * from './Animation/FCurve';
