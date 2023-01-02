@@ -1,5 +1,5 @@
 import EventEmitter from 'wolfy87-eventemitter';
-import { Types } from '..';
+import { Types, Vector } from '..';
 import { IVector4 } from '../Math/Vector';
 import { FCurve } from './FCurve';
 
@@ -7,11 +7,14 @@ export class FCurveGroup extends EventEmitter {
 
 	public name: string;
 
-	private curves: Map<Types.RecommendString<Types.Axis>, FCurve>
+	private curves: Map<Types.RecommendString<Types.Axis>, FCurve>;
 
 	public frameStart: number;
 	public frameEnd: number;
 	public frameDuration: number;
+	private updatedFrame: number = - 1;
+
+	public value: Vector;
 
 	constructor( name?: string, x?: FCurve, y?: FCurve, z?: FCurve, w?: FCurve ) {
 
@@ -24,6 +27,8 @@ export class FCurveGroup extends EventEmitter {
 		this.frameDuration = 0;
 
 		this.curves = new Map();
+
+		this.value = new Vector();
 
 		if ( x ) this.setFCurve( x, 'x' );
 		if ( y ) this.setFCurve( y, 'y' );
@@ -68,35 +73,23 @@ export class FCurveGroup extends EventEmitter {
 
 	}
 
+	public update( frame: number ) {
 
-	public getValue( frame: number ): IVector4 | null;
-
-	public getValue<T extends Types.Nullable<IVector4>>( frame: number, target: T ): T;
-
-	public getValue<T extends Types.Nullable<IVector4>>( frame: number, target?: T ): T | IVector4 | null {
+		if ( frame == this.updatedFrame ) return this;
 
 		const x = this.curves.get( 'x' );
 		const y = this.curves.get( 'y' );
 		const z = this.curves.get( 'z' );
 		const w = this.curves.get( 'w' );
 
-		if ( target ) {
+		if ( x ) this.value.x = x.getValue( frame );
+		if ( y ) this.value.y = y.getValue( frame );
+		if ( z ) this.value.z = z.getValue( frame );
+		if ( w ) this.value.w = w.getValue( frame );
 
-			if ( x ) target.x = x.getValue( frame );
-			if ( y ) target.y = y.getValue( frame );
-			if ( z ) target.z = z.getValue( frame );
-			if ( w ) target.w = w.getValue( frame );
+		this.updatedFrame = frame;
 
-			return target;
-
-		}
-
-		return {
-			x: x ? x.getValue( frame ) : 0,
-			y: y ? y.getValue( frame ) : 0,
-			z: z ? z.getValue( frame ) : 0,
-			w: w ? w.getValue( frame ) : 0,
-		};
+		return this;
 
 	}
 

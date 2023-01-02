@@ -3,10 +3,10 @@ import { GLPowerProgram, Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
 import { AttributeBuffer } from "../../GLPowerVAO";
 import { BLidgeObjectType } from "../../BLidge";
-import { AnimationAction } from "../../Animation/AnimationAction";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
 import { Matrix } from "../../Math/Matrix";
 import { GLPowerTexture } from "../../GLPowerTexture";
+import { FCurveGroup } from "../../Animation/FCurveGroup";
 
 export interface Component {[key:string]: any}
 
@@ -61,10 +61,12 @@ export type ComponentSceneNode = {
 
 export type RenderType = 'forward' | 'deferred' | 'shadowmap' | 'postprocess';
 
+export type Uniforms = {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
+
 export type ComponentMaterial = {
 	vertexShader: string;
 	fragmentShader: string;
-	uniforms?: {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
+	uniforms?: Uniforms;
 	renderType?: RenderType;
 	defines?: {[key: string]: string}
 	needsUpdate?: boolean;
@@ -127,11 +129,21 @@ export type ComponentPostProcess = ( ComponentMaterial & {
 	BLidge
 -------------------------------*/
 
+export type BLidgeMaterialParam = {
+	name: string,
+	uniforms: {name: string, value: FCurveGroup}[]
+}
+
 export type ComponentBLidge = {
 	name: string
 	type: BLidgeObjectType
 	updateTime?: number,
-	actions?: AnimationAction[]
+	curveGroups?: {
+		position?: FCurveGroup;
+		rotation?: FCurveGroup;
+		scale?: FCurveGroup;
+		uniforms?: {name: string, curve: FCurveGroup }[]
+	},
 }
 
 /*-------------------------------

@@ -34,6 +34,11 @@ interface BLidgeProps extends EmptyProps {
 	type?: GLP.BLidgeObjectType
 }
 
+interface MaterialParam {
+	name: string,
+	uniforms: GLP.Uniforms
+}
+
 export class Factory {
 
 	private power: GLP.Power;
@@ -87,48 +92,40 @@ export class Factory {
 		Mesh
 	-------------------------------*/
 
-	public appendMesh( entity: GLP.Entity, props: MeshProps ) {
+	public appendMesh( entity: GLP.Entity, geometry: GLP.ComponentGeometry, materialParam: MaterialParam ) {
 
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', props.material ??
-		{
-		 	vertexShader: basicVert,
-		 	fragmentShader: deferredMaterialFrag,
-		 	uniforms: {
-		 		uColor: {
-		 			value: new GLP.Vector( 1.0, 0.0, 0.0 ),
-		 			type: '3f'
-		 		}
-		 	},
+		const material: GLP.ComponentMaterial = {
+			vertexShader: basicVert,
+			fragmentShader: deferredMaterialFrag,
+			uniforms: {
+				...materialParam.uniforms
+			},
 			renderType: 'deferred',
-		}, );
+		};
 
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', props.geometry );
+		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', material );
+
+		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', geometry );
 
 		return entity;
 
 	}
 
-	public appendCube( entity: GLP.Entity ) {
+	public appendCube( entity: GLP.Entity, materialParam: MaterialParam ) {
 
-		return this.appendMesh( entity, {
-			geometry: new GLP.CubeGeometry().getComponent( this.power ),
-		} );
+		return this.appendMesh( entity, new GLP.CubeGeometry().getComponent( this.power ), materialParam );
 
 	}
 
-	public appendSphere( entity: GLP.Entity ) {
+	public appendSphere( entity: GLP.Entity, materialParam: MaterialParam ) {
 
-		return this.appendMesh( entity, {
-			geometry: new GLP.SphereGeometry().getComponent( this.power ),
-		} );
+		return this.appendMesh( entity, new GLP.SphereGeometry().getComponent( this.power ), materialParam );
 
 	}
 
-	public appendPlane( entity: GLP.Entity ) {
+	public appendPlane( entity: GLP.Entity, materialParam: MaterialParam ) {
 
-		return this.appendMesh( entity, {
-			geometry: new GLP.PlaneGeometry().getComponent( this.power ),
-		} );
+		return this.appendMesh( entity, new GLP.PlaneGeometry().getComponent( this.power ), materialParam );
 
 	}
 

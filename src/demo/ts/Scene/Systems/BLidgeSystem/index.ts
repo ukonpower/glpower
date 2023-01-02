@@ -50,56 +50,74 @@ export class BLidgeSystem extends GLP.System {
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
 		const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( event.world, entity, 'blidge' );
-		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
-		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
-		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
+		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
+		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
+		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
-		if ( blidgeComponent && blidgeComponent.actions ) {
+		if ( blidgeComponent ) {
 
-			for ( let i = 0; i < blidgeComponent.actions.length; i ++ ) {
+			if ( blidgeComponent.curveGroups ) {
 
-				const action = blidgeComponent.actions[ i ];
+				if ( blidgeComponent.curveGroups.position ) {
 
-				if ( positionComponent ) {
+					const position = blidgeComponent.curveGroups.position.update( this.blidge.frameCurrent ).value;
 
-					action.getValue( action.name + '_location', positionComponent );
+					positionComponent.x = position.x;
+					positionComponent.y = position.y;
+					positionComponent.z = position.z;
 
 				}
 
-				if ( rotationComponent ) {
+				if ( blidgeComponent.curveGroups.rotation ) {
 
-					const rot = action.getValue( action.name + '_rotation_euler' );
+					const rot = blidgeComponent.curveGroups.rotation.update( this.blidge.frameCurrent ).value;
 
-					if ( rot ) {
+					this.tmpQuaternion.euler( {
+						x: rot.x ? rot.x + ( blidgeComponent.type == 'camera' ? - Math.PI / 2 : 0 ) : 0,
+						y: rot.y ?? 0,
+						z: rot.z ?? 0 },
+					'YZX' );
 
-						this.tmpQuaternion.euler( {
-							x: rot.x ? rot.x + ( blidgeComponent.type == 'camera' ? - Math.PI / 2 : 0 ) : 0,
-							y: rot.y ?? 0,
-							z: rot.z ?? 0 },
-						'YZX' );
+					rotationComponent.x = this.tmpQuaternion.x;
+					rotationComponent.y = this.tmpQuaternion.y;
+					rotationComponent.z = this.tmpQuaternion.z;
+					rotationComponent.w = this.tmpQuaternion.w;
 
-						rotationComponent.x = this.tmpQuaternion.x;
-						rotationComponent.y = this.tmpQuaternion.y;
-						rotationComponent.z = this.tmpQuaternion.z;
-						rotationComponent.w = this.tmpQuaternion.w;
+
+				}
+
+				if ( blidgeComponent.curveGroups.scale ) {
+
+					const scale = blidgeComponent.curveGroups.scale.update( this.blidge.frameCurrent ).value;
+
+					scaleComponent.x = scale.x;
+					scaleComponent.y = scale.y;
+					scaleComponent.z = scale.z;
+
+				}
+
+				if ( blidgeComponent.curveGroups.uniforms ) {
+
+					for ( let i = 0; i < blidgeComponent.curveGroups.uniforms.length; i ++ ) {
+
+						const uni = blidgeComponent.curveGroups.uniforms[ i ];
+
+						uni.curve.update( this.blidge.frameCurrent );
 
 					}
 
 				}
 
-				if ( scaleComponent ) {
-
-					action.getValue( action.name + '_scale', scaleComponent );
-
-				}
-
 			}
+
 
 		}
 
 	}
 
 	private onSyncScene( blidge: GLP.BLidge ) {
+
+		// blidge.getActionNameList
 
 		const timeStamp = new Date().getTime();
 
@@ -145,19 +163,54 @@ export class BLidgeSystem extends GLP.System {
 
 				// actions
 
-				blidgeComponent.actions = [];
+				blidgeComponent.curveGroups = {};
 
-				for ( let i = 0; i < obj.actions.length; i ++ ) {
+				const positionCurveGroupName = obj.animation.find( item => item.indexOf( '_location' ) > - 1 );
 
-					const action = this.blidge.actions.find( action => action.name == obj.actions[ i ] );
+				if ( positionCurveGroupName ) {
 
-					if ( action ) {
+					blidgeComponent.curveGroups.position = this.blidge.curveGroups.find( curveGroup => curveGroup.name == positionCurveGroupName );
 
-						blidgeComponent.actions.push( action );
+				}
+
+				const rotationCurveGroupName = obj.animation.find( item => item.indexOf( '_rotation_euler' ) > - 1 );
+
+				if ( rotationCurveGroupName ) {
+
+					blidgeComponent.curveGroups.rotation = this.blidge.curveGroups.find( curveGroup => curveGroup.name == rotationCurveGroupName );
+
+				}
+
+				const scaleCurveGroupName = obj.animation.find( item => item.indexOf( '_scale' ) > - 1 );
+
+				if ( scaleCurveGroupName ) {
+
+					blidgeComponent.curveGroups.scale = this.blidge.curveGroups.find( curveGroup => curveGroup.name == scaleCurveGroupName );
+
+				}
+
+				blidgeComponent.curveGroups.uniforms = [];
+
+				// material
+
+				for ( let i = 0; i < obj.material.uniforms.length; i ++ ) {
+
+					const item = obj.material.uniforms[ i ];
+
+					const curve = this.blidge.curveGroups.find( curve => curve.name == item.value );
+
+					if ( curve ) {
+
+						blidgeComponent.curveGroups.uniforms.push( {
+							name: item.name,
+							curve: curve
+						} );
 
 					}
 
 				}
+
+				// mesh
 
 				if ( blidgeComponent.type != type || type == 'mesh' ) {
 
@@ -168,21 +221,28 @@ export class BLidgeSystem extends GLP.System {
 					this.ecs.removeComponent( this.world, entity, 'geometry' );
 					this.ecs.removeComponent( this.world, entity, 'material' );
 
+					const uniforms:GLP.Uniforms = {};
+
+					blidgeComponent.curveGroups.uniforms.forEach( item => {
+
+						uniforms[ item.name ] = {
+							type: '4fv',
+							value: item.curve.value
+						};
+
+					} );
+
 					if ( type == 'cube' ) {
 
-						this.factory.appendCube( entity );
+						this.factory.appendCube( entity, { name: obj.material.name, uniforms } );
 
 					} else if ( type == 'sphere' ) {
 
-						this.factory.appendSphere( entity );
+						this.factory.appendSphere( entity, { name: obj.material.name, uniforms } );
 
 					} else if ( type == 'plane' ) {
 
-						this.factory.appendPlane( entity );
-
-					} else if ( type == 'light' ) {
-
-						this.factory.appendLight( entity );
+						this.factory.appendPlane( entity, { name: obj.material.name, uniforms } );
 
 					} else if ( type == 'mesh' && obj.mesh ) {
 
@@ -192,9 +252,15 @@ export class BLidgeSystem extends GLP.System {
 						geometry.setAttribute( 'uv', obj.mesh.uv, 2 );
 						geometry.setAttribute( 'index', obj.mesh.index, 1 );
 
-						this.factory.appendMesh( entity, {
-							geometry: geometry.getComponent( this.power )
-						} );
+						this.factory.appendMesh(
+							entity,
+							geometry.getComponent( this.power ),
+							{ name: obj.material.name, uniforms }
+						);
+
+					} else if ( type == 'light' ) {
+
+						this.factory.appendLight( entity );
 
 					}
 
