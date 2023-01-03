@@ -5,8 +5,13 @@ import basicVert from './shaders/basic.vs';
 import quadVert from './shaders/quad.vs';
 import postProcessFrag from './shaders/postprocess.fs';
 
+// materials
+
 import deferredMaterialFrag from './shaders/deferredMaterial.fs';
 import deferredShadingFrag from './shaders/deferredShading.fs';
+
+import logoVert from './shaders/logo.vs';
+import logoFrag from './shaders/logo.fs';
 
 //bloom shader
 import bloomBlurFrag from './shaders/bloomBlur.fs';
@@ -94,7 +99,9 @@ export class Factory {
 
 	public appendMesh( entity: GLP.Entity, geometry: GLP.ComponentGeometry, materialParam: MaterialParam ) {
 
-		const material: GLP.ComponentMaterial = {
+		const name = materialParam.name;
+
+		const material: GLP.ComponentMaterial | null = {
 			vertexShader: basicVert,
 			fragmentShader: deferredMaterialFrag,
 			uniforms: {
@@ -102,6 +109,14 @@ export class Factory {
 			},
 			renderType: 'deferred',
 		};
+
+		if ( name == 'Logo' ) {
+
+			material.vertexShader = logoVert;
+			material.fragmentShader = logoFrag;
+
+		}
+
 
 		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', material );
 

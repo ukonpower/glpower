@@ -15,6 +15,7 @@ struct Material {
 	vec3 albedo;
 	float roughness;
 	float metalic;
+	vec3 emission;
 	vec3 diffuseColor;
 	vec3 specularColor;
 };
@@ -33,8 +34,8 @@ struct Light {
 
 uniform sampler2D sampler0; // position, depth
 uniform sampler2D sampler1; // normal 
-uniform sampler2D sampler2; // albedo
-uniform sampler2D sampler3; // roughness, metalic
+uniform sampler2D sampler2; // albedo, roughness
+uniform sampler2D sampler3; // emission, metalic
 
 uniform vec3 uColor;
 uniform vec3 uCameraPosition;
@@ -146,10 +147,11 @@ void main( void ) {
 	
 	Material mat = Material(
 		tex2.xyz,
-		tex3.x,
-		tex3.y,
-		mix( tex2.xyz, vec3( 0.0, 0.0, 0.0 ), tex3.y ),
-		mix( vec3( 1.0, 1.0, 1.0 ), tex2.xyz, tex3.y )
+		tex2.w,
+		tex3.w,
+		tex3.xyz,
+		mix( tex2.xyz, vec3( 0.0, 0.0, 0.0 ), tex3.w ),
+		mix( vec3( 1.0, 1.0, 1.0 ), tex2.xyz, tex3.w )
 	);
 
 
@@ -166,6 +168,8 @@ void main( void ) {
 		outColor += RE( geo, mat, light );
 		
 	} 
+
+	outColor += mat.emission;
 
 	glFragOut = vec4( outColor, 1.0 );
 
