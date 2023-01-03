@@ -23,7 +23,7 @@ void main( void ) {
 
 	outColor0 = vec4( vPos, 1.0 );
 	outColor1 = vec4( normalize( vNormal * ( gl_FrontFacing ? 1.0 : -1.0 ) ), 1.0 );
-	outColor2 = vec4( color, roughness);
-	outColor3 = vec4( vec3( 0.0 ), metalic );
+	outColor2 = vec4( color, roughness );
+	outColor3 = vec4( vec3( 1.0 ), metalic );
 
 }

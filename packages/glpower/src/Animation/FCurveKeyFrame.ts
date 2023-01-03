@@ -2,7 +2,7 @@ import EventEmitter from 'wolfy87-eventemitter';
 import { IVector2 } from '..';
 import { EasingFunc, Easings } from './Easings';
 
-export type FCurveInterpolation = "BEZIER" | "LINEAR";
+export type FCurveInterpolation = "BEZIER" | "LINEAR" | "CONSTANT";
 
 export class FCurveKeyFrame extends EventEmitter {
 
@@ -36,6 +36,14 @@ export class FCurveKeyFrame extends EventEmitter {
 		if ( interpolation == 'BEZIER' ) {
 
 			return Easings.bezier( this.coordinate, this.handleRight, nextFrame.handleLeft, nextFrame.coordinate );
+
+		} else if ( interpolation == 'CONSTANT' ) {
+
+			return () => {
+
+				return this.coordinate.y;
+
+			};
 
 		} else {
 
