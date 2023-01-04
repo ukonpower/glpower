@@ -11,6 +11,7 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 normalMatrix;
 
+uniform float time;
 uniform vec4 uState;
 
 out vec2 vUv;
@@ -18,11 +19,14 @@ out vec3 vColor;
 out vec3 vNormal;
 out vec3 vPos;
 
+#pragma glslify: random = require('./random.glsl' )
+
 void main( void ) {
 
 	vec3 pos = position;
 
-	pos *= uState.y;
+	pos *= uState.x;
+	pos.x += ( random( pos.xy + time ) - 0.5 ) * uState.y * 3.0;
 
 	vec4 modelPosition = modelMatrix * vec4( pos, 1.0 );
 	vec4 mvPosition = viewMatrix * modelPosition;
