@@ -73,7 +73,7 @@ export class FCurveGroup extends EventEmitter {
 
 	}
 
-	public update( frame: number ) {
+	public setFrame( frame: number ) {
 
 		if ( frame == this.updatedFrame ) return this;
 
