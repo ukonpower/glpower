@@ -1,3 +1,4 @@
+import { url } from "inspector";
 import EventEmitter from "wolfy87-eventemitter";
 import { IVector2, IVector3 } from "..";
 import { FCurve } from "../Animation/FCurve";
@@ -9,7 +10,7 @@ export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
 
 export type BLidgeSyncSceneMessage = {
 	type: "sync/scene",
-    data: BLidgeScene;
+    data: BLidgeSceneData;
 }
 
 export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
@@ -44,9 +45,10 @@ export type BLidgeObject = {
 	mesh?: BLidgeMeshParams,
 }
 
-export type BLidgeScene = {
+export type BLidgeSceneData = {
     animations: {[key: string]: BLidgeAnimationCurveParam[]};
-	scene: BLidgeObject
+	scene: BLidgeObject;
+	frame: BLidgeSceneFrameData;
 }
 
 export type BLidgeAnimationCurveParam = {
@@ -64,10 +66,10 @@ export type BLidgeAnimationCurveKeyFrameParam = {
 
 export type BLidgeSyncFrameMessage = {
 	type: "sync/timeline";
-	data: BLidgeTimelineData;
+	data: BLidgeSceneFrameData;
 }
 
-export type BLidgeTimelineData = {
+export type BLidgeSceneFrameData = {
 	start: number;
 	end: number;
 	current: number;
@@ -83,9 +85,11 @@ export class BLidge extends EventEmitter {
 
 	// frame
 
-	public frameCurrent: number = 0;
-	public frameStart: number = 0;
-	public frameEnd: number = 0;
+	public frame: BLidgeSceneFrameData = {
+		start: - 1,
+		end: - 1,
+		current: - 1,
+	};
 
 	// animation
 
@@ -115,9 +119,12 @@ export class BLidge extends EventEmitter {
 		this.ws.onopen = this.onOpen.bind( this );
 		this.ws.onmessage = this.onMessage.bind( this );
 		this.ws.onclose = this.onClose.bind( this );
+
 		this.ws.onerror = ( e ) => {
 
 			console.error( e );
+
+			this.emitEvent( 'error' );
 
 		};
 
@@ -150,7 +157,12 @@ export class BLidge extends EventEmitter {
 		Events
 	-------------------------------*/
 
-	private onSyncScene( data: BLidgeScene ) {
+	private onSyncScene( data: BLidgeSceneData ) {
+
+		// frame
+
+		this.frame.start = data.frame.start;
+		this.frame.end = data.frame.end;
 
 		this.curveGroups.length = 0;
 		this.objects.length = 0;
@@ -202,13 +214,13 @@ export class BLidge extends EventEmitter {
 
 		this.emitEvent( 'sync/scene', [ this ] );
 
-		this.setTimeline( this.frameCurrent );
-
 	}
 
-	private onSyncTimeline( data: BLidgeTimelineData ) {
+	private onSyncTimeline( data: BLidgeSceneFrameData ) {
 
-		this.setTimeline( data.current, data.start, data.end );
+		this.frame = data;
+
+		this.emitEvent( 'sync/timeline', [ this.frame ] );
 
 	}
 
@@ -233,7 +245,6 @@ export class BLidge extends EventEmitter {
 		} else if ( msg.type == "sync/timeline" ) {
 
 			this.onSyncTimeline( msg.data );
-
 
 		}
 
@@ -262,16 +273,6 @@ export class BLidge extends EventEmitter {
 		}
 
 		return [];
-
-	}
-
-	public setTimeline( current: number, start?:number, end?:number ) {
-
-		this.frameCurrent = current;
-		this.frameStart = start || this.frameStart;
-		this.frameEnd = end || this.frameEnd;
-
-		this.emitEvent( 'sync/timeline', [ this.frameCurrent, this.frameStart, this.frameEnd ] );
 
 	}
 
