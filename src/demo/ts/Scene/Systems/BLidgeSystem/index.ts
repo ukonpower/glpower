@@ -60,7 +60,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( blidgeComponent.curveGroups.position ) {
 
-					const position = blidgeComponent.curveGroups.position.update( this.blidge.frameCurrent ).value;
+					const position = blidgeComponent.curveGroups.position.setFrame( this.blidge.frame.current ).value;
 
 					positionComponent.x = position.x;
 					positionComponent.y = position.y;
@@ -70,7 +70,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( blidgeComponent.curveGroups.rotation ) {
 
-					const rot = blidgeComponent.curveGroups.rotation.update( this.blidge.frameCurrent ).value;
+					const rot = blidgeComponent.curveGroups.rotation.setFrame( this.blidge.frame.current ).value;
 
 					this.tmpQuaternion.euler( {
 						x: rot.x ? rot.x + ( blidgeComponent.type == 'camera' ? - Math.PI / 2 : 0 ) : 0,
@@ -88,7 +88,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( blidgeComponent.curveGroups.scale ) {
 
-					const scale = blidgeComponent.curveGroups.scale.update( this.blidge.frameCurrent ).value;
+					const scale = blidgeComponent.curveGroups.scale.setFrame( this.blidge.frame.current ).value;
 
 					scaleComponent.x = scale.x;
 					scaleComponent.y = scale.y;
@@ -102,7 +102,7 @@ export class BLidgeSystem extends GLP.System {
 
 						const uni = blidgeComponent.curveGroups.uniforms[ i ];
 
-						uni.curve.update( this.blidge.frameCurrent );
+						uni.curve.setFrame( this.blidge.frame.current );
 
 					}
 
