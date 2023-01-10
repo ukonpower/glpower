@@ -16,12 +16,23 @@ export class Quaternion {
 	public z: number;
 	public w: number;
 
-	constructor() {
+	constructor( x?: number, y?: number, z?: number, w?: number ) {
 
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
 		this.w = 1;
+
+		this.set( x, y, z, w );
+
+	}
+
+	public set( x?: number, y?: number, z?: number, w?: number ) {
+
+		this.x = x ?? this.x;
+		this.y = y ?? this.y;
+		this.z = z ?? this.z;
+		this.w = w ?? this.w;
 
 	}
 
