@@ -46,6 +46,7 @@ export class RenderSystem extends GLP.System {
 		super( ecs, {
 			"directionalLight": [ 'directionalLight', 'position' ],
 			"pointLight": [ 'pointLight', 'position' ],
+			"shadowMap": [ 'camera', 'renderCameraShadowMap' ],
 			"deferred": [ "camera", "renderCameraDeferred" ],
 			"forward": [ "camera", "renderCameraForward" ],
 			"postprocess": [ 'postprocess' ]
@@ -147,7 +148,20 @@ export class RenderSystem extends GLP.System {
 	private renderCamera( renderPhase: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
 
 		const { viewMatrix, projectionMatrix } = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
-		const { renderTarget, postprocess } = event.ecs.getComponent<GLP.ComponentRenderCamera>( event.world, entity, renderPhase == 'forward' ? 'renderCameraForward' : 'renderCameraDeferred' )!;
+
+		let renderCameraType = 'renderCameraForward';
+
+		if ( renderPhase == 'deferred' ) {
+
+			renderCameraType = 'renderCameraDeferred';
+
+		} else if ( renderPhase == 'shadowMap' ) {
+
+			renderCameraType = 'renderCameraShadowMap';
+
+		}
+
+		const { renderTarget, postprocess } = event.ecs.getComponent<GLP.ComponentRenderCamera>( event.world, entity, renderCameraType )!;
 
 		if ( renderTarget ) {
 

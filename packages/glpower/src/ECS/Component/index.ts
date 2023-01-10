@@ -18,8 +18,10 @@ export type ComponentName =
 	'events' |
 	'camera' |
 	'perspective' |
+	"orthographic" |
 	"renderCameraDeferred" |
 	"renderCameraForward" |
+	"renderCameraShadowMap" |
 	'postprocess' |
 	'material' |
 	'geometry' |
@@ -59,7 +61,7 @@ export type ComponentSceneNode = {
 	Mesh
 -------------------------------*/
 
-export type RenderType = 'forward' | 'deferred' | 'shadowmap' | 'postprocess';
+export type RenderType = 'forward' | 'deferred' | 'shadowMap' | 'postprocess';
 
 export type Uniforms = {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
 
@@ -96,9 +98,18 @@ export type ComponentCameraPerspective = {
 	fov: number;
 }
 
+export type ComponentCameraOrthographic = {
+	width: number,
+	height: number,
+}
+
 export type ComponentRenderCamera = {
 	renderTarget: GLPowerFrameBuffer | null;
 	postprocess?: ComponentPostProcess
+}
+
+export type ComponentShadowmapCamera = {
+	renderTarget: GLPowerFrameBuffer,
 }
 
 /*-------------------------------

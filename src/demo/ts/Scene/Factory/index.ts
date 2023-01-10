@@ -232,6 +232,42 @@ export class Factory {
 			intensity: Math.PI
 		} );
 
+		// shadowmap
+
+		const rtShadowMap = new GLP.GLPowerFrameBuffer( this.gl );
+		rtShadowMap.setTexture( [ this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ) ] );
+
+		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
+			near: 1.0,
+			far: 500.0,
+			aspectRatio: 1,
+			projectionMatrix: new GLP.Matrix(),
+			viewMatrix: new GLP.Matrix(),
+		} );
+
+		this.ecs.addComponent<GLP.ComponentShadowmapCamera>( this.world, entity, 'renderCameraShadowMap', {
+			renderTarget: rtShadowMap
+		} );
+
+		this.ecs.addComponent<GLP.ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
+			width: 10,
+			height: 10
+		} );
+
+		// events
+
+		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events',
+			{
+				onUpdate: ( e ) => {
+				},
+				onResize: ( e ) => {
+
+					rtShadowMap.setSize( e.size );
+
+				}
+			},
+		);
+
 	}
 
 	/*-------------------------------

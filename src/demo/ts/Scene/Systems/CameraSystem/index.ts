@@ -7,7 +7,8 @@ export class CameraSystem extends GLP.System {
 	constructor( ecs: GLP.ECS ) {
 
 		super( ecs, {
-			perspectiveCamera: [ "camera", "perspective" ]
+			perspectiveCamera: [ "camera", "perspective" ],
+			orthographicCamera: [ "camera", "orthocraphic" ]
 		} );
 
 		this.size = new GLP.Vector();
@@ -37,6 +38,13 @@ export class CameraSystem extends GLP.System {
 
 				const perspective = event.ecs.getComponent<GLP.ComponentCameraPerspective>( event.world, entity, 'perspective' )!;
 				camera.projectionMatrix.perspective( perspective.fov, camera.aspectRatio, camera.near, camera.far );
+
+			}
+
+			if ( logicName == 'orthographicCamera' ) {
+
+				const orthographic = event.ecs.getComponent<GLP.ComponentCameraOrthographic>( event.world, entity, 'orthographic' )!;
+				camera.projectionMatrix.orthographic( orthographic.width, orthographic.height, camera.near, camera.far );
 
 			}
 
