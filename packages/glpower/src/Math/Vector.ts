@@ -222,6 +222,8 @@ export class Vector {
 		this.z = zz;
 		this.w = ww;
 
+		return this;
+
 	}
 
 	public copy( a: Vector | Types.Nullable<IVector4> ) {

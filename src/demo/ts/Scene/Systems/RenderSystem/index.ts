@@ -10,7 +10,7 @@ type CameraMatrix = {
 
 export type Lights = {
 	needsUpdate: boolean
-	directionalLight: {position: GLP.Vector, color: GLP.Vector}[],
+	directionalLight: {direction: GLP.Vector, color: GLP.Vector}[],
 	pointLight: {position: GLP.Vector, color: GLP.Vector}[]
 }
 
@@ -134,10 +134,10 @@ export class RenderSystem extends GLP.System {
 		if ( type == 'directional' ) {
 
 			const light = event.ecs.getComponent<GLP.ComponentLightDirection>( event.world, entity, 'directionalLight' )!;
-			const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
+			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
 			this.lights.directionalLight.push( {
-				position: new GLP.Vector( position.x, position.y, position.z ),
+				direction: new GLP.Vector( 0.0, 0.0, 1.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
 				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
 			} );
 
@@ -179,13 +179,17 @@ export class RenderSystem extends GLP.System {
 		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 		this.gl.enable( this.gl.DEPTH_TEST );
 
-		const meshes = event.ecs.getEntities( event.world, [ 'material', 'material', 'geometry' ] );
+		let materialType = 'material';
+
+		if ( renderPhase == 'shadowMap' ) materialType = 'materialDepth';
+
+		const meshes = event.ecs.getEntities( event.world, [ materialType, 'geometry' ] );
 
 		for ( let i = 0; i < meshes.length; i ++ ) {
 
 			const mesh = meshes[ i ];
 
-			const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, 'material' );
+			const material = event.ecs.getComponent<GLP.ComponentMaterial>( event.world, mesh, materialType );
 			const geometry = event.ecs.getComponent<GLP.ComponentGeometry>( event.world, mesh, 'geometry' );
 			const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, mesh, 'matrix' );
 
@@ -193,7 +197,7 @@ export class RenderSystem extends GLP.System {
 
 				if ( material.renderType == renderPhase ) {
 
-					this.draw( meshes[ i ] + '_camera', geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+					this.draw( meshes[ i ] + renderPhase, geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
 				}
 
@@ -293,8 +297,7 @@ export class RenderSystem extends GLP.System {
 
 				const dLight = this.lights.directionalLight[ i ];
 
-				this.lightPosition.copy( dLight.position );
-				this.lightDirection.copy( this.lightPosition ).normalize().applyMatrix3( matrix.viewMatrix );
+				this.lightDirection.copy( dLight.direction ).applyMatrix3( matrix.viewMatrix );
 
 				program.setUniform( 'directionalLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
 				program.setUniform( 'directionalLight[' + i + '].color', '3fv', dLight.color.getElm( 'vec3' ) );

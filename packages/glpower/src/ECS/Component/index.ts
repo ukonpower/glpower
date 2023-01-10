@@ -24,6 +24,7 @@ export type ComponentName =
 	"renderCameraShadowMap" |
 	'postprocess' |
 	'material' |
+	'materialDepth' |
 	'geometry' |
 	'directionalLight' |
 	'pointLight' |

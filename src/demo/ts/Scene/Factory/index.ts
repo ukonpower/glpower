@@ -117,8 +117,9 @@ export class Factory {
 
 		}
 
-
 		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', material );
+
+		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'materialDepth', { ...material, defines: { ...material.defines, IS_DEPTH: '' }, renderType: 'shadowMap' } );
 
 		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', geometry );
 

@@ -72,11 +72,15 @@ export class BLidgeSystem extends GLP.System {
 
 					const rot = blidgeComponent.curveGroups.rotation.setFrame( this.blidge.frame.current ).value;
 
+					let rotXOffset = 0;
+
+					if ( blidgeComponent.type == 'camera' || blidgeComponent.type == 'light' ) rotXOffset = - Math.PI / 2;
+
 					this.tmpQuaternion.euler( {
-						x: rot.x ? rot.x + ( blidgeComponent.type == 'camera' ? - Math.PI / 2 : 0 ) : 0,
-						y: rot.y ?? 0,
-						z: rot.z ?? 0 },
-					'YZX' );
+						x: rot.x + rotXOffset,
+						y: rot.y,
+						z: rot.z
+					}, 'YZX' );
 
 					rotationComponent.x = this.tmpQuaternion.x;
 					rotationComponent.y = this.tmpQuaternion.y;
@@ -290,7 +294,7 @@ export class BLidgeSystem extends GLP.System {
 					z: obj.rotation.z,
 				};
 
-				if ( type == 'camera' ) {
+				if ( type == 'camera' || type == 'light' ) {
 
 					rot.x -= Math.PI / 2;
 
