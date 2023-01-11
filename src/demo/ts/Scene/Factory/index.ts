@@ -236,11 +236,11 @@ export class Factory {
 		// shadowmap
 
 		const rtShadowMap = new GLP.GLPowerFrameBuffer( this.gl );
-		rtShadowMap.setTexture( [ this.power.createTexture().setting( { type: this.gl.FLOAT, internalFormat: this.gl.RGBA32F, format: this.gl.RGBA } ) ] );
+		rtShadowMap.setTexture( [ this.power.createTexture() ] );
 
 		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
 			near: 1.0,
-			far: 500.0,
+			far: 100.0,
 			aspectRatio: 1,
 			projectionMatrix: new GLP.Matrix(),
 			viewMatrix: new GLP.Matrix(),

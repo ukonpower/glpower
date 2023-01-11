@@ -74,7 +74,7 @@ export class BLidgeSystem extends GLP.System {
 
 					let rotXOffset = 0;
 
-					if ( blidgeComponent.type == 'camera' || blidgeComponent.type == 'light' ) rotXOffset = - Math.PI / 2;
+					if ( blidgeComponent.type == 'camera' ) rotXOffset = - Math.PI / 2;
 
 					this.tmpQuaternion.euler( {
 						x: rot.x + rotXOffset,
@@ -218,9 +218,6 @@ export class BLidgeSystem extends GLP.System {
 
 					} );
 
-					console.log( uniforms );
-
-
 					if ( type == 'cube' ) {
 
 						this.factory.appendCube( entity, { name: obj.material.name, uniforms } );
@@ -273,17 +270,16 @@ export class BLidgeSystem extends GLP.System {
 
 			if ( quaternion ) {
 
+				let rotXOffset = 0;
+
+				if ( obj.type == 'camera' ) rotXOffset = - Math.PI / 2;
+
 				const rot = {
-					x: obj.rotation.x,
+					x: obj.rotation.x + rotXOffset,
 					y: obj.rotation.y,
 					z: obj.rotation.z,
 				};
 
-				if ( type == 'camera' || type == 'light' ) {
-
-					rot.x -= Math.PI / 2;
-
-				}
 
 				const q = new GLP.Quaternion().euler( rot, 'YZX' );
 
