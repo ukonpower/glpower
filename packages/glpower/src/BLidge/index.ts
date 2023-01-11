@@ -26,16 +26,18 @@ export type BLidgeMeshParams = {
 	index: number[],
 }
 
+export type BLidgeAnimation = { [key: string]: string }
+
 export type BLidgeMaterialParams = {
 	name: string,
-	uniforms: {name:string, value: string}[]
+	uniforms: BLidgeAnimation
 }
 
 export type BLidgeObject = {
 	name: string,
 	parent: string,
 	children: BLidgeObject[],
-	animation: string[],
+	animation: BLidgeAnimation,
 	position: IVector3,
 	rotation: IVector3,
 	scale: IVector3,
