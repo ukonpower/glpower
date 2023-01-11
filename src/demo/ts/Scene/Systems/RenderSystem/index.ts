@@ -2,16 +2,19 @@ import * as GLP from 'glpower';
 import { Entity, Uniformable } from 'glpower';
 import { ProgramManager } from './ProgramManager';
 
-type CameraMatrix = {
+type CameraData = {
 	modelMatrix?: GLP.Matrix,
 	viewMatrix: GLP.Matrix,
 	projectionMatrix: GLP.Matrix
+	near?: number,
+	far?: number
 }
 
 export type Lights = {
 	needsUpdate: boolean
 	directionalLight: {direction: GLP.Vector, color: GLP.Vector}[],
-	pointLight: {position: GLP.Vector, color: GLP.Vector}[]
+	pointLight: {position: GLP.Vector, color: GLP.Vector}[],
+	directionalLightShadow: ( {viewMatrix: GLP.Matrix, projectionMatrix: GLP.Matrix, near: number, far: number, texture: GLP.GLPowerTexture } | null )[]
 }
 
 export class RenderSystem extends GLP.System {
@@ -79,6 +82,7 @@ export class RenderSystem extends GLP.System {
 		this.lights = {
 			needsUpdate: false,
 			directionalLight: [],
+			directionalLightShadow: [],
 			pointLight: []
 		};
 
@@ -93,6 +97,7 @@ export class RenderSystem extends GLP.System {
 			if ( this.lights.directionalLight.length != entities.length ) this.lights.needsUpdate = true;
 
 			this.lights.directionalLight.length = 0;
+			this.lights.directionalLightShadow.length = 0;
 
 		} else if ( phase == 'pointLight' ) {
 
@@ -141,13 +146,32 @@ export class RenderSystem extends GLP.System {
 				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
 			} );
 
+			const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' );
+			const cameraShadowMap = event.ecs.getComponent<GLP.ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
+
+			if ( camera && cameraShadowMap ) {
+
+				this.lights.directionalLightShadow.push( {
+					near: camera.near,
+					far: camera.far,
+					texture: cameraShadowMap.renderTarget.textures[ 0 ],
+					viewMatrix: camera.viewMatrix,
+					projectionMatrix: camera.projectionMatrix,
+				} );
+
+			} else {
+
+				this.lights.directionalLightShadow.push( null );
+
+			}
+
 		}
 
 	}
 
 	private renderCamera( renderPhase: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
 
-		const { viewMatrix, projectionMatrix } = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
+		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
 
 		let renderCameraType = 'renderCameraForward';
 
@@ -199,7 +223,7 @@ export class RenderSystem extends GLP.System {
 
 				if ( material.renderType == renderPhase ) {
 
-					this.draw( meshes[ i ] + renderPhase, geometry, material, event, { modelMatrix: matrix.world, viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+					this.draw( meshes[ i ] + renderPhase, geometry, material, event, { modelMatrix: matrix.world, viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix, near: camera.near, far: camera.far } );
 
 				}
 
@@ -209,13 +233,13 @@ export class RenderSystem extends GLP.System {
 
 		if ( postprocess ) {
 
-			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
+			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, { viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix } );
 
 		}
 
 	}
 
-	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, matrix?: CameraMatrix ) {
+	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, cameraData?: CameraData ) {
 
 		for ( let i = 0; i < postprocess.length; i ++ ) {
 
@@ -254,13 +278,13 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			this.draw( entityId + i, pp.customGeometry || this.quad, pp, event, matrix );
+			this.draw( entityId + i, pp.customGeometry || this.quad, pp, event, cameraData );
 
 		}
 
 	}
 
-	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: CameraMatrix ) {
+	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, camera?: CameraData ) {
 
 		// program
 
@@ -276,33 +300,52 @@ export class RenderSystem extends GLP.System {
 
 		// update uniforms
 
-		if ( matrix ) {
+		if ( camera ) {
 
-			if ( matrix.modelMatrix && matrix.viewMatrix ) {
+			if ( camera.modelMatrix && camera.viewMatrix ) {
 
-				this.modelViewMatrix.copy( matrix.modelMatrix ).preMultiply( matrix.viewMatrix );
-				this.normalMatrix.copy( this.modelViewMatrix );
-				this.normalMatrix.inverse();
-				this.normalMatrix.transpose();
+				program.setUniform( 'modelMatrix', 'Matrix4fv', camera.modelMatrix.elm );
 
-				program.setUniform( 'normalMatrix', 'Matrix4fv', this.normalMatrix.elm );
-				program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
+				if ( camera.viewMatrix ) {
+
+					this.modelViewMatrix.copy( camera.modelMatrix ).preMultiply( camera.viewMatrix );
+					this.normalMatrix.copy( this.modelViewMatrix );
+					this.normalMatrix.inverse();
+					this.normalMatrix.transpose();
+
+					program.setUniform( 'normalMatrix', 'Matrix4fv', this.normalMatrix.elm );
+					program.setUniform( 'modelViewMatrix', 'Matrix4fv', this.modelViewMatrix.elm );
+
+				}
 
 			}
 
-			if ( matrix.modelMatrix ) program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
+			program.setUniform( 'cameraNear', '1fv', [ camera.near ?? 0 ] );
+			program.setUniform( 'cameraFar', '1fv', [ camera.far ?? 0 ] );
 
-			program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
-			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
+			program.setUniform( 'viewMatrix', 'Matrix4fv', camera.viewMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', camera.projectionMatrix.elm );
 
 			for ( let i = 0; i < this.lights.directionalLight.length; i ++ ) {
 
 				const dLight = this.lights.directionalLight[ i ];
+				const dLightShadow = this.lights.directionalLightShadow[ i ];
 
-				this.lightDirection.copy( dLight.direction ).applyMatrix3( matrix.viewMatrix );
+				this.lightDirection.copy( dLight.direction ).applyMatrix3( camera.viewMatrix );
 
 				program.setUniform( 'directionalLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
 				program.setUniform( 'directionalLight[' + i + '].color', '3fv', dLight.color.getElm( 'vec3' ) );
+
+				if ( dLightShadow ) {
+
+					dLightShadow.texture.activate( 0 );
+					program.setUniform( 'directionalLightShadow[' + i + '].near', '1fv', [ dLightShadow.near ] );
+					program.setUniform( 'directionalLightShadow[' + i + '].far', '1fv', [ dLightShadow.far ] );
+					program.setUniform( 'directionalLightShadow[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
+					program.setUniform( 'directionalLightShadow[' + i + '].projectionMatrix', 'Matrix4fv', dLightShadow.projectionMatrix.elm );
+					program.setUniform( 'directionalLightShadow[' + i + '].shadowMap', '1i', [ dLightShadow.texture.unit ] );
+
+				}
 
 			}
 
