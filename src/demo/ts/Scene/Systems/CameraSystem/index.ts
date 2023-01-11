@@ -3,15 +3,18 @@ import * as GLP from 'glpower';
 export class CameraSystem extends GLP.System {
 
 	private size: GLP.Vector;
+	private lightOffsetQuaternion: GLP.Quaternion;
 
 	constructor( ecs: GLP.ECS ) {
 
 		super( ecs, {
 			perspectiveCamera: [ "camera", "perspective" ],
-			orthographicCamera: [ "camera", "orthocraphic" ]
+			orthographicCamera: [ "camera", "orthographic" ]
 		} );
 
 		this.size = new GLP.Vector();
+
+		this.lightOffsetQuaternion = new GLP.Quaternion().euler( { x: - Math.PI / 2, y: 0, z: 0 } );
 
 	}
 
@@ -19,10 +22,19 @@ export class CameraSystem extends GLP.System {
 
 		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
 		const transform = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' );
+		const light = event.ecs.getComponent<GLP.ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
 
 		if ( transform ) {
 
-			camera.viewMatrix.copy( transform.world ).inverse();
+			if ( light ) {
+
+				camera.viewMatrix.copy( transform.world ).applyQuaternion( this.lightOffsetQuaternion ).inverse();
+
+			} else {
+
+				camera.viewMatrix.copy( transform.world ).inverse();
+
+			}
 
 		}
 

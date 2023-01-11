@@ -19,7 +19,7 @@ void main( void ) {
 	#ifdef IS_DEPTH
 	
 		float fragCoordZ = 0.5 * vHighPrecisionZW.x / vHighPrecisionZW.y + 0.5;
-		outColor0 = vec4( 1.0 );
+		outColor0 = vec4( fragCoordZ );
 		return;
 		
 	#endif

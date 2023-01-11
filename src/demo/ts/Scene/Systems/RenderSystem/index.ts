@@ -137,7 +137,7 @@ export class RenderSystem extends GLP.System {
 			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
 			this.lights.directionalLight.push( {
-				direction: new GLP.Vector( 0.0, 0.0, 1.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
+				direction: new GLP.Vector( 0.0, 1.0, 0.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
 				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
 			} );
 
@@ -161,15 +161,17 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		const { renderTarget, postprocess } = event.ecs.getComponent<GLP.ComponentRenderCamera>( event.world, entity, renderCameraType )!;
+		const { renderTarget, postprocess } = event.ecs.getComponent<GLP.ComponentRenderCamera & GLP.ComponentShadowmapCamera>( event.world, entity, renderCameraType )!;
 
 		if ( renderTarget ) {
 
+			this.gl.viewport( 0, 0, renderTarget.size.x, renderTarget.size.y );
 			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, renderTarget.getFrameBuffer() );
 			this.gl.drawBuffers( renderTarget.textureAttachmentList );
 
 		} else {
 
+			this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight ); //DEBUG
 			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 		}
@@ -205,7 +207,7 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		if ( postprocess && renderTarget ) {
+		if ( postprocess ) {
 
 			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, { viewMatrix: viewMatrix, projectionMatrix: projectionMatrix } );
 
@@ -227,7 +229,7 @@ export class RenderSystem extends GLP.System {
 
 			} else {
 
-				this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight );
+				this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight ); //DEBUG
 				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 			}
