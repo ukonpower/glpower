@@ -169,44 +169,26 @@ export class BLidgeSystem extends GLP.System {
 
 				blidgeComponent.curveGroups = {};
 
-				const positionCurveGroupName = obj.animation.find( item => item.indexOf( '_location' ) > - 1 );
-
-				if ( positionCurveGroupName ) {
-
-					blidgeComponent.curveGroups.position = this.blidge.curveGroups.find( curveGroup => curveGroup.name == positionCurveGroupName );
-
-				}
-
-				const rotationCurveGroupName = obj.animation.find( item => item.indexOf( '_rotation_euler' ) > - 1 );
-
-				if ( rotationCurveGroupName ) {
-
-					blidgeComponent.curveGroups.rotation = this.blidge.curveGroups.find( curveGroup => curveGroup.name == rotationCurveGroupName );
-
-				}
-
-				const scaleCurveGroupName = obj.animation.find( item => item.indexOf( '_scale' ) > - 1 );
-
-				if ( scaleCurveGroupName ) {
-
-					blidgeComponent.curveGroups.scale = this.blidge.curveGroups.find( curveGroup => curveGroup.name == scaleCurveGroupName );
-
-				}
+				blidgeComponent.curveGroups.position = this.blidge.curveGroups.find( curveGroup => curveGroup.name == obj.animation.position );
+				blidgeComponent.curveGroups.rotation = this.blidge.curveGroups.find( curveGroup => curveGroup.name == obj.animation.rotation );
+				blidgeComponent.curveGroups.scale = this.blidge.curveGroups.find( curveGroup => curveGroup.name == obj.animation.scale );
 
 				blidgeComponent.curveGroups.uniforms = [];
 
 				// material
 
-				for ( let i = 0; i < obj.material.uniforms.length; i ++ ) {
+				const keys = Object.keys( obj.material.uniforms );
 
-					const item = obj.material.uniforms[ i ];
+				for ( let i = 0; i < keys.length; i ++ ) {
 
-					const curve = this.blidge.curveGroups.find( curve => curve.name == item.value );
+					const name = keys[ i ];
+					const accessor = obj.material.uniforms[ name ];
+					const curve = this.blidge.curveGroups.find( curve => curve.name == accessor );
 
 					if ( curve ) {
 
 						blidgeComponent.curveGroups.uniforms.push( {
-							name: item.name,
+							name: name,
 							curve: curve
 						} );
 
@@ -235,6 +217,9 @@ export class BLidgeSystem extends GLP.System {
 						};
 
 					} );
+
+					console.log( uniforms );
+
 
 					if ( type == 'cube' ) {
 
