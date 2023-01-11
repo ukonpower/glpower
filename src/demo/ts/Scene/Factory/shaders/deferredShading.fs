@@ -25,6 +25,14 @@ struct DirectionalLight {
 	vec3 color;
 };
 
+struct DirectionalLightShadow {
+	float near;
+	float far;
+	mat4 viewMatrix;
+	mat4 projectionMatrix;
+	sampler2D shadowMap;
+};
+
 struct Light {
 	vec3 direction;
 	vec3 color;
@@ -42,6 +50,7 @@ uniform vec3 uCameraPosition;
 uniform mat4 viewMatrix;
 
 uniform DirectionalLight directionalLight[3];
+uniform DirectionalLightShadow directionalLightShadow[3];
 
 in vec2 vUv;
 
@@ -166,10 +175,19 @@ void main( void ) {
 		light.color = directionalLight[i].color;
 
 		outColor += RE( geo, mat, light );
+
+		vec3 worldPos = tex0.xyz;
+		vec4 mvPos = directionalLightShadow[i].viewMatrix * vec4( worldPos, 1.0 );
+		vec4 mvpPos = directionalLightShadow[i].projectionMatrix * mvPos;
+		// vec2 uv = mvpPos.xy / mvpPos.w;
+
+		// outColor = vec3(uv, 1.0 );
+		// outColor = texture( directionalLightShadow[0].shadowMap, uv ).xyz;
 		
 	} 
 
 	outColor += mat.emission;
+
 
 	glFragOut = vec4( outColor, 1.0 );
 

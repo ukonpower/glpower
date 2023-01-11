@@ -14,6 +14,7 @@ uniform mat4 normalMatrix;
 out vec2 vUv;
 out vec3 vColor;
 out vec3 vNormal;
+out vec3 vViewPos;
 out vec3 vPos;
 out vec2 vHighPrecisionZW;
 
@@ -29,6 +30,7 @@ void main( void ) {
 	vColor = vec3( uv, 1.0 );
 	vNormal = ( normalMatrix * vec4(normal, 1.0) ).xyz;
 	vPos = modelPosition.xyz;
+	vViewPos = mvPosition.xyz;
 	vHighPrecisionZW = gl_Position.zw;
 	
 }
