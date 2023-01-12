@@ -1,6 +1,6 @@
 import EventEmitter from 'wolfy87-eventemitter';
 import { IVector2 } from '..';
-export declare type FCurveInterpolation = "BEZIER" | "LINEAR";
+export declare type FCurveInterpolation = "BEZIER" | "LINEAR" | "CONSTANT";
 export declare class FCurveKeyFrame extends EventEmitter {
     coordinate: IVector2;
     handleLeft: IVector2;

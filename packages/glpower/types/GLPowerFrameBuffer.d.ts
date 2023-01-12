@@ -8,7 +8,7 @@ export declare class GLPowerFrameBuffer {
     textures: GLPowerTexture[];
     textureAttachmentList: number[];
     constructor(gl: WebGL2RenderingContext);
-    setTexture(textures: GLPowerTexture[]): void;
+    setTexture(textures: GLPowerTexture[]): this;
     setSize(size: Vector): void;
     setSize(width: number, height: number): void;
     getFrameBuffer(): WebGLFramebuffer | null;

@@ -1,37 +1,49 @@
 import EventEmitter from "wolfy87-eventemitter";
 import { IVector2, IVector3 } from "..";
-import { AnimationAction } from "../Animation/AnimationAction";
+import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation } from "../Animation/FCurveKeyFrame";
 export declare type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage;
 export declare type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w';
 export declare type BLidgeSyncSceneMessage = {
     type: "sync/scene";
-    data: BLidgeScene;
+    data: BLidgeSceneData;
 };
-export declare type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane';
+export declare type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
 export declare type BLidgeCameraParams = {
     fov: number;
+};
+export declare type BLidgeMeshParams = {
+    position: number[];
+    uv: number[];
+    normal: number[];
+    index: number[];
+};
+export declare type BLidgeAnimation = {
+    [key: string]: string;
+};
+export declare type BLidgeMaterialParams = {
+    name: string;
+    uniforms: BLidgeAnimation;
 };
 export declare type BLidgeObject = {
     name: string;
     parent: string;
     children: BLidgeObject[];
-    actions: string[];
+    animation: BLidgeAnimation;
     position: IVector3;
     rotation: IVector3;
     scale: IVector3;
     type: BLidgeObjectType;
+    material: BLidgeMaterialParams;
     camera?: BLidgeCameraParams;
+    mesh?: BLidgeMeshParams;
 };
-export declare type BLidgeScene = {
-    actions: BLidgeAnimationActionParam[];
-    scene: BLidgeObject;
-};
-export declare type BLidgeAnimationActionParam = {
-    name: string;
-    fcurve_groups: {
+export declare type BLidgeSceneData = {
+    animations: {
         [key: string]: BLidgeAnimationCurveParam[];
     };
+    scene: BLidgeObject;
+    frame: BLidgeSceneFrameData;
 };
 export declare type BLidgeAnimationCurveParam = {
     keyframes: BLidgeAnimationCurveKeyFrameParam[];
@@ -46,9 +58,9 @@ export declare type BLidgeAnimationCurveKeyFrameParam = {
 };
 export declare type BLidgeSyncFrameMessage = {
     type: "sync/timeline";
-    data: BLidgeTimelineData;
+    data: BLidgeSceneFrameData;
 };
-export declare type BLidgeTimelineData = {
+export declare type BLidgeSceneFrameData = {
     start: number;
     end: number;
     current: number;
@@ -57,11 +69,9 @@ export declare class BLidge extends EventEmitter {
     private url?;
     private ws?;
     connected: boolean;
-    frameCurrent: number;
-    frameStart: number;
-    frameEnd: number;
+    frame: BLidgeSceneFrameData;
     objects: BLidgeObject[];
-    actions: AnimationAction[];
+    curveGroups: FCurveGroup[];
     scene: BLidgeObject | null;
     constructor(url?: string);
     connect(url: string): void;
@@ -71,11 +81,7 @@ export declare class BLidge extends EventEmitter {
     private onOpen;
     private onMessage;
     private onClose;
-    getActionNameList(objectName: string): string[];
-    getAction(actionName: string): AnimationAction | null;
-    getActionList(objectName: string): AnimationAction[];
-    getActionContainsAccessor(accessor: string): AnimationAction | null;
-    setTimeline(current: number, start?: number, end?: number): void;
+    getCurveGroup(name: string): FCurveGroup | undefined;
     dispose(): void;
     disposeWS(): void;
 }
