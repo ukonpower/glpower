@@ -73,6 +73,12 @@ export class FCurveGroup extends EventEmitter {
 
 	}
 
+	public getFCurve( axis: Types.RecommendString<Types.Axis> ) {
+
+		return this.curves.get( axis ) || null;
+
+	}
+
 	public setFrame( frame: number ) {
 
 		if ( frame == this.updatedFrame ) return this;
