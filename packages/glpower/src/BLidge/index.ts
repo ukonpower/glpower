@@ -262,19 +262,9 @@ export class BLidge extends EventEmitter {
 		API
 	-------------------------------*/
 
-	public getActionNameList( objectName: string ) {
+	public getCurveGroup( name: string ) {
 
-		for ( let i = 0; i < this.objects.length; i ++ ) {
-
-			if ( this.objects[ i ].name == objectName ) {
-
-				return this.objects[ i ].animation;
-
-			}
-
-		}
-
-		return [];
+		return this.curveGroups.find( curve => curve.name == name ) || null;
 
 	}
 
