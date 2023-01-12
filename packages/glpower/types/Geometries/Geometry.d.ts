@@ -12,7 +12,7 @@ export declare class Geometry {
     getAttribute(name: DefaultAttributeName | (string & {})): Attribute;
     private updateVertCount;
     getAttributeBuffer(core: Power, name: DefaultAttributeName | (string & {}), constructor: Float32ArrayConstructor | Uint16ArrayConstructor, bufferType?: BufferType): AttributeBuffer;
-    getComponent(core: Power): {
+    getComponent(power: Power): {
         attributes: {
             buffer: import("../GLPowerBuffer").GLPowerBuffer;
             size: number;

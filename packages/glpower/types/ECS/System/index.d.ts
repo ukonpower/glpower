@@ -16,7 +16,7 @@ export declare class System extends EventEmitter {
         [key: string]: EntityQuery;
     });
     update(event: SystemUpdateEvent): void;
-    protected beforeUpdateImpl(logicName: string, event: SystemUpdateEvent): void;
+    protected beforeUpdateImpl(logicName: string, event: SystemUpdateEvent, entities: Entity[]): void;
     protected updateImpl(logicName: string, entity: Entity, event: SystemUpdateEvent): void;
     protected afterUpdateImpl(logicName: string, event: SystemUpdateEvent): void;
     dispose(): void;

@@ -38,6 +38,7 @@ export default defineConfig( {
 	},
 	build: {
 		outDir: '../public/',
+		minify: 'terser',
 		rollupOptions: {
 			input,
 			output: {

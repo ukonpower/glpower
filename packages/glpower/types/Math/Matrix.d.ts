@@ -8,12 +8,12 @@ export declare class Matrix {
     clone(): Matrix;
     copy(mat: Matrix): this;
     perspective(fov: number, aspect: number, near: number, far: number): this;
+    orthographic(width: number, height: number, near: number, far: number): this;
     lookAt(eye: Vector, target: Vector, up: Vector): this;
     inverse(): this;
     transpose(): this;
     set(elm: number[]): this;
     setFromTransform(pos: IVector3, qua: Quaternion | IVector4, scale: IVector3): this;
-    decompose(pos?: IVector3, rot?: IVector3, scale?: IVector3): void;
     applyPosition(position: IVector3): this;
     applyQuaternion(q: Quaternion | IVector4): this;
     applyScale(scale: IVector3): this;

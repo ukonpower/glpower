@@ -1,4 +1,4 @@
-import { Types } from "..";
+import { Matrix, Types } from "..";
 export declare type IVector2 = {
     x: number;
     y: number;
@@ -21,12 +21,16 @@ export declare class Vector {
     add(a: Vector | Types.Nullable<IVector4>): Vector;
     sub(a: number): Vector;
     sub(a: Vector | Types.Nullable<IVector4>): Vector;
-    multiply(a: number): this;
-    divide(a: number): this;
+    multiply(a: number): Vector;
+    multiply(a: Vector): Vector;
+    divide(a: number): Vector;
+    divide(a: Vector): Vector;
     length(): number;
-    normalize(): this;
+    normalize(): Vector;
     cross(v: Vector | IVector3): this;
     dot(v: Vector | IVector3): number;
+    applyMatrix3(mat: Matrix): void;
+    applyMatrix4(mat: Matrix): this;
     copy(a: Vector | Types.Nullable<IVector4>): this;
     clone(): Vector;
     getElm(type?: 'vec2' | 'vec3' | 'vec4'): number[];

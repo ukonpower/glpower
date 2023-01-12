@@ -11,7 +11,8 @@ export declare class Quaternion {
     y: number;
     z: number;
     w: number;
-    constructor();
+    constructor(x?: number, y?: number, z?: number, w?: number);
+    set(x?: number, y?: number, z?: number, w?: number): void;
     euler(euler: Vector | IVector3, order?: EulerOrder): this;
     multiply(): void;
 }
