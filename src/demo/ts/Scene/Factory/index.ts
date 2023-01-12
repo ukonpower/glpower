@@ -251,8 +251,8 @@ export class Factory {
 		} );
 
 		this.ecs.addComponent<GLP.ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
-			width: 10,
-			height: 10
+			width: 15,
+			height: 15
 		} );
 
 		// events
@@ -263,7 +263,7 @@ export class Factory {
 				},
 				onResize: ( e ) => {
 
-					rtShadowMap.setSize( e.size );
+					rtShadowMap.setSize( 512, 512 );
 
 				}
 			},

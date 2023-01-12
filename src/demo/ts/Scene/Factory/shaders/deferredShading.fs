@@ -60,6 +60,19 @@ layout (location = 0) out vec4 glFragOut;
 
 #pragma glslify: import('./constants.glsl' )
 
+vec4 floatToRGBA( float v ) {
+	vec4 enc = vec4(1.0, 255.0, 65025.0, 16581375.0) * v;
+	enc = fract(enc);
+	enc -= enc.yzww * vec4(1.0/255.0,1.0/255.0,1.0/255.0,0.0);
+	return enc;
+}
+
+float rgbaToFloat( vec4 rgba ) {
+	return dot( rgba, vec4(1.0, 1.0/255.0, 1.0/65025.0, 1.0/16581375.0) );
+}
+
+// re
+
 float ggx( float dNH, float roughness ) {
 	
 	float a2 = roughness * roughness;
@@ -174,20 +187,31 @@ void main( void ) {
 		light.direction = directionalLight[i].direction;
 		light.color = directionalLight[i].color;
 
-		outColor += RE( geo, mat, light );
+		// shadow
 
-		vec3 worldPos = tex0.xyz;
-		vec4 mvPos = directionalLightShadow[i].viewMatrix * vec4( worldPos, 1.0 );
-		vec4 mvpPos = directionalLightShadow[i].projectionMatrix * mvPos;
-		// vec2 uv = mvpPos.xy / mvpPos.w;
+		float shadow = 1.0;
 
-		// outColor = vec3(uv, 1.0 );
-		// outColor = texture( directionalLightShadow[0].shadowMap, uv ).xyz;
+		vec3 modelPosition = tex0.xyz;
+		vec4 mvPosition = directionalLightShadow[i].viewMatrix * vec4( modelPosition, 1.0 );
+		vec4 mvpPosition = directionalLightShadow[i].projectionMatrix * mvPosition;
+		float lightNear = directionalLightShadow[i].near;
+		float lightFar = directionalLightShadow[i].far;
+		vec2 shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
+
+		float lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
+		float shadowMapDepth = rgbaToFloat( texture( directionalLightShadow[0].shadowMap, shadowCoord ) );
+
+		if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
+
+			shadow = step( lightDepth, shadowMapDepth + 0.010 );
+
+		}
+		
+		outColor += RE( geo, mat, light ) * shadow;
 		
 	} 
 
 	outColor += mat.emission;
-
 
 	glFragOut = vec4( outColor, 1.0 );
 
