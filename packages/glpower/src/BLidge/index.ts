@@ -264,7 +264,7 @@ export class BLidge extends EventEmitter {
 
 	public getCurveGroup( name: string ) {
 
-		return this.curveGroups.find( curve => curve.name == name ) || null;
+		return this.curveGroups.find( curve => curve.name == name );
 
 	}
 
