@@ -38,7 +38,7 @@ void main( void ) {
 
 	for( int i = 0; i < BLOOM_COUNT; i ++ ) {
 
-		col += texture( sampler1, getMipmapUV( vUv, float( i ) ) ).xyz;
+		col += texture( sampler1, getMipmapUV( vUv, float( i ) ) ).xyz * 0.8;
 		
 	}
 

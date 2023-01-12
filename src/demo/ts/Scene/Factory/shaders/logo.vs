@@ -18,6 +18,7 @@ out vec2 vUv;
 out vec3 vColor;
 out vec3 vNormal;
 out vec3 vPos;
+out vec3 vMVPosition;
 
 #pragma glslify: random = require('./random.glsl' )
 
@@ -36,5 +37,6 @@ void main( void ) {
 	vColor = vec3( uv, 1.0 );
 	vNormal = ( normalMatrix * vec4(normal, 1.0) ).xyz;
 	vPos = modelPosition.xyz;
+	vMVPosition = mvPosition.xyz;
 	
 }

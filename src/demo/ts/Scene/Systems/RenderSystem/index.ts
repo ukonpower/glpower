@@ -33,6 +33,7 @@ export class RenderSystem extends GLP.System {
 
 	// tmp
 
+	private textureUnit: number = 0;
 	private lightPosition: GLP.Vector;
 	private lightDirection: GLP.Vector;
 
@@ -267,7 +268,7 @@ export class RenderSystem extends GLP.System {
 
 				for ( let i = 0; i < pp.input.length; i ++ ) {
 
-					pp.input[ i ].activate( i );
+					pp.input[ i ].activate( this.textureUnit ++ );
 
 					pp.uniforms[ 'sampler' + i ] = {
 						type: '1i',
@@ -338,7 +339,8 @@ export class RenderSystem extends GLP.System {
 
 				if ( dLightShadow ) {
 
-					dLightShadow.texture.activate( 0 );
+					dLightShadow.texture.activate( this.textureUnit ++ );
+
 					program.setUniform( 'directionalLightShadow[' + i + '].near', '1fv', [ dLightShadow.near ] );
 					program.setUniform( 'directionalLightShadow[' + i + '].far', '1fv', [ dLightShadow.far ] );
 					program.setUniform( 'directionalLightShadow[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
@@ -451,6 +453,8 @@ export class RenderSystem extends GLP.System {
 		}
 
 		program.clean();
+
+		this.textureUnit = 0;
 
 	}
 
