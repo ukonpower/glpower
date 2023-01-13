@@ -48,11 +48,11 @@ uniform vec3 uColor;
 uniform vec3 uCameraPosition;
 uniform mat4 viewMatrix;
 
-#if LIGHT_DIR > 0 
+#if NUM_LIGHT_DIR > 0 
 
-	uniform DirectionalLight directionalLight[LIGHT_DIR];
-	uniform DirectionalLightShadow directionalLightShadow[LIGHT_DIR];
-	uniform sampler2D directionalLightShadowMap[LIGHT_DIR];
+	uniform DirectionalLight directionalLight[NUM_LIGHT_DIR];
+	uniform DirectionalLightShadow directionalLightShadow[NUM_LIGHT_DIR];
+	uniform sampler2D directionalLightShadowMap[NUM_LIGHT_DIR];
 	
 #endif
 
@@ -185,9 +185,9 @@ void main( void ) {
 
 	// direcitonalLight
 
-	#if LIGHT_DIR > 0 
+	#if NUM_LIGHT_DIR > 0 
 
-		for( int i = 0; i < LIGHT_DIR; i++ ){
+		for( int i = 0; i < NUM_LIGHT_DIR; i++ ){
 
 			Light light;
 			light.direction = directionalLight[i].direction;
