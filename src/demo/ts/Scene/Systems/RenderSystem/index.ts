@@ -1,6 +1,7 @@
 import * as GLP from 'glpower';
 import { Entity, Uniformable } from 'glpower';
 import { ProgramManager } from './ProgramManager';
+import { shaderParse } from './ShaderParser';
 
 type CameraData = {
 	modelMatrix?: GLP.Matrix,
@@ -297,11 +298,10 @@ export class RenderSystem extends GLP.System {
 
 		if ( material.__program === undefined || material.needsUpdate !== false || this.lights.needsUpdate ) {
 
-			material.__program = this.programManager.get( material.vertexShader, material.fragmentShader, {
-				...material.defines,
-				NUM_LIGHT_DIR: this.lights.directionalLight.length,
-				NUM_LIGHT_POINT: this.lights.pointLight.length,
-			} );
+			const vs = shaderParse( material.vertexShader, material.defines, this.lights );
+			const fs = shaderParse( material.fragmentShader, material.defines, this.lights );
+
+			material.__program = this.programManager.get( vs, fs );
 
 			material.needsUpdate = false;
 
