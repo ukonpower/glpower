@@ -201,20 +201,18 @@ void main( void ) {
 
 		#pragma loop_start NUM_LIGHT_DIR
 
-			light.direction = directionalLight[LOOP_INDEX].direction;
-			light.color = directionalLight[LOOP_INDEX].color;
-
 			// shadow
 
 			shadow = 1.0;
-			mvPosition = directionalLightShadow[LOOP_INDEX].viewMatrix * vec4( tex0.xyz, 1.0 );
-			mvpPosition = directionalLightShadow[LOOP_INDEX].projectionMatrix * mvPosition;
-			lightNear = directionalLightShadow[LOOP_INDEX].near;
-			lightFar = directionalLightShadow[LOOP_INDEX].far;
-			shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
 
-			lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
-			shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[LOOP_INDEX], shadowCoord ) );
+			mvPosition = directionalLightShadow[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
+			mvpPosition = directionalLightShadow[ LOOP_INDEX ].projectionMatrix * mvPosition;
+			lightNear = directionalLightShadow[ LOOP_INDEX ].near;
+			lightFar = directionalLightShadow[ LOOP_INDEX ].far;
+			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
+
+			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
+			shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[ LOOP_INDEX ], shadowCoord ) );
 
 			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
 
@@ -222,6 +220,11 @@ void main( void ) {
 
 			}
 			
+			// lighting
+
+			light.direction = directionalLight[ LOOP_INDEX ].direction;
+			light.color = directionalLight[ LOOP_INDEX ].color;
+
 			outColor += RE( geo, mat, light ) * shadow;
 
 		#pragma loop_end
