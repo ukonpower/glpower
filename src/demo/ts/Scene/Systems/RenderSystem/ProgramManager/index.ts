@@ -1,5 +1,4 @@
 import * as GLP from 'glpower';
-import { Lights } from '..';
 
 export class ProgramManager {
 
@@ -50,20 +49,12 @@ export class ProgramManager {
 
 	}
 
-	public get( material:GLP.ComponentMaterial, lights: Lights ) {
+	public get( vertexShader: string, fragmentShader: string, defines: {[key:string]: number | string} ) {
 
-		const defines = {
-			...material.defines,
-			...{
-				LIGHT_DIR: lights.directionalLight.length,
-				LIGHT_POINT: lights.pointLight.length
-			}
-		};
+		const vs = this.insertDefines( vertexShader, defines );
+		const fs = this.insertDefines( fragmentShader, defines );
 
-		const vertexShader = this.insertDefines( material.vertexShader, defines );
-		const fragmentShader = this.insertDefines( material.fragmentShader, defines );
-
-		const id = vertexShader + fragmentShader;
+		const id = vs + fs;
 
 		const programCache = this.pool.get( id );
 
@@ -74,7 +65,7 @@ export class ProgramManager {
 		}
 
 		const program = this.core.createProgram();
-		program.setShader( vertexShader, fragmentShader );
+		program.setShader( vs, fs );
 
 		this.pool.set( id, program );
 

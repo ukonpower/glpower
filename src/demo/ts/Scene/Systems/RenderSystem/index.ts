@@ -297,7 +297,11 @@ export class RenderSystem extends GLP.System {
 
 		if ( material.__program === undefined || material.needsUpdate !== false || this.lights.needsUpdate ) {
 
-			material.__program = this.programManager.get( material, this.lights );
+			material.__program = this.programManager.get( material.vertexShader, material.fragmentShader, {
+				...material.defines,
+				NUM_LIGHT_DIR: this.lights.directionalLight.length,
+				NUM_LIGHT_POINT: this.lights.pointLight.length,
+			} );
 
 			material.needsUpdate = false;
 
