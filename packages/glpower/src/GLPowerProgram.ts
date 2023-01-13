@@ -61,7 +61,7 @@ export class GLPowerProgram {
 
 		if ( ! this.gl.getProgramParameter( this.program, this.gl.LINK_STATUS ) ) {
 
-			console.warn( 'program link error.' );
+			console.error( 'program link error:', this.gl.getProgramInfoLog( this.program ) );
 
 		}
 

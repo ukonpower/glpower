@@ -61,11 +61,7 @@ export class ECS {
 
 		world.components.forEach( component => {
 
-			if ( component[ entity ] !== null && component[ entity ] !== undefined ) {
-
-				component[ entity ] = null;
-
-			}
+			component[ entity ] = undefined;
 
 		} );
 
@@ -103,7 +99,7 @@ export class ECS {
 
 		if ( componentArray && componentArray.length > entity ) {
 
-			componentArray[ entity ] = null;
+			componentArray[ entity ] = undefined;
 
 		}
 
@@ -115,7 +111,7 @@ export class ECS {
 
 		if ( component !== undefined ) {
 
-			return ( component[ entity ] || null ) as T;
+			return ( component[ entity ] ) as T;
 
 		}
 

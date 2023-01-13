@@ -1,7 +1,7 @@
 import { IVector2, IVector3, IVector4, Vector } from "../../Math/Vector";
 import { GLPowerProgram, Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
-import { AttributeBuffer } from "../../GLPowerVAO";
+import { AttributeBuffer, GLPowerVAO } from "../../GLPowerVAO";
 import { BLidgeObjectType } from "../../BLidge";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
 import { Matrix } from "../../Math/Matrix";
@@ -79,7 +79,7 @@ export type ComponentMaterial = {
 export type ComponentGeometry = {
 	attributes: ( {name: string } & AttributeBuffer )[]
 	index: AttributeBuffer
-	needsUpdate?: { [key:string]: boolean }
+	needsUpdate?: Map<GLPowerVAO, boolean>
 }
 
 /*-------------------------------

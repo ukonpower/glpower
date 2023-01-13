@@ -30,7 +30,6 @@ struct DirectionalLightShadow {
 	float far;
 	mat4 viewMatrix;
 	mat4 projectionMatrix;
-	sampler2D shadowMap;
 };
 
 struct Light {
@@ -49,8 +48,13 @@ uniform vec3 uColor;
 uniform vec3 uCameraPosition;
 uniform mat4 viewMatrix;
 
-uniform DirectionalLight directionalLight[3];
-uniform DirectionalLightShadow directionalLightShadow[3];
+#if LIGHT_DIR > 0 
+
+	uniform DirectionalLight directionalLight[LIGHT_DIR];
+	uniform DirectionalLightShadow directionalLightShadow[LIGHT_DIR];
+	uniform sampler2D directionalLightShadowMap[LIGHT_DIR];
+	
+#endif
 
 in vec2 vUv;
 
@@ -180,37 +184,41 @@ void main( void ) {
 	float w = clamp( dot( geo.normal, (vec3( 1.0, 1.0, 1.0 )) ), 0.0, 1.0 );
 
 	// direcitonalLight
+
+	#if LIGHT_DIR > 0 
+
+		for( int i = 0; i < LIGHT_DIR; i++ ){
+
+			Light light;
+			light.direction = directionalLight[i].direction;
+			light.color = directionalLight[i].color;
+
+			// shadow
+
+			float shadow = 1.0;
+
+			vec3 modelPosition = tex0.xyz;
+			vec4 mvPosition = directionalLightShadow[i].viewMatrix * vec4( modelPosition, 1.0 );
+			vec4 mvpPosition = directionalLightShadow[i].projectionMatrix * mvPosition;
+			float lightNear = directionalLightShadow[i].near;
+			float lightFar = directionalLightShadow[i].far;
+			vec2 shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
+
+			float lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
+			float shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[0], shadowCoord ) );
+
+			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
+
+				shadow = step( lightDepth, shadowMapDepth + 0.010 );
+
+			}
+			
+			outColor += RE( geo, mat, light ) * shadow;
+			
+		} 
 	
-	for( int i = 0; i < 1; i++ ){
-
-		Light light;
-		light.direction = directionalLight[i].direction;
-		light.color = directionalLight[i].color;
-
-		// shadow
-
-		float shadow = 1.0;
-
-		vec3 modelPosition = tex0.xyz;
-		vec4 mvPosition = directionalLightShadow[i].viewMatrix * vec4( modelPosition, 1.0 );
-		vec4 mvpPosition = directionalLightShadow[i].projectionMatrix * mvPosition;
-		float lightNear = directionalLightShadow[i].near;
-		float lightFar = directionalLightShadow[i].far;
-		vec2 shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
-
-		float lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
-		float shadowMapDepth = rgbaToFloat( texture( directionalLightShadow[0].shadowMap, shadowCoord ) );
-
-		if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
-
-			shadow = step( lightDepth, shadowMapDepth + 0.010 );
-
-		}
-		
-		outColor += RE( geo, mat, light ) * shadow;
-		
-	} 
-
+	#endif
+	
 	outColor += mat.emission;
 
 	glFragOut = vec4( outColor, 1.0 );

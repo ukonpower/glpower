@@ -10,7 +10,7 @@ import { FCurveGroup } from "../../Animation/FCurveGroup";
 export interface Component {
     [key: string]: any;
 }
-export declare type ComponentName = 'position' | 'scale' | 'matrix' | 'sceneNode' | 'events' | 'camera' | 'perspective' | "orthographic" | "renderCameraDeferred" | "renderCameraForward" | "renderCameraShadowMap" | 'postprocess' | 'material' | 'materialDepth' | 'geometry' | 'directionalLight' | 'pointLight' | 'blidge' | (string & {});
+export declare type ComponentName = 'position' | 'scale' | 'matrix' | 'sceneNode' | 'events' | 'camera' | 'perspective' | "orthographic" | "renderCameraDeferred" | "renderCameraForward" | "renderCameraShadowMap" | 'postprocess' | 'material' | 'materialDepth' | 'geometry' | 'directionalLight' | 'pointLight' | 'blidge' | ( string & {} );
 export declare type ComponentVector2 = {} & IVector2;
 export declare type ComponentVector3 = {} & IVector3;
 export declare type ComponentVector4 = {} & IVector4;
@@ -41,9 +41,9 @@ export declare type ComponentMaterial = {
     __program?: GLPowerProgram;
 };
 export declare type ComponentGeometry = {
-    attributes: ({
+    attributes: ( {
         name: string;
-    } & AttributeBuffer)[];
+    } & AttributeBuffer )[];
     index: AttributeBuffer;
     needsUpdate?: {
         [key: string]: boolean;
@@ -79,11 +79,11 @@ export declare type ComponentLightPoint = {
     color: IVector3;
     intensity: number;
 };
-export declare type ComponentPostProcess = (ComponentMaterial & {
+export declare type ComponentPostProcess = ( ComponentMaterial & {
     input: GLPowerTexture[];
     renderTarget: GLPowerFrameBuffer | null;
     customGeometry?: ComponentGeometry;
-})[];
+} )[];
 export declare type BLidgeMaterialParam = {
     name: string;
     uniforms: {
@@ -107,12 +107,12 @@ export declare type ComponentBLidge = {
 };
 export declare type ComponentEvents = {
     inited?: boolean;
-    onUpdate?: (event: {
+    onUpdate?: ( event: {
         time: number;
         deltaTime: number;
-    }) => void;
-    onResize?: (event: {
+    } ) => void;
+    onResize?: ( event: {
         size: Vector;
-    }) => void;
+    } ) => void;
 };
 //# sourceMappingURL=index.d.ts.map

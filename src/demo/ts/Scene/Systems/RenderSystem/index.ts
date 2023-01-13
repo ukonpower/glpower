@@ -89,9 +89,15 @@ export class RenderSystem extends GLP.System {
 
 	}
 
-	protected beforeUpdateImpl( phase: string, event: GLP.SystemUpdateEvent, entities: Entity[] ): void {
+	public update( event: GLP.SystemUpdateEvent ): void {
 
 		this.lights.needsUpdate = false;
+
+		super.update( event );
+
+	}
+
+	protected beforeUpdateImpl( phase: string, event: GLP.SystemUpdateEvent, entities: Entity[] ): void {
 
 		if ( phase == 'directionalLight' ) {
 
@@ -345,7 +351,7 @@ export class RenderSystem extends GLP.System {
 					program.setUniform( 'directionalLightShadow[' + i + '].far', '1fv', [ dLightShadow.far ] );
 					program.setUniform( 'directionalLightShadow[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
 					program.setUniform( 'directionalLightShadow[' + i + '].projectionMatrix', 'Matrix4fv', dLightShadow.projectionMatrix.elm );
-					program.setUniform( 'directionalLightShadow[' + i + '].shadowMap', '1i', [ dLightShadow.texture.unit ] );
+					program.setUniform( 'directionalLightShadowMap[' + i + ']', '1i', [ dLightShadow.texture.unit ] );
 
 				}
 
@@ -412,11 +418,13 @@ export class RenderSystem extends GLP.System {
 
 			if ( geometry.needsUpdate === undefined ) {
 
-				geometry.needsUpdate = {};
+				geometry.needsUpdate = new Map();
 
 			}
 
-			if ( geometry.needsUpdate[ entityId ] !== false ) {
+			const cached = geometry.needsUpdate.get( vao );
+
+			if ( ! cached ) {
 
 				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
@@ -430,7 +438,7 @@ export class RenderSystem extends GLP.System {
 
 				vao.updateAttributes( true );
 
-				geometry.needsUpdate[ entityId ] = false;
+				geometry.needsUpdate.set( vao, true );
 
 			}
 
