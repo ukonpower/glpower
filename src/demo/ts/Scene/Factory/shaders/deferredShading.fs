@@ -187,25 +187,34 @@ void main( void ) {
 
 	#if NUM_LIGHT_DIR > 0 
 
-		for( int i = 0; i < NUM_LIGHT_DIR; i++ ){
+		Light light;
 
-			Light light;
-			light.direction = directionalLight[i].direction;
-			light.color = directionalLight[i].color;
+		float shadow;
+		vec4 mvPosition;
+		vec4 mvpPosition;
+		float lightNear;
+		float lightFar;
+		vec2 shadowCoord;
+
+		float lightDepth;
+		float shadowMapDepth;
+
+		#pragma loop_start NUM_LIGHT_DIR
+
+			light.direction = directionalLight[LOOP_INDEX].direction;
+			light.color = directionalLight[LOOP_INDEX].color;
 
 			// shadow
 
-			float shadow = 1.0;
+			shadow = 1.0;
+			mvPosition = directionalLightShadow[LOOP_INDEX].viewMatrix * vec4( tex0.xyz, 1.0 );
+			mvpPosition = directionalLightShadow[LOOP_INDEX].projectionMatrix * mvPosition;
+			lightNear = directionalLightShadow[LOOP_INDEX].near;
+			lightFar = directionalLightShadow[LOOP_INDEX].far;
+			shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
 
-			vec3 modelPosition = tex0.xyz;
-			vec4 mvPosition = directionalLightShadow[i].viewMatrix * vec4( modelPosition, 1.0 );
-			vec4 mvpPosition = directionalLightShadow[i].projectionMatrix * mvPosition;
-			float lightNear = directionalLightShadow[i].near;
-			float lightFar = directionalLightShadow[i].far;
-			vec2 shadowCoord = (mvpPosition.xy / mvpPosition.w) * 0.5 + 0.5;
-
-			float lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
-			float shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[0], shadowCoord ) );
+			lightDepth = (-mvPosition.z - lightNear ) / ( lightFar - lightNear );
+			shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[LOOP_INDEX], shadowCoord ) );
 
 			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
 
@@ -214,8 +223,8 @@ void main( void ) {
 			}
 			
 			outColor += RE( geo, mat, light ) * shadow;
-			
-		} 
+
+		#pragma loop_end
 	
 	#endif
 	
