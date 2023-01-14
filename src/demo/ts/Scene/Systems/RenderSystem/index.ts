@@ -11,11 +11,19 @@ type CameraData = {
 	far?: number
 }
 
+export type ShadowMapCamera = CameraData & {
+	viewMatrix: GLP.Matrix,
+	near: number,
+	far: number,
+	texture: GLP.GLPowerTexture,
+}
+
 export type Lights = {
 	needsUpdate: boolean
 	directionalLight: {direction: GLP.Vector, color: GLP.Vector}[],
-	pointLight: {position: GLP.Vector, color: GLP.Vector}[],
-	directionalLightShadow: ( {viewMatrix: GLP.Matrix, projectionMatrix: GLP.Matrix, near: number, far: number, texture: GLP.GLPowerTexture } | null )[]
+	directionalLightShadow: ( ShadowMapCamera | null )[]
+	spotLight: {position: GLP.Vector, direction: GLP.Vector, color: GLP.Vector}[],
+	spotLightShadow: ( ShadowMapCamera | null )[]
 }
 
 export class RenderSystem extends GLP.System {
@@ -50,7 +58,7 @@ export class RenderSystem extends GLP.System {
 
 		super( ecs, {
 			"directionalLight": [ 'directionalLight', 'position' ],
-			"pointLight": [ 'pointLight', 'position' ],
+			"spotLight": [ 'spotLight', 'position' ],
 			"shadowMap": [ 'camera', 'renderCameraShadowMap' ],
 			"deferred": [ "camera", "renderCameraDeferred" ],
 			"forward": [ "camera", "renderCameraForward" ],
@@ -85,7 +93,8 @@ export class RenderSystem extends GLP.System {
 			needsUpdate: false,
 			directionalLight: [],
 			directionalLightShadow: [],
-			pointLight: []
+			spotLight: [],
+			spotLightShadow: []
 		};
 
 	}
@@ -107,11 +116,12 @@ export class RenderSystem extends GLP.System {
 			this.lights.directionalLight.length = 0;
 			this.lights.directionalLightShadow.length = 0;
 
-		} else if ( phase == 'pointLight' ) {
+		} else if ( phase == 'spotLight' ) {
 
-			if ( this.lights.pointLight.length != entities.length ) this.lights.needsUpdate = true;
+			if ( this.lights.spotLight.length != entities.length ) this.lights.needsUpdate = true;
 
-			this.lights.pointLight.length = 0;
+			this.lights.spotLight.length = 0;
+			this.lights.spotLightShadow.length = 0;
 
 		}
 
@@ -123,9 +133,9 @@ export class RenderSystem extends GLP.System {
 
 			this.collectLight( entity, event, 'directional' );
 
-		} else if ( phase == 'pointLight' ) {
+		} else if ( phase == 'spotLight' ) {
 
-			this.collectLight( entity, event, 'point' );
+			this.collectLight( entity, event, 'spot' );
 
 		} else if ( phase == 'postprocess' ) {
 
@@ -144,9 +154,11 @@ export class RenderSystem extends GLP.System {
 
 	private collectLight( entity: GLP.Entity, event: GLP.SystemUpdateEvent, type: string ) {
 
+		let shadowCameraArray: ( ShadowMapCamera | null )[] | undefined = undefined;
+
 		if ( type == 'directional' ) {
 
-			const light = event.ecs.getComponent<GLP.ComponentLightDirection>( event.world, entity, 'directionalLight' )!;
+			const light = event.ecs.getComponent<GLP.ComponentLightDirectional>( event.world, entity, 'directionalLight' )!;
 			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
 			this.lights.directionalLight.push( {
@@ -154,12 +166,34 @@ export class RenderSystem extends GLP.System {
 				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
 			} );
 
+			shadowCameraArray = this.lights.directionalLightShadow;
+
+		} else if ( type == 'spot' ) {
+
+			const light = event.ecs.getComponent<GLP.ComponentLightDirectional>( event.world, entity, 'spotLight' )!;
+			const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
+			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
+
+			this.lights.spotLight.push( {
+				position: new GLP.Vector( 0, 0, 0, 1.0 ).applyMatrix4( matrix.world ),
+				direction: new GLP.Vector( 0.0, 1.0, 0.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
+				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
+			} );
+
+			shadowCameraArray = this.lights.spotLightShadow;
+
+		}
+
+		// shadowmap
+
+		if ( shadowCameraArray ) {
+
 			const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' );
 			const cameraShadowMap = event.ecs.getComponent<GLP.ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
 
 			if ( camera && cameraShadowMap ) {
 
-				this.lights.directionalLightShadow.push( {
+				shadowCameraArray.push( {
 					near: camera.near,
 					far: camera.far,
 					texture: cameraShadowMap.renderTarget.textures[ 0 ],
@@ -169,7 +203,7 @@ export class RenderSystem extends GLP.System {
 
 			} else {
 
-				this.lights.directionalLightShadow.push( null );
+				shadowCameraArray.push( null );
 
 			}
 
@@ -351,11 +385,37 @@ export class RenderSystem extends GLP.System {
 
 					dLightShadow.texture.activate( this.textureUnit ++ );
 
-					program.setUniform( 'directionalLightShadow[' + i + '].near', '1fv', [ dLightShadow.near ] );
-					program.setUniform( 'directionalLightShadow[' + i + '].far', '1fv', [ dLightShadow.far ] );
-					program.setUniform( 'directionalLightShadow[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
-					program.setUniform( 'directionalLightShadow[' + i + '].projectionMatrix', 'Matrix4fv', dLightShadow.projectionMatrix.elm );
+					program.setUniform( 'directionalLightCamera[' + i + '].near', '1fv', [ dLightShadow.near ] );
+					program.setUniform( 'directionalLightCamera[' + i + '].far', '1fv', [ dLightShadow.far ] );
+					program.setUniform( 'directionalLightCamera[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
+					program.setUniform( 'directionalLightCamera[' + i + '].projectionMatrix', 'Matrix4fv', dLightShadow.projectionMatrix.elm );
 					program.setUniform( 'directionalLightShadowMap[' + i + ']', '1i', [ dLightShadow.texture.unit ] );
+
+				}
+
+			}
+
+			for ( let i = 0; i < this.lights.spotLight.length; i ++ ) {
+
+				const sLight = this.lights.spotLight[ i ];
+				const sLightShadow = this.lights.spotLightShadow[ i ];
+
+				this.lightPosition.copy( sLight.position );
+				this.lightDirection.copy( sLight.direction ).applyMatrix3( camera.viewMatrix );
+
+				program.setUniform( 'spotLight[' + i + '].position', '3fv', this.lightPosition.getElm( 'vec3' ) );
+				program.setUniform( 'spotLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
+				program.setUniform( 'spotLight[' + i + '].color', '3fv', sLight.color.getElm( 'vec3' ) );
+
+				if ( sLightShadow ) {
+
+					sLightShadow.texture.activate( this.textureUnit ++ );
+
+					program.setUniform( 'spotLightCamera[' + i + '].near', '1fv', [ sLightShadow.near ] );
+					program.setUniform( 'spotLightCamera[' + i + '].far', '1fv', [ sLightShadow.far ] );
+					program.setUniform( 'spotLightCamera[' + i + '].viewMatrix', 'Matrix4fv', sLightShadow.viewMatrix.elm );
+					program.setUniform( 'spotLightCamera[' + i + '].projectionMatrix', 'Matrix4fv', sLightShadow.projectionMatrix.elm );
+					program.setUniform( 'spotLightShadowMap[' + i + ']', '1i', [ sLightShadow.texture.unit ] );
 
 				}
 

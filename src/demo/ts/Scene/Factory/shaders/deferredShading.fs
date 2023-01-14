@@ -20,12 +20,20 @@ struct Material {
 	vec3 specularColor;
 };
 
+// light
+
 struct DirectionalLight {
 	vec3 direction;
 	vec3 color;
 };
 
-struct DirectionalLightShadow {
+struct SpotLight {
+	vec3 position;
+	vec3 direction;
+	vec3 color;
+};
+
+struct LightCamera {
 	float near;
 	float far;
 	mat4 viewMatrix;
@@ -51,8 +59,16 @@ uniform mat4 viewMatrix;
 #if NUM_LIGHT_DIR > 0 
 
 	uniform DirectionalLight directionalLight[NUM_LIGHT_DIR];
-	uniform DirectionalLightShadow directionalLightShadow[NUM_LIGHT_DIR];
+	uniform LightCamera directionalLightCamera[NUM_LIGHT_DIR];
 	uniform sampler2D directionalLightShadowMap[NUM_LIGHT_DIR];
+	
+#endif
+
+#if NUM_LIGHT_SPOT > 0 
+
+	uniform SpotLight spotLight[NUM_LIGHT_SPOT];
+	uniform LightCamera spotLightCamera[NUM_LIGHT_SPOT];
+	uniform sampler2D spotLightShadowMap[NUM_LIGHT_SPOT];
 	
 #endif
 
@@ -205,10 +221,10 @@ void main( void ) {
 
 			shadow = 1.0;
 
-			mvPosition = directionalLightShadow[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
-			mvpPosition = directionalLightShadow[ LOOP_INDEX ].projectionMatrix * mvPosition;
-			lightNear = directionalLightShadow[ LOOP_INDEX ].near;
-			lightFar = directionalLightShadow[ LOOP_INDEX ].far;
+			mvPosition = directionalLightCamera[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
+			mvpPosition = directionalLightCamera[ LOOP_INDEX ].projectionMatrix * mvPosition;
+			lightNear = directionalLightCamera[ LOOP_INDEX ].near;
+			lightFar = directionalLightCamera[ LOOP_INDEX ].far;
 			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
 
 			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
@@ -224,6 +240,59 @@ void main( void ) {
 
 			light.direction = directionalLight[ LOOP_INDEX ].direction;
 			light.color = directionalLight[ LOOP_INDEX ].color;
+
+			outColor += RE( geo, mat, light ) * shadow;
+
+		#pragma loop_end
+	
+	#endif
+
+	#if NUM_LIGHT_SPOT > 0 
+
+		Light light;
+
+		float shadow;
+		vec4 mvPosition;
+		vec4 mvpPosition;
+		float lightNear;
+		float lightFar;
+		vec2 shadowCoord;
+
+		float lightDepth;
+		float shadowMapDepth;
+
+		#pragma loop_start NUM_LIGHT_SPOT
+
+			// shadow
+
+			shadow = 1.0;
+
+			mvPosition = spotLightCamera[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
+			mvpPosition = spotLightCamera[ LOOP_INDEX ].projectionMatrix * mvPosition;
+			lightNear = spotLightCamera[ LOOP_INDEX ].near;
+			lightFar = spotLightCamera[ LOOP_INDEX ].far;
+			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
+
+			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
+			shadowMapDepth = rgbaToFloat( texture( spotLightShadowMap[ LOOP_INDEX ], shadowCoord ) );
+
+			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
+
+				shadow = step( lightDepth, shadowMapDepth + 0.010 );
+
+			}
+			
+			// lighting
+
+			vec3 d = normalize(spotLight[ LOOP_INDEX ].position - tex0.xyz);
+			float angleCos = dot( spotLight[ LOOP_INDEX ].direction, d );
+			angleCos = smoothstep( 0.9, 1.0, angleCos);
+
+			// glFragOut = vec4( vec3( angleCos ) , 1.0 );
+			// return;
+
+			light.direction = spotLight[ LOOP_INDEX ].direction;
+			light.color = spotLight[ LOOP_INDEX ].color;
 
 			outColor += RE( geo, mat, light ) * shadow;
 

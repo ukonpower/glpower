@@ -1,37 +1,10 @@
-import { url } from "inspector";
 import EventEmitter from "wolfy87-eventemitter";
 import { IVector2, IVector3 } from "..";
 import { FCurve } from "../Animation/FCurve";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation, FCurveKeyFrame } from "../Animation/FCurveKeyFrame";
 
-export type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage
-export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
-
-export type BLidgeSyncSceneMessage = {
-	type: "sync/scene",
-    data: BLidgeSceneData;
-}
-
-export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
-
-export type BLidgeCameraParams = {
-	fov: number
-}
-
-export type BLidgeMeshParams = {
-	position: number[],
-	uv: number[],
-	normal: number[],
-	index: number[],
-}
-
-export type BLidgeAnimation = { [key: string]: string }
-
-export type BLidgeMaterialParams = {
-	name: string,
-	uniforms: BLidgeAnimation
-}
+// object
 
 export type BLidgeObject = {
 	name: string,
@@ -41,17 +14,63 @@ export type BLidgeObject = {
 	position: IVector3,
 	rotation: IVector3,
 	scale: IVector3,
+	material: BLidgeMaterialParam
 	type: BLidgeObjectType,
-	material: BLidgeMaterialParams
-	camera?: BLidgeCameraParams,
-	mesh?: BLidgeMeshParams,
+	param?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon
 }
+
+export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
+
+export type BLidgeCameraParam = {
+	fov: number
+}
+
+export type BLidgeMeshParam = {
+	position: number[],
+	uv: number[],
+	normal: number[],
+	index: number[],
+}
+
+export type BLidgeLightParam = BLidgeDirectionalLightParam | BLidgeSpotLightParam;
+
+type BLidgeLightParamCommon = {
+	type: 'directional' | 'spot'
+	color: IVector3,
+	intensity: number,
+	useShadowMap: boolean,
+}
+
+export type BLidgeDirectionalLightParam = {
+	type: 'directional'
+} & BLidgeLightParamCommon
+
+export type BLidgeSpotLightParam = {
+	type: 'spot',
+	angle: number,
+	blend: number,
+} & BLidgeLightParamCommon
+
+// material
+
+export type BLidgeMaterialParam = {
+	name: string,
+	uniforms: BLidgeAnimation
+}
+
+// scene
 
 export type BLidgeSceneData = {
     animations: {[key: string]: BLidgeAnimationCurveParam[]};
 	scene: BLidgeObject;
 	frame: BLidgeSceneFrameData;
 }
+
+// animation
+
+export type BLidgeAnimation = { [key: string]: string }
+
+export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
 
 export type BLidgeAnimationCurveParam = {
     keyframes: BLidgeAnimationCurveKeyFrameParam[];
@@ -64,6 +83,15 @@ export type BLidgeAnimationCurveKeyFrameParam = {
     h_r: IVector2;
     e: string;
     i: FCurveInterpolation;
+}
+
+// message
+
+export type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage
+
+export type BLidgeSyncSceneMessage = {
+	type: "sync/scene",
+    data: BLidgeSceneData;
 }
 
 export type BLidgeSyncFrameMessage = {
