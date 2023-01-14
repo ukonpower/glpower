@@ -87,7 +87,6 @@ export class BLidgeSystem extends GLP.System {
 					rotationComponent.z = this.tmpQuaternion.z;
 					rotationComponent.w = this.tmpQuaternion.w;
 
-
 				}
 
 				if ( blidgeComponent.curveGroups.scale ) {
@@ -140,9 +139,9 @@ export class BLidgeSystem extends GLP.System {
 
 					const componentCamera = this.ecs.getComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective' );
 
-					if ( componentCamera && obj.camera ) {
+					if ( componentCamera && obj.param ) {
 
-						componentCamera.fov = obj.camera.fov;
+						componentCamera.fov = ( obj.param as GLP.BLidgeCameraParam ).fov;
 
 					}
 
@@ -198,45 +197,50 @@ export class BLidgeSystem extends GLP.System {
 
 				// mesh
 
-				if ( blidgeComponent.type != type || type == 'mesh' ) {
+				blidgeComponent.type = type;
 
-					blidgeComponent.type = type;
+				// entity type
 
-					// entity type
+				this.ecs.removeComponent( this.world, entity, 'geometry' );
+				this.ecs.removeComponent( this.world, entity, 'material' );
+				this.ecs.removeComponent( this.world, entity, 'directionalLight' );
+				this.ecs.removeComponent( this.world, entity, 'spotLight' );
+				this.ecs.removeComponent( this.world, entity, 'mesh' );
 
-					this.ecs.removeComponent( this.world, entity, 'geometry' );
-					this.ecs.removeComponent( this.world, entity, 'material' );
+				const uniforms:GLP.Uniforms = {};
 
-					const uniforms:GLP.Uniforms = {};
+				blidgeComponent.curveGroups.uniforms.forEach( item => {
 
-					blidgeComponent.curveGroups.uniforms.forEach( item => {
+					uniforms[ item.name ] = {
+						type: '4fv',
+						value: item.curve.value
+					};
 
-						uniforms[ item.name ] = {
-							type: '4fv',
-							value: item.curve.value
-						};
+				} );
 
-					} );
+				if ( type == 'cube' ) {
 
-					if ( type == 'cube' ) {
+					this.factory.appendCube( entity, { name: obj.material.name, uniforms } );
 
-						this.factory.appendCube( entity, { name: obj.material.name, uniforms } );
+				} else if ( type == 'sphere' ) {
 
-					} else if ( type == 'sphere' ) {
+					this.factory.appendSphere( entity, { name: obj.material.name, uniforms } );
 
-						this.factory.appendSphere( entity, { name: obj.material.name, uniforms } );
+				} else if ( type == 'plane' ) {
 
-					} else if ( type == 'plane' ) {
+					this.factory.appendPlane( entity, { name: obj.material.name, uniforms } );
 
-						this.factory.appendPlane( entity, { name: obj.material.name, uniforms } );
+				} else if ( type == 'mesh' ) {
 
-					} else if ( type == 'mesh' && obj.mesh ) {
+					if ( obj.param ) {
+
+						const param = obj.param as GLP.BLidgeMeshParam;
 
 						const geometry = new GLP.Geometry();
-						geometry.setAttribute( 'position', obj.mesh.position, 3 );
-						geometry.setAttribute( 'normal', obj.mesh.normal, 3 );
-						geometry.setAttribute( 'uv', obj.mesh.uv, 2 );
-						geometry.setAttribute( 'index', obj.mesh.index, 1 );
+						geometry.setAttribute( 'position', param.position, 3 );
+						geometry.setAttribute( 'normal', param.normal, 3 );
+						geometry.setAttribute( 'uv', param.uv, 2 );
+						geometry.setAttribute( 'index', param.index, 1 );
 
 						this.factory.appendMesh(
 							entity,
@@ -244,9 +248,23 @@ export class BLidgeSystem extends GLP.System {
 							{ name: obj.material.name, uniforms }
 						);
 
-					} else if ( type == 'light' ) {
+					}
 
-						this.factory.appendLight( entity );
+				} else if ( type == 'light' ) {
+
+					if ( obj.param ) {
+
+						const param = obj.param as GLP.BLidgeLightParam;
+
+						if ( param.type == 'directional' ) {
+
+							this.factory.appendDirectionalLight( entity, param );
+
+						} else if ( param.type == 'spot' ) {
+
+							this.factory.appendSpotLight( entity, param );
+
+						}
 
 					}
 

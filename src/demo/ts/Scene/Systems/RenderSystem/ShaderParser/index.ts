@@ -39,7 +39,7 @@ export const shaderInsertDefines = ( shader: string, defines: Defines ) => {
 export const shaderInsertLights = ( shader: string, lights: Lights ) => {
 
 	shader = shader.replaceAll( 'NUM_LIGHT_DIR', lights.directionalLight.length.toString() );
-	shader = shader.replaceAll( 'NUM_LIGHT_POINT', lights.directionalLight.length.toString() );
+	shader = shader.replaceAll( 'NUM_LIGHT_SPOT', lights.spotLight.length.toString() );
 
 	return shader;
 

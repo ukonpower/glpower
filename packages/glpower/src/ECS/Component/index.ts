@@ -117,14 +117,16 @@ export type ComponentShadowmapCamera = {
 	Light
 -------------------------------*/
 
-export type ComponentLightDirection = {
+export type ComponentLightDirectional = {
 	color: IVector3,
 	intensity: number
 }
 
-export type ComponentLightPoint = {
+export type ComponentLightSpot = {
 	color: IVector3,
-	intensity: number
+	intensity: number,
+	angle: number,
+	blend: number,
 }
 
 /*-------------------------------

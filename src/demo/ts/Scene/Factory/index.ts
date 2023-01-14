@@ -226,12 +226,7 @@ export class Factory {
 		Light
 	-------------------------------*/
 
-	public appendLight( entity: GLP.Entity ) {
-
-		this.ecs.addComponent<GLP.ComponentLightDirection>( this.world, entity, 'directionalLight', {
-			color: new GLP.Vector( 1.0, 1.0, 1.0 ).multiply( Math.PI ),
-			intensity: Math.PI
-		} );
+	public appendShadowMap( entity: GLP.Entity ) {
 
 		// shadowmap
 
@@ -268,6 +263,30 @@ export class Factory {
 				}
 			},
 		);
+
+	}
+
+	public appendDirectionalLight( entity: GLP.Entity, param: GLP.BLidgeDirectionalLightParam ) {
+
+		this.ecs.addComponent<GLP.ComponentLightDirectional>( this.world, entity, 'directionalLight', {
+			color: new GLP.Vector( param.color.x, param.color.y, param.color.z ).multiply( Math.PI ),
+			intensity: param.intensity
+		} );
+
+		this.appendShadowMap( entity );
+
+	}
+
+	public appendSpotLight( entity: GLP.Entity, param: GLP.BLidgeSpotLightParam ) {
+
+		this.ecs.addComponent<GLP.ComponentLightSpot>( this.world, entity, 'spotLight', {
+			color: new GLP.Vector( param.color.x, param.color.y, param.color.z ).multiply( Math.PI ),
+			intensity: param.intensity,
+			angle: param.angle,
+			blend: param.blend
+		} );
+
+		this.appendShadowMap( entity );
 
 	}
 
