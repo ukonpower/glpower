@@ -31,8 +31,10 @@ struct SpotLight {
 	vec3 position;
 	vec3 direction;
 	vec3 color;
-	float cutOff;
+	float angle;
 	float blend;
+	float distance;
+	float decay;
 };
 
 struct LightCamera {
@@ -204,6 +206,7 @@ void main( void ) {
 	// direcitonalLight
 	
 	Light light;
+	LightCamera lightCamera;
 
 	float shadow;
 	vec4 mvPosition;
@@ -216,7 +219,6 @@ void main( void ) {
 	float shadowMapDepth;
 
 	#if NUM_LIGHT_DIR > 0 
-
 
 		#pragma loop_start NUM_LIGHT_DIR
 
@@ -251,23 +253,27 @@ void main( void ) {
 	#endif
 
 	vec3 direction;
-	float cutOff;
-	float blend;
+	float spotDistance;
 	float angleCos;
 	float attenuation;
 
 	#if NUM_LIGHT_SPOT > 0
 
+		SpotLight sLight;
+
 		#pragma loop_start NUM_LIGHT_SPOT
+
+			sLight = spotLight[ LOOP_INDEX ];
+			lightCamera = spotLightCamera[ LOOP_INDEX ];
 
 			// shadow
 
 			shadow = 1.0;
 
-			mvPosition = spotLightCamera[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
-			mvpPosition = spotLightCamera[ LOOP_INDEX ].projectionMatrix * mvPosition;
-			lightNear = spotLightCamera[ LOOP_INDEX ].near;
-			lightFar = spotLightCamera[ LOOP_INDEX ].far;
+			mvPosition = lightCamera.viewMatrix * vec4( tex0.xyz, 1.0 );
+			mvpPosition = lightCamera.projectionMatrix * mvPosition;
+			lightNear = lightCamera.near;
+			lightFar = lightCamera.far;
 			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
 
 			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
@@ -281,24 +287,20 @@ void main( void ) {
 			
 			// lighting
 
-			direction = normalize(spotLight[ LOOP_INDEX ].position - tex0.xyz);
-			cutOff = spotLight[ LOOP_INDEX ].cutOff;
-			blend = spotLight[ LOOP_INDEX ].blend;
-			angleCos = dot( spotLight[ LOOP_INDEX ].direction, direction );
+			direction = normalize(sLight.position - tex0.xyz);
+			spotDistance = length( sLight.position - tex0.xyz );
+			angleCos = dot( sLight.direction, direction );
 
 			attenuation = 0.0;
 
-			if( angleCos > cutOff ) {
+			if( angleCos > sLight.angle ) {
 
-				attenuation = smoothstep( cutOff, cutOff + ( 1.0 - cutOff ) * blend, angleCos );
+				attenuation = smoothstep( sLight.angle, sLight.angle + ( 1.0 - sLight.angle ) * sLight.blend, angleCos );
 
 			}
 
-			// glFragOut = vec4( vec3( attenuation ) , 1.0 );
-			// return;
-
-			light.direction = spotLight[ LOOP_INDEX ].direction;
-			light.color = spotLight[ LOOP_INDEX ].color * attenuation;
+			light.direction = direction;
+			light.color = sLight.color * attenuation * pow( 1.0 - spotDistance / sLight.distance,  sLight.decay );
 
 			outColor += RE( geo, mat, light ) * shadow;
 

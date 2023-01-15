@@ -23,7 +23,7 @@ export type Lights = {
 	needsUpdate: boolean
 	directionalLight: {direction: GLP.Vector, color: GLP.Vector}[],
 	directionalLightShadow: ( ShadowMapCamera | null )[]
-	spotLight: {position: GLP.Vector, direction: GLP.Vector, color: GLP.Vector, cutOff: number, blend: number}[],
+	spotLight: {position: GLP.Vector, direction: GLP.Vector, color: GLP.Vector, angle: number, blend: number, distance: number, decay: number}[],
 	spotLightShadow: ( ShadowMapCamera | null )[]
 }
 
@@ -177,9 +177,11 @@ export class RenderSystem extends GLP.System {
 			this.lights.spotLight.push( {
 				position: new GLP.Vector( 0, 0, 0, 1.0 ).applyMatrix4( matrix.world ),
 				direction: new GLP.Vector( 0.0, 1.0, 0.0, 0.0 ).applyMatrix4( matrix.world ),
-				color: new GLP.Vector( light.color.x, light.color.y, light.color.z ),
-				cutOff: Math.cos( light.angle / 2 ),
-				blend: light.blend
+				color: new GLP.Vector( light.color.x, light.color.y, light.color.z ).multiply( light.intensity ),
+				angle: Math.cos( light.angle / 2 ),
+				blend: light.blend,
+				distance: light.distance,
+				decay: light.decay,
 			} );
 
 			shadowCameraArray = this.lights.spotLightShadow;
@@ -416,8 +418,10 @@ export class RenderSystem extends GLP.System {
 				program.setUniform( 'spotLight[' + i + '].position', '3fv', this.lightPosition.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].direction', '3fv', sLight.direction.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].color', '3fv', sLight.color.getElm( 'vec3' ) );
-				program.setUniform( 'spotLight[' + i + '].cutOff', '1fv', [ sLight.cutOff ] );
+				program.setUniform( 'spotLight[' + i + '].angle', '1fv', [ sLight.angle ] );
 				program.setUniform( 'spotLight[' + i + '].blend', '1fv', [ sLight.blend ] );
+				program.setUniform( 'spotLight[' + i + '].distance', '1fv', [ sLight.distance ] );
+				program.setUniform( 'spotLight[' + i + '].decay', '1fv', [ sLight.decay ] );
 
 
 				if ( sLightShadow ) {

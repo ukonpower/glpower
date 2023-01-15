@@ -245,11 +245,6 @@ export class Factory {
 			renderTarget: rtShadowMap
 		} );
 
-		this.ecs.addComponent<GLP.ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
-			width: 15,
-			height: 15
-		} );
-
 		// events
 
 		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events',
@@ -275,6 +270,11 @@ export class Factory {
 
 		this.appendShadowMap( entity );
 
+		this.ecs.addComponent<GLP.ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
+			width: 15,
+			height: 15
+		} );
+
 	}
 
 	public appendSpotLight( entity: GLP.Entity, param: GLP.BLidgeSpotLightParam ) {
@@ -283,10 +283,16 @@ export class Factory {
 			color: new GLP.Vector( param.color.x, param.color.y, param.color.z ).multiply( Math.PI ),
 			intensity: param.intensity,
 			angle: param.angle,
-			blend: param.blend
+			blend: param.blend,
+			distance: 30,
+			decay: 2
 		} );
 
 		this.appendShadowMap( entity );
+
+		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
+			fov: param.angle / Math.PI * 180,
+		} );
 
 	}
 

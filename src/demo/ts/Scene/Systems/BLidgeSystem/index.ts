@@ -252,9 +252,6 @@ export class BLidgeSystem extends GLP.System {
 
 				} else if ( type == 'light' ) {
 
-					console.log( obj.param );
-
-
 					if ( obj.param ) {
 
 						const param = obj.param as GLP.BLidgeLightParam;
