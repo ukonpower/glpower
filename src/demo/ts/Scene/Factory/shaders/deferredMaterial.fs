@@ -44,7 +44,7 @@ void main( void ) {
 	#endif
 
 	float depth = 0.0;
-	float roughness = 0.2;
+	float roughness = 0.5;
 	float metalic = 0.0;
 
 	vec3 color = vColor;

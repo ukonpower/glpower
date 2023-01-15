@@ -127,6 +127,8 @@ export type ComponentLightSpot = {
 	intensity: number,
 	angle: number,
 	blend: number,
+	distance: number,
+	decay: number,
 }
 
 /*-------------------------------
