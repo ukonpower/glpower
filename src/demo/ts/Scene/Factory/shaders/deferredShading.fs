@@ -168,6 +168,29 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 
 }
 
+// shadowmap
+
+float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
+
+	vec4 mvPosition = camera.viewMatrix * vec4( pos, 1.0 );
+	vec4 mvpPosition = camera.projectionMatrix * mvPosition;
+	float lightNear = camera.near;
+	float lightFar = camera.far;
+	vec2 shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
+
+	float lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
+	float shadowMapDepth = rgbaToFloat( texture( shadowMap, shadowCoord ) );
+
+	if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
+
+		return step( lightDepth, shadowMapDepth + 0.010 );
+
+	}
+
+	return 1.0;
+
+}
+
 void main( void ) {
 
 	// iputs
@@ -200,51 +223,28 @@ void main( void ) {
 		mix( vec3( 1.0, 1.0, 1.0 ), tex2.xyz, tex3.w )
 	);
 
-
-	float w = clamp( dot( geo.normal, (vec3( 1.0, 1.0, 1.0 )) ), 0.0, 1.0 );
+	float shadow;
 
 	// direcitonalLight
 	
 	Light light;
 	LightCamera lightCamera;
 
-	float shadow;
-	vec4 mvPosition;
-	vec4 mvpPosition;
-	float lightNear;
-	float lightFar;
-	vec2 shadowCoord;
-
-	float lightDepth;
-	float shadowMapDepth;
-
 	#if NUM_LIGHT_DIR > 0 
+
+		DirectionalLight dLight;
 
 		#pragma loop_start NUM_LIGHT_DIR
 
 			// shadow
 
-			shadow = 1.0;
-
-			mvPosition = directionalLightCamera[ LOOP_INDEX ].viewMatrix * vec4( tex0.xyz, 1.0 );
-			mvpPosition = directionalLightCamera[ LOOP_INDEX ].projectionMatrix * mvPosition;
-			lightNear = directionalLightCamera[ LOOP_INDEX ].near;
-			lightFar = directionalLightCamera[ LOOP_INDEX ].far;
-			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
-
-			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
-			shadowMapDepth = rgbaToFloat( texture( directionalLightShadowMap[ LOOP_INDEX ], shadowCoord ) );
-
-			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
-
-				shadow = step( lightDepth, shadowMapDepth + 0.010 );
-
-			}
+			shadow = getShadow( tex0.xyz, directionalLightCamera[ LOOP_INDEX ], directionalLightShadowMap[ LOOP_INDEX ] );
 			
 			// lighting
 
-			light.direction = directionalLight[ LOOP_INDEX ].direction;
-			light.color = directionalLight[ LOOP_INDEX ].color;
+			dLight = directionalLight[ LOOP_INDEX ];
+			light.direction = dLight.direction;
+			light.color = dLight.color;
 
 			outColor += RE( geo, mat, light ) * shadow;
 
@@ -252,55 +252,38 @@ void main( void ) {
 	
 	#endif
 
-	vec3 direction;
-	float spotDistance;
-	float angleCos;
-	float attenuation;
-
 	#if NUM_LIGHT_SPOT > 0
 
 		SpotLight sLight;
+		
+		vec3 spotDirection;
+		float spotDistance;
+		float spotAngleCos;
+		float spotAttenuation;
 
 		#pragma loop_start NUM_LIGHT_SPOT
 
-			sLight = spotLight[ LOOP_INDEX ];
-			lightCamera = spotLightCamera[ LOOP_INDEX ];
-
 			// shadow
 
-			shadow = 1.0;
+			shadow = getShadow( tex0.xyz, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] );
 
-			mvPosition = lightCamera.viewMatrix * vec4( tex0.xyz, 1.0 );
-			mvpPosition = lightCamera.projectionMatrix * mvPosition;
-			lightNear = lightCamera.near;
-			lightFar = lightCamera.far;
-			shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
-
-			lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
-			shadowMapDepth = rgbaToFloat( texture( spotLightShadowMap[ LOOP_INDEX ], shadowCoord ) );
-
-			if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
-
-				shadow = step( lightDepth, shadowMapDepth + 0.010 );
-
-			}
-			
 			// lighting
 
-			direction = normalize(sLight.position - tex0.xyz);
+			sLight = spotLight[ LOOP_INDEX ];
+
+			spotDirection = normalize(sLight.position - tex0.xyz);
 			spotDistance = length( sLight.position - tex0.xyz );
-			angleCos = dot( sLight.direction, direction );
+			spotAngleCos = dot( sLight.direction, spotDirection );
+			spotAttenuation = 0.0;
 
-			attenuation = 0.0;
+			if( spotAngleCos > sLight.angle ) {
 
-			if( angleCos > sLight.angle ) {
-
-				attenuation = smoothstep( sLight.angle, sLight.angle + ( 1.0 - sLight.angle ) * sLight.blend, angleCos );
+				spotAttenuation = smoothstep( sLight.angle, sLight.angle + ( 1.0 - sLight.angle ) * sLight.blend, spotAngleCos );
 
 			}
 
-			light.direction = direction;
-			light.color = sLight.color * attenuation * pow( 1.0 - spotDistance / sLight.distance,  sLight.decay );
+			light.direction = spotDirection;
+			light.color = sLight.color * spotAttenuation * pow( 1.0 - spotDistance / sLight.distance,  sLight.decay );
 
 			outColor += RE( geo, mat, light ) * shadow;
 
