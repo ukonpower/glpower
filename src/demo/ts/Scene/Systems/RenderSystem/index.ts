@@ -164,7 +164,7 @@ export class RenderSystem extends GLP.System {
 
 			this.lights.directionalLight.push( {
 				direction: new GLP.Vector( 0.0, 1.0, 0.0, 0.0 ).applyMatrix4( matrix.world ),
-				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
+				color: new GLP.Vector( light.color.x, light.color.y, light.color.z ).multiply( light.intensity )
 			} );
 
 			shadowCameraArray = this.lights.directionalLightShadow;
