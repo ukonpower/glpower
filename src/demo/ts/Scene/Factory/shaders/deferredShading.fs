@@ -31,6 +31,8 @@ struct SpotLight {
 	vec3 position;
 	vec3 direction;
 	vec3 color;
+	float cutOff;
+	float blend;
 };
 
 struct LightCamera {
@@ -200,20 +202,21 @@ void main( void ) {
 	float w = clamp( dot( geo.normal, (vec3( 1.0, 1.0, 1.0 )) ), 0.0, 1.0 );
 
 	// direcitonalLight
+	
+	Light light;
+
+	float shadow;
+	vec4 mvPosition;
+	vec4 mvpPosition;
+	float lightNear;
+	float lightFar;
+	vec2 shadowCoord;
+
+	float lightDepth;
+	float shadowMapDepth;
 
 	#if NUM_LIGHT_DIR > 0 
 
-		Light light;
-
-		float shadow;
-		vec4 mvPosition;
-		vec4 mvpPosition;
-		float lightNear;
-		float lightFar;
-		vec2 shadowCoord;
-
-		float lightDepth;
-		float shadowMapDepth;
 
 		#pragma loop_start NUM_LIGHT_DIR
 
@@ -247,19 +250,13 @@ void main( void ) {
 	
 	#endif
 
-	#if NUM_LIGHT_SPOT > 0 
+	vec3 direction;
+	float cutOff;
+	float blend;
+	float angleCos;
+	float attenuation;
 
-		Light light;
-
-		float shadow;
-		vec4 mvPosition;
-		vec4 mvpPosition;
-		float lightNear;
-		float lightFar;
-		vec2 shadowCoord;
-
-		float lightDepth;
-		float shadowMapDepth;
+	#if NUM_LIGHT_SPOT > 0
 
 		#pragma loop_start NUM_LIGHT_SPOT
 
@@ -284,15 +281,24 @@ void main( void ) {
 			
 			// lighting
 
-			vec3 d = normalize(spotLight[ LOOP_INDEX ].position - tex0.xyz);
-			float angleCos = dot( spotLight[ LOOP_INDEX ].direction, d );
-			angleCos = smoothstep( 0.9, 1.0, angleCos);
+			direction = normalize(spotLight[ LOOP_INDEX ].position - tex0.xyz);
+			cutOff = spotLight[ LOOP_INDEX ].cutOff;
+			blend = spotLight[ LOOP_INDEX ].blend;
+			angleCos = dot( spotLight[ LOOP_INDEX ].direction, direction );
 
-			// glFragOut = vec4( vec3( angleCos ) , 1.0 );
+			attenuation = 0.0;
+
+			if( angleCos > cutOff ) {
+
+				attenuation = smoothstep( cutOff, cutOff + ( 1.0 - cutOff ) * blend, angleCos );
+
+			}
+
+			// glFragOut = vec4( vec3( attenuation ) , 1.0 );
 			// return;
 
 			light.direction = spotLight[ LOOP_INDEX ].direction;
-			light.color = spotLight[ LOOP_INDEX ].color;
+			light.color = spotLight[ LOOP_INDEX ].color * attenuation;
 
 			outColor += RE( geo, mat, light ) * shadow;
 

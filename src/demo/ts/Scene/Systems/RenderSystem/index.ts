@@ -3,7 +3,7 @@ import { Entity, Uniformable } from 'glpower';
 import { ProgramManager } from './ProgramManager';
 import { shaderParse } from './ShaderParser';
 
-type CameraData = {
+type Matrix = {
 	modelMatrix?: GLP.Matrix,
 	viewMatrix: GLP.Matrix,
 	projectionMatrix: GLP.Matrix
@@ -11,8 +11,9 @@ type CameraData = {
 	far?: number
 }
 
-export type ShadowMapCamera = CameraData & {
+export type ShadowMapCamera = {
 	viewMatrix: GLP.Matrix,
+	projectionMatrix: GLP.Matrix
 	near: number,
 	far: number,
 	texture: GLP.GLPowerTexture,
@@ -22,7 +23,7 @@ export type Lights = {
 	needsUpdate: boolean
 	directionalLight: {direction: GLP.Vector, color: GLP.Vector}[],
 	directionalLightShadow: ( ShadowMapCamera | null )[]
-	spotLight: {position: GLP.Vector, direction: GLP.Vector, color: GLP.Vector}[],
+	spotLight: {position: GLP.Vector, direction: GLP.Vector, color: GLP.Vector, cutOff: number, blend: number}[],
 	spotLightShadow: ( ShadowMapCamera | null )[]
 }
 
@@ -159,10 +160,10 @@ export class RenderSystem extends GLP.System {
 		if ( type == 'directional' ) {
 
 			const light = event.ecs.getComponent<GLP.ComponentLightDirectional>( event.world, entity, 'directionalLight' )!;
-			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
+			const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
 
 			this.lights.directionalLight.push( {
-				direction: new GLP.Vector( 0.0, 1.0, 0.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
+				direction: new GLP.Vector( 0.0, 1.0, 0.0, 0.0 ).applyMatrix4( matrix.world ),
 				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
 			} );
 
@@ -170,14 +171,15 @@ export class RenderSystem extends GLP.System {
 
 		} else if ( type == 'spot' ) {
 
-			const light = event.ecs.getComponent<GLP.ComponentLightDirectional>( event.world, entity, 'spotLight' )!;
+			const light = event.ecs.getComponent<GLP.ComponentLightSpot>( event.world, entity, 'spotLight' )!;
 			const matrix = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
-			const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
 			this.lights.spotLight.push( {
 				position: new GLP.Vector( 0, 0, 0, 1.0 ).applyMatrix4( matrix.world ),
-				direction: new GLP.Vector( 0.0, 1.0, 0.0 ).applyMatrix4( new GLP.Matrix().applyQuaternion( new GLP.Quaternion( quaternion.x, quaternion.y, quaternion.z, quaternion.w ) ) ),
-				color: new GLP.Vector( light.color.x, light.color.y, light.color.z )
+				direction: new GLP.Vector( 0.0, 1.0, 0.0, 0.0 ).applyMatrix4( matrix.world ),
+				color: new GLP.Vector( light.color.x, light.color.y, light.color.z ),
+				cutOff: Math.cos( light.angle / 2 ),
+				blend: light.blend
 			} );
 
 			shadowCameraArray = this.lights.spotLightShadow;
@@ -265,7 +267,13 @@ export class RenderSystem extends GLP.System {
 
 				if ( material.renderType == renderPhase ) {
 
-					this.draw( meshes[ i ] + renderPhase, geometry, material, event, { modelMatrix: matrix.world, viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix, near: camera.near, far: camera.far } );
+					this.draw( meshes[ i ] + renderPhase, geometry, material, event, {
+						modelMatrix: matrix.world,
+						viewMatrix: camera.viewMatrix,
+						projectionMatrix: camera.projectionMatrix,
+						near: camera.near,
+						far: camera.far
+					} );
 
 				}
 
@@ -275,13 +283,16 @@ export class RenderSystem extends GLP.System {
 
 		if ( postprocess ) {
 
-			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, { viewMatrix: camera.viewMatrix, projectionMatrix: camera.projectionMatrix } );
+			this.renderPostProcess( entity + '_cameraPostProcess', postprocess, event, {
+				viewMatrix: camera.viewMatrix,
+				projectionMatrix: camera.projectionMatrix
+			} );
 
 		}
 
 	}
 
-	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, cameraData?: CameraData ) {
+	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, matrix?: Matrix ) {
 
 		for ( let i = 0; i < postprocess.length; i ++ ) {
 
@@ -320,13 +331,13 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			this.draw( entityId + i, pp.customGeometry || this.quad, pp, event, cameraData );
+			this.draw( entityId + i, pp.customGeometry || this.quad, pp, event, matrix );
 
 		}
 
 	}
 
-	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, camera?: CameraData ) {
+	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: Matrix ) {
 
 		// program
 
@@ -345,15 +356,16 @@ export class RenderSystem extends GLP.System {
 
 		// update uniforms
 
-		if ( camera ) {
+		if ( matrix ) {
 
-			if ( camera.modelMatrix && camera.viewMatrix ) {
+			if ( matrix.modelMatrix && matrix.viewMatrix ) {
 
-				program.setUniform( 'modelMatrix', 'Matrix4fv', camera.modelMatrix.elm );
+				program.setUniform( 'modelMatrix', 'Matrix4fv', matrix.modelMatrix.elm );
 
-				if ( camera.viewMatrix ) {
+				if ( matrix.viewMatrix ) {
 
-					this.modelViewMatrix.copy( camera.modelMatrix ).preMultiply( camera.viewMatrix );
+					this.modelViewMatrix.copy( matrix.modelMatrix ).preMultiply( matrix.viewMatrix );
+
 					this.normalMatrix.copy( this.modelViewMatrix );
 					this.normalMatrix.inverse();
 					this.normalMatrix.transpose();
@@ -365,20 +377,18 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			program.setUniform( 'cameraNear', '1fv', [ camera.near ?? 0 ] );
-			program.setUniform( 'cameraFar', '1fv', [ camera.far ?? 0 ] );
+			program.setUniform( 'cameraNear', '1fv', [ matrix.near ?? 0 ] );
+			program.setUniform( 'cameraFar', '1fv', [ matrix.far ?? 0 ] );
 
-			program.setUniform( 'viewMatrix', 'Matrix4fv', camera.viewMatrix.elm );
-			program.setUniform( 'projectionMatrix', 'Matrix4fv', camera.projectionMatrix.elm );
+			program.setUniform( 'viewMatrix', 'Matrix4fv', matrix.viewMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', matrix.projectionMatrix.elm );
 
 			for ( let i = 0; i < this.lights.directionalLight.length; i ++ ) {
 
 				const dLight = this.lights.directionalLight[ i ];
 				const dLightShadow = this.lights.directionalLightShadow[ i ];
 
-				this.lightDirection.copy( dLight.direction ).applyMatrix3( camera.viewMatrix );
-
-				program.setUniform( 'directionalLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
+				program.setUniform( 'directionalLight[' + i + '].direction', '3fv', dLight.direction.getElm( 'vec3' ) );
 				program.setUniform( 'directionalLight[' + i + '].color', '3fv', dLight.color.getElm( 'vec3' ) );
 
 				if ( dLightShadow ) {
@@ -401,11 +411,14 @@ export class RenderSystem extends GLP.System {
 				const sLightShadow = this.lights.spotLightShadow[ i ];
 
 				this.lightPosition.copy( sLight.position );
-				this.lightDirection.copy( sLight.direction ).applyMatrix3( camera.viewMatrix );
+				this.lightDirection.copy( sLight.direction ).applyMatrix3( matrix.viewMatrix );
 
 				program.setUniform( 'spotLight[' + i + '].position', '3fv', this.lightPosition.getElm( 'vec3' ) );
-				program.setUniform( 'spotLight[' + i + '].direction', '3fv', this.lightDirection.getElm( 'vec3' ) );
+				program.setUniform( 'spotLight[' + i + '].direction', '3fv', sLight.direction.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].color', '3fv', sLight.color.getElm( 'vec3' ) );
+				program.setUniform( 'spotLight[' + i + '].cutOff', '1fv', [ sLight.cutOff ] );
+				program.setUniform( 'spotLight[' + i + '].blend', '1fv', [ sLight.blend ] );
+
 
 				if ( sLightShadow ) {
 
