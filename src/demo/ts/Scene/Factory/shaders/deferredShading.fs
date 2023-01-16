@@ -42,6 +42,7 @@ struct LightCamera {
 	float far;
 	mat4 viewMatrix;
 	mat4 projectionMatrix;
+	vec2 resolution;
 };
 
 struct Light {
@@ -170,15 +171,8 @@ vec3 RE( Geometry geo, Material mat, Light light) {
 
 // shadowmap
 
-float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
+float compareShadowDepth( float lightDepth, sampler2D shadowMap, vec2 shadowCoord ) {
 
-	vec4 mvPosition = camera.viewMatrix * vec4( pos, 1.0 );
-	vec4 mvpPosition = camera.projectionMatrix * mvPosition;
-	float lightNear = camera.near;
-	float lightFar = camera.far;
-	vec2 shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
-
-	float lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
 	float shadowMapDepth = rgbaToFloat( texture( shadowMap, shadowCoord ) );
 
 	if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
@@ -188,6 +182,43 @@ float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
 	}
 
 	return 1.0;
+
+}
+
+#define SHADOW_SAMPLE_COUNT 2
+
+float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
+
+	vec4 mvPosition = camera.viewMatrix * vec4( pos, 1.0 );
+	vec4 mvpPosition = camera.projectionMatrix * mvPosition;
+	float lightNear = camera.near;
+	float lightFar = camera.far;
+	vec2 shadowCoord = ( mvpPosition.xy / mvpPosition.w ) * 0.5 + 0.5;
+
+	float lightDepth = ( -mvPosition.z - lightNear ) / ( lightFar - lightNear );
+
+	float shadowSum;
+
+	shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord );
+
+	for( int i = 0; i < SHADOW_SAMPLE_COUNT; i++ ) {
+
+		vec2 offset = 1.0 / camera.resolution * ( float( i + 1 ) / float( SHADOW_SAMPLE_COUNT ) ) * 1.0;
+
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, -offset.y ) );
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( 0.0, -offset.y ) );
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, -offset.y ) );
+		
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, 0.0 ) );
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, 0.0 ) );
+
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, offset.y ) );
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( 0.0, offset.y ) );
+		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, offset.y ) );
+
+	}
+
+	return shadowSum / ( 8.0 * float( SHADOW_SAMPLE_COUNT ) + 1.0 );
 
 }
 
@@ -260,6 +291,7 @@ void main( void ) {
 		float spotDistance;
 		float spotAngleCos;
 		float spotAttenuation;
+
 
 		#pragma loop_start NUM_LIGHT_SPOT
 

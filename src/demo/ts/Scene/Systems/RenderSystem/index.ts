@@ -401,6 +401,7 @@ export class RenderSystem extends GLP.System {
 					program.setUniform( 'directionalLightCamera[' + i + '].far', '1fv', [ dLightShadow.far ] );
 					program.setUniform( 'directionalLightCamera[' + i + '].viewMatrix', 'Matrix4fv', dLightShadow.viewMatrix.elm );
 					program.setUniform( 'directionalLightCamera[' + i + '].projectionMatrix', 'Matrix4fv', dLightShadow.projectionMatrix.elm );
+					program.setUniform( 'directionalLightCamera[' + i + '].resolution', '2fv', dLightShadow.texture.size.getElm( "vec2" ) );
 					program.setUniform( 'directionalLightShadowMap[' + i + ']', '1i', [ dLightShadow.texture.unit ] );
 
 				}
@@ -432,6 +433,7 @@ export class RenderSystem extends GLP.System {
 					program.setUniform( 'spotLightCamera[' + i + '].far', '1fv', [ sLightShadow.far ] );
 					program.setUniform( 'spotLightCamera[' + i + '].viewMatrix', 'Matrix4fv', sLightShadow.viewMatrix.elm );
 					program.setUniform( 'spotLightCamera[' + i + '].projectionMatrix', 'Matrix4fv', sLightShadow.projectionMatrix.elm );
+					program.setUniform( 'spotLightCamera[' + i + '].resolution', '2fv', sLightShadow.texture.size.getElm( "vec2" ) );
 					program.setUniform( 'spotLightShadowMap[' + i + ']', '1i', [ sLightShadow.texture.unit ] );
 
 				}
