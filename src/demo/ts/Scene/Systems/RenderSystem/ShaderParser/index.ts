@@ -47,9 +47,10 @@ export const shaderInsertLights = ( shader: string, lights: Lights ) => {
 
 export const shaderUnrollLoop = ( shader: string ) => {
 
-	let str = "";
 
 	shader = shader.replace( /#pragma\sloop_start\s(\d+)*([\s\S]+?)#pragma\sloop_end/g, ( _: string, loop: string, body: string ) => {
+
+		let str = "";
 
 		for ( let i = 0; i < Number( loop ); i ++ ) {
 
