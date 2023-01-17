@@ -292,7 +292,6 @@ void main( void ) {
 		float spotAngleCos;
 		float spotAttenuation;
 
-
 		#pragma loop_start NUM_LIGHT_SPOT
 
 			// shadow
@@ -315,7 +314,7 @@ void main( void ) {
 			}
 
 			light.direction = spotDirection;
-			light.color = sLight.color * spotAttenuation * pow( 1.0 - spotDistance / sLight.distance,  sLight.decay );
+			light.color = sLight.color * spotAttenuation * pow( clamp( 1.0 - spotDistance / sLight.distance, 0.0, 1.0 ),  sLight.decay );
 
 			outColor += RE( geo, mat, light ) * shadow;
 
