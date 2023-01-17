@@ -322,11 +322,9 @@ export class RenderSystem extends GLP.System {
 
 				for ( let i = 0; i < pp.input.length; i ++ ) {
 
-					pp.input[ i ].activate( this.textureUnit ++ );
-
 					pp.uniforms[ 'sampler' + i ] = {
 						type: '1i',
-						value: pp.input[ i ].unit
+						value: pp.input[ i ]
 					};
 
 				}
@@ -340,6 +338,8 @@ export class RenderSystem extends GLP.System {
 	}
 
 	private draw( entityId: string, geometry: GLP.ComponentGeometry, material: GLP.ComponentMaterial, event: GLP.SystemUpdateEvent, matrix?: Matrix ) {
+
+		this.textureUnit = 0;
 
 		// program
 
@@ -550,8 +550,6 @@ export class RenderSystem extends GLP.System {
 		}
 
 		program.clean();
-
-		this.textureUnit = 0;
 
 	}
 

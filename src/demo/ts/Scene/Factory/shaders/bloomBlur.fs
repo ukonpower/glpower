@@ -20,7 +20,7 @@ void main(void) {
   vec3 sum = uWeights[0] * texture(sampler0, vUv).rgb;
   
   for (int i = 1; i < GAUSS_WEIGHTS; i++) {
-    vec2 offset = (uIsVertical ? vec2(0, i) : vec2(i, 0)) * 1.0;
+    vec2 offset = (uIsVertical ? vec2(0, i) : vec2(i, 0)) * 1.7;
     sum += uWeights[i] * texture(sampler0, vUv + offset / uResolution).rgb;
     sum += uWeights[i] * texture(sampler0, vUv - offset / uResolution).rgb;
   }
