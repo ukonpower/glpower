@@ -302,32 +302,70 @@ export class Factory {
 
 	public postprocess( input: GLP.GLPowerFrameBuffer, out: GLP.GLPowerFrameBuffer | null ) {
 
-		const resolution = new GLP.Vector();
-		const bloomRenderCount = 5;
-
 		const entity = this.empty();
 
-		const rt1 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ) ] );
-		const rt2 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ) ] );
+		const bloomRenderCount = 4;
+
+		// rt
+
+		const rt1 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
+		const rt2 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
 		const rt3 = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [ this.power.createTexture() ] );
 
-		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', [
-			{
-				input: input.textures,
-				renderTarget: rt1,
-				vertexShader: quadVert,
-				fragmentShader: bloomBrightFrag,
-				uniforms: {
-					threshold: {
-						type: '1f',
-						value: 0.5,
-					},
+		const rtBloomVertical: GLP.GLPowerFrameBuffer[] = [];
+		const rtBloomHorizonal: GLP.GLPowerFrameBuffer[] = [];
+
+		// resolution
+
+		const resolution = new GLP.Vector();
+		const resolutionBloom: GLP.Vector[] = [];
+
+		for ( let i = 0; i < bloomRenderCount; i ++ ) {
+
+			rtBloomVertical.push( new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [
+				this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ),
+			] ) );
+
+			rtBloomHorizonal.push( new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [
+				this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ),
+			] ) );
+
+		}
+
+		// pp
+
+		const postprocess: GLP.ComponentPostProcess = [];
+
+		// bloom bright
+
+		postprocess.push( {
+			input: input.textures,
+			renderTarget: rt1,
+			vertexShader: quadVert,
+			fragmentShader: bloomBrightFrag,
+			uniforms: {
+				threshold: {
+					type: '1f',
+					value: 0.5,
 				},
-				customGeometry: new GLP.MipMapGeometry( bloomRenderCount ).getComponent( this.power )
 			},
-			{
-				input: rt1.textures,
-				renderTarget: rt2,
+		} );
+
+		// bloom blur
+
+		let bloomInput: GLP.GLPowerTexture[] = rt1.textures;
+
+		for ( let i = 0; i < bloomRenderCount; i ++ ) {
+
+			const rtVertical = rtBloomVertical[ i ];
+			const rtHorizonal = rtBloomHorizonal[ i ];
+
+			const resolution = new GLP.Vector();
+			resolutionBloom.push( resolution );
+
+			postprocess.push( {
+				input: bloomInput,
+				renderTarget: rtVertical,
 				vertexShader: quadVert,
 				fragmentShader: bloomBlurFrag,
 				uniforms: {
@@ -347,10 +385,11 @@ export class Factory {
 				defines: {
 					GAUSS_WEIGHTS: bloomRenderCount.toString()
 				}
-			},
-			{
-				input: rt2.textures,
-				renderTarget: rt1,
+			} );
+
+			postprocess.push( {
+				input: rtVertical.textures,
+				renderTarget: rtHorizonal,
 				vertexShader: quadVert,
 				fragmentShader: bloomBlurFrag,
 				uniforms: {
@@ -369,23 +408,33 @@ export class Factory {
 				},
 				defines: {
 					GAUSS_WEIGHTS: bloomRenderCount.toString()
+				} } );
+
+			bloomInput = rtHorizonal.textures;
+
+		}
+
+		// composite
+
+		postprocess.push( {
+			input: [
+				input.textures[ 0 ],
+			],
+			renderTarget: out,
+			vertexShader: quadVert,
+			fragmentShader: postProcessFrag,
+			uniforms: {
+				uBloomTexture: {
+					value: rtBloomHorizonal.map( rt => rt.textures[ 0 ] ),
+					type: '1i'
 				}
 			},
-			{
-				input: [
-					input.textures[ 0 ],
-					rt1.textures[ 0 ],
-				],
-				renderTarget: out,
-				vertexShader: quadVert,
-				fragmentShader: postProcessFrag,
-				uniforms: {
-				},
-				defines: {
-					BLOOM_COUNT: bloomRenderCount.toString()
-				}
-			},
-		] );
+			defines: {
+				BLOOM_COUNT: bloomRenderCount.toString()
+			}
+		}, );
+
+		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', postprocess );
 
 		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events', {
 			onResize: ( e ) => {
@@ -395,6 +444,19 @@ export class Factory {
 				rt1.setSize( e.size );
 				rt2.setSize( e.size );
 				rt3.setSize( e.size );
+
+				let scale = 2;
+
+				for ( let i = 0; i < bloomRenderCount; i ++ ) {
+
+					resolutionBloom[ i ].copy( e.size ).multiply( 1.0 / scale );
+
+					rtBloomHorizonal[ i ].setSize( resolutionBloom[ i ] );
+					rtBloomVertical[ i ].setSize( resolutionBloom[ i ] );
+
+					scale *= 2.0;
+
+				}
 
 			}
 		} );

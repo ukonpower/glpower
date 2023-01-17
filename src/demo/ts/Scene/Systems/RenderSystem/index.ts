@@ -465,6 +465,12 @@ export class RenderSystem extends GLP.System {
 
 						arrayValue.push( ...v.getElm( ( 'vec' + type.charAt( 0 ) ) as any ) );
 
+					} else if ( 'isTexture' in v ) {
+
+						v.activate( this.textureUnit ++ );
+
+						arrayValue.push( v.unit );
+
 					} else {
 
 						arrayValue.push( ...v.elm );
