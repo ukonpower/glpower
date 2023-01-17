@@ -38,7 +38,7 @@ void main( void ) {
 	vec3 col = col1.xyz;
 
 	#pragma loop_start 4
-	col += texture( uBloomTexture[ LOOP_INDEX ], vUv ).xyz;
+	col += texture( uBloomTexture[ LOOP_INDEX ], vUv ).xyz * ( 0.3 + float(LOOP_INDEX) * 0.5 );
 	#pragma loop_end
 
 	outColor = vec4( col, 1.0 );

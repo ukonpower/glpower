@@ -12,7 +12,9 @@ type GLPowerTextureSetting = {
 	format: number,
 	magFilter: number,
 	minFilter: number,
-	generateMipmap: boolean
+	generateMipmap: boolean,
+	wrapS: number,
+	wrapT: number,
 }
 
 export class GLPowerTexture {
@@ -40,7 +42,9 @@ export class GLPowerTexture {
 			format: this.gl.RGBA,
 			magFilter: this.gl.NEAREST,
 			minFilter: this.gl.NEAREST,
-			generateMipmap: false
+			generateMipmap: false,
+			wrapS: this.gl.CLAMP_TO_EDGE,
+			wrapT: this.gl.CLAMP_TO_EDGE,
 		};
 
 	}
@@ -94,6 +98,8 @@ export class GLPowerTexture {
 
 		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter );
 		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter );
+		this.gl.texParameterf( this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this._setting.wrapS );
+		this.gl.texParameterf( this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this._setting.wrapT );
 
 		if ( this._setting.generateMipmap ) {
 
