@@ -1,8 +1,9 @@
 import { Matrix } from "./Math/Matrix";
 import { Vector } from "./Math/Vector";
 import { GLPowerVAO } from "./GLPowerVAO";
+import { GLPowerTexture } from ".";
 
-export type Uniformable = boolean | number | Vector | Matrix;
+export type Uniformable = boolean | number | Vector | Matrix | GLPowerTexture;
 export type UniformType =
 	'1f' | '1fv' | '2f' | '2fv' | '3f' | '3fv' | '4f' | '4fv' |
 	'1i' | '1iv' | '2i' | '2iv' | '3i' | '3iv' | '4i' | '4iv' |

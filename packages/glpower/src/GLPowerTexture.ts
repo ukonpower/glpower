@@ -45,6 +45,12 @@ export class GLPowerTexture {
 
 	}
 
+	public get isTexture() {
+
+		return true;
+
+	}
+
 	public setting( param: Types.Nullable<GLPowerTextureSetting> ) {
 
 		this._setting = {
