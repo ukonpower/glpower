@@ -55,7 +55,7 @@ export class Scene extends EventEmitter {
 		] );
 
 		const deferredCompositorRenderTarget = this.power.createFrameBuffer();
-		deferredCompositorRenderTarget.setTexture( [ this.power.createTexture() ] );
+		deferredCompositorRenderTarget.setTexture( [ this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR, generateMipmap: true } ) ] );
 
 		// forward
 
