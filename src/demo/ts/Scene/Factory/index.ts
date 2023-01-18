@@ -328,7 +328,7 @@ export class Factory {
 		for ( let i = 0; i < bloomRenderCount; i ++ ) {
 
 			rtBloomVertical.push( new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [
-				this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR, } ),
+				this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ),
 			] ) );
 
 			rtBloomHorizonal.push( new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [
