@@ -2,9 +2,6 @@ import * as GLP from 'glpower';
 
 import basicVert from './shaders/basic.vs';
 
-import quadVert from './shaders/quad.vs';
-import postProcessFrag from './shaders/postprocess.fs';
-
 // materials
 
 import deferredMaterialFrag from './shaders/deferredMaterial.fs';
@@ -13,9 +10,16 @@ import deferredShadingFrag from './shaders/deferredShading.fs';
 import logoVert from './shaders/logo.vs';
 import logoFrag from './shaders/logo.fs';
 
-//bloom shader
+// post process
+
+import quadVert from './shaders/quad.vs';
+
+import fxaaFrag from './shaders/fxaa.fs';
+
 import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
+
+import compositeFrag from './shaders/composite.fs';
 
 interface EmptyProps {
 	position?: GLP.IVector3;
@@ -318,6 +322,7 @@ export class Factory {
 		// resolution
 
 		const resolution = new GLP.Vector();
+		const resolutionInv = new GLP.Vector();
 		const resolutionBloom: GLP.Vector[] = [];
 
 		for ( let i = 0; i < bloomRenderCount; i ++ ) {
@@ -336,11 +341,30 @@ export class Factory {
 
 		const postprocess: GLP.ComponentPostProcess = [];
 
-		// bloom bright
+		// fxaa
 
 		postprocess.push( {
 			input: input.textures,
+			vertexShader: quadVert,
+			fragmentShader: fxaaFrag,
 			renderTarget: rt1,
+			uniforms: {
+				uResolution: {
+					type: '2fv',
+					value: resolution
+				},
+				uResolutionInv: {
+					type: '2fv',
+					value: resolutionInv
+				},
+			}
+		} );
+
+		// bloom bright
+
+		postprocess.push( {
+			input: rt1.textures,
+			renderTarget: rt2,
 			vertexShader: quadVert,
 			fragmentShader: bloomBrightFrag,
 			uniforms: {
@@ -353,7 +377,7 @@ export class Factory {
 
 		// bloom blur
 
-		let bloomInput: GLP.GLPowerTexture[] = rt1.textures;
+		let bloomInput: GLP.GLPowerTexture[] = rt2.textures;
 
 		for ( let i = 0; i < bloomRenderCount; i ++ ) {
 
@@ -417,12 +441,10 @@ export class Factory {
 		// composite
 
 		postprocess.push( {
-			input: [
-				input.textures[ 0 ],
-			],
+			input: rt1.textures,
 			renderTarget: out,
 			vertexShader: quadVert,
-			fragmentShader: postProcessFrag,
+			fragmentShader: compositeFrag,
 			uniforms: {
 				uBloomTexture: {
 					value: rtBloomHorizonal.map( rt => rt.textures[ 0 ] ),
@@ -440,6 +462,7 @@ export class Factory {
 			onResize: ( e ) => {
 
 				resolution.copy( e.size );
+				resolutionInv.set( 1.0 ).divide( e.size );
 
 				rt1.setSize( e.size );
 				rt2.setSize( e.size );
