@@ -1,4 +1,3 @@
-import { count } from "console";
 import { GLPowerBuffer } from "./GLPowerBuffer";
 
 export type Attribute = {
@@ -10,11 +9,9 @@ export type AttributeBuffer = {
 	buffer: GLPowerBuffer;
 	size: number;
 	count: number;
+	location?: number;
+	instanceDivisor?: number;
 }
-
-export type AttributeBufferWithLocation = {
-	location: number | null;
-} & AttributeBuffer
 
 export class GLPowerVAO {
 
@@ -26,7 +23,7 @@ export class GLPowerVAO {
 
 	protected indexBuffer: GLPowerBuffer | null;
 
-	protected attributes: {[key: string]: AttributeBufferWithLocation};
+	protected attributes: {[key: string]: AttributeBuffer};
 
 	public vertCount: number;
 	public indexCount: number;
@@ -50,7 +47,7 @@ export class GLPowerVAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: GLPowerBuffer, size: number ) {
+	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, instanceDivisor?: number ) {
 
 		let attr = this.attributes[ name ];
 
@@ -60,9 +57,9 @@ export class GLPowerVAO {
 
 			attr = {
 				buffer,
-				location: null,
 				size,
-				count
+				count,
+				instanceDivisor
 			};
 
 			this.attributes[ name ] = attr;
@@ -72,19 +69,14 @@ export class GLPowerVAO {
 			attr.buffer = buffer;
 			attr.size = size;
 			attr.count = count;
-			attr.location = null;
+			attr.instanceDivisor;
+			attr.location = undefined;
 
 		}
 
 		this.updateAttributes();
 
 		return this;
-
-	}
-
-	public setInstancedAttribute( name: string, buffer: GLPowerBuffer, size: number ) {
-
-		this.setAttribute( name, buffer, size );
 
 	}
 
@@ -111,7 +103,7 @@ export class GLPowerVAO {
 			const name = attrNameList[ i ];
 			const attribute = this.attributes[ name ];
 
-			if ( ( attribute.location === null || force ) ) {
+			if ( ( attribute.location === undefined || force ) ) {
 
 				attribute.location = this.gl.getAttribLocation( this.program, name );
 
@@ -120,6 +112,12 @@ export class GLPowerVAO {
 					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
 					this.gl.enableVertexAttribArray( attribute.location );
 					this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
+
+					if ( attribute.instanceDivisor !== undefined ) {
+
+						this.gl.vertexAttribDivisor( attribute.location, attribute.instanceDivisor );
+
+					}
 
 				}
 
