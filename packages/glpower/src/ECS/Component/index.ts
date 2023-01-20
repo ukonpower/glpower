@@ -133,7 +133,7 @@ export type ComponentLightSpot = {
 
 /*-------------------------------
 	PostProcess
--------------------------------*/
+----------------	---------------*/
 
 export type ComponentPostProcess = ( ComponentMaterial & {
 	input: GLPowerTexture[];
@@ -144,11 +144,6 @@ export type ComponentPostProcess = ( ComponentMaterial & {
 /*-------------------------------
 	BLidge
 -------------------------------*/
-
-export type BLidgeMaterialParam = {
-	name: string,
-	uniforms: {name: string, value: FCurveGroup}[]
-}
 
 export type ComponentBLidge = {
 	name: string
