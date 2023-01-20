@@ -1,3 +1,4 @@
+import { count } from "console";
 import { GLPowerBuffer } from "./GLPowerBuffer";
 
 export type Attribute = {
@@ -49,9 +50,11 @@ export class GLPowerVAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, count: number ) {
+	public setAttribute( name: string, buffer: GLPowerBuffer, size: number ) {
 
 		let attr = this.attributes[ name ];
+
+		const count = buffer.array ? buffer.array.length / size : 0;
 
 		if ( ! attr ) {
 
@@ -69,10 +72,19 @@ export class GLPowerVAO {
 			attr.buffer = buffer;
 			attr.size = size;
 			attr.count = count;
+			attr.location = null;
 
 		}
 
+		this.updateAttributes();
+
 		return this;
+
+	}
+
+	public setInstancedAttribute( name: string, buffer: GLPowerBuffer, size: number ) {
+
+		this.setAttribute( name, buffer, size );
 
 	}
 

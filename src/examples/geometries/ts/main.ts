@@ -53,10 +53,10 @@ class ExGeometries {
 			const vao = program.getVAO( i.toString() )!;
 
 			const position = geometry.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
+			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size );
 
 			const uv = geometry.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
+			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
 
 			const index = geometry.getAttribute( 'index' );
 			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );

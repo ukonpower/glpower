@@ -44,8 +44,7 @@ export class RenderSystem extends GLP.System {
 	// tmp
 
 	private textureUnit: number = 0;
-	private lightPosition: GLP.Vector;
-	private lightDirection: GLP.Vector;
+	private tmpLightDirection: GLP.Vector;
 
 	// quad
 
@@ -81,8 +80,7 @@ export class RenderSystem extends GLP.System {
 
 		// tmp
 
-		this.lightPosition = new GLP.Vector();
-		this.lightDirection = new GLP.Vector();
+		this.tmpLightDirection = new GLP.Vector();
 
 		// quad
 
@@ -148,9 +146,6 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-	}
-
-	protected afterUpdateImpl( phase: string, event: GLP.SystemUpdateEvent ): void {
 	}
 
 	private collectLight( entity: GLP.Entity, event: GLP.SystemUpdateEvent, type: string ) {
@@ -296,6 +291,8 @@ export class RenderSystem extends GLP.System {
 
 	public renderPostProcess( entityId: string, postprocess: GLP.ComponentPostProcess, event: GLP.SystemUpdateEvent, matrix?: Matrix ) {
 
+		this.gl.disable( this.gl.DEPTH_TEST );
+
 		for ( let i = 0; i < postprocess.length; i ++ ) {
 
 			const pp = postprocess[ i ];
@@ -312,11 +309,6 @@ export class RenderSystem extends GLP.System {
 				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 			}
-
-			this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-			this.gl.clearDepth( 1.0 );
-			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-			this.gl.enable( this.gl.DEPTH_TEST );
 
 			if ( pp.input && pp.uniforms ) {
 
@@ -413,10 +405,9 @@ export class RenderSystem extends GLP.System {
 				const sLight = this.lights.spotLight[ i ];
 				const sLightShadow = this.lights.spotLightShadow[ i ];
 
-				this.lightPosition.copy( sLight.position );
-				this.lightDirection.copy( sLight.direction ).applyMatrix3( matrix.viewMatrix );
+				this.tmpLightDirection.copy( sLight.direction ).applyMatrix3( matrix.viewMatrix );
 
-				program.setUniform( 'spotLight[' + i + '].position', '3fv', this.lightPosition.getElm( 'vec3' ) );
+				program.setUniform( 'spotLight[' + i + '].position', '3fv', sLight.position.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].direction', '3fv', sLight.direction.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].color', '3fv', sLight.color.getElm( 'vec3' ) );
 				program.setUniform( 'spotLight[' + i + '].angle', '1fv', [ sLight.angle ] );
@@ -511,35 +502,27 @@ export class RenderSystem extends GLP.System {
 
 			}
 
-			const cached = geometry.needsUpdate.get( vao );
-
-			if ( ! cached ) {
+			if ( ! geometry.needsUpdate.get( vao ) ) {
 
 				for ( let i = 0; i < geometry.attributes.length; i ++ ) {
 
 					const attr = geometry.attributes[ i ];
 
-					vao.setAttribute( attr.name, attr.buffer, attr.size, attr.count );
+					vao.setAttribute( attr.name, attr.buffer, attr.size );
 
 				}
 
 				vao.setIndex( geometry.index.buffer );
 
-				vao.updateAttributes( true );
-
 				geometry.needsUpdate.set( vao, true );
 
 			}
 
-		}
+			// draw
 
-		// draw
+			program.use();
 
-		program.use();
-
-		program.uploadUniforms();
-
-		if ( vao ) {
+			program.uploadUniforms();
 
 			this.gl.bindVertexArray( vao.getVAO() );
 
@@ -547,9 +530,9 @@ export class RenderSystem extends GLP.System {
 
 			this.gl.bindVertexArray( null );
 
-		}
+			program.clean();
 
-		program.clean();
+		}
 
 	}
 
