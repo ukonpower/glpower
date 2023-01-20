@@ -28,6 +28,8 @@ export class GLPowerVAO {
 	public vertCount: number;
 	public indexCount: number;
 
+	public instanceCount: number;
+
 	constructor( gl: WebGL2RenderingContext, program: WebGLProgram ) {
 
 		this.gl = gl;
@@ -40,6 +42,7 @@ export class GLPowerVAO {
 
 		this.vertCount = 0;
 		this.indexCount = 0;
+		this.instanceCount = 0;
 
 	}
 
@@ -69,7 +72,7 @@ export class GLPowerVAO {
 			attr.buffer = buffer;
 			attr.size = size;
 			attr.count = count;
-			attr.instanceDivisor;
+			attr.instanceDivisor = instanceDivisor;
 			attr.location = undefined;
 
 		}
@@ -93,6 +96,7 @@ export class GLPowerVAO {
 		if ( ! this.vao ) return;
 
 		this.vertCount = 0;
+		this.instanceCount = 0;
 
 		const attrNameList = Object.keys( this.attributes );
 
@@ -124,6 +128,20 @@ export class GLPowerVAO {
 			}
 
 			this.vertCount = Math.max( this.vertCount, attribute.count );
+
+			if ( attribute.instanceDivisor !== undefined && attribute.instanceDivisor > 0 ) {
+
+				if ( this.instanceCount == 0 ) {
+
+					this.instanceCount = attribute.count;
+
+				} else {
+
+					this.instanceCount = Math.min( this.instanceCount, attribute.count );
+
+				}
+
+			}
 
 		}
 
