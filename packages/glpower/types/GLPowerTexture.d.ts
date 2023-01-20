@@ -11,6 +11,8 @@ declare type GLPowerTextureSetting = {
     magFilter: number;
     minFilter: number;
     generateMipmap: boolean;
+    wrapS: number;
+    wrapT: number;
 };
 export declare class GLPowerTexture {
     unit: number;
@@ -20,6 +22,7 @@ export declare class GLPowerTexture {
     private texture;
     private _setting;
     constructor(gl: WebGL2RenderingContext);
+    get isTexture(): boolean;
     setting(param: Types.Nullable<GLPowerTextureSetting>): this;
     attach(img: HTMLImageElement | ImagePretense | null): this;
     activate(unitNumber: number): this;

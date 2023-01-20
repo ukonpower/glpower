@@ -17,6 +17,8 @@ export declare class Geometry {
             buffer: import("../GLPowerBuffer").GLPowerBuffer;
             size: number;
             count: number;
+            location?: number | undefined;
+            instanceDivisor?: number | undefined;
             name: string;
         }[];
         index: AttributeBuffer;

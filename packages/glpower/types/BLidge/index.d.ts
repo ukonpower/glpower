@@ -2,29 +2,6 @@ import EventEmitter from "wolfy87-eventemitter";
 import { IVector2, IVector3 } from "..";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation } from "../Animation/FCurveKeyFrame";
-export declare type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage;
-export declare type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w';
-export declare type BLidgeSyncSceneMessage = {
-    type: "sync/scene";
-    data: BLidgeSceneData;
-};
-export declare type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
-export declare type BLidgeCameraParams = {
-    fov: number;
-};
-export declare type BLidgeMeshParams = {
-    position: number[];
-    uv: number[];
-    normal: number[];
-    index: number[];
-};
-export declare type BLidgeAnimation = {
-    [key: string]: string;
-};
-export declare type BLidgeMaterialParams = {
-    name: string;
-    uniforms: BLidgeAnimation;
-};
 export declare type BLidgeObject = {
     name: string;
     parent: string;
@@ -33,10 +10,38 @@ export declare type BLidgeObject = {
     position: IVector3;
     rotation: IVector3;
     scale: IVector3;
+    material: BLidgeMaterialParam;
     type: BLidgeObjectType;
-    material: BLidgeMaterialParams;
-    camera?: BLidgeCameraParams;
-    mesh?: BLidgeMeshParams;
+    param?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon;
+};
+export declare type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
+export declare type BLidgeCameraParam = {
+    fov: number;
+};
+export declare type BLidgeMeshParam = {
+    position: number[];
+    uv: number[];
+    normal: number[];
+    index: number[];
+};
+export declare type BLidgeLightParam = BLidgeDirectionalLightParam | BLidgeSpotLightParam;
+declare type BLidgeLightParamCommon = {
+    type: 'directional' | 'spot';
+    color: IVector3;
+    intensity: number;
+    useShadowMap: boolean;
+};
+export declare type BLidgeDirectionalLightParam = {
+    type: 'directional';
+} & BLidgeLightParamCommon;
+export declare type BLidgeSpotLightParam = {
+    type: 'spot';
+    angle: number;
+    blend: number;
+} & BLidgeLightParamCommon;
+export declare type BLidgeMaterialParam = {
+    name: string;
+    uniforms: BLidgeAnimation;
 };
 export declare type BLidgeSceneData = {
     animations: {
@@ -45,6 +50,10 @@ export declare type BLidgeSceneData = {
     scene: BLidgeObject;
     frame: BLidgeSceneFrameData;
 };
+export declare type BLidgeAnimation = {
+    [key: string]: string;
+};
+export declare type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w';
 export declare type BLidgeAnimationCurveParam = {
     keyframes: BLidgeAnimationCurveKeyFrameParam[];
     axis: BLidgeAnimationCurveAxis;
@@ -55,6 +64,11 @@ export declare type BLidgeAnimationCurveKeyFrameParam = {
     h_r: IVector2;
     e: string;
     i: FCurveInterpolation;
+};
+export declare type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage;
+export declare type BLidgeSyncSceneMessage = {
+    type: "sync/scene";
+    data: BLidgeSceneData;
 };
 export declare type BLidgeSyncFrameMessage = {
     type: "sync/timeline";
@@ -85,4 +99,5 @@ export declare class BLidge extends EventEmitter {
     dispose(): void;
     disposeWS(): void;
 }
+export {};
 //# sourceMappingURL=index.d.ts.map
