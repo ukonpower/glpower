@@ -462,7 +462,7 @@ export class Factory {
 			onResize: ( e ) => {
 
 				resolution.copy( e.size );
-				resolutionInv.set( 1.0 ).divide( e.size );
+				resolutionInv.set( 1.0, 1.0 ).divide( e.size );
 
 				rt1.setSize( e.size );
 				rt2.setSize( e.size );
