@@ -1,7 +1,7 @@
 import { IVector2, IVector3, IVector4, Vector } from "../../Math/Vector";
 import { GLPowerProgram, Uniformable, UniformType } from "../../GLPowerProgram";
 import { Entity } from "../Entity";
-import { AttributeBuffer } from "../../GLPowerVAO";
+import { AttributeBuffer, GLPowerVAO } from "../../GLPowerVAO";
 import { BLidgeObjectType } from "../../BLidge";
 import { GLPowerFrameBuffer } from "../../GLPowerFrameBuffer";
 import { Matrix } from "../../Math/Matrix";
@@ -10,7 +10,7 @@ import { FCurveGroup } from "../../Animation/FCurveGroup";
 export interface Component {
     [key: string]: any;
 }
-export declare type ComponentName = 'position' | 'scale' | 'matrix' | 'sceneNode' | 'events' | 'camera' | 'perspective' | "orthographic" | "renderCameraDeferred" | "renderCameraForward" | "renderCameraShadowMap" | 'postprocess' | 'material' | 'materialDepth' | 'geometry' | 'directionalLight' | 'pointLight' | 'blidge' | ( string & {} );
+export declare type ComponentName = 'position' | 'scale' | 'matrix' | 'sceneNode' | 'events' | 'camera' | 'perspective' | "orthographic" | "renderCameraDeferred" | "renderCameraForward" | "renderCameraShadowMap" | 'postprocess' | 'material' | 'materialDepth' | 'geometry' | 'directionalLight' | 'pointLight' | 'blidge' | (string & {});
 export declare type ComponentVector2 = {} & IVector2;
 export declare type ComponentVector3 = {} & IVector3;
 export declare type ComponentVector4 = {} & IVector4;
@@ -41,13 +41,11 @@ export declare type ComponentMaterial = {
     __program?: GLPowerProgram;
 };
 export declare type ComponentGeometry = {
-    attributes: ( {
+    attributes: ({
         name: string;
-    } & AttributeBuffer )[];
+    } & AttributeBuffer)[];
     index: AttributeBuffer;
-    needsUpdate?: {
-        [key: string]: boolean;
-    };
+    needsUpdate?: Map<GLPowerVAO, boolean>;
 };
 export declare type ComponentCamera = {
     near: number;
@@ -71,26 +69,23 @@ export declare type ComponentRenderCamera = {
 export declare type ComponentShadowmapCamera = {
     renderTarget: GLPowerFrameBuffer;
 };
-export declare type ComponentLightDirection = {
+export declare type ComponentLightDirectional = {
     color: IVector3;
     intensity: number;
 };
-export declare type ComponentLightPoint = {
+export declare type ComponentLightSpot = {
     color: IVector3;
     intensity: number;
+    angle: number;
+    blend: number;
+    distance: number;
+    decay: number;
 };
-export declare type ComponentPostProcess = ( ComponentMaterial & {
+export declare type ComponentPostProcess = (ComponentMaterial & {
     input: GLPowerTexture[];
     renderTarget: GLPowerFrameBuffer | null;
     customGeometry?: ComponentGeometry;
-} )[];
-export declare type BLidgeMaterialParam = {
-    name: string;
-    uniforms: {
-        name: string;
-        value: FCurveGroup;
-    }[];
-};
+})[];
 export declare type ComponentBLidge = {
     name: string;
     type: BLidgeObjectType;
@@ -107,12 +102,12 @@ export declare type ComponentBLidge = {
 };
 export declare type ComponentEvents = {
     inited?: boolean;
-    onUpdate?: ( event: {
+    onUpdate?: (event: {
         time: number;
         deltaTime: number;
-    } ) => void;
-    onResize?: ( event: {
+    }) => void;
+    onResize?: (event: {
         size: Vector;
-    } ) => void;
+    }) => void;
 };
 //# sourceMappingURL=index.d.ts.map

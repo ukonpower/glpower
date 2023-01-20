@@ -7,22 +7,21 @@ export declare type AttributeBuffer = {
     buffer: GLPowerBuffer;
     size: number;
     count: number;
+    location?: number;
+    instanceDivisor?: number;
 };
-export declare type AttributeBufferWithLocation = {
-    location: number | null;
-} & AttributeBuffer;
 export declare class GLPowerVAO {
     private gl;
     vao: WebGLVertexArrayObject | null;
     program: WebGLProgram;
     protected indexBuffer: GLPowerBuffer | null;
     protected attributes: {
-        [key: string]: AttributeBufferWithLocation;
+        [key: string]: AttributeBuffer;
     };
     vertCount: number;
     indexCount: number;
     constructor(gl: WebGL2RenderingContext, program: WebGLProgram);
-    setAttribute(name: string, buffer: GLPowerBuffer, size: number, count: number): this;
+    setAttribute(name: string, buffer: GLPowerBuffer, size: number, instanceDivisor?: number): this;
     removeAttribute(name: string): this;
     updateAttributes(force?: boolean): void;
     setIndex(indexBuffer: GLPowerBuffer | null): void;

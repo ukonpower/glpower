@@ -4,7 +4,7 @@ import { System } from "../System";
 export interface World {
     entitiesTotalCount: number;
     entities: Entity[];
-    components: Map<string, (Component | null)[]>;
+    components: Map<string, (Component | undefined)[]>;
     systems: Map<string, System>;
 }
 //# sourceMappingURL=index.d.ts.map
