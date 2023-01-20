@@ -54,13 +54,15 @@ export class BLidgeSystem extends GLP.System {
 		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
 		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
+		const frame = this.blidge.frame.current;
+
 		if ( blidgeComponent ) {
 
 			if ( blidgeComponent.curveGroups ) {
 
 				if ( blidgeComponent.curveGroups.position ) {
 
-					const position = blidgeComponent.curveGroups.position.setFrame( this.blidge.frame.current ).value;
+					const position = blidgeComponent.curveGroups.position.setFrame( frame ).value;
 
 					positionComponent.x = position.x;
 					positionComponent.y = position.y;
@@ -70,7 +72,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( blidgeComponent.curveGroups.rotation ) {
 
-					const rot = blidgeComponent.curveGroups.rotation.setFrame( this.blidge.frame.current ).value;
+					const rot = blidgeComponent.curveGroups.rotation.setFrame( frame ).value;
 
 					let rotXOffset = 0;
 
@@ -91,7 +93,7 @@ export class BLidgeSystem extends GLP.System {
 
 				if ( blidgeComponent.curveGroups.scale ) {
 
-					const scale = blidgeComponent.curveGroups.scale.setFrame( this.blidge.frame.current ).value;
+					const scale = blidgeComponent.curveGroups.scale.setFrame( frame ).value;
 
 					scaleComponent.x = scale.x;
 					scaleComponent.y = scale.y;
@@ -105,7 +107,7 @@ export class BLidgeSystem extends GLP.System {
 
 						const uni = blidgeComponent.curveGroups.uniforms[ i ];
 
-						uni.curve.setFrame( this.blidge.frame.current );
+						uni.curve.setFrame( frame );
 
 					}
 

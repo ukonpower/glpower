@@ -65,10 +65,10 @@ class ExFrameBuffer {
 		const setVao = ( vao: GLP.GLPowerVAO, geo: GLP.Geometry ) => {
 
 			const position = geo.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size, position.array.length / position.size );
+			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
 
 			const uv = geo.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size, uv.array.length / uv.size );
+			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
 
 			const index = geo.getAttribute( 'index' );
 			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
