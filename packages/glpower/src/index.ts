@@ -26,10 +26,6 @@ export * from './ECS/Component';
 export * from './ECS/System';
 export * from './ECS/World';
 
-// scene graph
-
-export * from './SceneGraph';
-
 // animation
 
 export * from './Animation/Bezier';

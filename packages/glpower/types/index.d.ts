@@ -18,7 +18,6 @@ export * from './ECS/Entity';
 export * from './ECS/Component';
 export * from './ECS/System';
 export * from './ECS/World';
-export * from './SceneGraph';
 export * from './Animation/Bezier';
 export * from './Animation/Easings';
 export * from './Animation/FCurve';

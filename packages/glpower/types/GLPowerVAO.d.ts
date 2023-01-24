@@ -20,6 +20,7 @@ export declare class GLPowerVAO {
     };
     vertCount: number;
     indexCount: number;
+    instanceCount: number;
     constructor(gl: WebGL2RenderingContext, program: WebGLProgram);
     setAttribute(name: string, buffer: GLPowerBuffer, size: number, instanceDivisor?: number): this;
     removeAttribute(name: string): this;
