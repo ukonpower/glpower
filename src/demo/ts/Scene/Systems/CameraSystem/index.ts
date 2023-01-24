@@ -20,9 +20,9 @@ export class CameraSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, entity, 'camera' )!;
-		const transform = event.ecs.getComponent<GLP.ComponentTransformMatrix>( event.world, entity, 'matrix' );
-		const light = event.ecs.getComponent<GLP.ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
+		const camera = event.ecs.getComponent<ComponentCamera>( event.world, entity, 'camera' )!;
+		const transform = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' );
+		const light = event.ecs.getComponent<ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
 
 		if ( transform ) {
 
@@ -48,14 +48,14 @@ export class CameraSystem extends GLP.System {
 
 			if ( logicName == 'perspectiveCamera' ) {
 
-				const perspective = event.ecs.getComponent<GLP.ComponentCameraPerspective>( event.world, entity, 'perspective' )!;
+				const perspective = event.ecs.getComponent<ComponentCameraPerspective>( event.world, entity, 'perspective' )!;
 				camera.projectionMatrix.perspective( perspective.fov, camera.aspectRatio, camera.near, camera.far );
 
 			}
 
 			if ( logicName == 'orthographicCamera' ) {
 
-				const orthographic = event.ecs.getComponent<GLP.ComponentCameraOrthographic>( event.world, entity, 'orthographic' )!;
+				const orthographic = event.ecs.getComponent<ComponentCameraOrthographic>( event.world, entity, 'orthographic' )!;
 				camera.projectionMatrix.orthographic( orthographic.width, orthographic.height, camera.near, camera.far );
 
 			}
@@ -66,7 +66,7 @@ export class CameraSystem extends GLP.System {
 
 	private resizeCamera( cameraEntity: GLP.Entity, world: GLP.World ) {
 
-		const camera = this.ecs.getComponent<GLP.ComponentCamera>( world, cameraEntity, 'camera' );
+		const camera = this.ecs.getComponent<ComponentCamera>( world, cameraEntity, 'camera' );
 
 		if ( camera ) {
 

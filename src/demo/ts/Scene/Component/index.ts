@@ -1,4 +1,5 @@
 import * as GLP from 'glpower';
+import { Uniforms } from 'glpower';
 
 /*-------------------------------
 	Object
@@ -19,8 +20,6 @@ export type ComponentSceneNode = {
 -------------------------------*/
 
 export type RenderType = 'forward' | 'deferred' | 'shadowMap' | 'postprocess';
-
-export type Uniforms = {[key:string]: {value: GLP.Uniformable | GLP.Uniformable[], type: GLP.UniformType}}
 
 export type ComponentMaterial = {
 	vertexShader: string;
@@ -95,6 +94,7 @@ export type ComponentPostProcess = ( ComponentMaterial & {
 	input: GLP.GLPowerTexture[];
 	renderTarget: GLP.GLPowerFrameBuffer | null;
 	customGeometry?: ComponentGeometry;
+	camera?: GLP.Entity
 } )[]
 
 /*-------------------------------
