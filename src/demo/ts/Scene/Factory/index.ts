@@ -19,6 +19,8 @@ import fxaaFrag from './shaders/fxaa.fs';
 import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
 
+import lightShaftFrag from './shaders/lightShaft.fs';
+
 import compositeFrag from './shaders/composite.fs';
 
 interface EmptyProps {
@@ -55,12 +57,20 @@ export class Factory {
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
+	// uniforms
+
+	private uniformCameraPos: GLP.Vector;
+
 	constructor( power: GLP.Power, ecs: GLP.ECS, world: GLP.World ) {
 
 		this.power = power;
 		this.gl = this.power.gl;
 		this.ecs = ecs;
 		this.world = world;
+
+		// uniforms
+
+		this.uniformCameraPos = new GLP.Vector();
 
 	}
 
@@ -177,8 +187,6 @@ export class Factory {
 			renderTarget: rt.forwardRenderTarget,
 		} );
 
-		const uniformCameraPos = new GLP.Vector();
-
 		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
 				renderTarget: rt.deferredRenderTarget,
@@ -193,7 +201,7 @@ export class Factory {
 							type: '3f'
 						},
 						uCameraPosition: {
-							value: uniformCameraPos,
+							value: this.uniformCameraPos,
 							type: '3f'
 						}
 					},
@@ -209,7 +217,7 @@ export class Factory {
 			{
 				onUpdate: ( e ) => {
 
-					uniformCameraPos.copy( componentPosition );
+					this.uniformCameraPos.copy( componentPosition );
 
 				},
 				onResize: ( e ) => {
@@ -304,7 +312,7 @@ export class Factory {
 		PostProcess
 	-------------------------------*/
 
-	public postprocess( input: GLP.GLPowerFrameBuffer, out: GLP.GLPowerFrameBuffer | null ) {
+	public postprocess( input: GLP.GLPowerFrameBuffer, gBuffer: GLP.GLPowerTexture[], camera: GLP.Entity, out: GLP.GLPowerFrameBuffer | null ) {
 
 		const entity = this.empty();
 
@@ -319,11 +327,9 @@ export class Factory {
 		const rtBloomVertical: GLP.GLPowerFrameBuffer[] = [];
 		const rtBloomHorizonal: GLP.GLPowerFrameBuffer[] = [];
 
-		// resolution
-
-		const resolution = new GLP.Vector();
-		const resolutionInv = new GLP.Vector();
-		const resolutionBloom: GLP.Vector[] = [];
+		const rtLightShaft = new GLP.GLPowerFrameBuffer( this.gl ).setTexture( [
+			this.power.createTexture().setting( { magFilter: this.gl.LINEAR, minFilter: this.gl.LINEAR } ),
+		] );
 
 		for ( let i = 0; i < bloomRenderCount; i ++ ) {
 
@@ -336,6 +342,12 @@ export class Factory {
 			] ) );
 
 		}
+
+		// resolution
+
+		const resolution = new GLP.Vector();
+		const resolutionInv = new GLP.Vector();
+		const resolutionBloom: GLP.Vector[] = [];
 
 		// pp
 
@@ -438,6 +450,24 @@ export class Factory {
 
 		}
 
+		// light shaft
+
+		postprocess.push( {
+			input: gBuffer,
+			renderTarget: rtLightShaft,
+			vertexShader: quadVert,
+			fragmentShader: lightShaftFrag,
+			uniforms: {
+				uCameraPosition: {
+					value: this.uniformCameraPos,
+					type: '3f'
+				}
+			},
+			defines: {
+			},
+			camera,
+		} );
+
 		// composite
 
 		postprocess.push( {
@@ -449,6 +479,10 @@ export class Factory {
 				uBloomTexture: {
 					value: rtBloomHorizonal.map( rt => rt.textures[ 0 ] ),
 					type: '1iv'
+				},
+				uLightShaftTexture: {
+					value: rtLightShaft.textures,
+					type: '1i'
 				}
 			},
 			defines: {
@@ -480,6 +514,8 @@ export class Factory {
 					scale *= 2.0;
 
 				}
+
+				rtLightShaft.setSize( e.size.clone().multiply( 0.2 ) );
 
 			}
 		} );
