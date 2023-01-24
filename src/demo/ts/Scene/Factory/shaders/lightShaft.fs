@@ -58,7 +58,7 @@ in vec2 vUv;
 
 layout (location = 0) out vec4 outColor;
 
-#define MARCH 64
+#define MARCH 128
 #define SHADOW_SAMPLE_COUNT 2
 
 vec4 floatToRGBA( float v ) {
@@ -78,11 +78,11 @@ float compareShadowDepth( float lightDepth, sampler2D shadowMap, vec2 shadowCoor
 
 	if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
 
-		return step( lightDepth, shadowMapDepth + 0.010 );
+		return step( lightDepth, shadowMapDepth + 0.01 );
 
 	}
 
-	return 0.0;
+	return 1.0;
 
 }
 
@@ -100,26 +100,7 @@ float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
 
 	shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord );
 
-    outColor = vec4( (pos), 1.0 );
-
-	for( int i = 0; i < SHADOW_SAMPLE_COUNT; i++ ) {
-
-		vec2 offset = 1.0 / camera.resolution * ( float( i + 1 ) / float( SHADOW_SAMPLE_COUNT ) ) * 1.0;
-
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, -offset.y ) );
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( 0.0, -offset.y ) );
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, -offset.y ) );
-		
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, 0.0 ) );
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, 0.0 ) );
-
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( -offset.x, offset.y ) );
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( 0.0, offset.y ) );
-		shadowSum += compareShadowDepth( lightDepth, shadowMap, shadowCoord + vec2( offset.x, offset.y ) );
-
-	}
-
-	return shadowSum / ( 8.0 * float( SHADOW_SAMPLE_COUNT ) + 1.0 );
+	return shadowSum;
 
 }
 
@@ -145,10 +126,9 @@ void main( void ) {
             diff = uCameraPosition - rayPos;
             distanceToCamera = length( diff );
             rayDir = normalize( diff );
-			rayPos = uCameraPosition - rayDir * min(  15.0, distanceToCamera );
+			// rayPos = uCameraPosition - rayDir * min( 15.0, distanceToCamera );
             marchLength = distanceToCamera / float( MARCH );
             sum = 0.0;
-
 
             for( int i = 0; i < MARCH; i ++ ) {
 
