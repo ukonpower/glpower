@@ -7,6 +7,7 @@ import { BLidgeSystem } from './Systems/BLidgeSystem';
 import { CameraSystem } from './Systems/CameraSystem';
 import { EventSystem } from './Systems/EventSystem';
 import { Factory } from './Factory';
+import { SceneGraph } from './SceneGraph';
 
 export class Scene extends EventEmitter {
 
@@ -15,7 +16,7 @@ export class Scene extends EventEmitter {
 	private ecs: GLP.ECS;
 	private world: GLP.World;
 
-	private sceneGraph: GLP.SceneGraph;
+	private sceneGraph: SceneGraph;
 	private factory: Factory;
 
 	constructor( power: GLP.Power ) {
@@ -38,7 +39,7 @@ export class Scene extends EventEmitter {
 			Scene
 		-------------------------------*/
 
-		this.sceneGraph = new GLP.SceneGraph( this.ecs, this.world );
+		this.sceneGraph = new SceneGraph( this.ecs, this.world );
 		this.factory = new Factory( this.power, this.ecs, this.world );
 
 		// -------- render target

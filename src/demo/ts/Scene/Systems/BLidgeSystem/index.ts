@@ -14,6 +14,11 @@ export class BLidgeSystem extends GLP.System {
 	private camera: GLP.Entity;
 	private objects: Map<string, GLP.Entity>;
 
+	// frame
+
+	private frame: number;
+	private play: boolean;
+
 	// tmp
 	private tmpQuaternion: GLP.Quaternion;
 
@@ -35,15 +40,41 @@ export class BLidgeSystem extends GLP.System {
 		this.camera = camera;
 		this.objects = new Map();
 
+		// frame
+
+		this.frame = 0;
+		this.play = false;
+
 		// blidge
 
 		this.blidge = new GLP.BLidge( 'ws://localhost:3100' );
+
+		this.blidge.addListener( 'error', () => {
+
+			this.blidge.syncJsonScene( '/assets/demo/scene.json' );
+			this.play = true;
+
+		} );
 
 		this.blidge.addListener( 'sync/scene', this.onSyncScene.bind( this ) );
 
 		// tmp
 
 		this.tmpQuaternion = new GLP.Quaternion();
+
+	}
+
+	public update( event: GLP.SystemUpdateEvent ): void {
+
+		if ( this.play ) {
+
+			this.frame += event.deltaTime * 30.0;
+
+			this.frame %= this.blidge.frame.end;
+
+		}
+
+		super.update( event );
 
 	}
 
@@ -54,7 +85,7 @@ export class BLidgeSystem extends GLP.System {
 		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
 		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
-		const frame = this.blidge.frame.current;
+		const frame = this.blidge.connected ? this.blidge.frame.current : this.frame;
 
 		if ( blidgeComponent ) {
 
@@ -115,14 +146,11 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-
 		}
 
 	}
 
 	private onSyncScene( blidge: GLP.BLidge ) {
-
-		// blidge.getActionNameList
 
 		const timeStamp = new Date().getTime();
 

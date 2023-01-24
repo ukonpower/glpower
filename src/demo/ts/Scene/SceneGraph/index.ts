@@ -1,19 +1,17 @@
-import { ECS } from '../ECS';
-import { ComponentSceneNode } from '../ECS/Component';
-import { Entity } from '../ECS/Entity';
-import { World } from '../ECS/World';
+import * as GLP from 'glpower';
+import { ComponentSceneNode } from '../Component';
 
 export class SceneGraph {
 
-	private ecs: ECS;
-	private world: World;
+	private ecs: GLP.ECS;
+	private world: GLP.World;
 
-	private entities: Entity[];
+	private entities: GLP.Entity[];
 
-	private cacheTransformUpdateOrder: Entity[] | null;
-	private cacheRenderOrder: Entity[] | null;
+	private cacheTransformUpdateOrder: GLP.Entity[] | null;
+	private cacheRenderOrder: GLP.Entity[] | null;
 
-	constructor( ecs: ECS, world: World ) {
+	constructor( ecs: GLP.ECS, world: GLP.World ) {
 
 		this.ecs = ecs;
 		this.world = world;
@@ -25,7 +23,7 @@ export class SceneGraph {
 
 	}
 
-	public add( parent: Entity, child: Entity ) {
+	public add( parent: GLP.Entity, child: GLP.Entity ) {
 
 		const parentNode = this.ecs.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
 
@@ -62,7 +60,7 @@ export class SceneGraph {
 
 	}
 
-	public remove( parent: Entity, child: Entity ) {
+	public remove( parent: GLP.Entity, child: GLP.Entity ) {
 
 		const parentNode = this.ecs.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
 
@@ -114,9 +112,9 @@ export class SceneGraph {
 
 		if ( this.cacheTransformUpdateOrder ) return this.cacheTransformUpdateOrder;
 
-		const updateOrder: Entity[] = [];
+		const updateOrder: GLP.Entity[] = [];
 
-		const _ = ( entity: Entity ) => {
+		const _ = ( entity: GLP.Entity ) => {
 
 			updateOrder.push( entity );
 
