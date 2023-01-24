@@ -139,6 +139,7 @@ export type ComponentPostProcess = ( ComponentMaterial & {
 	input: GLPowerTexture[];
 	renderTarget: GLPowerFrameBuffer | null;
 	customGeometry?: ComponentGeometry;
+	camera?: Entity;
 } )[]
 
 /*-------------------------------

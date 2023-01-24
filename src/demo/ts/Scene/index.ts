@@ -70,7 +70,7 @@ export class Scene extends EventEmitter {
 			deferredCompositorRenderTarget
 		} );
 
-		this.factory.postprocess( deferredCompositorRenderTarget, null );
+		this.factory.postprocess( deferredCompositorRenderTarget, deferredRenderTarget.textures, camera, null );
 
 		/*-------------------------------
 			System

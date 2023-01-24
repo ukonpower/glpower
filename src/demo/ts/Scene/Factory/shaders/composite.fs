@@ -2,10 +2,10 @@
 precision highp float;
 
 uniform sampler2D sampler0;
-uniform sampler2D sampler1;
 
 uniform vec3 uColor;
 uniform sampler2D uBloomTexture[4];
+uniform sampler2D uLightShaftTexture;
 
 in vec2 vUv;
 
@@ -33,13 +33,14 @@ vec2 getMipmapUV( vec2 uv, float level ) {
 void main( void ) {
 
 	vec4 col1 = texture( sampler0, vUv );
-	vec4 col2 = texture( sampler1, vUv );
 
 	vec3 col = col1.xyz;
 
 	#pragma loop_start 4
 	col += texture( uBloomTexture[ LOOP_INDEX ], vUv ).xyz * ( 0.3 + float(LOOP_INDEX) * 0.5 );
 	#pragma loop_end
+
+	col += texture( uLightShaftTexture, vUv ).x * 0.3;
 
 	outColor = vec4( col, 1.0 );
 

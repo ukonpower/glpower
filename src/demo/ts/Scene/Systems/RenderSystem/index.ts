@@ -138,7 +138,7 @@ export class RenderSystem extends GLP.System {
 
 		} else if ( phase == 'postprocess' ) {
 
-			this.renderPostProcess( entity + '_postprocess', this.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!, event );
+			this.renderPostProcess( entity + '_postprocess', this.ecs.getComponent<GLP.ComponentPostProcess>( event.world, entity, 'postprocess' )!, event, );
 
 		} else {
 
@@ -320,6 +320,19 @@ export class RenderSystem extends GLP.System {
 					};
 
 				}
+
+			}
+
+			if ( ! matrix && pp.camera !== undefined ) {
+
+				const camera = event.ecs.getComponent<GLP.ComponentCamera>( event.world, pp.camera, 'camera' )!;
+
+				matrix = {
+					viewMatrix: camera.viewMatrix,
+					projectionMatrix: camera.projectionMatrix,
+					near: camera.near,
+					far: camera.far
+				};
 
 			}
 
