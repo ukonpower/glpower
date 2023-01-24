@@ -80,7 +80,7 @@ export class BLidgeSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( event.world, entity, 'blidge' );
+		const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( event.world, entity, 'blidge' );
 		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
 		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
 		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
@@ -167,7 +167,7 @@ export class BLidgeSystem extends GLP.System {
 
 					entity = this.camera;
 
-					const componentCamera = this.ecs.getComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective' );
+					const componentCamera = this.ecs.getComponent<ComponentCameraPerspective>( this.world, entity, 'perspective' );
 
 					if ( componentCamera && obj.param ) {
 
@@ -188,7 +188,7 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge' );
+			const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
 
 			if ( blidgeComponent ) {
 
@@ -354,7 +354,7 @@ export class BLidgeSystem extends GLP.System {
 
 		this.ecs.getEntities( this.world, [ 'blidge' ] ).forEach( entity => {
 
-			const blidgeComponent = this.ecs.getComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge' );
+			const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
 
 			if ( blidgeComponent && blidgeComponent.updateTime !== timeStamp ) {
 

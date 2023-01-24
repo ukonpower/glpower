@@ -58,9 +58,6 @@ in vec2 vUv;
 
 layout (location = 0) out vec4 outColor;
 
-#define MARCH 128
-#define SHADOW_SAMPLE_COUNT 2
-
 vec4 floatToRGBA( float v ) {
 	vec4 enc = vec4(1.0, 255.0, 65025.0, 16581375.0) * v;
 	enc = fract(enc);
@@ -78,11 +75,11 @@ float compareShadowDepth( float lightDepth, sampler2D shadowMap, vec2 shadowCoor
 
 	if( shadowCoord.x >= 0.0 && shadowCoord.x <= 1.0 && shadowCoord.y >= 0.0 && shadowCoord.y <= 1.0 ) {
 
-		return step( lightDepth, shadowMapDepth + 0.01 );
+		return step( lightDepth, shadowMapDepth );
 
 	}
 
-	return 1.0;
+	return 0.0;
 
 }
 
@@ -104,6 +101,12 @@ float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
 
 }
 
+uniform mat4 cameraMatrix;
+uniform mat4 projectionMatrixInverse;
+
+#define MARCH 64.0
+#define MARCH_STEP 1.0 / MARCH * 15.0
+
 void main( void ) {
 
     vec3 col;
@@ -112,35 +115,47 @@ void main( void ) {
 
 		SpotLight sLight;
         
-        vec4 col1;
         vec3 rayPos;
+		vec3 rayEndPos;
         vec3 rayDir;
+		vec3 rayStep;
         vec3 diff;
-        float distanceToCamera;
-        float marchLength;
+        float marchMaxLength;
+		float totalLength;
         float sum;
 
 		#pragma loop_start NUM_LIGHT_SPOT
 
-            rayPos = texture( sampler0, vUv ).xyz;
-            diff = uCameraPosition - rayPos;
-            distanceToCamera = length( diff );
+			rayPos = uCameraPosition;
+            rayEndPos = texture( sampler0, vUv ).xyz;
+
+			if( rayEndPos.x + rayEndPos.y + rayEndPos.z == 0.0 ) {
+				
+				rayDir = normalize( ( cameraMatrix * projectionMatrixInverse * vec4( vUv * 2.0 - 1.0, 1.0, 1.0 ) ).xyz );
+				rayEndPos = rayPos + rayDir * 10.0;
+
+			}
+
+            diff = rayEndPos - rayPos;
+			marchMaxLength = length( diff );
             rayDir = normalize( diff );
-			// rayPos = uCameraPosition - rayDir * min( 15.0, distanceToCamera );
-            marchLength = distanceToCamera / float( MARCH );
+			rayStep = rayDir * MARCH_STEP;
             sum = 0.0;
 
-            for( int i = 0; i < MARCH; i ++ ) {
+            for( int i = 0; i < int( MARCH ); i ++ ) {
 
-    			sum += 1.0 * getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] );
-                rayPos += rayDir * marchLength;
+    			sum += getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] );
+                rayPos += rayStep;
+				totalLength += MARCH_STEP;
+
+				if( totalLength >= marchMaxLength ) break;
 
             }
 
+			sum *= 0.01;
+
 		#pragma loop_end
         
-        sum /= float( MARCH ) * float( NUM_LIGHT_SPOT );
-
         col += sum * 1.0;
 	
 	#endif

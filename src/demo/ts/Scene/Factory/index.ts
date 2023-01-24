@@ -22,6 +22,7 @@ import bloomBrightFrag from './shaders/bloomBright.fs';
 import lightShaftFrag from './shaders/lightShaft.fs';
 
 import compositeFrag from './shaders/composite.fs';
+import { ComponentBLidge, ComponentCamera, ComponentCameraOrthographic, ComponentCameraPerspective, ComponentEvents, ComponentGeometry, ComponentLightDirectional, ComponentLightSpot, ComponentMaterial, ComponentPostProcess, ComponentRenderCamera, ComponentSceneNode, ComponentShadowmapCamera, ComponentTransformMatrix } from '../Component';
 
 interface EmptyProps {
 	position?: GLP.IVector3;
@@ -30,8 +31,8 @@ interface EmptyProps {
 }
 
 interface MeshProps extends EmptyProps{
-	material?: GLP.ComponentMaterial
-	geometry: GLP.ComponentGeometry
+	material?: ComponentMaterial
+	geometry: ComponentGeometry
 }
 
 interface CameraProps extends EmptyProps {
@@ -85,8 +86,8 @@ export class Factory {
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'rotation', props.rotation ?? { x: 0, y: 0, z: 0 } );
 		this.ecs.addComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion', { x: 0, y: 0, z: 0, w: 1 } );
 		this.ecs.addComponent<GLP.ComponentVector3>( this.world, entity, 'scale', props.scale ?? { x: 1, y: 1, z: 1 } );
-		this.ecs.addComponent<GLP.ComponentTransformMatrix>( this.world, entity, 'matrix', { local: new GLP.Matrix(), world: new GLP.Matrix() } );
-		this.ecs.addComponent<GLP.ComponentSceneNode>( this.world, entity, 'sceneNode', { children: [] } );
+		this.ecs.addComponent<ComponentTransformMatrix>( this.world, entity, 'matrix', { local: new GLP.Matrix(), world: new GLP.Matrix() } );
+		this.ecs.addComponent<ComponentSceneNode>( this.world, entity, 'sceneNode', { children: [] } );
 
 		return entity;
 
@@ -98,7 +99,7 @@ export class Factory {
 
 	public appendBlidge( entity: GLP.Entity, props: BLidgeProps ) {
 
-		this.ecs.addComponent<GLP.ComponentBLidge>( this.world, entity, 'blidge', {
+		this.ecs.addComponent<ComponentBLidge>( this.world, entity, 'blidge', {
 			name: props.name,
 			type: props.type ?? 'empty',
 		} );
@@ -111,11 +112,11 @@ export class Factory {
 		Mesh
 	-------------------------------*/
 
-	public appendMesh( entity: GLP.Entity, geometry: GLP.ComponentGeometry, materialParam: MaterialParam ) {
+	public appendMesh( entity: GLP.Entity, geometry: ComponentGeometry, materialParam: MaterialParam ) {
 
 		const name = materialParam.name;
 
-		const material: GLP.ComponentMaterial | null = {
+		const material: ComponentMaterial | null = {
 			vertexShader: basicVert,
 			fragmentShader: deferredMaterialFrag,
 			uniforms: {
@@ -131,11 +132,11 @@ export class Factory {
 
 		}
 
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'material', material );
+		this.ecs.addComponent<ComponentMaterial>( this.world, entity, 'material', material );
 
-		this.ecs.addComponent<GLP.ComponentMaterial>( this.world, entity, 'materialDepth', { ...material, defines: { ...material.defines, IS_DEPTH: '' }, renderType: 'shadowMap' } );
+		this.ecs.addComponent<ComponentMaterial>( this.world, entity, 'materialDepth', { ...material, defines: { ...material.defines, IS_DEPTH: '' }, renderType: 'shadowMap' } );
 
-		this.ecs.addComponent<GLP.ComponentGeometry>( this.world, entity, 'geometry', geometry );
+		this.ecs.addComponent<ComponentGeometry>( this.world, entity, 'geometry', geometry );
 
 		return entity;
 
@@ -171,7 +172,7 @@ export class Factory {
 
 		const entity = this.empty();
 
-		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
+		this.ecs.addComponent<ComponentCamera>( this.world, entity, 'camera', {
 			near: props.near ?? 0.001,
 			far: props.far ?? 1000,
 			aspectRatio: window.innerWidth / window.innerHeight,
@@ -179,15 +180,15 @@ export class Factory {
 			viewMatrix: new GLP.Matrix(),
 		} );
 
-		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
+		this.ecs.addComponent<ComponentCameraPerspective>( this.world, entity, 'perspective', {
 			fov: props.fov ?? 50,
 		} );
 
-		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraForward', {
+		this.ecs.addComponent<ComponentRenderCamera>( this.world, entity, 'renderCameraForward', {
 			renderTarget: rt.forwardRenderTarget,
 		} );
 
-		this.ecs.addComponent<GLP.ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
+		this.ecs.addComponent<ComponentRenderCamera>( this.world, entity, 'renderCameraDeferred',
 			{
 				renderTarget: rt.deferredRenderTarget,
 				postprocess: [ {
@@ -213,7 +214,7 @@ export class Factory {
 
 		const componentPosition = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' )!;
 
-		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events',
+		this.ecs.addComponent<ComponentEvents>( this.world, entity, 'events',
 			{
 				onUpdate: ( e ) => {
 
@@ -245,7 +246,7 @@ export class Factory {
 		const rtShadowMap = new GLP.GLPowerFrameBuffer( this.gl );
 		rtShadowMap.setTexture( [ this.power.createTexture() ] );
 
-		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
+		this.ecs.addComponent<ComponentCamera>( this.world, entity, 'camera', {
 			near: 0.01,
 			far: 100.0,
 			aspectRatio: 1,
@@ -253,13 +254,13 @@ export class Factory {
 			viewMatrix: new GLP.Matrix(),
 		} );
 
-		this.ecs.addComponent<GLP.ComponentShadowmapCamera>( this.world, entity, 'renderCameraShadowMap', {
+		this.ecs.addComponent<ComponentShadowmapCamera>( this.world, entity, 'renderCameraShadowMap', {
 			renderTarget: rtShadowMap
 		} );
 
 		// events
 
-		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events',
+		this.ecs.addComponent<ComponentEvents>( this.world, entity, 'events',
 			{
 				onUpdate: ( e ) => {
 				},
@@ -275,14 +276,14 @@ export class Factory {
 
 	public appendDirectionalLight( entity: GLP.Entity, param: GLP.BLidgeDirectionalLightParam ) {
 
-		this.ecs.addComponent<GLP.ComponentLightDirectional>( this.world, entity, 'directionalLight', {
+		this.ecs.addComponent<ComponentLightDirectional>( this.world, entity, 'directionalLight', {
 			color: new GLP.Vector( param.color.x, param.color.y, param.color.z ).multiply( Math.PI ),
 			intensity: param.intensity
 		} );
 
 		this.appendShadowMap( entity );
 
-		this.ecs.addComponent<GLP.ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
+		this.ecs.addComponent<ComponentCameraOrthographic>( this.world, entity, 'orthographic', {
 			width: 15,
 			height: 15
 		} );
@@ -291,7 +292,7 @@ export class Factory {
 
 	public appendSpotLight( entity: GLP.Entity, param: GLP.BLidgeSpotLightParam ) {
 
-		this.ecs.addComponent<GLP.ComponentLightSpot>( this.world, entity, 'spotLight', {
+		this.ecs.addComponent<ComponentLightSpot>( this.world, entity, 'spotLight', {
 			color: new GLP.Vector( param.color.x, param.color.y, param.color.z ).multiply( Math.PI ),
 			intensity: param.intensity,
 			angle: param.angle,
@@ -302,7 +303,7 @@ export class Factory {
 
 		this.appendShadowMap( entity );
 
-		this.ecs.addComponent<GLP.ComponentCameraPerspective>( this.world, entity, 'perspective', {
+		this.ecs.addComponent<ComponentCameraPerspective>( this.world, entity, 'perspective', {
 			fov: param.angle / Math.PI * 180,
 		} );
 
@@ -351,7 +352,7 @@ export class Factory {
 
 		// pp
 
-		const postprocess: GLP.ComponentPostProcess = [];
+		const postprocess: ComponentPostProcess = [];
 
 		// fxaa
 
@@ -490,9 +491,9 @@ export class Factory {
 			}
 		}, );
 
-		this.ecs.addComponent<GLP.ComponentPostProcess>( this.world, entity, 'postprocess', postprocess );
+		this.ecs.addComponent<ComponentPostProcess>( this.world, entity, 'postprocess', postprocess );
 
-		this.ecs.addComponent<GLP.ComponentEvents>( this.world, entity, 'events', {
+		this.ecs.addComponent<ComponentEvents>( this.world, entity, 'events', {
 			onResize: ( e ) => {
 
 				resolution.copy( e.size );

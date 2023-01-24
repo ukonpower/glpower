@@ -16,7 +16,7 @@ export class EventSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const events = event.ecs.getComponent<GLP.ComponentEvents>( event.world, entity, 'events' );
+		const events = event.ecs.getComponent<ComponentEvents>( event.world, entity, 'events' );
 
 		if ( events ) {
 
@@ -42,7 +42,7 @@ export class EventSystem extends GLP.System {
 
 		entities.forEach( entity => {
 
-			const events = this.ecs.getComponent<GLP.ComponentEvents>( world, entity, 'events' );
+			const events = this.ecs.getComponent<ComponentEvents>( world, entity, 'events' );
 
 			if ( events && events.onResize ) {
 
