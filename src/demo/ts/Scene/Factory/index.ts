@@ -246,7 +246,7 @@ export class Factory {
 		rtShadowMap.setTexture( [ this.power.createTexture() ] );
 
 		this.ecs.addComponent<GLP.ComponentCamera>( this.world, entity, 'camera', {
-			near: 1.0,
+			near: 0.01,
 			far: 100.0,
 			aspectRatio: 1,
 			projectionMatrix: new GLP.Matrix(),
@@ -515,7 +515,7 @@ export class Factory {
 
 				}
 
-				rtLightShaft.setSize( e.size.clone().multiply( 0.2 ) );
+				rtLightShaft.setSize( e.size.clone().multiply( 0.4 ) );
 
 			}
 		} );
