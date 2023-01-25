@@ -1,4 +1,6 @@
-import * as GLP from '@glpower';
+import * as GLP from 'glpower';
+
+import { Scene } from './Scene';
 
 export class Demo {
 
@@ -6,13 +8,23 @@ export class Demo {
 
 	private canvas: HTMLCanvasElement;
 	private gl: WebGL2RenderingContext;
+	private core: GLP.Power;
+
+	// scene
+
+	private scene: Scene;
 
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
-		this.canvas = document.querySelector( '#canvas' )!;
-		this.gl = this.canvas.getContext( 'webgl2' )!;
+		this.canvas = canvas;
+		this.gl = gl;
+		this.core = new GLP.Power( this.gl );
 
-		// resize
+		// scene
+
+		this.scene = new Scene( this.core );
+
+		// events
 
 		window.addEventListener( 'resize', this.resize.bind( this ) );
 		this.resize();
@@ -25,11 +37,7 @@ export class Demo {
 
 	private animate() {
 
-		this.gl.clearColor( 0.0, 0.0, 0.0, 1.0 );
-		this.gl.clearDepth( 1.0 );
-		this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
-
-
+		this.scene.update();
 
 		window.requestAnimationFrame( this.animate.bind( this ) );
 
@@ -37,8 +45,22 @@ export class Demo {
 
 	private resize() {
 
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
+		const aspect = 16 / 9;
+		const windowAspect = window.innerWidth / window.innerHeight;
+
+		if ( windowAspect > aspect ) {
+
+			this.canvas.height = window.innerHeight;
+			this.canvas.width = this.canvas.height * aspect;
+
+		} else {
+
+			this.canvas.width = window.innerWidth;
+			this.canvas.height = this.canvas.width / aspect;
+
+		}
+
+		this.scene.resize( new GLP.Vector( this.canvas.width, this.canvas.height ), 1.0 );
 
 	}
 

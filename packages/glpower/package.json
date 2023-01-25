@@ -29,7 +29,7 @@
 	],
 	"scripts": {
 		"dev": "vite",
-		"build": "rm -r ./types/ && rm -r ./build/ && tsc && vite build",
+		"build": "rm -rf ./types/ && rm -rf ./build/ && tsc && vite build",
 		"lint": "eslint ./src/**/*.ts --fix"
 	},
 	"dependencies": {

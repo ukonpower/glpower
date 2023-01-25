@@ -5,6 +5,12 @@ import glslify from 'rollup-plugin-glslify';
 
 const pageList = [
 	{ name: 'index', path: '/' },
+	{ path: 'examples/hello' },
+	{ path: 'examples/geometries' },
+	{ path: 'examples/texture' },
+	{ path: 'examples/framebuffer' },
+	{ path: 'examples/instancing' },
+	{ path: 'demo/' },
 ];
 
 const input = {
@@ -14,7 +20,7 @@ const input = {
 
 		pageList.forEach( ( page ) => {
 
-			exEntryList[ page.name || page.path ] = path.resolve( __dirname, 'src', page.path, 'index.html' );
+			exEntryList[ page.name || ( page.path.replaceAll( '/', '_' ) ) ] = path.resolve( __dirname, 'src', page.path, 'index.html' );
 
 		} );
 
@@ -26,11 +32,14 @@ const input = {
 
 export default defineConfig( {
 	root: 'src',
+	publicDir: 'public',
 	server: {
 		port: 3000,
 		host: "0.0.0.0",
 	},
 	build: {
+		outDir: '../public/',
+		minify: 'terser',
 		rollupOptions: {
 			input,
 			output: {
@@ -40,13 +49,13 @@ export default defineConfig( {
 	},
 	resolve: {
 		alias: {
-			"@glpower": path.join( __dirname, "packages/glpower/src" )
+			"glpower": path.join( __dirname, "packages/glpower/src" )
 		},
 	},
 	plugins: [
 		{
 			...glslify( {
-				basedir: './src/glsl/',
+				basedir: './src/ts/glsl/',
 				transform: [
 					[ 'glslify-hex' ],
 					[ 'glslify-import' ]
