@@ -40,8 +40,7 @@ void main( void ) {
 	col += texture( uBloomTexture[ LOOP_INDEX ], vUv ).xyz * ( 0.3 + float(LOOP_INDEX) * 0.5 );
 	#pragma loop_end
 
-	// col = texture( uLightShaftTexture, vUv ).xyz * 5.0;
-	col += texture( uLightShaftTexture, vUv ).xyz * 2.0;
+	col += texture( uLightShaftTexture, vUv ).xyz;
 
 	outColor = vec4( col, 1.0 );
 

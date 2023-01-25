@@ -79,7 +79,7 @@ float compareShadowDepth( float lightDepth, sampler2D shadowMap, vec2 shadowCoor
 
 	}
 
-	return 0.0;
+	return 1.0;
 
 }
 
@@ -105,27 +105,24 @@ uniform mat4 cameraMatrix;
 uniform mat4 projectionMatrixInverse;
 
 #define MARCH 16.0
-#define MARCH_STEP 1.0 / MARCH * 15.0
 
 #pragma glslify: random = require('./random.glsl' )
 
 void main( void ) {
 
-    vec3 col;
+	vec3 lightShaftSum = vec3( 0.0 );
+
+	vec3 rayPos;
+	vec3 rayEndPos;
+	vec3 rayDir;
+	float rayStepLength;
+	vec3 rayStep;
+	vec3 diff;
 
     #if NUM_LIGHT_SPOT > 0
 
 		SpotLight sLight;
         
-        vec3 rayPos;
-		vec3 rayEndPos;
-        vec3 rayDir;
-		vec3 rayStep;
-        vec3 diff;
-        float marchMaxLength;
-		float totalLength;
-        float sum;
-
 		vec3 spotDirection;
 		float spotDistance;
 		float spotAngleCos;
@@ -141,30 +138,25 @@ void main( void ) {
 			if( rayEndPos.x + rayEndPos.y + rayEndPos.z == 0.0 ) {
 				
 				rayDir = normalize( ( cameraMatrix * projectionMatrixInverse * vec4( vUv * 2.0 - 1.0, 1.0, 1.0 ) ).xyz );
-				rayEndPos = rayPos + rayDir * 10.0;
+				rayEndPos = rayPos + rayDir * 20.0;
 
 			}
 
-
             diff = rayEndPos - rayPos;
-			marchMaxLength = length( diff );
             rayDir = normalize( diff );
-			rayStep = rayDir * MARCH_STEP;
-            sum = 0.0;
+			rayStepLength = length( diff ) / MARCH;
+			rayStep = rayDir * rayStepLength;
 			
-			rayPos += random(vUv) * rayDir;
+			rayPos += random(vUv) * rayDir * rayStepLength;
 
             for( int i = 0; i < int( MARCH ); i ++ ) {
 
                 rayPos += rayStep;
-				totalLength += MARCH_STEP;
 
 				spotDirection = normalize(sLight.position - rayPos);
 				spotDistance = length( sLight.position - rayPos );
 				spotAngleCos = dot( sLight.direction, spotDirection );
 				spotAttenuation = 0.0;
-
-				if( totalLength >= marchMaxLength ) break;
 
 				if( spotAngleCos > sLight.angle * -1.0 ) {
 
@@ -172,19 +164,14 @@ void main( void ) {
 
 				}
 
-    			sum += getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] ) * spotAttenuation * pow( clamp( 1.0 - spotDistance / sLight.distance, 0.0, 1.0 ),  sLight.decay );
+    			lightShaftSum += sLight.color * getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] ) * spotAttenuation * pow( clamp( 1.0 - spotDistance / sLight.distance, 0.0, 1.0 ),  sLight.decay ) * rayStepLength * 0.01;
 
             }
 
-			sum /= MARCH;
-
 		#pragma loop_end
         
-        col += sum * 1.0;
-	
 	#endif
-    
 
-	outColor = vec4( col, 1.0 );
+	outColor = vec4( vec3( lightShaftSum ), 1.0 );
 
 }
