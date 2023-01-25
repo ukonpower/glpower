@@ -17,4 +17,7 @@
 			"ignoreReadBeforeAssign": false
 		}]
 	},
+	"globals": {
+		"BASE_PATH": "readonly"
+	}
 }

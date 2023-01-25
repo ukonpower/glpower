@@ -1,5 +1,7 @@
 import * as GLP from 'glpower';
+import { ComponentBLidge, ComponentCameraPerspective } from '../../Component';
 import { Factory } from '../../Factory';
+import { SceneGraph } from '../../SceneGraph';
 
 export class BLidgeSystem extends GLP.System {
 
@@ -7,7 +9,7 @@ export class BLidgeSystem extends GLP.System {
 	public ecs: GLP.ECS;
 	public world: GLP.World;
 	public factory: Factory;
-	public sceneGraph: GLP.SceneGraph;
+	public sceneGraph: SceneGraph;
 	public blidge: GLP.BLidge;
 
 	private root: GLP.Entity;
@@ -22,7 +24,7 @@ export class BLidgeSystem extends GLP.System {
 	// tmp
 	private tmpQuaternion: GLP.Quaternion;
 
-	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World, camera: GLP.Entity, sceneGraph: GLP.SceneGraph, factory: Factory ) {
+	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World, camera: GLP.Entity, sceneGraph: SceneGraph, factory: Factory ) {
 
 		super( ecs, {
 			move: [ 'blidge', 'position', 'quaternion', 'scale' ]
@@ -51,7 +53,7 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.addListener( 'error', () => {
 
-			this.blidge.syncJsonScene( '/assets/demo/scene.json' );
+			this.blidge.syncJsonScene( BASE_PATH + '/demo/scene.json' );
 			this.play = true;
 
 		} );
