@@ -145,13 +145,14 @@ void main( void ) {
 
 			}
 
-			// rayPos += random(vUv) * rayDir;
 
             diff = rayEndPos - rayPos;
 			marchMaxLength = length( diff );
             rayDir = normalize( diff );
 			rayStep = rayDir * MARCH_STEP;
             sum = 0.0;
+			
+			rayPos += random(vUv) * rayDir;
 
             for( int i = 0; i < int( MARCH ); i ++ ) {
 
