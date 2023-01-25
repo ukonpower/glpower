@@ -2,7 +2,6 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import glslify from 'rollup-plugin-glslify';
 
-
 const pageList = [
 	{ name: 'index', path: '/' },
 	{ path: 'examples/hello' },
@@ -33,6 +32,7 @@ const input = {
 export default defineConfig( {
 	root: 'src',
 	publicDir: 'public',
+	base: process.env.GITHUB_PAGES ? 'glpower' : './',
 	server: {
 		port: 3000,
 		host: "0.0.0.0",
