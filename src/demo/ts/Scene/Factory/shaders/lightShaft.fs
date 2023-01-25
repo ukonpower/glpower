@@ -104,8 +104,10 @@ float getShadow( vec3 pos, LightCamera camera, sampler2D shadowMap ) {
 uniform mat4 cameraMatrix;
 uniform mat4 projectionMatrixInverse;
 
-#define MARCH 64.0
+#define MARCH 16.0
 #define MARCH_STEP 1.0 / MARCH * 15.0
+
+#pragma glslify: random = require('./random.glsl' )
 
 void main( void ) {
 
@@ -124,7 +126,14 @@ void main( void ) {
 		float totalLength;
         float sum;
 
+		vec3 spotDirection;
+		float spotDistance;
+		float spotAngleCos;
+		float spotAttenuation;
+
 		#pragma loop_start NUM_LIGHT_SPOT
+
+			sLight = spotLight[ LOOP_INDEX ];
 
 			rayPos = uCameraPosition;
             rayEndPos = texture( sampler0, vUv ).xyz;
@@ -136,6 +145,8 @@ void main( void ) {
 
 			}
 
+			// rayPos += random(vUv) * rayDir;
+
             diff = rayEndPos - rayPos;
 			marchMaxLength = length( diff );
             rayDir = normalize( diff );
@@ -144,15 +155,27 @@ void main( void ) {
 
             for( int i = 0; i < int( MARCH ); i ++ ) {
 
-    			sum += getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] );
                 rayPos += rayStep;
 				totalLength += MARCH_STEP;
 
+				spotDirection = normalize(sLight.position - rayPos);
+				spotDistance = length( sLight.position - rayPos );
+				spotAngleCos = dot( sLight.direction, spotDirection );
+				spotAttenuation = 0.0;
+
 				if( totalLength >= marchMaxLength ) break;
+
+				if( spotAngleCos > sLight.angle * -1.0 ) {
+
+					spotAttenuation = smoothstep( sLight.angle, sLight.angle + ( 1.0 - sLight.angle ) * sLight.blend, spotAngleCos );
+
+				}
+
+    			sum += getShadow( rayPos, spotLightCamera[ LOOP_INDEX ], spotLightShadowMap[ LOOP_INDEX ] ) * spotAttenuation * pow( clamp( 1.0 - spotDistance / sLight.distance, 0.0, 1.0 ),  sLight.decay );
 
             }
 
-			sum *= 0.01;
+			sum /= MARCH;
 
 		#pragma loop_end
         
