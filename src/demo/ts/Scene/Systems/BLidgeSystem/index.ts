@@ -53,7 +53,7 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.addListener( 'error', () => {
 
-			this.blidge.syncJsonScene( BASE_PATH + '/demo/scene.json' );
+			this.blidge.syncJsonScene( BASE_PATH + '/assets/demo/scene.json' );
 			this.play = true;
 
 		} );
