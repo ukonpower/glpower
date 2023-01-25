@@ -1,2 +1,11 @@
-/node_modules
+node_modules
 .DS_Store
+/docs
+/public
+
+# jest
+coverage
+report.json
+
+# blender
+*.blend?

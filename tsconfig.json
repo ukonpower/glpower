@@ -1,15 +1,19 @@
 {
 	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"lib": ["ESNext", "DOM"],
+		"moduleResolution": "Node",
+		"strict": true,
 		"sourceMap": true,
-		"target": "es5",
-		"module": "es2015",
-		"moduleResolution": "node",
-		"lib": [
-		"es2017",
-		"dom"
-		],
-		"typeRoots": ["node_modules/@types"],
-		"rootDir": "./"
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"allowSyntheticDefaultImports": true,
+		"noEmit": true,
+		"rootDir": "./",
+		"baseUrl": ".",
+		"paths": {
+		  "glpower" : ["./packages/glpower/src"]
+		}
 	},
-	"include": ["./"]
-  }
+}
