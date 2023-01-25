@@ -28,11 +28,12 @@ const input = {
 	} )(),
 };
 
+const basePath = process.env.GITHUB_PAGES ? 'glpower' : '';
 
 export default defineConfig( {
 	root: 'src',
 	publicDir: 'public',
-	base: process.env.GITHUB_PAGES ? 'glpower' : './',
+	base: basePath,
 	server: {
 		port: 3000,
 		host: "0.0.0.0",
@@ -63,5 +64,8 @@ export default defineConfig( {
 			} ),
 			enforce: 'pre'
 		}
-	]
+	],
+	define: {
+		BASE_PATH: `"${basePath}"`
+	}
 } );

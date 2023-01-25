@@ -40,8 +40,8 @@ class ExTexture {
 
 		const texture = this.power.createTexture();
 
-		texture.load( "/assets/lenna.jpg" );
 
+		texture.load( BASE_PATH + "/assets/lenna.jpg" );
 
 		// geometry
 
