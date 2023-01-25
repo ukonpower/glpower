@@ -1,4 +1,5 @@
 import * as GLP from 'glpower';
+import { ComponentEvents } from '../../Component';
 
 export class EventSystem extends GLP.System {
 

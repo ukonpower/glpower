@@ -34,6 +34,11 @@ export class RenderSystem extends GLP.System {
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
 
+	// canvas
+
+	private canvasPixelSize: GLP.Vector;
+	private canvasViewSize: GLP.Vector;
+
 	// program
 
 	private programManager: ProgramManager;
@@ -71,6 +76,11 @@ export class RenderSystem extends GLP.System {
 		this.power = core;
 		this.gl = this.power.gl;
 		this.ecs = ecs;
+
+		// canvas
+
+		this.canvasPixelSize = new GLP.Vector();
+		this.canvasViewSize = new GLP.Vector();
 
 		// program
 
@@ -241,7 +251,7 @@ export class RenderSystem extends GLP.System {
 
 		} else {
 
-			this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight ); //DEBUG
+			this.gl.viewport( 0, 0, this.canvasViewSize.x, this.canvasViewSize.y );
 			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 		}
@@ -312,7 +322,7 @@ export class RenderSystem extends GLP.System {
 
 			} else {
 
-				this.gl.viewport( 0, 0, window.innerWidth, window.innerHeight ); //DEBUG
+				this.gl.viewport( 0, 0, this.canvasViewSize.x, this.canvasViewSize.y );
 				this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
 			}
@@ -565,6 +575,13 @@ export class RenderSystem extends GLP.System {
 			program.clean();
 
 		}
+
+	}
+
+	public resize( viewSize: GLP.Vector, pixelSize: GLP.Vector ) {
+
+		this.canvasViewSize.copy( viewSize );
+		this.canvasPixelSize.copy( pixelSize );
 
 	}
 

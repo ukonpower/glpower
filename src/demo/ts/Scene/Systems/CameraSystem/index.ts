@@ -1,4 +1,5 @@
 import * as GLP from 'glpower';
+import { ComponentCamera, ComponentTransformMatrix, ComponentShadowmapCamera, ComponentCameraPerspective, ComponentCameraOrthographic } from '../../Component';
 
 export class CameraSystem extends GLP.System {
 
