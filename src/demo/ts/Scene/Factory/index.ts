@@ -175,7 +175,7 @@ export class Factory {
 		this.ecs.addComponent<ComponentCamera>( this.world, entity, 'camera', {
 			near: props.near ?? 0.001,
 			far: props.far ?? 1000,
-			aspectRatio: window.innerWidth / window.innerHeight,
+			aspectRatio: 1,
 			projectionMatrix: new GLP.Matrix(),
 			viewMatrix: new GLP.Matrix(),
 		} );

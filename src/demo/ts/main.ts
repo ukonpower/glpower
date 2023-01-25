@@ -45,8 +45,22 @@ export class Demo {
 
 	private resize() {
 
-		this.canvas.width = window.innerWidth;
-		this.canvas.height = window.innerHeight;
+		const aspect = 16 / 9;
+		const windowAspect = window.innerWidth / window.innerHeight;
+
+		if ( windowAspect > aspect ) {
+
+			this.canvas.height = window.innerHeight;
+			this.canvas.width = this.canvas.height * aspect;
+
+		} else {
+
+			this.canvas.width = window.innerWidth;
+			this.canvas.height = this.canvas.width / aspect;
+
+		}
+
+		this.scene.resize( new GLP.Vector( this.canvas.width, this.canvas.height ), 1.0 );
 
 	}
 

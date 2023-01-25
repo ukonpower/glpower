@@ -97,24 +97,32 @@ export class Scene extends EventEmitter {
 
 		// resize
 
-		const onResize = () => {
+		const onResize = ( size: GLP.Vector, pixelRatio: number ) => {
 
-			const size = new GLP.Vector( window.innerWidth, window.innerHeight );
-			eventSystem.resize( this.world, size );
-			cameraSystem.resize( this.world, size );
+			const viewSize = size.clone();
+			const pixelSize = size.clone().multiply( pixelRatio );
+
+			eventSystem.resize( this.world, pixelSize );
+			cameraSystem.resize( this.world, pixelSize );
+			renderSystem.resize( viewSize, pixelSize );
 
 		};
 
-		onResize();
-		window.addEventListener( 'resize', onResize );
+		this.addListener( 'resize', onResize );
 
 		// dispose
 
 		this.addOnceListener( "dispose", () => {
 
-			window.removeEventListener( 'resize', onResize );
+			this.removeListener( 'resize', onResize );
 
 		} );
+
+	}
+
+	public resize( size: GLP.Vector, pixelRatio: number ) {
+
+		this.emitEvent( 'resize', [ size, pixelRatio ] );
 
 	}
 
@@ -125,6 +133,8 @@ export class Scene extends EventEmitter {
 	}
 
 	public dispose() {
+
+		this.emitEvent( 'dispose' );
 
 	}
 
