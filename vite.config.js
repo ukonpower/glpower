@@ -28,7 +28,7 @@ const input = {
 	} )(),
 };
 
-const basePath = process.env.GITHUB_PAGES ? 'glpower' : '';
+const basePath = process.env.GITHUB_PAGES ? '/glpower' : '';
 
 export default defineConfig( {
 	root: 'src',
