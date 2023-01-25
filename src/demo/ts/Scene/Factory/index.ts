@@ -516,7 +516,7 @@ export class Factory {
 
 				}
 
-				rtLightShaft.setSize( e.size.clone().multiply( 0.4 ) );
+				rtLightShaft.setSize( e.size.clone().multiply( 0.5 ) );
 
 			}
 		} );
