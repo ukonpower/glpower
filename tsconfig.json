@@ -13,7 +13,7 @@
 		"rootDir": "./",
 		"baseUrl": ".",
 		"paths": {
-		  "@glpower" : ["./packages/glpower/src"]
+		  "glpower" : ["./packages/glpower/src"]
 		}
 	},
 }
