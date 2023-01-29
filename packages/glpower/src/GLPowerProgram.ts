@@ -44,7 +44,7 @@ export class GLPowerProgram {
 		Shader
 	-------------------------------*/
 
-	public setShader( vertexShaderSrc: string, fragmentShaderSrc: string ) {
+	public setShader( vertexShaderSrc: string, fragmentShaderSrc: string, transformFeedbackVaryings?: string[] ) {
 
 		if ( this.program === null ) {
 
@@ -61,6 +61,12 @@ export class GLPowerProgram {
 
 		this.gl.attachShader( this.program, vs );
 		this.gl.attachShader( this.program, fs );
+
+		if ( transformFeedbackVaryings ) {
+
+			this.gl.transformFeedbackVaryings( this.program, transformFeedbackVaryings, this.gl.SEPARATE_ATTRIBS );
+
+		}
 
 		this.gl.linkProgram( this.program );
 
