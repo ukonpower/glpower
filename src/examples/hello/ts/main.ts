@@ -66,15 +66,18 @@ class ExHello {
 
 			modelViewMatrix.identity().multiply( viewMatrix ).multiply( modelMatrix );
 
-			program.use();
+			program.use( ( program ) => {
 
-			program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( vao.getVAO() );
-			this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );
-			this.gl.flush();
+				vao.use( ( vao ) => {
 
-			program.clean();
+					this.gl.bindVertexArray( vao.getVAO() );
+					this.gl.drawArrays( this.gl.TRIANGLES, 0, 3 );
+
+				} );
+
+			} );
 
 			window.requestAnimationFrame( animate );
 

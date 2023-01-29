@@ -542,7 +542,7 @@ export class RenderSystem extends GLP.System {
 
 					const attr = geometry.attributes[ i ];
 
-					vao.setAttribute( attr.name, attr.buffer, attr.size, attr.instanceDivisor );
+					vao.setAttribute( attr.name, attr.buffer, attr.size, { instanceDivisor: attr.instanceDivisor } );
 
 				}
 
@@ -554,25 +554,25 @@ export class RenderSystem extends GLP.System {
 
 			// draw
 
-			program.use();
+			program.use( () => {
 
-			program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( vao.getVAO() );
+				this.gl.bindVertexArray( vao.getVAO() );
 
-			if ( vao.instanceCount > 0 ) {
+				if ( vao.instanceCount > 0 ) {
 
-				this.gl.drawElementsInstanced( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0, vao.instanceCount );
+					this.gl.drawElementsInstanced( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0, vao.instanceCount );
 
-			} else {
+				} else {
 
-				this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
+					this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
 
-			}
+				}
 
-			this.gl.bindVertexArray( null );
+				this.gl.bindVertexArray( null );
 
-			program.clean();
+			} );
 
 		}
 
