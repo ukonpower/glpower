@@ -68,7 +68,7 @@ class ExTexture {
 
 		}
 
-		vao.setAttribute( 'instancePosition', this.power.createBuffer().setData( new Float32Array( instancePositionArray ) ), 3, 1 );
+		vao.setAttribute( 'instancePosition', this.power.createBuffer().setData( new Float32Array( instancePositionArray ) ), 3, { instanceDivisor: 1 } );
 
 		// animate
 
@@ -91,18 +91,19 @@ class ExTexture {
 			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 			program.setUniform( 'uTime', '1f', [ time ] );
 
-			program.use();
+			program.use( () => {
 
-			program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( vao.getVAO() );
+				vao.use( vao => {
 
-			// this.gl.drawElements( this.gl.TRIANGLES, geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
-			this.gl.drawElementsInstanced( this.gl.TRIANGLES, geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0, instanceNum );
+					this.gl.bindVertexArray( vao.getVAO() );
 
-			program.clean();
+					this.gl.drawElementsInstanced( this.gl.TRIANGLES, geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0, instanceNum );
 
-			this.gl.flush();
+				} );
+
+			} );
 
 			window.requestAnimationFrame( animate );
 

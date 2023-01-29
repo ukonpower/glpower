@@ -17,7 +17,7 @@ class ExTransformFeedback {
 		this.gl = gl;
 		this.power = new GLP.Power( this.gl );
 
-		const num = 1000;
+		const num = 10;
 
 		const buffer1Data = [];
 		const buffer2Data = [];
@@ -30,15 +30,15 @@ class ExTransformFeedback {
 		}
 
 		const buffer1 = this.power.createBuffer();
-		buffer1.setData( new Float32Array( buffer1Data ), 'vbo' );
+		buffer1.setData( new Float32Array( buffer1Data ), 'vbo', this.gl.DYNAMIC_COPY );
 
 		const buffer2 = this.power.createBuffer();
-		buffer2.setData( new Float32Array( buffer2Data ), 'vbo' );
+		buffer2.setData( new Float32Array( buffer2Data ), 'vbo', this.gl.DYNAMIC_COPY );
 
 		// program
 
 		const program = this.power.createProgram();
-		program.setShader( transformFeedbackVert, transformFeedbackFrag, [ 'o_value' ] );
+		program.setShader( transformFeedbackVert, transformFeedbackFrag, { transformFeedbackVaryings: [ 'o_value' ] } );
 
 		// vao
 
@@ -47,6 +47,25 @@ class ExTransformFeedback {
 		if ( vao ) {
 
 			vao.setAttribute( 'value', buffer1, 1 );
+			vao.setAttribute( 'value_out', buffer2, 1, { transformFeedbackVaryingIndex: 0 } );
+
+			program.use( () => {
+
+				vao.use( () => {
+
+					this.gl.enable( gl.RASTERIZER_DISCARD );
+
+					this.gl.beginTransformFeedback( this.gl.POINTS );
+
+					this.gl.drawArrays( this.gl.POINTS, 0, vao.vertCount );
+
+					this.gl.endTransformFeedback();
+
+					this.gl.disable( gl.RASTERIZER_DISCARD );
+
+				} );
+
+			} );
 
 		}
 

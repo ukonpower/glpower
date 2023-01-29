@@ -5,13 +5,17 @@ export type Attribute = {
 	size: number;
 }
 
+type AttributeOptions = {
+	instanceDivisor?: number;
+	transformFeedbackVaryingIndex?: number;
+}
+
 export type AttributeBuffer = {
 	buffer: GLPowerBuffer;
 	size: number;
 	count: number;
 	location?: number;
-	instanceDivisor?: number;
-}
+} & AttributeOptions
 
 export class GLPowerVAO {
 
@@ -50,7 +54,7 @@ export class GLPowerVAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, instanceDivisor?: number ) {
+	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, opt?: AttributeOptions ) {
 
 		let attr = this.attributes[ name ];
 
@@ -62,7 +66,7 @@ export class GLPowerVAO {
 				buffer,
 				size,
 				count,
-				instanceDivisor
+				...opt
 			};
 
 			this.attributes[ name ] = attr;
@@ -72,7 +76,7 @@ export class GLPowerVAO {
 			attr.buffer = buffer;
 			attr.size = size;
 			attr.count = count;
-			attr.instanceDivisor = instanceDivisor;
+			attr.instanceDivisor = opt?.instanceDivisor;
 			attr.location = undefined;
 
 		}
@@ -171,6 +175,19 @@ export class GLPowerVAO {
 
 		}
 
+	}
+
+	/*-------------------------------
+		USE
+	-------------------------------*/
+
+	public use( cb?: ( vao: GLPowerVAO ) => void ) {
+
+		this.gl.bindVertexArray( this.vao );
+
+		if ( cb ) cb( this );
+
+		this.gl.bindVertexArray( null );
 
 	}
 

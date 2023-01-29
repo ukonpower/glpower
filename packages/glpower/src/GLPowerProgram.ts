@@ -20,6 +20,9 @@ export type Uniform = {
 
 export type Uniforms = {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
 
+export type ShaderOptions = {
+	transformFeedbackVaryings?: string[]
+}
 
 export class GLPowerProgram {
 
@@ -44,7 +47,7 @@ export class GLPowerProgram {
 		Shader
 	-------------------------------*/
 
-	public setShader( vertexShaderSrc: string, fragmentShaderSrc: string, transformFeedbackVaryings?: string[] ) {
+	public setShader( vertexShaderSrc: string, fragmentShaderSrc: string, opt?: ShaderOptions ) {
 
 		if ( this.program === null ) {
 
@@ -62,9 +65,9 @@ export class GLPowerProgram {
 		this.gl.attachShader( this.program, vs );
 		this.gl.attachShader( this.program, fs );
 
-		if ( transformFeedbackVaryings ) {
+		if ( opt && opt.transformFeedbackVaryings ) {
 
-			this.gl.transformFeedbackVaryings( this.program, transformFeedbackVaryings, this.gl.SEPARATE_ATTRIBS );
+			this.gl.transformFeedbackVaryings( this.program, opt.transformFeedbackVaryings, this.gl.SEPARATE_ATTRIBS );
 
 		}
 
@@ -223,15 +226,19 @@ export class GLPowerProgram {
 		Draw??
 	-------------------------------*/
 
-	public use() {
+	public use( cb?: ( program: GLPowerProgram ) => void ) {
 
 		if ( ! this.program ) return;
 
 		this.gl.useProgram( this.program );
 
-	}
+		if ( cb ) {
 
-	public clean() {
+			cb( this );
+
+		}
+
+		this.gl.flush();
 
 		this.gl.useProgram( null );
 
