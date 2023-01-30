@@ -1,6 +1,7 @@
 import * as GLP from 'glpower';
 
-import transformFeedbackVert from './shaders/transformFeedback.vs';
+import transformFeedbackVert1 from './shaders/transformFeedback1.vs';
+import transformFeedbackVert2 from './shaders/transformFeedback2.vs';
 import transformFeedbackFrag from './shaders/transformFeedback.fs';
 
 class ExTransformFeedback {
@@ -30,43 +31,97 @@ class ExTransformFeedback {
 		}
 
 		const buffer1 = this.power.createBuffer();
-		buffer1.setData( new Float32Array( buffer1Data ), 'vbo', this.gl.DYNAMIC_COPY );
+		buffer1.setData( new Float32Array( buffer1Data ), 'vbo' );
 
 		const buffer2 = this.power.createBuffer();
 		buffer2.setData( new Float32Array( buffer2Data ), 'vbo', this.gl.DYNAMIC_COPY );
 
-		// program
+		const buffer3 = this.power.createBuffer();
+		buffer3.setData( new Float32Array( buffer2Data ), 'vbo', this.gl.DYNAMIC_COPY );
+
+		// tf1
+
+		const transformFeedback1 = new GLP.GLPowerTransformFeedback( this.gl );
+		transformFeedback1.setBuffer( "", buffer2, 0 );
 
 		const program = this.power.createProgram();
-		program.setShader( transformFeedbackVert, transformFeedbackFrag, { transformFeedbackVaryings: [ 'o_value' ] } );
 
-		const transformFeedback = this.gl.createTransformFeedback();
-		this.gl.bindTransformFeedback( this.gl.TRANSFORM_FEEDBACK, transformFeedback );
+		transformFeedback1.bind( () => {
 
-		// vao
+			program.setShader( transformFeedbackVert1, transformFeedbackFrag, { transformFeedbackVaryings: [ 'o_value_1' ] } );
+
+		} );
 
 		const vao = program.getVAO();
 
-		const readArray = new Float32Array( num );
+		const readArray1 = new Float32Array( num );
 
 		if ( vao ) {
 
 			vao.setAttribute( 'value', buffer1, 1 );
-			vao.setAttribute( 'value_out', buffer2, 1, { transformFeedbackVaryingIndex: 0 } );
 
 			program.use( () => {
 
-				vao.use( () => {
+				transformFeedback1.use( () => {
 
-					this.gl.enable( gl.RASTERIZER_DISCARD );
 					this.gl.beginTransformFeedback( this.gl.POINTS );
+					this.gl.enable( this.gl.RASTERIZER_DISCARD );
 
-					this.gl.drawArrays( this.gl.POINTS, 0, vao.vertCount );
+					vao.use( () => {
 
-					this.gl.disable( gl.RASTERIZER_DISCARD );
+						this.gl.drawArrays( this.gl.POINTS, 0, vao.vertCount );
+
+					} );
+
+					this.gl.disable( this.gl.RASTERIZER_DISCARD );
 					this.gl.endTransformFeedback();
 
-					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, readArray );
+					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, readArray1 );
+
+				} );
+
+			} );
+
+		}
+
+		// tf2
+
+		const transformFeedback2 = new GLP.GLPowerTransformFeedback( this.gl );
+		transformFeedback2.setBuffer( "", buffer3, 0 );
+
+		const program2 = this.power.createProgram();
+
+		transformFeedback2.bind( () => {
+
+			program2.setShader( transformFeedbackVert2, transformFeedbackFrag, { transformFeedbackVaryings: [ 'o_value_2' ] } );
+
+		} );
+
+		const vao2 = program2.getVAO();
+
+		const readArray2 = new Float32Array( num );
+
+		if ( vao2 ) {
+
+			vao2.setAttribute( 'value', buffer1, 1 );
+
+			program2.use( () => {
+
+				transformFeedback2.use( () => {
+
+					this.gl.beginTransformFeedback( this.gl.POINTS );
+					this.gl.enable( this.gl.RASTERIZER_DISCARD );
+
+					vao2.use( () => {
+
+						this.gl.drawArrays( this.gl.POINTS, 0, vao2.vertCount );
+
+					} );
+
+					this.gl.disable( this.gl.RASTERIZER_DISCARD );
+					this.gl.endTransformFeedback();
+
+					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, readArray2 );
 
 				} );
 
@@ -90,15 +145,28 @@ class ExTransformFeedback {
 
 		const valueOutElm = document.createElement( 'div' );
 
-		valueOutElm.innerHTML += 'out: ';
+		valueOutElm.innerHTML += 'out1: ';
 
-		readArray.forEach( item => {
+		readArray1.forEach( item => {
 
 			valueOutElm.innerHTML += item + ', ';
 
 		} );
 
 		document.body.appendChild( valueOutElm );
+
+		const valueOut2Elm = document.createElement( 'div' );
+
+		valueOut2Elm.innerHTML += 'out2: ';
+
+		readArray2.forEach( item => {
+
+			valueOut2Elm.innerHTML += item + ', ';
+
+		} );
+
+		document.body.appendChild( valueOut2Elm );
+
 
 	}
 

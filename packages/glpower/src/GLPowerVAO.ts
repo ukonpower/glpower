@@ -1,4 +1,3 @@
-import { count } from "console";
 import { GLPowerBuffer } from "./GLPowerBuffer";
 
 export type Attribute = {
@@ -8,7 +7,6 @@ export type Attribute = {
 
 type AttributeOptions = {
 	instanceDivisor?: number;
-	transformFeedbackVaryingIndex?: number;
 }
 
 export type AttributeBuffer = {
@@ -29,7 +27,6 @@ export class GLPowerVAO {
 	protected indexBuffer: GLPowerBuffer | null;
 
 	protected attributes: Map<string, AttributeBuffer>;
-	protected attributeTransformFeedback: Map<string, AttributeBuffer>;
 
 	public vertCount: number;
 	public indexCount: number;
@@ -44,7 +41,6 @@ export class GLPowerVAO {
 
 		this.vao = this.gl.createVertexArray();
 		this.attributes = new Map();
-		this.attributeTransformFeedback = new Map();
 		this.indexBuffer = null;
 
 		this.vertCount = 0;
@@ -63,40 +59,18 @@ export class GLPowerVAO {
 
 		const count = buffer.array ? buffer.array.length / size : 0;
 
-		if ( opt && opt.transformFeedbackVaryingIndex != undefined ) {
+		this.attributes.set( name, {
+			...attr,
+			...{
+				buffer,
+				size,
+				count,
+				...opt
+			},
+			location: undefined
+		} );
 
-			// tf
-
-			this.attributeTransformFeedback.set( name, {
-				...attr,
-				...{
-					buffer,
-					size,
-					count,
-					...opt
-				},
-				location: undefined
-			} );
-
-		} else {
-
-			// attributes
-
-			this.attributes.set( name, {
-				...attr,
-				...{
-					buffer,
-					size,
-					count,
-					...opt
-				},
-				location: undefined
-			} );
-
-			this.updateAttributes();
-
-		}
-
+		this.updateAttributes();
 
 		return this;
 
@@ -105,7 +79,6 @@ export class GLPowerVAO {
 	public removeAttribute( name: string ) {
 
 		this.attributes.delete( name );
-		this.attributeTransformFeedback.delete( name );
 
 		return this;
 
@@ -194,40 +167,11 @@ export class GLPowerVAO {
 
 	public use( cb?: ( vao: GLPowerVAO ) => void ) {
 
-		// tf bind =======================
-
-
-		this.attributeTransformFeedback.forEach( attribute => {
-
-			if ( attribute.transformFeedbackVaryingIndex != undefined ) {
-
-				this.gl.bindBufferBase( this.gl.TRANSFORM_FEEDBACK_BUFFER, attribute.transformFeedbackVaryingIndex, attribute.buffer.buffer );
-
-			}
-
-		} );
-
-		// --------=======================
-
 		this.gl.bindVertexArray( this.vao );
 
 		if ( cb ) cb( this );
 
 		this.gl.bindVertexArray( null );
-
-		// tf unbind =======================
-
-		this.attributeTransformFeedback.forEach( attribute => {
-
-			if ( attribute.transformFeedbackVaryingIndex != undefined ) {
-
-				this.gl.bindBufferBase( this.gl.TRANSFORM_FEEDBACK_BUFFER, attribute.transformFeedbackVaryingIndex, null );
-
-			}
-
-		} );
-
-		// --------=======================
 
 	}
 
