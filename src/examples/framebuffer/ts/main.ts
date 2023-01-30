@@ -89,7 +89,6 @@ class ExFrameBuffer {
 			program: frameProgram
 		};
 
-
 		// animate
 
 		const animate = () => {
@@ -109,17 +108,15 @@ class ExFrameBuffer {
 			this.objList.cube.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.cube.modelMatrix ).elm );
 			this.objList.cube.program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrixFrame.elm );
 
-			this.objList.cube.program.use();
+			this.objList.cube.program.use( ( program ) => {
 
-			this.objList.cube.program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( this.objList.cube.vao.getVAO() );
+				this.gl.bindVertexArray( this.objList.cube.vao.getVAO() );
 
-			this.gl.drawElements( this.gl.TRIANGLES, this.objList.cube.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
+				this.gl.drawElements( this.gl.TRIANGLES, this.objList.cube.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
 
-			this.objList.cube.program.clean();
-
-			this.gl.flush();
+			} );
 
 			// plane
 
@@ -137,17 +134,18 @@ class ExFrameBuffer {
 			this.objList.plane.program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 			this.objList.plane.program.setUniform( 'uTexture', '1i', [ frameBuffer.textures[ 0 ].unit ] );
 
-			this.objList.plane.program.use();
+			this.objList.plane.program.use( ( program ) => {
 
-			this.objList.plane.program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( this.objList.plane.vao.getVAO() );
+				this.gl.bindVertexArray( this.objList.plane.vao.getVAO() );
 
-			this.gl.drawElements( this.gl.TRIANGLES, this.objList.plane.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
+				this.gl.drawElements( this.gl.TRIANGLES, this.objList.plane.vao.indexCount, gl.UNSIGNED_SHORT, 0 );
 
-			this.objList.plane.program.clean();
+				this.gl.flush();
 
-			this.gl.flush();
+			} );
+
 
 			window.requestAnimationFrame( animate );
 
@@ -159,7 +157,6 @@ class ExFrameBuffer {
 
 		window.addEventListener( 'resize', this.resize.bind( this ) );
 		this.resize();
-
 
 	}
 

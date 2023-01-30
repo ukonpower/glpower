@@ -88,23 +88,23 @@ class ExGeometries {
 				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
 
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
-
 				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
 				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 
-				program.use();
+				program.use( ( program ) => {
 
-				program.uploadUniforms();
+					program.uploadUniforms();
 
-				this.gl.bindVertexArray( obj.vao.getVAO() );
+					obj.vao.use( ( vao ) => {
 
-				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
+						this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, gl.UNSIGNED_SHORT, 0 );
 
-				program.clean();
+					} );
+
+
+				} );
 
 			} );
-
-			this.gl.flush();
 
 			window.requestAnimationFrame( animate );
 

@@ -12,12 +12,6 @@ class ExTexture {
 	private power: GLP.Power;
 	private projectionMatrix: GLP.Matrix;
 
-	private objList: {
-		modelMatrix: GLP.Matrix;
-		geometry: GLP.Geometry;
-		vao: GLP.GLPowerVAO;
-	}[] = [];
-
 	constructor( canvas: HTMLCanvasElement, gl: WebGL2RenderingContext ) {
 
 		this.canvas = canvas;
@@ -34,20 +28,15 @@ class ExTexture {
 			new GLP.Vector( 1.0, 1.0, 1.0 ),
 		);
 
+		const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector( 0, 0, 0 ) );
+
 		const viewMatrix = cameraMatrix.clone().inverse();
 
 		// texture
 
 		const texture = this.power.createTexture();
 
-
 		texture.load( BASE_PATH + "/assets/lenna.jpg" );
-
-		// geometry
-
-		const geometries = [
-			new GLP.PlaneGeometry( 1.4, 1.4 ),
-		];
 
 		// program
 
@@ -56,28 +45,18 @@ class ExTexture {
 
 		// create vao
 
-		geometries.forEach( ( geometry, i ) => {
+		const geometry = new GLP.PlaneGeometry( 1.4, 1.4 );
 
-			const vao = program.getVAO( i.toString() )!;
+		const vao = program.getVAO()!;
 
-			const position = geometry.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+		const position = geometry.getAttribute( 'position' );
+		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
 
-			const uv = geometry.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+		const uv = geometry.getAttribute( 'uv' );
+		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
 
-			const index = geometry.getAttribute( 'index' );
-			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
-
-			const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
-
-			this.objList.push( {
-				modelMatrix,
-				geometry,
-				vao: vao,
-			} );
-
-		} );
+		const index = geometry.getAttribute( 'index' );
+		vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
 
 		// animate
 
@@ -89,28 +68,26 @@ class ExTexture {
 
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.forEach( ( obj ) => {
+			modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
+			const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 
-				const modelMatrix = obj.modelMatrix;
+			program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
+			program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
 
-				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
-				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
+			texture.activate( 0 );
+			program.setUniform( 'uTexture', '1i', [ texture.unit ] );
 
-				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
-				program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );
-
-				texture.activate( 0 );
-				program.setUniform( 'uTexture', '1i', [ texture.unit ] );
-
-				program.use();
+			program.use( () => {
 
 				program.uploadUniforms();
 
-				this.gl.bindVertexArray( obj.vao.getVAO() );
+				vao.use( vao => {
 
-				this.gl.drawElements( this.gl.TRIANGLES, obj.geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
+					this.gl.bindVertexArray( vao.getVAO() );
 
-				program.clean();
+					this.gl.drawElements( this.gl.TRIANGLES, geometry.getAttribute( 'index' ).array.length, gl.UNSIGNED_SHORT, 0 );
+
+				} );
 
 			} );
 
