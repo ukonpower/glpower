@@ -238,8 +238,6 @@ export class GLPowerProgram {
 
 		}
 
-		this.gl.flush();
-
 		this.gl.useProgram( null );
 
 	}
