@@ -5,13 +5,16 @@ export type Attribute = {
 	size: number;
 }
 
+type AttributeOptions = {
+	instanceDivisor?: number;
+}
+
 export type AttributeBuffer = {
 	buffer: GLPowerBuffer;
 	size: number;
 	count: number;
 	location?: number;
-	instanceDivisor?: number;
-}
+} & AttributeOptions
 
 export class GLPowerVAO {
 
@@ -23,7 +26,7 @@ export class GLPowerVAO {
 
 	protected indexBuffer: GLPowerBuffer | null;
 
-	protected attributes: {[key: string]: AttributeBuffer};
+	protected attributes: Map<string, AttributeBuffer>;
 
 	public vertCount: number;
 	public indexCount: number;
@@ -37,7 +40,7 @@ export class GLPowerVAO {
 		this.program = program;
 
 		this.vao = this.gl.createVertexArray();
-		this.attributes = {};
+		this.attributes = new Map();
 		this.indexBuffer = null;
 
 		this.vertCount = 0;
@@ -50,32 +53,22 @@ export class GLPowerVAO {
 		Attribute
 	-------------------------------*/
 
-	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, instanceDivisor?: number ) {
+	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, opt?: AttributeOptions ) {
 
-		let attr = this.attributes[ name ];
+		const attr = this.attributes.get( name );
 
 		const count = buffer.array ? buffer.array.length / size : 0;
 
-		if ( ! attr ) {
-
-			attr = {
+		this.attributes.set( name, {
+			...attr,
+			...{
 				buffer,
 				size,
 				count,
-				instanceDivisor
-			};
-
-			this.attributes[ name ] = attr;
-
-		} else {
-
-			attr.buffer = buffer;
-			attr.size = size;
-			attr.count = count;
-			attr.instanceDivisor = instanceDivisor;
-			attr.location = undefined;
-
-		}
+				...opt
+			},
+			location: undefined
+		} );
 
 		this.updateAttributes();
 
@@ -85,7 +78,7 @@ export class GLPowerVAO {
 
 	public removeAttribute( name: string ) {
 
-		delete this.attributes[ name ];
+		this.attributes.delete( name );
 
 		return this;
 
@@ -98,14 +91,9 @@ export class GLPowerVAO {
 		this.vertCount = 0;
 		this.instanceCount = 0;
 
-		const attrNameList = Object.keys( this.attributes );
-
 		this.gl.bindVertexArray( this.vao );
 
-		for ( let i = 0; i < attrNameList.length; i ++ ) {
-
-			const name = attrNameList[ i ];
-			const attribute = this.attributes[ name ];
+		this.attributes.forEach( ( attribute, name ) => {
 
 			if ( ( attribute.location === undefined || force ) ) {
 
@@ -143,7 +131,7 @@ export class GLPowerVAO {
 
 			}
 
-		}
+		} );
 
 		this.gl.bindVertexArray( null );
 
@@ -171,6 +159,19 @@ export class GLPowerVAO {
 
 		}
 
+	}
+
+	/*-------------------------------
+		USE
+	-------------------------------*/
+
+	public use( cb?: ( vao: GLPowerVAO ) => void ) {
+
+		this.gl.bindVertexArray( this.vao );
+
+		if ( cb ) cb( this );
+
+		this.gl.bindVertexArray( null );
 
 	}
 

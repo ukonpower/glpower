@@ -6,6 +6,7 @@ export * from './GLPowerBuffer';
 export * from './GLPowerVAO';
 export * from './GLPowerFrameBuffer';
 export * from './GLPowerTexture';
+export * from './GLPowerTransformFeedback';
 
 export * from './Math/Vector';
 export * from './Math/Matrix';
