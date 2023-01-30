@@ -7,6 +7,6 @@ out float o_value;
 
 void main( void ) {
 
-	o_value = value + 1.0;
+	o_value = value * 2.0;
 
 }
