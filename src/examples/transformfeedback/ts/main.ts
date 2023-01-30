@@ -17,7 +17,7 @@ class ExTransformFeedback {
 		this.gl = gl;
 		this.power = new GLP.Power( this.gl );
 
-		const num = 10;
+		const num = 20;
 
 		const buffer1Data = [];
 		const buffer2Data = [];
@@ -40,9 +40,14 @@ class ExTransformFeedback {
 		const program = this.power.createProgram();
 		program.setShader( transformFeedbackVert, transformFeedbackFrag, { transformFeedbackVaryings: [ 'o_value' ] } );
 
+		const transformFeedback = this.gl.createTransformFeedback();
+		this.gl.bindTransformFeedback( this.gl.TRANSFORM_FEEDBACK, transformFeedback );
+
 		// vao
 
 		const vao = program.getVAO();
+
+		const readArray = new Float32Array( num );
 
 		if ( vao ) {
 
@@ -54,20 +59,46 @@ class ExTransformFeedback {
 				vao.use( () => {
 
 					this.gl.enable( gl.RASTERIZER_DISCARD );
-
 					this.gl.beginTransformFeedback( this.gl.POINTS );
 
 					this.gl.drawArrays( this.gl.POINTS, 0, vao.vertCount );
 
+					this.gl.disable( gl.RASTERIZER_DISCARD );
 					this.gl.endTransformFeedback();
 
-					this.gl.disable( gl.RASTERIZER_DISCARD );
+					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, readArray );
 
 				} );
 
 			} );
 
 		}
+
+		// dest
+
+		const valueInElm = document.createElement( 'div' );
+
+		valueInElm.innerHTML += 'in: ';
+
+		buffer1Data.forEach( item => {
+
+			valueInElm.innerHTML += item + ', ';
+
+		} );
+
+		document.body.appendChild( valueInElm );
+
+		const valueOutElm = document.createElement( 'div' );
+
+		valueOutElm.innerHTML += 'out: ';
+
+		readArray.forEach( item => {
+
+			valueOutElm.innerHTML += item + ', ';
+
+		} );
+
+		document.body.appendChild( valueOutElm );
 
 	}
 
