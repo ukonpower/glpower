@@ -8,6 +8,7 @@ import { CameraSystem } from './Systems/CameraSystem';
 import { EventSystem } from './Systems/EventSystem';
 import { Factory } from './Factory';
 import { SceneGraph } from './SceneGraph';
+import { Music } from './Music';
 
 export class Scene extends EventEmitter {
 
@@ -18,6 +19,8 @@ export class Scene extends EventEmitter {
 
 	private sceneGraph: SceneGraph;
 	private factory: Factory;
+
+	private music: Music;
 
 	constructor( power: GLP.Power ) {
 
@@ -90,6 +93,12 @@ export class Scene extends EventEmitter {
 		this.ecs.addSystem( this.world, 'camera', cameraSystem );
 		this.ecs.addSystem( this.world, 'event', eventSystem );
 		this.ecs.addSystem( this.world, 'render', renderSystem );
+
+		/*-------------------------------
+			Music
+		-------------------------------*/
+
+		this.music = new Music( this.power );
 
 		/*-------------------------------
 			Events
