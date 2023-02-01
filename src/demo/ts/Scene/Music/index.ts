@@ -4,7 +4,7 @@ import musicVert from './shaders/music.vs';
 import musicFrag from './shaders/music.fs';
 
 const BUFFER_LENGTH = 4096;
-const MUSIC_DURATION = 10;
+const MUSIC_DURATION = 30;
 
 export class Music {
 
@@ -30,8 +30,6 @@ export class Music {
 		// buffer
 
 		this.audioBuffer = this.audioCtx.createBuffer( 2, bufferLength, this.audioCtx.sampleRate );
-		const outputL = this.audioBuffer.getChannelData( 0 );
-		const outputR = this.audioBuffer.getChannelData( 1 );
 
 		const bufferIn = this.power.createBuffer();
 		bufferIn.setData( new Float32Array( new Array( bufferLength ).fill( 0 ).map( ( _, i ) => i ) ), 'vbo' );
@@ -62,9 +60,6 @@ export class Music {
 
 		const vao = program.getVAO();
 
-		const readArrayL = new Float32Array( bufferLength );
-		const readArrayR = new Float32Array( bufferLength );
-
 		if ( vao ) {
 
 			vao.setAttribute( 'offsetTime', bufferIn, 1 );
@@ -87,39 +82,37 @@ export class Music {
 					this.gl.disable( this.gl.RASTERIZER_DISCARD );
 					this.gl.endTransformFeedback();
 
-					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, this.audioBuffer.getChannelData( 0 ), 0, 0 );
-					this.gl.getBufferSubData( this.gl.TRANSFORM_FEEDBACK_BUFFER, 0, this.audioBuffer.getChannelData( 1 ), 0, this.audioBuffer.getChannelData( 0 ).length );
-
 				} );
+
+				this.gl.bindBuffer( this.gl.ARRAY_BUFFER, bufferL.buffer );
+				this.gl.getBufferSubData( this.gl.ARRAY_BUFFER, 0, this.audioBuffer.getChannelData( 0 ) );
+
+				this.gl.bindBuffer( this.gl.ARRAY_BUFFER, bufferR.buffer );
+				this.gl.getBufferSubData( this.gl.ARRAY_BUFFER, 0, this.audioBuffer.getChannelData( 1 ) );
 
 			} );
 
 		}
-
-		// for ( let i = 0; i < bufferLength; i ++ ) {
-
-		// 	outputL[ i ] = readArrayL[ i ];
-		// 	outputR[ i ] = readArrayR[ i ];
-
-		// }
 
 		const node = this.audioCtx.createBufferSource();
 		node.connect( this.audioCtx.destination );
 		node.buffer = this.audioBuffer;
 		node.loop = false;
 
-		console.log( this.audioBuffer.getChannelData( 0 ) );
-		console.log( this.audioBuffer.getChannelData( 1 ) );
-
-
-
 		// btn
 
 		const btn = document.createElement( 'button' );
 		btn.innerHTML = 'click';
 		btn.style.position = 'absolute';
-		btn.style.position = 'absolute';
+		btn.style.left = '0';
+		btn.style.top = '0';
 		document.body.appendChild( btn );
+
+		setTimeout( () => {
+
+			node.start( 0 );
+
+		}, 500 );
 
 		btn.addEventListener( 'click', () => {
 
