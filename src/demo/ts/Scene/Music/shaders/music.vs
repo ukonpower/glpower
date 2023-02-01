@@ -11,13 +11,18 @@ out float o_right;
 uniform float uDuration;
 uniform float uSampleRate;
 
+#define rnd(co) fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453)
+
 void main( void ) {
 
-	float t = offsetTime / uSampleRate;
+	float time = offsetTime / uSampleRate;
 
-	float s = sin( t * 1000.0 ) * 0.5 + 0.5;
+	vec2 o = vec2( 0.0 );
+	o += sin( time * 300.0 ) * exp( - fract(time * 0.2) * 5.0 );
+	o += rnd( vec2(time) ) * 0.02;
 
-	o_left = s;
-	o_right = 1.0;
+	o_left = o.x;
+	o_right = o.y;
+
 
 }
