@@ -63,7 +63,7 @@ export type BLidgeMaterialParam = {
 export type BLidgeSceneData = {
     animations: {[key: string]: BLidgeAnimationCurveParam[]};
 	scene: BLidgeObject;
-	frame: BLidgeSceneFrameData;
+	frame: BLidgeSceneFrame;
 }
 
 // animation
@@ -96,13 +96,14 @@ export type BLidgeSyncSceneMessage = {
 
 export type BLidgeSyncFrameMessage = {
 	type: "sync/timeline";
-	data: BLidgeSceneFrameData;
+	data: BLidgeSceneFrame;
 }
 
-export type BLidgeSceneFrameData = {
+export type BLidgeSceneFrame = {
 	start: number;
 	end: number;
 	current: number;
+	fps: number;
 }
 
 export class BLidge extends EventEmitter {
@@ -115,10 +116,11 @@ export class BLidge extends EventEmitter {
 
 	// frame
 
-	public frame: BLidgeSceneFrameData = {
+	public frame: BLidgeSceneFrame = {
 		start: - 1,
 		end: - 1,
 		current: - 1,
+		fps: - 1
 	};
 
 	// animation
@@ -193,6 +195,7 @@ export class BLidge extends EventEmitter {
 
 		this.frame.start = data.frame.start;
 		this.frame.end = data.frame.end;
+		this.frame.fps = data.frame.fps;
 
 		this.curveGroups.length = 0;
 		this.objects.length = 0;
@@ -246,7 +249,7 @@ export class BLidge extends EventEmitter {
 
 	}
 
-	private onSyncTimeline( data: BLidgeSceneFrameData ) {
+	private onSyncTimeline( data: BLidgeSceneFrame ) {
 
 		this.frame = data;
 
