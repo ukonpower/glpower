@@ -1,5 +1,5 @@
-import EventEmitter from 'wolfy87-eventemitter';
 import { FCurveKeyFrame } from './FCurveKeyFrame';
+import { EventEmitter } from '../utils/EventEmitter';
 
 export class FCurve extends EventEmitter {
 

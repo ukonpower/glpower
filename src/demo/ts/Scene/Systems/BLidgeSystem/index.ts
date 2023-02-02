@@ -51,14 +51,14 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge = new GLP.BLidge( 'ws://localhost:3100' );
 
-		this.blidge.addListener( 'error', () => {
+		this.blidge.on( 'error', () => {
 
 			this.blidge.syncJsonScene( BASE_PATH + '/assets/demo/scene.json' );
 			this.play = true;
 
 		} );
 
-		this.blidge.addListener( 'sync/scene', this.onSyncScene.bind( this ) );
+		this.blidge.on( 'sync/scene', this.onSyncScene.bind( this ) );
 
 		// tmp
 

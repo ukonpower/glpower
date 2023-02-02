@@ -1,5 +1,5 @@
-import EventEmitter from "wolfy87-eventemitter";
 import { ECS, ECSUpdateEvent } from "..";
+import { EventEmitter } from "../../utils/EventEmitter";
 import { ComponentName } from "../Component";
 import { Entity } from "../Entity";
 
@@ -71,7 +71,7 @@ export class System extends EventEmitter {
 
 	public dispose() {
 
-		this.emitEvent( 'dispose' );
+		this.emit( 'dispose' );
 
 	}
 
