@@ -11,20 +11,28 @@ export declare type Uniform = {
     cache?: (number | boolean)[];
     needsUpdate?: boolean;
 };
+export declare type Uniforms = {
+    [key: string]: {
+        value: Uniformable | Uniformable[];
+        type: UniformType;
+    };
+};
+export declare type ShaderOptions = {
+    transformFeedbackVaryings?: string[];
+};
 export declare class GLPowerProgram {
     gl: WebGL2RenderingContext;
     program: WebGLProgram | null;
     private vao;
     protected uniforms: Map<string, Uniform>;
     constructor(gl: WebGL2RenderingContext);
-    setShader(vertexShaderSrc: string, fragmentShaderSrc: string): this | undefined;
+    setShader(vertexShaderSrc: string, fragmentShaderSrc: string, opt?: ShaderOptions): this | undefined;
     protected createShader(shaderSrc: string, type: number): WebGLShader | null;
     setUniform(name: string, type: UniformType, value: (number | boolean)[]): void;
     private updateUniformLocations;
     uploadUniforms(): void;
     getVAO(id?: string): GLPowerVAO | null;
-    use(): void;
-    clean(): void;
+    use(cb?: (program: GLPowerProgram) => void): void;
     getProgram(): WebGLProgram | null;
 }
 //# sourceMappingURL=GLPowerProgram.d.ts.map
