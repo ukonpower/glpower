@@ -39,6 +39,10 @@ export * from './Animation/FCurveKeyFrame';
 
 export * from './BLidge';
 
+// utils
+
+export * from './utils/EventEmitter';
+
 // types
 
 export * from './types/index';

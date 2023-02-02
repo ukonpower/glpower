@@ -56,8 +56,5 @@
 	},
 	"volta": {
 		"node": "16.16.0"
-	},
-	"dependencies": {
-		"wolfy87-eventemitter": "^5.2.9"
 	}
 }
