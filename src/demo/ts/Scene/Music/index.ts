@@ -13,6 +13,7 @@ export class Music {
 
 	private audioCtx: AudioContext;
 	private audioBuffer: AudioBuffer;
+	private mainNode: AudioBufferSourceNode;
 
 	constructor( power: GLP.Power ) {
 
@@ -94,10 +95,10 @@ export class Music {
 
 		}
 
-		const node = this.audioCtx.createBufferSource();
-		node.connect( this.audioCtx.destination );
-		node.buffer = this.audioBuffer;
-		node.loop = false;
+		this.mainNode = this.audioCtx.createBufferSource();
+		this.mainNode.connect( this.audioCtx.destination );
+		this.mainNode.buffer = this.audioBuffer;
+		this.mainNode.loop = false;
 
 		// btn
 
@@ -108,17 +109,25 @@ export class Music {
 		btn.style.top = '0';
 		document.body.appendChild( btn );
 
-		setTimeout( () => {
-
-			node.start( 0 );
-
-		}, 500 );
-
 		btn.addEventListener( 'click', () => {
 
-			node.start( 0 );
+			this.play();
 
 		} );
+
+	}
+
+	public play() {
+
+		this.mainNode.start();
+
+	}
+
+	public seek( time: number ) {
+
+		this.mainNode.stop();
+
+		this.mainNode.start( time );
 
 	}
 
