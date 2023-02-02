@@ -4,6 +4,7 @@ export * from './GLPowerBuffer';
 export * from './GLPowerVAO';
 export * from './GLPowerFrameBuffer';
 export * from './GLPowerTexture';
+export * from './GLPowerTransformFeedback';
 export * from './Math/Vector';
 export * from './Math/Matrix';
 export * from './Math/Quaternion';
@@ -24,5 +25,6 @@ export * from './Animation/FCurve';
 export * from './Animation/FCurveGroup';
 export * from './Animation/FCurveKeyFrame';
 export * from './BLidge';
+export * from './utils/EventEmitter';
 export * from './types/index';
 //# sourceMappingURL=index.d.ts.map

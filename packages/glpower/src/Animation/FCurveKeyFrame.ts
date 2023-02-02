@@ -1,6 +1,6 @@
-import EventEmitter from 'wolfy87-eventemitter';
-import { IVector2 } from '..';
+import { IVector2 } from '../Math/Vector';
 import { EasingFunc, Easings } from './Easings';
+import { EventEmitter } from '../utils/EventEmitter';
 
 export type FCurveInterpolation = "BEZIER" | "LINEAR" | "CONSTANT";
 
