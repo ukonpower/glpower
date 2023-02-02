@@ -1,6 +1,6 @@
-import EventEmitter from 'wolfy87-eventemitter';
 import { Types, Vector } from '..';
 import { FCurve } from './FCurve';
+import { EventEmitter } from '../utils/EventEmitter';
 export declare class FCurveGroup extends EventEmitter {
     name: string;
     private curves;

@@ -1,7 +1,6 @@
-import EventEmitter from 'wolfy87-eventemitter';
 import { Types, Vector } from '..';
-import { IVector4 } from '../Math/Vector';
 import { FCurve } from './FCurve';
+import { EventEmitter } from '../utils/EventEmitter';
 
 export class FCurveGroup extends EventEmitter {
 
