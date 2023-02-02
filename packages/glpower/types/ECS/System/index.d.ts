@@ -1,5 +1,5 @@
-import EventEmitter from "wolfy87-eventemitter";
 import { ECS, ECSUpdateEvent } from "..";
+import { EventEmitter } from "../../utils/EventEmitter";
 import { ComponentName } from "../Component";
 import { Entity } from "../Entity";
 export declare type EntityQuery = ComponentName[];
