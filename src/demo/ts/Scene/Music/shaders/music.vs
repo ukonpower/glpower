@@ -13,13 +13,22 @@ uniform float uSampleRate;
 
 #define rnd(co) fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453)
 
+vec2 music( float time ) {
+
+	vec2 o = vec2( 0.0 );
+
+	o += sin( time * 300.0 ) * exp( - fract(time * 0.2) * 5.0 );
+	o += rnd( vec2(time) ) * 0.02;
+
+	return o;
+	
+}
+
 void main( void ) {
 
 	float time = offsetTime / uSampleRate;
 
-	vec2 o = vec2( 0.0 );
-	o += sin( time * 300.0 ) * exp( - fract(time * 0.2) * 5.0 );
-	o += rnd( vec2(time) ) * 0.02;
+	vec2 o = music( time );
 
 	o_left = o.x;
 	o_right = o.y;
