@@ -1,5 +1,4 @@
 import * as GLP from 'glpower';
-import EventEmitter from 'wolfy87-eventemitter';
 
 import { RenderSystem } from './Systems/RenderSystem';
 import { TransformSystem } from './Systems/TransformSystem';
@@ -10,7 +9,7 @@ import { Factory } from './Factory';
 import { SceneGraph } from './SceneGraph';
 import { Music } from './Music';
 
-export class Scene extends EventEmitter {
+export class Scene extends GLP.EventEmitter {
 
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
@@ -117,13 +116,13 @@ export class Scene extends EventEmitter {
 
 		};
 
-		this.addListener( 'resize', onResize );
+		this.on( 'resize', onResize );
 
 		// dispose
 
-		this.addOnceListener( "dispose", () => {
+		this.once( "dispose", () => {
 
-			this.removeListener( 'resize', onResize );
+			this.off( 'resize', onResize );
 
 		} );
 
@@ -131,7 +130,7 @@ export class Scene extends EventEmitter {
 
 	public resize( size: GLP.Vector, pixelRatio: number ) {
 
-		this.emitEvent( 'resize', [ size, pixelRatio ] );
+		this.emit( 'resize', [ size, pixelRatio ] );
 
 	}
 
@@ -143,7 +142,7 @@ export class Scene extends EventEmitter {
 
 	public dispose() {
 
-		this.emitEvent( 'dispose' );
+		this.emit( 'dispose' );
 
 	}
 

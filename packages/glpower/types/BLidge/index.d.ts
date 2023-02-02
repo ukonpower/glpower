@@ -1,5 +1,5 @@
-import EventEmitter from "wolfy87-eventemitter";
-import { IVector2, IVector3 } from "..";
+import { EventEmitter } from '../utils/EventEmitter';
+import { IVector2, IVector3 } from "../Math/Vector";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation } from "../Animation/FCurveKeyFrame";
 export declare type BLidgeObject = {
