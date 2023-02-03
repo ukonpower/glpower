@@ -13,12 +13,16 @@ export class Music {
 
 	private audioCtx: AudioContext;
 	private audioBuffer: AudioBuffer;
-	private mainNode: AudioBufferSourceNode;
+	private node: AudioBufferSourceNode | null;
+
+	private playStartTime: number = - 1;
 
 	constructor( power: GLP.Power ) {
 
 		this.power = power;
 		this.gl = this.power.gl;
+
+		this.node = null;
 
 		/*-------------------------------
 			Audio
@@ -95,11 +99,6 @@ export class Music {
 
 		}
 
-		this.mainNode = this.audioCtx.createBufferSource();
-		this.mainNode.connect( this.audioCtx.destination );
-		this.mainNode.buffer = this.audioBuffer;
-		this.mainNode.loop = false;
-
 		// btn
 
 		const btn = document.createElement( 'button' );
@@ -112,22 +111,47 @@ export class Music {
 		btn.addEventListener( 'click', () => {
 
 			this.play();
+			this.stop();
 
 		} );
 
 	}
 
-	public play() {
+	public play( time?: number ) {
 
-		this.mainNode.start();
+		this.stop();
+
+		this.node = this.audioCtx.createBufferSource();
+		this.node.connect( this.audioCtx.destination );
+		this.node.buffer = this.audioBuffer;
+		this.node.loop = false;
+		this.node.start( 0, time );
+
+		this.playStartTime = this.node.context.currentTime - ( time || 0 );
 
 	}
 
 	public seek( time: number ) {
 
-		this.mainNode.stop();
+		if ( this.node ) {
 
-		this.mainNode.start( time );
+			if ( Math.abs( ( this.node.context.currentTime - this.playStartTime ) - time ) < 0.1 ) return;
+
+		}
+
+		this.play( time );
+
+	}
+
+	public stop() {
+
+		if ( this.node ) {
+
+			this.node.stop();
+			this.node.disconnect( this.audioCtx.destination );
+			this.node = null;
+
+		}
 
 	}
 
