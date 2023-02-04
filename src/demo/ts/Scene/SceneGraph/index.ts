@@ -3,7 +3,6 @@ import { ComponentSceneNode } from '../Component';
 
 export class SceneGraph {
 
-	private ecs: GLP.ECS;
 	private world: GLP.World;
 
 	private entities: GLP.Entity[];
@@ -11,9 +10,8 @@ export class SceneGraph {
 	private cacheTransformUpdateOrder: GLP.Entity[] | null;
 	private cacheRenderOrder: GLP.Entity[] | null;
 
-	constructor( ecs: GLP.ECS, world: GLP.World ) {
+	constructor( world: GLP.World ) {
 
-		this.ecs = ecs;
 		this.world = world;
 
 		this.entities = [];
@@ -25,7 +23,7 @@ export class SceneGraph {
 
 	public add( parent: GLP.Entity, child: GLP.Entity ) {
 
-		const parentNode = this.ecs.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
+		const parentNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
 
 		if ( parentNode === null ) {
 
@@ -35,7 +33,7 @@ export class SceneGraph {
 
 		}
 
-		const childNode = this.ecs.getComponent<ComponentSceneNode>( this.world, child, 'sceneNode' );
+		const childNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, child, 'sceneNode' );
 
 		if ( childNode === null ) {
 
@@ -62,7 +60,7 @@ export class SceneGraph {
 
 	public remove( parent: GLP.Entity, child: GLP.Entity ) {
 
-		const parentNode = this.ecs.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
+		const parentNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, parent, 'sceneNode' );
 
 		if ( parentNode === null ) {
 
@@ -72,7 +70,7 @@ export class SceneGraph {
 
 		}
 
-		const childNode = this.ecs.getComponent<ComponentSceneNode>( this.world, child, 'sceneNode' );
+		const childNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, child, 'sceneNode' );
 
 		if ( childNode === null ) {
 
@@ -118,7 +116,7 @@ export class SceneGraph {
 
 			updateOrder.push( entity );
 
-			const sceneNode = this.ecs.getComponent<ComponentSceneNode>( this.world, entity, 'sceneNode' );
+			const sceneNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, entity, 'sceneNode' );
 
 			if ( sceneNode ) {
 
@@ -136,7 +134,7 @@ export class SceneGraph {
 
 			const entity = this.entities[ i ];
 
-			const sceneNode = this.ecs.getComponent<ComponentSceneNode>( this.world, entity, 'sceneNode' );
+			const sceneNode = GLP.ECS.getComponent<ComponentSceneNode>( this.world, entity, 'sceneNode' );
 
 			if ( sceneNode && sceneNode.parent === undefined ) {
 

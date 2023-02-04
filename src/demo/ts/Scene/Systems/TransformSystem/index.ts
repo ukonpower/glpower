@@ -1,14 +1,14 @@
 import * as GLP from 'glpower';
-import { SceneGraph } from 'glpower';
 import { ComponentSceneNode, ComponentTransformMatrix } from '../../Component';
+import { SceneGraph } from '../../SceneGraph';
 
 export class TransformSystem extends GLP.System {
 
 	private sceneGraph: SceneGraph;
 
-	constructor( ecs: GLP.ECS, sceneGraph: SceneGraph ) {
+	constructor( sceneGraph: SceneGraph ) {
 
-		super( ecs, {
+		super( {
 			'': [
 				'position',
 				"scale",
@@ -36,11 +36,11 @@ export class TransformSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const sceneNode = event.ecs.getComponent<ComponentSceneNode>( event.world, entity, 'sceneNode' );
-		const matrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' );
-		const position = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
-		const quaternion = event.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
-		const scale = event.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
+		const sceneNode = GLP.ECS.getComponent<ComponentSceneNode>( event.world, entity, 'sceneNode' );
+		const matrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' );
+		const position = GLP.ECS.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' );
+		const quaternion = GLP.ECS.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' );
+		const scale = GLP.ECS.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' );
 
 		if ( ! position || ! scale || ! matrix || ! quaternion ) return;
 
@@ -53,7 +53,7 @@ export class TransformSystem extends GLP.System {
 
 		if ( sceneNode && sceneNode.parent !== undefined ) {
 
-			const parentMatrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, sceneNode.parent, 'matrix' );
+			const parentMatrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, sceneNode.parent, 'matrix' );
 
 			if ( parentMatrix ) {
 
