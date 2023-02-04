@@ -1,5 +1,5 @@
-import EventEmitter from "wolfy87-eventemitter";
-import { IVector2, IVector3 } from "..";
+import { EventEmitter } from '../utils/EventEmitter';
+import { IVector2, IVector3 } from "../Math/Vector";
 import { FCurve } from "../Animation/FCurve";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation, FCurveKeyFrame } from "../Animation/FCurveKeyFrame";
@@ -154,7 +154,7 @@ export class BLidge extends EventEmitter {
 
 			console.error( e );
 
-			this.emitEvent( 'error' );
+			this.emit( 'error' );
 
 		};
 
@@ -242,7 +242,7 @@ export class BLidge extends EventEmitter {
 
 		// dispatch event
 
-		this.emitEvent( 'sync/scene', [ this ] );
+		this.emit( 'sync/scene', [ this ] );
 
 	}
 
@@ -250,7 +250,7 @@ export class BLidge extends EventEmitter {
 
 		this.frame = data;
 
-		this.emitEvent( 'sync/timeline', [ this.frame ] );
+		this.emit( 'sync/timeline', [ this.frame ] );
 
 	}
 

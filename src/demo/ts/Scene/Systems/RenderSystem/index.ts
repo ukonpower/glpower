@@ -62,9 +62,9 @@ export class RenderSystem extends GLP.System {
 
 	private lights: Lights;
 
-	constructor( ecs: GLP.ECS, core: GLP.Power ) {
+	constructor( core: GLP.Power ) {
 
-		super( ecs, {
+		super( {
 			"directionalLight": [ 'directionalLight', 'position' ],
 			"spotLight": [ 'spotLight', 'position' ],
 			"shadowMap": [ 'camera', 'renderCameraShadowMap' ],
@@ -75,7 +75,6 @@ export class RenderSystem extends GLP.System {
 
 		this.power = core;
 		this.gl = this.power.gl;
-		this.ecs = ecs;
 
 		// canvas
 
@@ -152,7 +151,7 @@ export class RenderSystem extends GLP.System {
 
 		} else if ( phase == 'postprocess' ) {
 
-			this.renderPostProcess( entity + '_postprocess', this.ecs.getComponent<ComponentPostProcess>( event.world, entity, 'postprocess' )!, event, );
+			this.renderPostProcess( entity + '_postprocess', GLP.ECS.getComponent<ComponentPostProcess>( event.world, entity, 'postprocess' )!, event, );
 
 		} else {
 
@@ -168,8 +167,8 @@ export class RenderSystem extends GLP.System {
 
 		if ( type == 'directional' ) {
 
-			const light = event.ecs.getComponent<ComponentLightDirectional>( event.world, entity, 'directionalLight' )!;
-			const matrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
+			const light = GLP.ECS.getComponent<ComponentLightDirectional>( event.world, entity, 'directionalLight' )!;
+			const matrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
 
 			this.lights.directionalLight.push( {
 				direction: new GLP.Vector( 0.0, 1.0, 0.0, 0.0 ).applyMatrix4( matrix.world ),
@@ -180,8 +179,8 @@ export class RenderSystem extends GLP.System {
 
 		} else if ( type == 'spot' ) {
 
-			const light = event.ecs.getComponent<ComponentLightSpot>( event.world, entity, 'spotLight' )!;
-			const matrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
+			const light = GLP.ECS.getComponent<ComponentLightSpot>( event.world, entity, 'spotLight' )!;
+			const matrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
 
 			this.lights.spotLight.push( {
 				position: new GLP.Vector( 0, 0, 0, 1.0 ).applyMatrix4( matrix.world ),
@@ -201,8 +200,8 @@ export class RenderSystem extends GLP.System {
 
 		if ( shadowCameraArray ) {
 
-			const camera = event.ecs.getComponent<ComponentCamera>( event.world, entity, 'camera' );
-			const cameraShadowMap = event.ecs.getComponent<ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
+			const camera = GLP.ECS.getComponent<ComponentCamera>( event.world, entity, 'camera' );
+			const cameraShadowMap = GLP.ECS.getComponent<ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
 
 			if ( camera && cameraShadowMap ) {
 
@@ -226,8 +225,8 @@ export class RenderSystem extends GLP.System {
 
 	private renderCamera( renderPhase: string, entity: GLP.Entity, event: GLP.SystemUpdateEvent ) {
 
-		const camera = event.ecs.getComponent<ComponentCamera>( event.world, entity, 'camera' )!;
-		const cameraMatrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
+		const camera = GLP.ECS.getComponent<ComponentCamera>( event.world, entity, 'camera' )!;
+		const cameraMatrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' )!;
 
 		let renderCameraType = 'renderCameraForward';
 
@@ -241,7 +240,7 @@ export class RenderSystem extends GLP.System {
 
 		}
 
-		const { renderTarget, postprocess } = event.ecs.getComponent<ComponentRenderCamera & ComponentShadowmapCamera>( event.world, entity, renderCameraType )!;
+		const { renderTarget, postprocess } = GLP.ECS.getComponent<ComponentRenderCamera & ComponentShadowmapCamera>( event.world, entity, renderCameraType )!;
 
 		if ( renderTarget ) {
 
@@ -265,15 +264,15 @@ export class RenderSystem extends GLP.System {
 
 		if ( renderPhase == 'shadowMap' ) materialType = 'materialDepth';
 
-		const meshes = event.ecs.getEntities( event.world, [ materialType, 'geometry' ] );
+		const meshes = GLP.ECS.getEntities( event.world, [ materialType, 'geometry' ] );
 
 		for ( let i = 0; i < meshes.length; i ++ ) {
 
 			const mesh = meshes[ i ];
 
-			const material = event.ecs.getComponent<ComponentMaterial>( event.world, mesh, materialType );
-			const geometry = event.ecs.getComponent<ComponentGeometry>( event.world, mesh, 'geometry' );
-			const matrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, mesh, 'matrix' );
+			const material = GLP.ECS.getComponent<ComponentMaterial>( event.world, mesh, materialType );
+			const geometry = GLP.ECS.getComponent<ComponentGeometry>( event.world, mesh, 'geometry' );
+			const matrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, mesh, 'matrix' );
 
 			if ( material && geometry && matrix ) {
 
@@ -342,8 +341,8 @@ export class RenderSystem extends GLP.System {
 
 			if ( ! matrix && pp.camera !== undefined ) {
 
-				const camera = event.ecs.getComponent<ComponentCamera>( event.world, pp.camera, 'camera' )!;
-				const cameraMatrix = event.ecs.getComponent<ComponentTransformMatrix>( event.world, pp.camera, 'matrix' )!;
+				const camera = GLP.ECS.getComponent<ComponentCamera>( event.world, pp.camera, 'camera' )!;
+				const cameraMatrix = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, pp.camera, 'matrix' )!;
 
 				matrix = {
 					viewMatrix: camera.viewMatrix,
@@ -542,7 +541,7 @@ export class RenderSystem extends GLP.System {
 
 					const attr = geometry.attributes[ i ];
 
-					vao.setAttribute( attr.name, attr.buffer, attr.size, attr.instanceDivisor );
+					vao.setAttribute( attr.name, attr.buffer, attr.size, { instanceDivisor: attr.instanceDivisor } );
 
 				}
 
@@ -554,25 +553,25 @@ export class RenderSystem extends GLP.System {
 
 			// draw
 
-			program.use();
+			program.use( () => {
 
-			program.uploadUniforms();
+				program.uploadUniforms();
 
-			this.gl.bindVertexArray( vao.getVAO() );
+				this.gl.bindVertexArray( vao.getVAO() );
 
-			if ( vao.instanceCount > 0 ) {
+				if ( vao.instanceCount > 0 ) {
 
-				this.gl.drawElementsInstanced( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0, vao.instanceCount );
+					this.gl.drawElementsInstanced( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0, vao.instanceCount );
 
-			} else {
+				} else {
 
-				this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
+					this.gl.drawElements( this.gl.TRIANGLES, vao.indexCount, this.gl.UNSIGNED_SHORT, 0 );
 
-			}
+				}
 
-			this.gl.bindVertexArray( null );
+				this.gl.bindVertexArray( null );
 
-			program.clean();
+			} );
 
 		}
 
