@@ -12,7 +12,6 @@ export class Scene extends GLP.EventEmitter {
 
 	private gl: WebGL2RenderingContext;
 	private power: GLP.Power;
-	private ecs: GLP.ECS;
 	private world: GLP.World;
 
 	private sceneGraph: SceneGraph;
@@ -31,15 +30,14 @@ export class Scene extends GLP.EventEmitter {
 			ECS
 		-------------------------------*/
 
-		this.ecs = new GLP.ECS();
-		this.world = this.ecs.createWorld();
+		this.world = GLP.ECS.createWorld();
 
 		/*-------------------------------
 			Scene
 		-------------------------------*/
 
-		this.sceneGraph = new SceneGraph( this.ecs, this.world );
-		this.factory = new Factory( this.power, this.ecs, this.world );
+		this.sceneGraph = new SceneGraph( this.world );
+		this.factory = new Factory( this.power, this.world );
 
 		// -------- render target
 
@@ -76,19 +74,19 @@ export class Scene extends GLP.EventEmitter {
 			System
 		-------------------------------*/
 
-		const blidgeSystem = new BLidgeSystem( this.ecs, this.power, this.world, camera, this.sceneGraph, this.factory );
-		const transformSystem = new TransformSystem( this.ecs, blidgeSystem.sceneGraph );
-		const eventSystem = new EventSystem( this.ecs );
-		const cameraSystem = new CameraSystem( this.ecs );
-		const renderSystem = new RenderSystem( this.ecs, this.power );
+		const blidgeSystem = new BLidgeSystem( this.power, this.world, camera, this.sceneGraph, this.factory );
+		const transformSystem = new TransformSystem( blidgeSystem.sceneGraph );
+		const eventSystem = new EventSystem();
+		const cameraSystem = new CameraSystem();
+		const renderSystem = new RenderSystem( this.power );
 
 		// adddd
 
-		this.ecs.addSystem( this.world, 'blidge', blidgeSystem );
-		this.ecs.addSystem( this.world, 'transform', transformSystem );
-		this.ecs.addSystem( this.world, 'camera', cameraSystem );
-		this.ecs.addSystem( this.world, 'event', eventSystem );
-		this.ecs.addSystem( this.world, 'render', renderSystem );
+		GLP.ECS.addSystem( this.world, 'blidge', blidgeSystem );
+		GLP.ECS.addSystem( this.world, 'transform', transformSystem );
+		GLP.ECS.addSystem( this.world, 'camera', cameraSystem );
+		GLP.ECS.addSystem( this.world, 'event', eventSystem );
+		GLP.ECS.addSystem( this.world, 'render', renderSystem );
 
 		/*-------------------------------
 			Events
@@ -127,7 +125,7 @@ export class Scene extends GLP.EventEmitter {
 
 	public update() {
 
-		this.ecs.update( this.world );
+		GLP.ECS.update( this.world );
 
 	}
 
