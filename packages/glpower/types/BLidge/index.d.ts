@@ -48,7 +48,7 @@ export declare type BLidgeSceneData = {
         [key: string]: BLidgeAnimationCurveParam[];
     };
     scene: BLidgeObject;
-    frame: BLidgeSceneFrameData;
+    frame: BLidgeSceneFrame;
 };
 export declare type BLidgeAnimation = {
     [key: string]: string;
@@ -72,18 +72,20 @@ export declare type BLidgeSyncSceneMessage = {
 };
 export declare type BLidgeSyncFrameMessage = {
     type: "sync/timeline";
-    data: BLidgeSceneFrameData;
+    data: BLidgeSceneFrame;
 };
-export declare type BLidgeSceneFrameData = {
+export declare type BLidgeSceneFrame = {
     start: number;
     end: number;
     current: number;
+    fps: number;
+    playing: boolean;
 };
 export declare class BLidge extends EventEmitter {
     private url?;
     private ws?;
     connected: boolean;
-    frame: BLidgeSceneFrameData;
+    frame: BLidgeSceneFrame;
     objects: BLidgeObject[];
     curveGroups: FCurveGroup[];
     scene: BLidgeObject | null;

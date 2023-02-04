@@ -1,15 +1,15 @@
-class O {
+class P {
   constructor(t, e) {
     this.gl = t, this.program = e, this.vao = this.gl.createVertexArray(), this.attributes = /* @__PURE__ */ new Map(), this.indexBuffer = null, this.vertCount = 0, this.indexCount = 0, this.instanceCount = 0;
   }
-  setAttribute(t, e, i, s) {
-    const r = this.attributes.get(t), h = e.array ? e.array.length / i : 0;
+  setAttribute(t, e, s, i) {
+    const r = this.attributes.get(t), h = e.array ? e.array.length / s : 0;
     return this.attributes.set(t, {
       ...r,
       buffer: e,
-      size: i,
+      size: s,
       count: h,
-      ...s,
+      ...i,
       location: void 0
     }), this.updateAttributes(), this;
   }
@@ -17,8 +17,8 @@ class O {
     return this.attributes.delete(t), this;
   }
   updateAttributes(t) {
-    !this.vao || (this.vertCount = 0, this.instanceCount = 0, this.gl.bindVertexArray(this.vao), this.attributes.forEach((e, i) => {
-      (e.location === void 0 || t) && (e.location = this.gl.getAttribLocation(this.program, i), e.location > -1 && (this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.buffer.buffer), this.gl.enableVertexAttribArray(e.location), this.gl.vertexAttribPointer(e.location, e.size, this.gl.FLOAT, !1, 0, 0), e.instanceDivisor !== void 0 && this.gl.vertexAttribDivisor(e.location, e.instanceDivisor))), this.vertCount = Math.max(this.vertCount, e.count), e.instanceDivisor !== void 0 && e.instanceDivisor > 0 && (this.instanceCount == 0 ? this.instanceCount = e.count : this.instanceCount = Math.min(this.instanceCount, e.count));
+    !this.vao || (this.vertCount = 0, this.instanceCount = 0, this.gl.bindVertexArray(this.vao), this.attributes.forEach((e, s) => {
+      (e.location === void 0 || t) && (e.location = this.gl.getAttribLocation(this.program, s), e.location > -1 && (this.gl.bindBuffer(this.gl.ARRAY_BUFFER, e.buffer.buffer), this.gl.enableVertexAttribArray(e.location), this.gl.vertexAttribPointer(e.location, e.size, this.gl.FLOAT, !1, 0, 0), e.instanceDivisor !== void 0 && this.gl.vertexAttribDivisor(e.location, e.instanceDivisor))), this.vertCount = Math.max(this.vertCount, e.count), e.instanceDivisor !== void 0 && e.instanceDivisor > 0 && (this.instanceCount == 0 ? this.instanceCount = e.count : this.instanceCount = Math.min(this.instanceCount, e.count));
     }), this.gl.bindVertexArray(null));
   }
   setIndex(t) {
@@ -31,45 +31,45 @@ class O {
     return this.vao;
   }
 }
-class P {
+class L {
   constructor(t) {
     this.gl = t, this.program = this.gl.createProgram(), this.vao = /* @__PURE__ */ new Map(), this.uniforms = /* @__PURE__ */ new Map();
   }
-  setShader(t, e, i) {
+  setShader(t, e, s) {
     if (this.program === null) {
       console.warn("program is null.");
       return;
     }
-    const s = this.createShader(t, this.gl.VERTEX_SHADER), r = this.createShader(e, this.gl.FRAGMENT_SHADER);
-    if (!(!s || !r))
-      return this.gl.attachShader(this.program, s), this.gl.attachShader(this.program, r), i && i.transformFeedbackVaryings && this.gl.transformFeedbackVaryings(this.program, i.transformFeedbackVaryings, this.gl.SEPARATE_ATTRIBS), this.gl.linkProgram(this.program), this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS) || console.error("program link error:", this.gl.getProgramInfoLog(this.program)), this;
+    const i = this.createShader(t, this.gl.VERTEX_SHADER), r = this.createShader(e, this.gl.FRAGMENT_SHADER);
+    if (!(!i || !r))
+      return this.gl.attachShader(this.program, i), this.gl.attachShader(this.program, r), s && s.transformFeedbackVaryings && this.gl.transformFeedbackVaryings(this.program, s.transformFeedbackVaryings, this.gl.SEPARATE_ATTRIBS), this.gl.linkProgram(this.program), this.gl.getProgramParameter(this.program, this.gl.LINK_STATUS) || console.error("program link error:", this.gl.getProgramInfoLog(this.program)), this;
   }
   createShader(t, e) {
-    const i = this.gl.createShader(e);
-    return i ? (this.gl.shaderSource(i, t), this.gl.compileShader(i), this.gl.getShaderParameter(i, this.gl.COMPILE_STATUS) ? i : (console.error(this.gl.getShaderInfoLog(i)), null)) : null;
+    const s = this.gl.createShader(e);
+    return s ? (this.gl.shaderSource(s, t), this.gl.compileShader(s), this.gl.getShaderParameter(s, this.gl.COMPILE_STATUS) ? s : (console.error(this.gl.getShaderInfoLog(s)), null)) : null;
   }
-  setUniform(t, e, i) {
-    const s = this.uniforms.get(t);
-    if (s)
-      if (s.type = e, s.value = i, s.cache) {
-        for (let r = 0; r < i.length; r++)
-          if (s.cache[r] !== i[r]) {
-            s.needsUpdate = !0;
+  setUniform(t, e, s) {
+    const i = this.uniforms.get(t);
+    if (i)
+      if (i.type = e, i.value = s, i.cache) {
+        for (let r = 0; r < s.length; r++)
+          if (i.cache[r] !== s[r]) {
+            i.needsUpdate = !0;
             break;
           }
       } else
-        s.needsUpdate = !0;
+        i.needsUpdate = !0;
     else
       this.uniforms.set(t, {
-        value: i,
+        value: s,
         type: e,
         location: null,
         needsUpdate: !0
       }), this.updateUniformLocations();
   }
   updateUniformLocations(t) {
-    !this.program || this.uniforms.forEach((e, i) => {
-      (e.location === null || t) && (e.location = this.gl.getUniformLocation(this.program, i));
+    !this.program || this.uniforms.forEach((e, s) => {
+      (e.location === null || t) && (e.location = this.gl.getUniformLocation(this.program, s));
     });
   }
   uploadUniforms() {
@@ -81,7 +81,7 @@ class P {
     if (!this.program)
       return null;
     let e = this.vao.get(t);
-    return e || (e = new O(this.gl, this.program), this.vao.set(t, e), e);
+    return e || (e = new P(this.gl, this.program), this.vao.set(t, e), e);
   }
   use(t) {
     !this.program || (this.gl.useProgram(this.program), t && t(this), this.gl.useProgram(null));
@@ -90,32 +90,32 @@ class P {
     return this.program;
   }
 }
-class L {
+class k {
   constructor(t) {
     this.gl = t, this.buffer = this.gl.createBuffer(), this.array = null;
   }
-  setData(t, e = "vbo", i) {
-    const s = e == "vbo" ? this.gl.ARRAY_BUFFER : this.gl.ELEMENT_ARRAY_BUFFER;
-    return this.gl.bindBuffer(s, this.buffer), this.gl.bufferData(s, t, i || this.gl.STATIC_DRAW), this.gl.bindBuffer(s, null), this.array = t, this;
+  setData(t, e = "vbo", s) {
+    const i = e == "vbo" ? this.gl.ARRAY_BUFFER : this.gl.ELEMENT_ARRAY_BUFFER;
+    return this.gl.bindBuffer(i, this.buffer), this.gl.bufferData(i, t, s || this.gl.STATIC_DRAW), this.gl.bindBuffer(i, null), this.array = t, this;
   }
 }
 class F {
-  constructor(t, e, i, s) {
-    this.x = t || 0, this.y = e || 0, this.z = i || 0, this.w = s || 0;
+  constructor(t, e, s, i) {
+    this.x = t || 0, this.y = e || 0, this.z = s || 0, this.w = i || 0;
   }
   get isVector() {
     return !0;
   }
-  set(t, e, i, s) {
-    return this.x = t, this.y = e != null ? e : this.y, this.z = i != null ? i : this.z, this.w = s != null ? s : this.w, this;
+  set(t, e, s, i) {
+    return this.x = t, this.y = e != null ? e : this.y, this.z = s != null ? s : this.z, this.w = i != null ? i : this.w, this;
   }
   add(t) {
-    var e, i, s, r;
-    return typeof t == "number" ? (this.x += t, this.y += t, this.z += t, this.w += t) : (this.x += (e = t.x) != null ? e : 0, this.y += (i = t.y) != null ? i : 0, this.z += (s = t.z) != null ? s : 0, this.w += (r = t.w) != null ? r : 0), this;
+    var e, s, i, r;
+    return typeof t == "number" ? (this.x += t, this.y += t, this.z += t, this.w += t) : (this.x += (e = t.x) != null ? e : 0, this.y += (s = t.y) != null ? s : 0, this.z += (i = t.z) != null ? i : 0, this.w += (r = t.w) != null ? r : 0), this;
   }
   sub(t) {
-    var e, i, s, r;
-    return typeof t == "number" ? (this.x -= t, this.y -= t, this.z -= t) : (this.x -= (e = t.x) != null ? e : 0, this.y -= (i = t.y) != null ? i : 0, this.z -= (s = t.z) != null ? s : 0, this.w -= (r = t.w) != null ? r : 0), this;
+    var e, s, i, r;
+    return typeof t == "number" ? (this.x -= t, this.y -= t, this.z -= t) : (this.x -= (e = t.x) != null ? e : 0, this.y -= (s = t.y) != null ? s : 0, this.z -= (i = t.z) != null ? i : 0, this.w -= (r = t.w) != null ? r : 0), this;
   }
   multiply(t) {
     return typeof t == "number" ? (this.x *= t, this.y *= t, this.z *= t, this.w *= t) : (this.x *= t.x, this.y *= t.y, this.z *= t.z, this.w *= t.w), this;
@@ -130,23 +130,23 @@ class F {
     return this.divide(this.length() || 1);
   }
   cross(t) {
-    const e = this.x, i = this.y, s = this.z, r = t.x, h = t.y, u = t.z;
-    return this.x = i * u - s * h, this.y = s * r - e * u, this.z = e * h - i * r, this;
+    const e = this.x, s = this.y, i = this.z, r = t.x, h = t.y, c = t.z;
+    return this.x = s * c - i * h, this.y = i * r - e * c, this.z = e * h - s * r, this;
   }
   dot(t) {
     return this.x * t.x + this.y * t.y + this.z * t.z;
   }
   applyMatrix3(t) {
-    const e = t.elm, i = e[0], s = e[1], r = e[2], h = e[4], u = e[5], l = e[6], o = e[8], c = e[9], a = e[10], m = this.x * i + this.y * h + this.z * o, g = this.x * s + this.y * u + this.z * c, p = this.x * r + this.y * l + this.z * a;
+    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[4], c = e[5], a = e[6], o = e[8], f = e[9], l = e[10], m = this.x * s + this.y * h + this.z * o, g = this.x * i + this.y * c + this.z * f, p = this.x * r + this.y * a + this.z * l;
     this.x = m, this.y = g, this.z = p, this.w = 0;
   }
   applyMatrix4(t) {
-    const e = t.elm, i = e[0], s = e[1], r = e[2], h = e[3], u = e[4], l = e[5], o = e[6], c = e[7], a = e[8], m = e[9], g = e[10], p = e[11], y = e[12], d = e[13], E = e[14], n = e[15], b = this.x * i + this.y * u + this.z * a + this.w * y, A = this.x * s + this.y * l + this.z * m + this.w * d, x = this.x * r + this.y * o + this.z * g + this.w * E, R = this.x * h + this.y * c + this.z * p + this.w * n;
+    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[3], c = e[4], a = e[5], o = e[6], f = e[7], l = e[8], m = e[9], g = e[10], p = e[11], y = e[12], d = e[13], E = e[14], n = e[15], b = this.x * s + this.y * c + this.z * l + this.w * y, A = this.x * i + this.y * a + this.z * m + this.w * d, x = this.x * r + this.y * o + this.z * g + this.w * E, R = this.x * h + this.y * f + this.z * p + this.w * n;
     return this.x = b, this.y = A, this.z = x, this.w = R, this;
   }
   copy(t) {
-    var e, i, s, r;
-    return this.x = (e = t.x) != null ? e : 0, this.y = (i = t.y) != null ? i : 0, this.z = (s = t.z) != null ? s : 0, this.w = (r = t.w) != null ? r : 0, this;
+    var e, s, i, r;
+    return this.x = (e = t.x) != null ? e : 0, this.y = (s = t.y) != null ? s : 0, this.z = (i = t.z) != null ? i : 0, this.w = (r = t.w) != null ? r : 0, this;
   }
   clone() {
     return new F(this.x, this.y, this.z, this.w);
@@ -155,7 +155,7 @@ class F {
     return t == "vec2" ? [this.x, this.y] : t == "vec3" ? [this.x, this.y, this.z] : [this.x, this.y, this.z, this.w];
   }
 }
-class k {
+class X {
   constructor(t) {
     this.gl = t, this.image = null, this.unit = 0, this.size = new F(), this.texture = this.gl.createTexture(), this._setting = {
       type: this.gl.UNSIGNED_BYTE,
@@ -184,73 +184,73 @@ class k {
     return this.gl.activeTexture(this.gl.TEXTURE0 + t), this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture), this.unit = t, this;
   }
   load(t, e) {
-    const i = new Image();
-    return i.onload = () => {
-      this.attach(i), e && e();
-    }, i.src = t, this;
+    const s = new Image();
+    return s.onload = () => {
+      this.attach(s), e && e();
+    }, s.src = t, this;
   }
   getTexture() {
     return this.texture;
   }
   loadAsync(t) {
-    return new Promise((e, i) => {
-      const s = new Image();
-      s.onload = () => {
-        this.attach(s), e(this);
-      }, s.onerror = () => {
-        i("img error, " + t);
-      }, s.src = t;
+    return new Promise((e, s) => {
+      const i = new Image();
+      i.onload = () => {
+        this.attach(i), e(this);
+      }, i.onerror = () => {
+        s("img error, " + t);
+      }, i.src = t;
     });
   }
 }
-class X {
+class G {
   constructor(t) {
     this.gl = t, this.size = new F(1, 1), this.frameBuffer = this.gl.createFramebuffer(), this.depthRenderBuffer = this.gl.createRenderbuffer(), this.textures = [], this.textureAttachmentList = [], this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.depthRenderBuffer), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer), this.gl.framebufferRenderbuffer(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.depthRenderBuffer), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null), this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
   }
   setTexture(t) {
-    return this.textures = t, this.textureAttachmentList.length = 0, this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer), this.textures.forEach((e, i) => {
+    return this.textures = t, this.textureAttachmentList.length = 0, this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer), this.textures.forEach((e, s) => {
       e.attach({ width: this.size.x, height: this.size.y }), this.gl.bindTexture(this.gl.TEXTURE_2D, e.getTexture()), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR), this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-      const s = this.gl.COLOR_ATTACHMENT0 + i;
-      this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, s, this.gl.TEXTURE_2D, e.getTexture(), 0), this.textureAttachmentList.push(s);
+      const i = this.gl.COLOR_ATTACHMENT0 + s;
+      this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, i, this.gl.TEXTURE_2D, e.getTexture(), 0), this.textureAttachmentList.push(i);
     }), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null), this;
   }
   setSize(t, e) {
-    typeof t == "number" ? (this.size.x = t, e !== void 0 && (this.size.y = e)) : this.size.copy(t), this.setTexture(this.textures), this.textures.forEach((i) => {
-      i.attach({ width: this.size.x, height: this.size.y });
+    typeof t == "number" ? (this.size.x = t, e !== void 0 && (this.size.y = e)) : this.size.copy(t), this.setTexture(this.textures), this.textures.forEach((s) => {
+      s.attach({ width: this.size.x, height: this.size.y });
     }), this.depthRenderBuffer && (this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.depthRenderBuffer), this.gl.renderbufferStorage(this.gl.RENDERBUFFER, this.gl.DEPTH_COMPONENT32F, this.size.x, this.size.y), this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null));
   }
   getFrameBuffer() {
     return this.frameBuffer;
   }
 }
-class Q {
+class H {
   constructor(t) {
     this.gl = t, this.gl.pixelStorei(t.UNPACK_FLIP_Y_WEBGL, !0), this.gl.getExtension("EXT_color_buffer_float"), this.gl.getExtension("EXT_color_buffer_half_float");
   }
   createProgram() {
-    return new P(this.gl);
-  }
-  createBuffer() {
     return new L(this.gl);
   }
-  createTexture() {
+  createBuffer() {
     return new k(this.gl);
   }
-  createFrameBuffer() {
+  createTexture() {
     return new X(this.gl);
   }
+  createFrameBuffer() {
+    return new G(this.gl);
+  }
 }
-class H {
+class j {
   constructor(t) {
     this.gl = t, this.transformFeedback = this.gl.createTransformFeedback(), this.feedbackBuffer = /* @__PURE__ */ new Map();
   }
   bind(t) {
     this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, this.transformFeedback), t && t(), this.gl.bindTransformFeedback(this.gl.TRANSFORM_FEEDBACK, null);
   }
-  setBuffer(t, e, i) {
+  setBuffer(t, e, s) {
     this.feedbackBuffer.set(t, {
       buffer: e,
-      varyingIndex: i
+      varyingIndex: s
     });
   }
   use(t) {
@@ -263,7 +263,7 @@ class H {
     });
   }
 }
-class D {
+class O {
   constructor(t) {
     this.elm = [
       1,
@@ -305,13 +305,13 @@ class D {
     ], this;
   }
   clone() {
-    return new D().copy(this);
+    return new O().copy(this);
   }
   copy(t) {
     return this.set(t.elm), this;
   }
-  perspective(t, e, i, s) {
-    var r = 1 / Math.tan(t * Math.PI / 360), h = s - i;
+  perspective(t, e, s, i) {
+    var r = 1 / Math.tan(t * Math.PI / 360), h = i - s;
     return this.elm = [
       r / e,
       0,
@@ -323,15 +323,15 @@ class D {
       0,
       0,
       0,
-      -(s + i) / h,
+      -(i + s) / h,
       -1,
       0,
       0,
-      -(s * i * 2) / h,
+      -(i * s * 2) / h,
       0
     ], this;
   }
-  orthographic(t, e, i, s) {
+  orthographic(t, e, s, i) {
     return this.elm = [
       2 / t,
       0,
@@ -343,51 +343,51 @@ class D {
       0,
       0,
       0,
-      -2 / (s - i),
+      -2 / (i - s),
       0,
       0,
       0,
-      -(s + i) / (s - i),
+      -(i + s) / (i - s),
       1
     ], this;
   }
-  lookAt(t, e, i) {
-    const s = t.clone().sub(e).normalize(), r = i.clone().cross(s).normalize(), h = s.clone().cross(r).normalize();
+  lookAt(t, e, s) {
+    const i = t.clone().sub(e).normalize(), r = s.clone().cross(i).normalize(), h = i.clone().cross(r).normalize();
     return this.elm = [
       r.x,
       h.x,
-      s.x,
+      i.x,
       0,
       r.y,
       h.y,
-      s.y,
+      i.y,
       0,
       r.z,
       h.z,
-      s.z,
+      i.z,
       0,
       -t.dot(r),
       -t.dot(h),
-      -t.dot(s),
+      -t.dot(i),
       1
     ], this;
   }
   inverse() {
-    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], h = this.elm[5], u = this.elm[6], l = this.elm[7], o = this.elm[8], c = this.elm[9], a = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15], E = t * h - e * r, n = t * u - i * r, b = t * l - s * r, A = e * u - i * h, x = e * l - s * h, R = i * l - s * u, _ = o * p - c * g, v = o * y - a * g, z = o * d - m * g, B = c * y - a * p, M = c * d - m * p, w = a * d - m * y, N = E * w - n * M + b * B + A * z - x * v + R * _, T = 1 / N;
-    return N == 0 ? this.identity() : (this.elm[0] = (h * w - u * M + l * B) * T, this.elm[1] = (-e * w + i * M - s * B) * T, this.elm[2] = (p * R - y * x + d * A) * T, this.elm[3] = (-c * R + a * x - m * A) * T, this.elm[4] = (-r * w + u * z - l * v) * T, this.elm[5] = (t * w - i * z + s * v) * T, this.elm[6] = (-g * R + y * b - d * n) * T, this.elm[7] = (o * R - a * b + m * n) * T, this.elm[8] = (r * M - h * z + l * _) * T, this.elm[9] = (-t * M + e * z - s * _) * T, this.elm[10] = (g * x - p * b + d * E) * T, this.elm[11] = (-o * x + c * b - m * E) * T, this.elm[12] = (-r * B + h * v - u * _) * T, this.elm[13] = (t * B - e * v + i * _) * T, this.elm[14] = (-g * A + p * n - y * E) * T, this.elm[15] = (o * A - c * n + a * E) * T, this);
+    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], c = this.elm[6], a = this.elm[7], o = this.elm[8], f = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15], E = t * h - e * r, n = t * c - s * r, b = t * a - i * r, A = e * c - s * h, x = e * a - i * h, R = s * a - i * c, _ = o * p - f * g, v = o * y - l * g, z = o * d - m * g, B = f * y - l * p, M = f * d - m * p, w = l * d - m * y, D = E * w - n * M + b * B + A * z - x * v + R * _, T = 1 / D;
+    return D == 0 ? this.identity() : (this.elm[0] = (h * w - c * M + a * B) * T, this.elm[1] = (-e * w + s * M - i * B) * T, this.elm[2] = (p * R - y * x + d * A) * T, this.elm[3] = (-f * R + l * x - m * A) * T, this.elm[4] = (-r * w + c * z - a * v) * T, this.elm[5] = (t * w - s * z + i * v) * T, this.elm[6] = (-g * R + y * b - d * n) * T, this.elm[7] = (o * R - l * b + m * n) * T, this.elm[8] = (r * M - h * z + a * _) * T, this.elm[9] = (-t * M + e * z - i * _) * T, this.elm[10] = (g * x - p * b + d * E) * T, this.elm[11] = (-o * x + f * b - m * E) * T, this.elm[12] = (-r * B + h * v - c * _) * T, this.elm[13] = (t * B - e * v + s * _) * T, this.elm[14] = (-g * A + p * n - y * E) * T, this.elm[15] = (o * A - f * n + l * E) * T, this);
   }
   transpose() {
-    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], h = this.elm[5], u = this.elm[6], l = this.elm[7], o = this.elm[8], c = this.elm[9], a = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15];
-    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = o, this.elm[3] = g, this.elm[4] = e, this.elm[5] = h, this.elm[6] = c, this.elm[7] = p, this.elm[8] = i, this.elm[9] = u, this.elm[10] = a, this.elm[11] = y, this.elm[12] = s, this.elm[13] = l, this.elm[14] = m, this.elm[15] = d, this;
+    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], c = this.elm[6], a = this.elm[7], o = this.elm[8], f = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15];
+    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = o, this.elm[3] = g, this.elm[4] = e, this.elm[5] = h, this.elm[6] = f, this.elm[7] = p, this.elm[8] = s, this.elm[9] = c, this.elm[10] = l, this.elm[11] = y, this.elm[12] = i, this.elm[13] = a, this.elm[14] = m, this.elm[15] = d, this;
   }
   set(t) {
     var e;
-    for (let i = 0; i < this.elm.length; i++)
-      this.elm[i] = (e = t[i]) != null ? e : 0;
+    for (let s = 0; s < this.elm.length; s++)
+      this.elm[s] = (e = t[s]) != null ? e : 0;
     return this;
   }
-  setFromTransform(t, e, i) {
-    return this.identity(), this.applyPosition(t), this.applyQuaternion(e), this.applyScale(i), this;
+  setFromTransform(t, e, s) {
+    return this.identity(), this.applyPosition(t), this.applyQuaternion(e), this.applyScale(s), this;
   }
   applyPosition(t) {
     return this.matmul([
@@ -410,19 +410,19 @@ class D {
     ]), this;
   }
   applyQuaternion(t) {
-    const e = t.x, i = t.y, s = t.z, r = t.w, h = e * e, u = i * i, l = s * s, o = r * r, c = e * i, a = e * s, m = e * r, g = i * s, p = i * r, y = s * r;
+    const e = t.x, s = t.y, i = t.z, r = t.w, h = e * e, c = s * s, a = i * i, o = r * r, f = e * s, l = e * i, m = e * r, g = s * i, p = s * r, y = i * r;
     return this.matmul([
-      h - u - l + o,
-      2 * (c + y),
-      2 * (a - p),
+      h - c - a + o,
+      2 * (f + y),
+      2 * (l - p),
       0,
-      2 * (c - y),
-      -h + u - l + o,
+      2 * (f - y),
+      -h + c - a + o,
       2 * (g + m),
       0,
-      2 * (a + p),
+      2 * (l + p),
       2 * (g - m),
-      -h - u + l + o,
+      -h - c + a + o,
       0,
       0,
       0,
@@ -452,12 +452,12 @@ class D {
   }
   matmul(t) {
     const e = new Array(16);
-    for (let i = 0; i < 4; i++)
-      for (let s = 0; s < 4; s++) {
+    for (let s = 0; s < 4; s++)
+      for (let i = 0; i < 4; i++) {
         let r = 0;
         for (let h = 0; h < 4; h++)
-          r += this.elm[h * 4 + s] * t[h + i * 4];
-        e[s + i * 4] = r;
+          r += this.elm[h * 4 + i] * t[h + s * 4];
+        e[i + s * 4] = r;
       }
     this.elm = e;
   }
@@ -475,28 +475,28 @@ class D {
     return t;
   }
 }
-class j {
-  constructor(t, e, i, s) {
-    this.x = 0, this.y = 0, this.z = 0, this.w = 1, this.set(t, e, i, s);
+class W {
+  constructor(t, e, s, i) {
+    this.x = 0, this.y = 0, this.z = 0, this.w = 1, this.set(t, e, s, i);
   }
-  set(t, e, i, s) {
-    this.x = t != null ? t : this.x, this.y = e != null ? e : this.y, this.z = i != null ? i : this.z, this.w = s != null ? s : this.w;
+  set(t, e, s, i) {
+    this.x = t != null ? t : this.x, this.y = e != null ? e : this.y, this.z = s != null ? s : this.z, this.w = i != null ? i : this.w;
   }
   euler(t, e = "XYZ") {
-    const i = Math.sin(t.x / 2), s = Math.sin(t.y / 2), r = Math.sin(t.z / 2), h = Math.cos(t.x / 2), u = Math.cos(t.y / 2), l = Math.cos(t.z / 2);
-    return e == "XYZ" ? (this.x = h * s * r + i * u * l, this.y = -i * u * r + h * s * l, this.z = h * u * r + i * s * l, this.w = -i * s * r + h * u * l) : e == "XZY" ? (this.x = -h * s * r + i * u * l, this.y = h * s * l - i * u * r, this.z = i * s * l + h * u * r, this.w = i * s * r + h * u * l) : e == "YZX" ? (this.x = i * u * l + h * s * r, this.y = i * u * r + h * s * l, this.z = -i * s * l + h * u * r, this.w = -i * s * r + h * u * l) : e == "ZYX" && (this.x = i * u * l - h * s * r, this.y = i * u * r + h * s * l, this.z = -i * s * l + h * u * r, this.w = i * s * r + h * u * l), this;
+    const s = Math.sin(t.x / 2), i = Math.sin(t.y / 2), r = Math.sin(t.z / 2), h = Math.cos(t.x / 2), c = Math.cos(t.y / 2), a = Math.cos(t.z / 2);
+    return e == "XYZ" ? (this.x = h * i * r + s * c * a, this.y = -s * c * r + h * i * a, this.z = h * c * r + s * i * a, this.w = -s * i * r + h * c * a) : e == "XZY" ? (this.x = -h * i * r + s * c * a, this.y = h * i * a - s * c * r, this.z = s * i * a + h * c * r, this.w = s * i * r + h * c * a) : e == "YZX" ? (this.x = s * c * a + h * i * r, this.y = s * c * r + h * i * a, this.z = -s * i * a + h * c * r, this.w = -s * i * r + h * c * a) : e == "ZYX" && (this.x = s * c * a - h * i * r, this.y = s * c * r + h * i * a, this.z = -s * i * a + h * c * r, this.w = s * i * r + h * c * a), this;
   }
   multiply() {
   }
 }
-class C {
+class U {
   constructor() {
     this.count = 0, this.attributes = {};
   }
-  setAttribute(t, e, i) {
+  setAttribute(t, e, s) {
     this.attributes[t] = {
       array: e,
-      size: i
+      size: s
     }, this.updateVertCount();
   }
   getAttribute(t) {
@@ -505,14 +505,14 @@ class C {
   updateVertCount() {
     const t = Object.keys(this.attributes);
     this.count = t.length > 0 ? 1 / 0 : 0, t.forEach((e) => {
-      const i = this.attributes[e];
-      e != "index" && (this.count = Math.min(i.array.length / i.size, this.count));
+      const s = this.attributes[e];
+      e != "index" && (this.count = Math.min(s.array.length / s.size, this.count));
     });
   }
-  getAttributeBuffer(t, e, i, s = "vbo") {
+  getAttributeBuffer(t, e, s, i = "vbo") {
     const r = this.getAttribute(e);
     return {
-      buffer: t.createBuffer().setData(new i(r.array), s),
+      buffer: t.createBuffer().setData(new s(r.array), i),
       size: r.size,
       count: r.array.length / r.size
     };
@@ -525,83 +525,83 @@ class C {
     };
   }
 }
-class W extends C {
-  constructor(t = 1, e = 1, i = 1) {
+class Y extends U {
+  constructor(t = 1, e = 1, s = 1) {
     super();
-    const s = t / 2, r = e / 2, h = i / 2, u = [
-      -s,
+    const i = t / 2, r = e / 2, h = s / 2, c = [
+      -i,
       r,
       h,
-      s,
+      i,
       r,
       h,
-      -s,
+      -i,
       -r,
       h,
-      s,
+      i,
       -r,
       h,
-      s,
+      i,
       r,
       -h,
-      -s,
+      -i,
       r,
       -h,
-      s,
+      i,
       -r,
       -h,
-      -s,
+      -i,
       -r,
       -h,
-      s,
+      i,
       r,
       h,
-      s,
+      i,
       r,
       -h,
-      s,
+      i,
       -r,
       h,
-      s,
-      -r,
-      -h,
-      -s,
-      r,
-      -h,
-      -s,
-      r,
-      h,
-      -s,
+      i,
       -r,
       -h,
-      -s,
-      -r,
-      h,
-      -s,
+      -i,
       r,
       -h,
-      s,
-      r,
-      -h,
-      -s,
+      -i,
       r,
       h,
-      s,
-      r,
-      h,
-      -s,
-      -r,
-      h,
-      s,
-      -r,
-      h,
-      -s,
+      -i,
       -r,
       -h,
-      s,
+      -i,
+      -r,
+      h,
+      -i,
+      r,
+      -h,
+      i,
+      r,
+      -h,
+      -i,
+      r,
+      h,
+      i,
+      r,
+      h,
+      -i,
+      -r,
+      h,
+      i,
+      -r,
+      h,
+      -i,
+      -r,
+      -h,
+      i,
       -r,
       -h
-    ], l = [
+    ], a = [
       0,
       0,
       1,
@@ -674,8 +674,8 @@ class W extends C {
       0,
       -1,
       0
-    ], o = [], c = [];
-    for (let a = 0; a < 6; a++) {
+    ], o = [], f = [];
+    for (let l = 0; l < 6; l++) {
       o.push(
         0,
         1,
@@ -686,8 +686,8 @@ class W extends C {
         1,
         0
       );
-      const m = 4 * a;
-      c.push(
+      const m = 4 * l;
+      f.push(
         0 + m,
         2 + m,
         1 + m,
@@ -696,189 +696,175 @@ class W extends C {
         3 + m
       );
     }
-    this.setAttribute("position", u, 3), this.setAttribute("normal", l, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", c, 1);
+    this.setAttribute("position", c, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", f, 1);
   }
 }
-class Y extends C {
-  constructor(t = 0.5, e = 0.5, i = 1, s = 10, r = 1) {
+class K extends U {
+  constructor(t = 0.5, e = 0.5, s = 1, i = 10, r = 1) {
     super();
-    const h = [], u = [], l = [], o = [];
-    for (let c = 0; c <= r + 2; c++)
-      for (let a = 0; a < s; a++) {
-        const m = Math.PI * 2 / s * a;
-        if (c <= r) {
-          const g = c / r, p = (1 - g) * e + g * t, y = Math.cos(m) * p, d = -(i / 2) + i / r * c, E = Math.sin(m) * p;
-          h.push(y, d, E), l.push(
-            a / s,
-            c / r
+    const h = [], c = [], a = [], o = [];
+    for (let f = 0; f <= r + 2; f++)
+      for (let l = 0; l < i; l++) {
+        const m = Math.PI * 2 / i * l;
+        if (f <= r) {
+          const g = f / r, p = (1 - g) * e + g * t, y = Math.cos(m) * p, d = -(s / 2) + s / r * f, E = Math.sin(m) * p;
+          h.push(y, d, E), a.push(
+            l / i,
+            f / r
           );
           const n = new F(Math.cos(m), 0, Math.sin(m)).normalize();
-          u.push(
+          c.push(
             n.x,
             n.y,
             n.z
-          ), c < r && o.push(
-            c * s + a,
-            (c + 1) * s + (a + 1) % s,
-            c * s + (a + 1) % s,
-            c * s + a,
-            (c + 1) * s + a,
-            (c + 1) * s + (a + 1) % s
+          ), f < r && o.push(
+            f * i + l,
+            (f + 1) * i + (l + 1) % i,
+            f * i + (l + 1) % i,
+            f * i + l,
+            (f + 1) * i + l,
+            (f + 1) * i + (l + 1) % i
           );
         } else {
-          const g = c - r - 1, p = g ? t : e, y = Math.cos(m) * p, d = -(i / 2) + i * g, E = Math.sin(m) * p;
-          h.push(y, d, E), l.push(
+          const g = f - r - 1, p = g ? t : e, y = Math.cos(m) * p, d = -(s / 2) + s * g, E = Math.sin(m) * p;
+          h.push(y, d, E), a.push(
             (y + p) * 0.5 / p,
             (E + p) * 0.5 / p
-          ), u.push(0, -1 + g * 2, 0);
-          const n = s * (r + (g + 1));
-          a <= s - 2 && (g == 0 ? o.push(
+          ), c.push(0, -1 + g * 2, 0);
+          const n = i * (r + (g + 1));
+          l <= i - 2 && (g == 0 ? o.push(
             n,
-            n + a,
-            n + a + 1
+            n + l,
+            n + l + 1
           ) : o.push(
             n,
-            n + a + 1,
-            n + a
+            n + l + 1,
+            n + l
           ));
         }
       }
-    this.setAttribute("position", h, 3), this.setAttribute("normal", u, 3), this.setAttribute("uv", l, 2), this.setAttribute("index", o, 1);
+    this.setAttribute("position", h, 3), this.setAttribute("normal", c, 3), this.setAttribute("uv", a, 2), this.setAttribute("index", o, 1);
   }
 }
-class K extends C {
-  constructor(t = 1, e = 1, i = 1, s = 1) {
+class q extends U {
+  constructor(t = 1, e = 1, s = 1, i = 1) {
     super();
-    const r = t / 2, h = e / 2, u = [], l = [], o = [], c = [];
-    for (let a = 0; a <= s; a++)
-      for (let m = 0; m <= i; m++) {
-        const g = m / i, p = a / i;
-        if (u.push(
+    const r = t / 2, h = e / 2, c = [], a = [], o = [], f = [];
+    for (let l = 0; l <= i; l++)
+      for (let m = 0; m <= s; m++) {
+        const g = m / s, p = l / s;
+        if (c.push(
           -r + t * g,
           -h + e * p,
           0
-        ), o.push(g, p), l.push(0, 0, 1), a > 0 && m > 0) {
-          const y = i + 1, d = y * a + m, E = y * (a - 1) + m - 1;
-          c.push(
+        ), o.push(g, p), a.push(0, 0, 1), l > 0 && m > 0) {
+          const y = s + 1, d = y * l + m, E = y * (l - 1) + m - 1;
+          f.push(
             d,
-            y * a + m - 1,
+            y * l + m - 1,
             E,
             d,
             E,
-            y * (a - 1) + m
+            y * (l - 1) + m
           );
         }
       }
-    this.setAttribute("position", u, 3), this.setAttribute("normal", l, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", c, 1);
+    this.setAttribute("position", c, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", f, 1);
   }
 }
-class q extends C {
-  constructor(t = 0.5, e = 20, i = 10) {
+class J extends U {
+  constructor(t = 0.5, e = 20, s = 10) {
     super();
-    const s = [], r = [], h = [], u = [];
-    for (let l = 0; l <= i; l++) {
-      const o = l / i * Math.PI, c = (l != 0 && l != i, e);
-      for (let a = 0; a < c; a++) {
-        const m = a / c * Math.PI * 2, g = Math.sin(o) * t, p = Math.cos(m) * g, y = -Math.cos(o) * t, d = -Math.sin(m) * g;
-        s.push(p, y, d), h.push(
-          a / c,
-          l / i
+    const i = [], r = [], h = [], c = [];
+    for (let a = 0; a <= s; a++) {
+      const o = a / s * Math.PI, f = (a != 0 && a != s, e);
+      for (let l = 0; l < f; l++) {
+        const m = l / f * Math.PI * 2, g = Math.sin(o) * t, p = Math.cos(m) * g, y = -Math.cos(o) * t, d = -Math.sin(m) * g;
+        i.push(p, y, d), h.push(
+          l / f,
+          a / s
         );
         const E = new F(p, y, d).normalize();
-        r.push(E.x, E.y, E.z), u.push(
-          l * e + a,
-          l * e + (a + 1) % e,
-          (l + 1) * e + (a + 1) % e,
-          l * e + a,
-          (l + 1) * e + (a + 1) % e,
-          (l + 1) * e + a
+        r.push(E.x, E.y, E.z), c.push(
+          a * e + l,
+          a * e + (l + 1) % e,
+          (a + 1) * e + (l + 1) % e,
+          a * e + l,
+          (a + 1) * e + (l + 1) % e,
+          (a + 1) * e + l
         );
       }
     }
-    this.setAttribute("position", s, 3), this.setAttribute("normal", r, 3), this.setAttribute("uv", h, 2), this.setAttribute("index", u, 1);
+    this.setAttribute("position", i, 3), this.setAttribute("normal", r, 3), this.setAttribute("uv", h, 2), this.setAttribute("index", c, 1);
   }
-  setAttribute(t, e, i) {
-    t == "index" && e.forEach((s, r) => {
-      e[r] = s % this.count;
-    }), super.setAttribute(t, e, i);
+  setAttribute(t, e, s) {
+    t == "index" && e.forEach((i, r) => {
+      e[r] = i % this.count;
+    }), super.setAttribute(t, e, s);
   }
 }
-class J extends C {
+class $ extends U {
   constructor(t = 7) {
     super(), this.count = t;
-    const e = [], i = [], s = [], r = new F(0, 0);
+    const e = [], s = [], i = [], r = new F(0, 0);
     let h = 1;
-    for (let u = 0; u < t; u++) {
-      e.push(-1 + r.x, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y - h, 0), e.push(-1 + r.x, 1 + r.y - h, 0), i.push(0, 1), i.push(1, 1), i.push(1, 0), i.push(0, 0);
-      const l = (u + 0) * 4;
-      s.push(l + 0, l + 2, l + 1, l + 0, l + 3, l + 2), r.x += h, r.y = r.y - h, h *= 0.5;
+    for (let c = 0; c < t; c++) {
+      e.push(-1 + r.x, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y - h, 0), e.push(-1 + r.x, 1 + r.y - h, 0), s.push(0, 1), s.push(1, 1), s.push(1, 0), s.push(0, 0);
+      const a = (c + 0) * 4;
+      i.push(a + 0, a + 2, a + 1, a + 0, a + 3, a + 2), r.x += h, r.y = r.y - h, h *= 0.5;
     }
-    this.setAttribute("position", e, 3), this.setAttribute("uv", i, 2), this.setAttribute("index", s, 1);
+    this.setAttribute("position", e, 3), this.setAttribute("uv", s, 2), this.setAttribute("index", i, 1);
   }
 }
-class $ {
-  constructor() {
-    this.time = 0, this.lastUpdateTime = new Date().getTime();
-  }
-  createWorld() {
-    return {
-      entitiesTotalCount: 0,
-      entities: [],
-      components: /* @__PURE__ */ new Map(),
-      systems: /* @__PURE__ */ new Map()
-    };
-  }
-  createEntity(t) {
+var C;
+((u) => {
+  u.createWorld = () => ({
+    elapsedTime: 0,
+    lastUpdateTime: new Date().getTime(),
+    entitiesTotalCount: 0,
+    entities: [],
+    components: /* @__PURE__ */ new Map(),
+    systems: /* @__PURE__ */ new Map()
+  }), u.createEntity = (t) => {
     const e = t.entitiesTotalCount++;
     return t.entities.push(e), e;
-  }
-  removeEntity(t, e) {
-    const i = t.entities.findIndex((s) => s == e);
-    i > -1 && t.entities.slice(i, 1), t.components.forEach((s) => {
-      s[e] = void 0;
+  }, u.removeEntity = (t, e) => {
+    const s = t.entities.findIndex((i) => i == e);
+    s > -1 && t.entities.slice(s, 1), t.components.forEach((i) => {
+      i[e] = void 0;
     });
-  }
-  addComponent(t, e, i, s) {
-    let r = t.components.get(i);
-    return r === void 0 && (r = [], t.components.set(i, r)), r.length < e + 1 && (r.length = e + 1), r[e] = s, s;
-  }
-  removeComponent(t, e, i) {
-    const s = t.components.get(i);
-    s && s.length > e && (s[e] = void 0);
-  }
-  getComponent(t, e, i) {
-    const s = t.components.get(i);
-    return s !== void 0 ? s[e] : null;
-  }
-  addSystem(t, e, i) {
-    t.systems.set(e, i);
-  }
-  removeSystem(t, e) {
+  }, u.addComponent = (t, e, s, i) => {
+    let r = t.components.get(s);
+    return r === void 0 && (r = [], t.components.set(s, r)), r.length < e + 1 && (r.length = e + 1), r[e] = i, i;
+  }, u.removeComponent = (t, e, s) => {
+    const i = t.components.get(s);
+    i && i.length > e && (i[e] = void 0);
+  }, u.getComponent = (t, e, s) => {
+    const i = t.components.get(s);
+    return i !== void 0 ? i[e] : null;
+  }, u.addSystem = (t, e, s) => {
+    t.systems.set(e, s);
+  }, u.removeSystem = (t, e) => {
     t.systems.delete(e);
-  }
-  update(t) {
-    const e = new Date().getTime(), i = (e - this.lastUpdateTime) / 1e3;
-    this.time += i, this.lastUpdateTime = e, t.systems.forEach((r) => {
+  }, u.update = (t) => {
+    const e = new Date().getTime(), s = (e - t.lastUpdateTime) / 1e3;
+    t.elapsedTime += s, t.lastUpdateTime = e, t.systems.forEach((r) => {
       r.update({
         world: t,
-        deltaTime: i,
-        time: this.time,
-        ecs: this
+        deltaTime: s,
+        time: t.elapsedTime
       });
     });
-  }
-  getEntities(t, e) {
-    return t.entities.filter((s) => {
-      for (let r = 0; r < e.length; r++) {
-        const h = e[r], u = t.components.get(h);
-        if (u === void 0 || u[s] === void 0)
-          return !1;
-      }
-      return !0;
-    });
-  }
-}
-class U {
+  }, u.getEntities = (t, e) => t.entities.filter((i) => {
+    for (let r = 0; r < e.length; r++) {
+      const h = e[r], c = t.components.get(h);
+      if (c === void 0 || c[i] === void 0)
+        return !1;
+    }
+    return !0;
+  });
+})(C || (C = {}));
+class N {
   constructor() {
     this.listeners = [];
   }
@@ -896,38 +882,38 @@ class U {
     });
   }
   off(t, e) {
-    this.listeners = this.listeners.filter((i) => !(i.event == t && i.cb == e));
+    this.listeners = this.listeners.filter((s) => !(s.event == t && s.cb == e));
   }
   emit(t, e) {
-    const i = this.listeners.concat();
-    for (let s = 0; s < i.length; s++) {
-      const r = i[s];
+    const s = this.listeners.concat();
+    for (let i = 0; i < s.length; i++) {
+      const r = s[i];
       r.event == t && (r.cb.apply(this, e || []), r.once && this.off(t, r.cb));
     }
   }
 }
-class tt extends U {
-  constructor(t, e) {
-    if (super(), this.ecs = t, this.queries = [], e) {
-      const i = Object.keys(e);
-      for (let s = 0; s < i.length; s++) {
-        const r = i[s];
-        this.queries.push({ name: r, query: e[r] });
+class tt extends N {
+  constructor(t) {
+    if (super(), this.queries = [], t) {
+      const e = Object.keys(t);
+      for (let s = 0; s < e.length; s++) {
+        const i = e[s];
+        this.queries.push({ name: i, query: t[i] });
       }
     }
   }
   update(t) {
     for (let e = 0; e < this.queries.length; e++) {
-      const i = this.queries[e], s = t.ecs.getEntities(t.world, i.query);
-      this.beforeUpdateImpl(i.name, t, s);
-      for (let r = 0; r < s.length; r++)
-        this.updateImpl(i.name, s[r], t);
-      this.afterUpdateImpl(i.name, t);
+      const s = this.queries[e], i = C.getEntities(t.world, s.query);
+      this.beforeUpdateImpl(s.name, t, i);
+      for (let r = 0; r < i.length; r++)
+        this.updateImpl(s.name, i[r], t);
+      this.afterUpdateImpl(s.name, t);
     }
   }
-  beforeUpdateImpl(t, e, i) {
+  beforeUpdateImpl(t, e, s) {
   }
-  updateImpl(t, e, i) {
+  updateImpl(t, e, s) {
   }
   afterUpdateImpl(t, e) {
   }
@@ -936,122 +922,122 @@ class tt extends U {
   }
 }
 var I;
-((f) => {
-  f.NEWTON_ITERATIONS = 4, f.NEWTON_MIN_SLOPE = 1e-3, f.SUBDIVISION_PRECISION = 1e-7, f.SUBDIVISION_MAX_ITERATIONS = 10, f.BEZIER_EASING_CACHE_SIZE = 11, f.BEZIER_EASING_SAMPLE_STEP_SIZE = 1 / f.BEZIER_EASING_CACHE_SIZE;
+((u) => {
+  u.NEWTON_ITERATIONS = 4, u.NEWTON_MIN_SLOPE = 1e-3, u.SUBDIVISION_PRECISION = 1e-7, u.SUBDIVISION_MAX_ITERATIONS = 10, u.BEZIER_EASING_CACHE_SIZE = 11, u.BEZIER_EASING_SAMPLE_STEP_SIZE = 1 / u.BEZIER_EASING_CACHE_SIZE;
   function t(o) {
     return -o.p0 + 3 * o.p1 - 3 * o.p2 + o.p3;
   }
   function e(o) {
     return 3 * o.p0 - 6 * o.p1 + 3 * o.p2;
   }
-  function i(o) {
+  function s(o) {
     return -3 * o.p0 + 3 * o.p1;
   }
-  function s(o, c) {
-    return 3 * t(o) * c * c + 2 * e(o) * c + i(o);
+  function i(o, f) {
+    return 3 * t(o) * f * f + 2 * e(o) * f + s(o);
   }
-  f.calcBezierSlope = s;
-  function r(o, c) {
-    return ((t(o) * c + e(o)) * c + i(o)) * c + o.p0;
+  u.calcBezierSlope = i;
+  function r(o, f) {
+    return ((t(o) * f + e(o)) * f + s(o)) * f + o.p0;
   }
-  f.calcBezier = r;
-  function h(o, c, a, m) {
+  u.calcBezier = r;
+  function h(o, f, l, m) {
     let g = 0, p = 0;
-    for (let y = 0; y < f.SUBDIVISION_MAX_ITERATIONS; y++)
-      p = c + (a - c) / 2, g = r(m, p), g > o ? a = p : c = p;
+    for (let y = 0; y < u.SUBDIVISION_MAX_ITERATIONS; y++)
+      p = f + (l - f) / 2, g = r(m, p), g > o ? l = p : f = p;
     return p;
   }
-  function u(o, c, a) {
-    for (let m = 0; m < f.NEWTON_ITERATIONS; m++) {
-      const g = s(c, a);
+  function c(o, f, l) {
+    for (let m = 0; m < u.NEWTON_ITERATIONS; m++) {
+      const g = i(f, l);
       if (g == 0)
-        return a;
-      a -= (r(c, a) - o) / g;
+        return l;
+      l -= (r(f, l) - o) / g;
     }
-    return a;
+    return l;
   }
-  function l(o, c, a) {
+  function a(o, f, l) {
     o.p1 = Math.max(o.p0, Math.min(o.p3, o.p1)), o.p2 = Math.max(o.p0, Math.min(o.p3, o.p2));
     let m = 0;
-    for (let y = 1; y < a.length && (m = y - 1, !(c < a[y])); y++)
+    for (let y = 1; y < l.length && (m = y - 1, !(f < l[y])); y++)
       ;
-    const g = m / (f.BEZIER_EASING_CACHE_SIZE - 1), p = s(o, g) / (o.p3 - o.p0);
-    return p == 0 ? g : p > 0.01 ? u(c, o, g) : h(c, g, g + f.BEZIER_EASING_SAMPLE_STEP_SIZE, o);
+    const g = m / (u.BEZIER_EASING_CACHE_SIZE - 1), p = i(o, g) / (o.p3 - o.p0);
+    return p == 0 ? g : p > 0.01 ? c(f, o, g) : h(f, g, g + u.BEZIER_EASING_SAMPLE_STEP_SIZE, o);
   }
-  f.getBezierTfromX = l;
+  u.getBezierTfromX = a;
 })(I || (I = {}));
 var S;
-((f) => {
+((u) => {
   function t(n = 6) {
     return (b) => {
       var A = Math.exp(-n * (2 * b - 1)), x = Math.exp(-n);
       return (1 + (1 - A) / (1 + A) * (1 + x) / (1 - x)) / 2;
     };
   }
-  f.sigmoid = t;
+  u.sigmoid = t;
   function e(n, b, A) {
     const x = Math.max(0, Math.min(1, (A - n) / (b - n)));
     return x * x * (3 - 2 * x);
   }
-  f.smoothstep = e;
-  function i(n) {
+  u.smoothstep = e;
+  function s(n) {
     return n;
   }
-  f.linear = i;
-  function s(n) {
+  u.linear = s;
+  function i(n) {
     return n * n;
   }
-  f.easeInQuad = s;
+  u.easeInQuad = i;
   function r(n) {
     return n * (2 - n);
   }
-  f.easeOutQuad = r;
+  u.easeOutQuad = r;
   function h(n) {
     return n < 0.5 ? 2 * n * n : -1 + (4 - 2 * n) * n;
   }
-  f.easeInOutQuad = h;
-  function u(n) {
+  u.easeInOutQuad = h;
+  function c(n) {
     return n * n * n;
   }
-  f.easeInCubic = u;
-  function l(n) {
+  u.easeInCubic = c;
+  function a(n) {
     return --n * n * n + 1;
   }
-  f.easeOutCubic = l;
+  u.easeOutCubic = a;
   function o(n) {
     return n < 0.5 ? 4 * n * n * n : (n - 1) * (2 * n - 2) * (2 * n - 2) + 1;
   }
-  f.easeInOutCubic = o;
-  function c(n) {
+  u.easeInOutCubic = o;
+  function f(n) {
     return n * n * n * n;
   }
-  f.easeInQuart = c;
-  function a(n) {
+  u.easeInQuart = f;
+  function l(n) {
     return 1 - --n * n * n * n;
   }
-  f.easeOutQuart = a;
+  u.easeOutQuart = l;
   function m(n) {
     return n < 0.5 ? 8 * n * n * n * n : 1 - 8 * --n * n * n * n;
   }
-  f.easeInOutQuart = m;
+  u.easeInOutQuart = m;
   function g(n) {
     return n * n * n * n * n;
   }
-  f.easeInQuint = g;
+  u.easeInQuint = g;
   function p(n) {
     return 1 + --n * n * n * n * n;
   }
-  f.easeOutQuint = p;
+  u.easeOutQuint = p;
   function y(n) {
     return n < 0.5 ? 16 * n * n * n * n * n : 1 + 16 * --n * n * n * n * n;
   }
-  f.easeInOutQuint = y;
+  u.easeInOutQuint = y;
   function d(n, b, A, x) {
     for (var R = new Array(I.BEZIER_EASING_CACHE_SIZE), _ = 0; _ < I.BEZIER_EASING_CACHE_SIZE; ++_)
       R[_] = I.calcBezier({ p0: n.x, p1: b.x, p2: A.x, p3: x.x }, _ / (I.BEZIER_EASING_CACHE_SIZE - 1));
     return (v) => v <= n.x ? n.y : x.x <= v ? x.y : I.calcBezier({ p0: n.y, p1: b.y, p2: A.y, p3: x.y }, I.getBezierTfromX({ p0: n.x, p1: b.x, p2: A.x, p3: x.x }, v, R));
   }
-  f.bezier = d;
+  u.bezier = d;
   function E(n, b, A, x) {
     return d(
       { x: 0, y: 0 },
@@ -1060,9 +1046,9 @@ var S;
       { x: 1, y: 1 }
     );
   }
-  f.cubicBezier = E;
+  u.cubicBezier = E;
 })(S || (S = {}));
-class G extends U {
+class V extends N {
   constructor(t) {
     super(), this.keyframes = [], this.cache = { frame: NaN, value: NaN }, this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.set(t);
   }
@@ -1073,7 +1059,7 @@ class G extends U {
   }
   addKeyFrame(t) {
     let e = 0;
-    for (let i = 0; i < this.keyframes.length && this.keyframes[i].coordinate.x < t.coordinate.x; i++)
+    for (let s = 0; s < this.keyframes.length && this.keyframes[s].coordinate.x < t.coordinate.x; s++)
       e++;
     this.keyframes.splice(e, 0, t), this.frameStart = this.keyframes[0].coordinate.x, this.frameEnd = this.keyframes[this.keyframes.length - 1].coordinate.x;
   }
@@ -1081,11 +1067,11 @@ class G extends U {
     if (t == this.cache.frame)
       return this.cache.value;
     let e = null;
-    for (let i = 0; i < this.keyframes.length; i++) {
-      const s = this.keyframes[i];
-      if (t <= s.coordinate.x) {
-        const r = this.keyframes[i - 1];
-        r ? e = r.to(s, t) : e = s.coordinate.y;
+    for (let s = 0; s < this.keyframes.length; s++) {
+      const i = this.keyframes[s];
+      if (t <= i.coordinate.x) {
+        const r = this.keyframes[s - 1];
+        r ? e = r.to(i, t) : e = i.coordinate.y;
         break;
       }
     }
@@ -1095,16 +1081,16 @@ class G extends U {
     }, e) : 0;
   }
 }
-class V extends U {
-  constructor(t, e, i, s, r) {
-    super(), this.updatedFrame = -1, this.name = t || "", this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.curves = /* @__PURE__ */ new Map(), this.value = new F(), e && this.setFCurve(e, "x"), i && this.setFCurve(i, "y"), s && this.setFCurve(s, "z"), r && this.setFCurve(r, "w");
+class Z extends N {
+  constructor(t, e, s, i, r) {
+    super(), this.updatedFrame = -1, this.name = t || "", this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.curves = /* @__PURE__ */ new Map(), this.value = new F(), e && this.setFCurve(e, "x"), s && this.setFCurve(s, "y"), i && this.setFCurve(i, "z"), r && this.setFCurve(r, "w");
   }
   setFCurve(t, e) {
     this.curves.set(e, t);
-    let i = 1 / 0, s = -1 / 0;
+    let s = 1 / 0, i = -1 / 0;
     this.curves.forEach((r) => {
-      r.frameStart < i && (i = r.frameStart), r.frameEnd > s && (s = r.frameEnd);
-    }), (i == -1 / 0 || s == 1 / 0) && (i = 0, s = 1), this.frameStart = i, this.frameEnd = s, this.frameDuration = this.frameEnd - this.frameStart;
+      r.frameStart < s && (s = r.frameStart), r.frameEnd > i && (i = r.frameEnd);
+    }), (s == -1 / 0 || i == 1 / 0) && (s = 0, i = 1), this.frameStart = s, this.frameEnd = i, this.frameDuration = this.frameEnd - this.frameStart;
   }
   getFCurve(t) {
     return this.curves.get(t) || null;
@@ -1112,33 +1098,35 @@ class V extends U {
   setFrame(t) {
     if (t == this.updatedFrame)
       return this;
-    const e = this.curves.get("x"), i = this.curves.get("y"), s = this.curves.get("z"), r = this.curves.get("w");
-    return e && (this.value.x = e.getValue(t)), i && (this.value.y = i.getValue(t)), s && (this.value.z = s.getValue(t)), r && (this.value.w = r.getValue(t)), this.updatedFrame = t, this;
+    const e = this.curves.get("x"), s = this.curves.get("y"), i = this.curves.get("z"), r = this.curves.get("w");
+    return e && (this.value.x = e.getValue(t)), s && (this.value.y = s.getValue(t)), i && (this.value.z = i.getValue(t)), r && (this.value.w = r.getValue(t)), this.updatedFrame = t, this;
   }
 }
-class Z extends U {
-  constructor(t, e, i, s) {
-    super(), this.coordinate = { x: 0, y: 0 }, this.handleLeft = { x: 0, y: 0 }, this.handleRight = { x: 0, y: 0 }, this.interpolation = "BEZIER", this.easing = null, this.nextFrame = null, this.set(t, e, i, s);
+class Q extends N {
+  constructor(t, e, s, i) {
+    super(), this.coordinate = { x: 0, y: 0 }, this.handleLeft = { x: 0, y: 0 }, this.handleRight = { x: 0, y: 0 }, this.interpolation = "BEZIER", this.easing = null, this.nextFrame = null, this.set(t, e, s, i);
   }
-  set(t, e, i, s) {
-    this.coordinate = t, this.handleLeft = e || t, this.handleRight = i || t, this.interpolation = s || "BEZIER";
+  set(t, e, s, i) {
+    this.coordinate = t, this.handleLeft = e || t, this.handleRight = s || t, this.interpolation = i || "BEZIER";
   }
   getEasing(t, e) {
-    return t == "BEZIER" ? S.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (i) => {
-      const s = e.coordinate.y - this.coordinate.y;
-      return i = (i - this.coordinate.x) / (e.coordinate.x - this.coordinate.x), this.coordinate.y + i * s;
+    return t == "BEZIER" ? S.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (s) => {
+      const i = e.coordinate.y - this.coordinate.y;
+      return s = (s - this.coordinate.x) / (e.coordinate.x - this.coordinate.x), this.coordinate.y + s * i;
     };
   }
   to(t, e) {
     return (this.nextFrame == null || this.nextFrame.coordinate.x != t.coordinate.x || this.nextFrame.coordinate.y != t.coordinate.y) && (this.easing = this.getEasing(this.interpolation, t), this.nextFrame = t), this.easing ? this.easing(e) : 0;
   }
 }
-class et extends U {
+class et extends N {
   constructor(t) {
     super(), this.connected = !1, this.frame = {
       start: -1,
       end: -1,
-      current: -1
+      current: -1,
+      fps: -1,
+      playing: !1
     }, this.objects = [], this.curveGroups = [], this.scene = null, t && (this.url = t, this.connect(this.url));
   }
   connect(t) {
@@ -1153,20 +1141,20 @@ class et extends U {
     }, e.open("GET", t), e.send();
   }
   onSyncScene(t) {
-    this.frame.start = t.frame.start, this.frame.end = t.frame.end, this.curveGroups.length = 0, this.objects.length = 0;
+    this.frame.start = t.frame.start, this.frame.end = t.frame.end, this.frame.fps = t.frame.fps, this.curveGroups.length = 0, this.objects.length = 0;
     const e = Object.keys(t.animations);
-    for (let s = 0; s < e.length; s++) {
-      const r = e[s], h = new V(r);
-      t.animations[r].forEach((u) => {
-        const l = new G();
-        l.set(u.keyframes.map((o) => new Z(o.c, o.h_l, o.h_r, o.i))), h.setFCurve(l, u.axis);
+    for (let i = 0; i < e.length; i++) {
+      const r = e[i], h = new Z(r);
+      t.animations[r].forEach((c) => {
+        const a = new V();
+        a.set(c.keyframes.map((o) => new Q(o.c, o.h_l, o.h_r, o.i))), h.setFCurve(a, c.axis);
       }), this.curveGroups.push(h);
     }
     this.scene = t.scene, this.objects.length = 0;
-    const i = (s) => {
-      this.objects.push(s), s.children.forEach((r) => i(r));
+    const s = (i) => {
+      this.objects.push(i), i.children.forEach((r) => s(r));
     };
-    i(this.scene), this.emit("sync/scene", [this]);
+    s(this.scene), this.emit("sync/scene", [this]);
   }
   onSyncTimeline(t) {
     this.frame = t, this.emit("sync/timeline", [this.frame]);
@@ -1194,27 +1182,27 @@ class et extends U {
 export {
   et as BLidge,
   I as Bezier,
-  W as CubeGeometry,
-  Y as CylinderGeometry,
-  $ as ECS,
+  Y as CubeGeometry,
+  K as CylinderGeometry,
+  C as ECS,
   S as Easings,
-  U as EventEmitter,
-  G as FCurve,
-  V as FCurveGroup,
-  Z as FCurveKeyFrame,
-  L as GLPowerBuffer,
-  X as GLPowerFrameBuffer,
-  P as GLPowerProgram,
-  k as GLPowerTexture,
-  H as GLPowerTransformFeedback,
-  O as GLPowerVAO,
-  C as Geometry,
-  D as Matrix,
-  J as MipMapGeometry,
-  K as PlaneGeometry,
-  Q as Power,
-  j as Quaternion,
-  q as SphereGeometry,
+  N as EventEmitter,
+  V as FCurve,
+  Z as FCurveGroup,
+  Q as FCurveKeyFrame,
+  k as GLPowerBuffer,
+  G as GLPowerFrameBuffer,
+  L as GLPowerProgram,
+  X as GLPowerTexture,
+  j as GLPowerTransformFeedback,
+  P as GLPowerVAO,
+  U as Geometry,
+  O as Matrix,
+  $ as MipMapGeometry,
+  q as PlaneGeometry,
+  H as Power,
+  W as Quaternion,
+  J as SphereGeometry,
   tt as System,
   F as Vector
 };
