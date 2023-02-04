@@ -104,6 +104,7 @@ export type BLidgeSceneFrame = {
 	end: number;
 	current: number;
 	fps: number;
+	playing: boolean;
 }
 
 export class BLidge extends EventEmitter {
@@ -120,7 +121,8 @@ export class BLidge extends EventEmitter {
 		start: - 1,
 		end: - 1,
 		current: - 1,
-		fps: - 1
+		fps: - 1,
+		playing: false,
 	};
 
 	// animation

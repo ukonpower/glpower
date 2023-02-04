@@ -60,11 +60,11 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.on( 'sync/scene', this.onSyncScene.bind( this ) );
 
-		this.blidge.on( 'sync/timeline', ( args: GLP.BLidgeSceneFrame ) => {
+		this.blidge.on( 'sync/timeline', ( frame: GLP.BLidgeSceneFrame ) => {
 
-			const t = args.current / args.fps;
+			const t = frame.current / frame.fps;
 
-			this.emit( 'seek', [ t ] );
+			this.emit( 'seek', [ t, frame.playing ] );
 
 		} );
 

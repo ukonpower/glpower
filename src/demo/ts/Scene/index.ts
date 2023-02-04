@@ -99,9 +99,17 @@ export class Scene extends GLP.EventEmitter {
 
 		this.music = new Music( this.power );
 
-		blidgeSystem.on( 'seek', ( t: number ) => {
+		blidgeSystem.on( 'seek', ( t: number, isPlaying: boolean ) => {
 
-			this.music.seek( t );
+			if ( isPlaying ) {
+
+				this.music.seek( t );
+
+			} else {
+
+				this.music.stop();
+
+			}
 
 		} );
 
