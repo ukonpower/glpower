@@ -102,7 +102,7 @@ export class Music {
 		// btn
 
 		const btn = document.createElement( 'button' );
-		btn.innerHTML = 'click';
+		btn.innerHTML = 'sound';
 		btn.style.position = 'absolute';
 		btn.style.left = '0';
 		btn.style.top = '0';
@@ -117,7 +117,13 @@ export class Music {
 
 	}
 
-	public play( time?: number ) {
+	public play( time: number = 0 ) {
+
+		if ( this.node ) {
+
+			if ( Math.abs( ( this.node.context.currentTime - this.playStartTime ) - time ) < 0.1 ) return;
+
+		}
 
 		this.stop();
 
@@ -128,18 +134,6 @@ export class Music {
 		this.node.start( 0, time );
 
 		this.playStartTime = this.node.context.currentTime - ( time || 0 );
-
-	}
-
-	public seek( time: number ) {
-
-		if ( this.node ) {
-
-			if ( Math.abs( ( this.node.context.currentTime - this.playStartTime ) - time ) < 0.1 ) return;
-
-		}
-
-		this.play( time );
 
 	}
 

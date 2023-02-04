@@ -84,7 +84,7 @@ vec2 music( float time ) {
 	
 	o += (
 		sin( time * 300.0 ) + sin( time * 190.0 )
-	) * exp( - fract(time * 0.2) * 5.0 ) * 0.7;
+	) * exp( - fract(time / 4.0) * 5.0 ) * 0.3;
 
 	// howahowa
 	
@@ -94,23 +94,6 @@ vec2 music( float time ) {
 	// sa------
 	
 	o += rnd2( vec2(time) ) * 0.002;
-
-	// pikopiko
-
-	float[6] piko = float[](
-		3.0, 5.0, 1.0, 7.0, 5.0, 9.0
-	);
-
-	for( int i = 0; i < 6; i++ ) {
-
-		float p = float(piko[i]);
-
-		freq = vec2( 200.0 + p * 800.0 );
-		float w = ( 1.0 - fract( time - float( i ) / 8.0 ) );
-
-		o += (sin( time * freq) + sin( time * freq * 0.99 )) * 0.005 * w;
-
-	}
 
 	return o;
 	

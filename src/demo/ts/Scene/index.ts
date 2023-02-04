@@ -103,7 +103,7 @@ export class Scene extends GLP.EventEmitter {
 
 			if ( isPlaying ) {
 
-				this.music.seek( t );
+				this.music.play( t );
 
 			} else {
 
