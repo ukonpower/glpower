@@ -58,6 +58,14 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.on( 'sync/scene', this.onSyncScene.bind( this ) );
 
+		this.blidge.on( 'sync/timeline', ( frame: GLP.BLidgeSceneFrame ) => {
+
+			const t = frame.current / frame.fps;
+
+			this.emit( 'seek', [ t, frame.playing ] );
+
+		} );
+
 		// tmp
 
 		this.tmpQuaternion = new GLP.Quaternion();
@@ -68,9 +76,15 @@ export class BLidgeSystem extends GLP.System {
 
 		if ( this.play ) {
 
-			this.frame += event.deltaTime * 30.0;
+			this.frame += event.deltaTime * this.blidge.frame.fps;
 
 			this.frame %= this.blidge.frame.end;
+
+			if ( ! this.blidge.connected ) {
+
+				this.emit( 'seek', [ this.frame / this.blidge.frame.fps, true ] );
+
+			}
 
 		}
 
