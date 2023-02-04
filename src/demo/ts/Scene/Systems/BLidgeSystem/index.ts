@@ -78,9 +78,15 @@ export class BLidgeSystem extends GLP.System {
 
 		if ( this.play ) {
 
-			this.frame += event.deltaTime * 30.0;
+			this.frame += event.deltaTime * this.blidge.frame.fps;
 
 			this.frame %= this.blidge.frame.end;
+
+			if ( ! this.blidge.connected ) {
+
+				this.emit( 'seek', [ this.frame / this.blidge.frame.fps, true ] );
+
+			}
 
 		}
 
