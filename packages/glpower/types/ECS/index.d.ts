@@ -7,19 +7,16 @@ export interface ECSUpdateEvent {
     time: number;
     deltaTime: number;
 }
-export declare class ECS {
-    private time;
-    private lastUpdateTime;
-    constructor();
-    createWorld(): World;
-    createEntity(world: World): Entity;
-    removeEntity(world: World, entity: Entity): void;
-    addComponent<T extends Component>(world: World, entity: Entity, componentName: ComponentName, component: T): T;
-    removeComponent(world: World, entity: Entity, componentName: ComponentName): void;
-    getComponent<T extends Component>(world: World, entity: Entity, componentName: ComponentName): T | null;
-    addSystem<T extends System>(world: World, systemName: string, system: T): void;
-    removeSystem(world: World, componentName: ComponentName): void;
-    update(world: World): void;
-    getEntities(world: World, query: EntityQuery): Entity[];
+export declare namespace ECS {
+    const createWorld: () => World;
+    const createEntity: (world: World) => Entity;
+    const removeEntity: (world: World, entity: Entity) => void;
+    const addComponent: <T extends Component>(world: World, entity: Entity, componentName: ComponentName, component: T) => T;
+    const removeComponent: (world: World, entity: Entity, componentName: ComponentName) => void;
+    const getComponent: <T extends Component>(world: World, entity: Entity, componentName: ComponentName) => T | null;
+    const addSystem: <T extends System>(world: World, systemName: string, system: T) => void;
+    const removeSystem: (world: World, componentName: ComponentName) => void;
+    const update: (world: World) => void;
+    const getEntities: (world: World, query: EntityQuery) => Entity[];
 }
 //# sourceMappingURL=index.d.ts.map
