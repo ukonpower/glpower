@@ -6,9 +6,9 @@ export class CameraSystem extends GLP.System {
 	private size: GLP.Vector;
 	private lightOffsetQuaternion: GLP.Quaternion;
 
-	constructor( ecs: GLP.ECS ) {
+	constructor() {
 
-		super( ecs, {
+		super( {
 			perspectiveCamera: [ "camera", "perspective" ],
 			orthographicCamera: [ "camera", "orthographic" ]
 		} );
@@ -21,9 +21,9 @@ export class CameraSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const camera = event.ecs.getComponent<ComponentCamera>( event.world, entity, 'camera' )!;
-		const transform = event.ecs.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' );
-		const light = event.ecs.getComponent<ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
+		const camera = GLP.ECS.getComponent<ComponentCamera>( event.world, entity, 'camera' )!;
+		const transform = GLP.ECS.getComponent<ComponentTransformMatrix>( event.world, entity, 'matrix' );
+		const light = GLP.ECS.getComponent<ComponentShadowmapCamera>( event.world, entity, 'renderCameraShadowMap' );
 
 		if ( transform ) {
 
@@ -49,14 +49,14 @@ export class CameraSystem extends GLP.System {
 
 			if ( logicName == 'perspectiveCamera' ) {
 
-				const perspective = event.ecs.getComponent<ComponentCameraPerspective>( event.world, entity, 'perspective' )!;
+				const perspective = GLP.ECS.getComponent<ComponentCameraPerspective>( event.world, entity, 'perspective' )!;
 				camera.projectionMatrix.perspective( perspective.fov, camera.aspectRatio, camera.near, camera.far );
 
 			}
 
 			if ( logicName == 'orthographicCamera' ) {
 
-				const orthographic = event.ecs.getComponent<ComponentCameraOrthographic>( event.world, entity, 'orthographic' )!;
+				const orthographic = GLP.ECS.getComponent<ComponentCameraOrthographic>( event.world, entity, 'orthographic' )!;
 				camera.projectionMatrix.orthographic( orthographic.width, orthographic.height, camera.near, camera.far );
 
 			}
@@ -67,7 +67,7 @@ export class CameraSystem extends GLP.System {
 
 	private resizeCamera( cameraEntity: GLP.Entity, world: GLP.World ) {
 
-		const camera = this.ecs.getComponent<ComponentCamera>( world, cameraEntity, 'camera' );
+		const camera = GLP.ECS.getComponent<ComponentCamera>( world, cameraEntity, 'camera' );
 
 		if ( camera ) {
 
@@ -84,7 +84,7 @@ export class CameraSystem extends GLP.System {
 
 		// camera
 
-		const cameraEntities = this.ecs.getEntities( world, [ 'camera' ] );
+		const cameraEntities = GLP.ECS.getEntities( world, [ 'camera' ] );
 
 		cameraEntities.forEach( camera => {
 

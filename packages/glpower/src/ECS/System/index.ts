@@ -1,24 +1,21 @@
-import EventEmitter from "wolfy87-eventemitter";
 import { ECS, ECSUpdateEvent } from "..";
+import { EventEmitter } from "../../utils/EventEmitter";
 import { ComponentName } from "../Component";
 import { Entity } from "../Entity";
 
 export type EntityQuery = ComponentName[]
 
 export interface SystemUpdateEvent extends ECSUpdateEvent {
-	ecs: ECS
 }
 
 export class System extends EventEmitter {
 
-	protected ecs: ECS;
 	protected queries: {name: string, query: EntityQuery}[];
 
-	constructor( ecs: ECS, queries?: {[key: string]:EntityQuery} ) {
+	constructor( queries?: {[key: string]:EntityQuery} ) {
 
 		super();
 
-		this.ecs = ecs;
 		this.queries = [];
 
 		if ( queries ) {
@@ -44,7 +41,7 @@ export class System extends EventEmitter {
 
 			const q = this.queries[ i ];
 
-			const entities = event.ecs.getEntities( event.world, q.query );
+			const entities = ECS.getEntities( event.world, q.query );
 
 			this.beforeUpdateImpl( q.name, event, entities );
 
@@ -71,7 +68,7 @@ export class System extends EventEmitter {
 
 	public dispose() {
 
-		this.emitEvent( 'dispose' );
+		this.emit( 'dispose' );
 
 	}
 

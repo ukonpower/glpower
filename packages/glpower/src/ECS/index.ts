@@ -9,33 +9,24 @@ export interface ECSUpdateEvent {
 	deltaTime: number,
 }
 
-export class ECS {
+export namespace ECS {
 
-	// time
-	private time: number;
-	private lastUpdateTime: number;
-
-	constructor() {
-
-		this.time = 0;
-		this.lastUpdateTime = new Date().getTime();
-
-	}
-
-	public createWorld(): World {
+	export const createWorld = (): World => {
 
 		return {
+			elapsedTime: 0,
+			lastUpdateTime: new Date().getTime(),
 			entitiesTotalCount: 0,
 			entities: [],
 			components: new Map(),
 			systems: new Map()
 		};
 
-	}
+	};
 
 	// entity
 
-	public createEntity( world: World ): Entity {
+	export const createEntity = ( world: World ): Entity => {
 
 		const entity: Entity = world.entitiesTotalCount ++;
 
@@ -43,9 +34,9 @@ export class ECS {
 
 		return entity;
 
-	}
+	};
 
-	public removeEntity( world: World, entity: Entity ): void {
+	export const removeEntity = ( world: World, entity: Entity ): void =>{
 
 		const index = world.entities.findIndex( e => e == entity );
 
@@ -65,11 +56,11 @@ export class ECS {
 
 		} );
 
-	}
+	};
 
 	// component
 
-	public addComponent<T extends Component >( world: World, entity: Entity, componentName: ComponentName, component: T ) {
+	export const addComponent = <T extends Component >( world: World, entity: Entity, componentName: ComponentName, component: T ): T => {
 
 		let componentArray = world.components.get( componentName );
 
@@ -91,9 +82,9 @@ export class ECS {
 
 		return component;
 
-	}
+	};
 
-	public removeComponent( world: World, entity: Entity, componentName: ComponentName ) {
+	export const removeComponent = ( world: World, entity: Entity, componentName: ComponentName ) => {
 
 		const componentArray = world.components.get( componentName );
 
@@ -103,9 +94,9 @@ export class ECS {
 
 		}
 
-	}
+	};
 
-	public getComponent<T extends Component >( world: World, entity: Entity, componentName: ComponentName ): T | null {
+	export const getComponent = <T extends Component >( world: World, entity: Entity, componentName: ComponentName ): T | null => {
 
 		const component = world.components.get( componentName );
 
@@ -117,30 +108,30 @@ export class ECS {
 
 		return null;
 
-	}
+	};
 
 	// system
 
-	public addSystem<T extends System >( world: World, systemName: string, system: T ) {
+	export const addSystem = <T extends System >( world: World, systemName: string, system: T ) => {
 
 		world.systems.set( systemName, system );
 
-	}
+	};
 
-	public removeSystem( world: World, componentName: ComponentName ) {
+	export const removeSystem = ( world: World, componentName: ComponentName ) => {
 
 		world.systems.delete( componentName );
 
-	}
+	};
 
 	// update
 
-	public update( world: World ) {
+	export const update = ( world: World ) => {
 
 		const now = new Date().getTime();
-		const deltaTime = ( now - this.lastUpdateTime ) / 1000;
-		this.time += deltaTime;
-		this.lastUpdateTime = now;
+		const deltaTime = ( now - world.lastUpdateTime ) / 1000;
+		world.elapsedTime += deltaTime;
+		world.lastUpdateTime = now;
 
 		const systemList = world.systems;
 
@@ -149,17 +140,16 @@ export class ECS {
 			system.update( {
 				world,
 				deltaTime,
-				time: this.time,
-				ecs: this,
+				time: world.elapsedTime,
 			} );
 
 		} );
 
-	}
+	};
 
 	// entities
 
-	public getEntities( world: World, query: EntityQuery ): Entity[] {
+	export const getEntities = ( world: World, query: EntityQuery ): Entity[] => {
 
 		const entities = world.entities.filter( entt => {
 
@@ -183,6 +173,6 @@ export class ECS {
 
 		return entities;
 
-	}
+	};
 
 }

@@ -6,7 +6,6 @@ import { SceneGraph } from '../../SceneGraph';
 export class BLidgeSystem extends GLP.System {
 
 	public power: GLP.Power;
-	public ecs: GLP.ECS;
 	public world: GLP.World;
 	public factory: Factory;
 	public sceneGraph: SceneGraph;
@@ -24,14 +23,13 @@ export class BLidgeSystem extends GLP.System {
 	// tmp
 	private tmpQuaternion: GLP.Quaternion;
 
-	constructor( ecs: GLP.ECS, power: GLP.Power, world: GLP.World, camera: GLP.Entity, sceneGraph: SceneGraph, factory: Factory ) {
+	constructor( power: GLP.Power, world: GLP.World, camera: GLP.Entity, sceneGraph: SceneGraph, factory: Factory ) {
 
-		super( ecs, {
+		super( {
 			move: [ 'blidge', 'position', 'quaternion', 'scale' ]
 		} );
 
 		this.power = power;
-		this.ecs = ecs;
 		this.world = world;
 		this.sceneGraph = sceneGraph;
 		this.factory = factory;
@@ -51,14 +49,14 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge = new GLP.BLidge( 'ws://localhost:3100' );
 
-		this.blidge.addListener( 'error', () => {
+		this.blidge.on( 'error', () => {
 
 			this.blidge.syncJsonScene( BASE_PATH + '/assets/demo/scene.json' );
 			this.play = true;
 
 		} );
 
-		this.blidge.addListener( 'sync/scene', this.onSyncScene.bind( this ) );
+		this.blidge.on( 'sync/scene', this.onSyncScene.bind( this ) );
 
 		// tmp
 
@@ -82,10 +80,10 @@ export class BLidgeSystem extends GLP.System {
 
 	protected updateImpl( logicName: string, entity: number, event: GLP.SystemUpdateEvent ): void {
 
-		const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( event.world, entity, 'blidge' );
-		const positionComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
-		const scaleComponent = this.ecs.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
-		const rotationComponent = this.ecs.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
+		const blidgeComponent = GLP.ECS.getComponent<ComponentBLidge>( event.world, entity, 'blidge' );
+		const positionComponent = GLP.ECS.getComponent<GLP.ComponentVector3>( event.world, entity, 'position' )!;
+		const scaleComponent = GLP.ECS.getComponent<GLP.ComponentVector3>( event.world, entity, 'scale' )!;
+		const rotationComponent = GLP.ECS.getComponent<GLP.ComponentVector4>( event.world, entity, 'quaternion' )!;
 
 		const frame = this.blidge.connected ? this.blidge.frame.current : this.frame;
 
@@ -169,7 +167,7 @@ export class BLidgeSystem extends GLP.System {
 
 					entity = this.camera;
 
-					const componentCamera = this.ecs.getComponent<ComponentCameraPerspective>( this.world, entity, 'perspective' );
+					const componentCamera = GLP.ECS.getComponent<ComponentCameraPerspective>( this.world, entity, 'perspective' );
 
 					if ( componentCamera && obj.param ) {
 
@@ -190,7 +188,7 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
+			const blidgeComponent = GLP.ECS.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
 
 			if ( blidgeComponent ) {
 
@@ -233,11 +231,11 @@ export class BLidgeSystem extends GLP.System {
 
 				// entity type
 
-				this.ecs.removeComponent( this.world, entity, 'geometry' );
-				this.ecs.removeComponent( this.world, entity, 'material' );
-				this.ecs.removeComponent( this.world, entity, 'directionalLight' );
-				this.ecs.removeComponent( this.world, entity, 'spotLight' );
-				this.ecs.removeComponent( this.world, entity, 'mesh' );
+				GLP.ECS.removeComponent( this.world, entity, 'geometry' );
+				GLP.ECS.removeComponent( this.world, entity, 'material' );
+				GLP.ECS.removeComponent( this.world, entity, 'directionalLight' );
+				GLP.ECS.removeComponent( this.world, entity, 'spotLight' );
+				GLP.ECS.removeComponent( this.world, entity, 'mesh' );
 
 				const uniforms:GLP.Uniforms = {};
 
@@ -306,7 +304,7 @@ export class BLidgeSystem extends GLP.System {
 
 			// transform
 
-			const position = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' );
+			const position = GLP.ECS.getComponent<GLP.ComponentVector3>( this.world, entity, 'position' );
 
 			if ( position ) {
 
@@ -316,7 +314,7 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const quaternion = this.ecs.getComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion' );
+			const quaternion = GLP.ECS.getComponent<GLP.ComponentVector4>( this.world, entity, 'quaternion' );
 
 			if ( quaternion ) {
 
@@ -340,7 +338,7 @@ export class BLidgeSystem extends GLP.System {
 
 			}
 
-			const scale = this.ecs.getComponent<GLP.ComponentVector3>( this.world, entity, 'scale' );
+			const scale = GLP.ECS.getComponent<GLP.ComponentVector3>( this.world, entity, 'scale' );
 
 			if ( scale ) {
 
@@ -354,15 +352,15 @@ export class BLidgeSystem extends GLP.System {
 
 		// remove
 
-		this.ecs.getEntities( this.world, [ 'blidge' ] ).forEach( entity => {
+		GLP.ECS.getEntities( this.world, [ 'blidge' ] ).forEach( entity => {
 
-			const blidgeComponent = this.ecs.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
+			const blidgeComponent = GLP.ECS.getComponent<ComponentBLidge>( this.world, entity, 'blidge' );
 
 			if ( blidgeComponent && blidgeComponent.updateTime !== timeStamp ) {
 
 				this.objects.delete( blidgeComponent.name );
 
-				this.ecs.removeEntity( this.world, entity );
+				GLP.ECS.removeEntity( this.world, entity );
 
 			}
 
