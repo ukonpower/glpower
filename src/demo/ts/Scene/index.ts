@@ -7,6 +7,7 @@ import { CameraSystem } from './Systems/CameraSystem';
 import { EventSystem } from './Systems/EventSystem';
 import { Factory } from './Factory';
 import { SceneGraph } from './SceneGraph';
+import { Music } from './Music';
 
 export class Scene extends GLP.EventEmitter {
 
@@ -16,6 +17,8 @@ export class Scene extends GLP.EventEmitter {
 
 	private sceneGraph: SceneGraph;
 	private factory: Factory;
+
+	private music: Music;
 
 	constructor( power: GLP.Power ) {
 
@@ -87,6 +90,26 @@ export class Scene extends GLP.EventEmitter {
 		GLP.ECS.addSystem( this.world, 'camera', cameraSystem );
 		GLP.ECS.addSystem( this.world, 'event', eventSystem );
 		GLP.ECS.addSystem( this.world, 'render', renderSystem );
+
+		/*-------------------------------
+			Music
+		-------------------------------*/
+
+		this.music = new Music( this.power );
+
+		blidgeSystem.on( 'seek', ( t: number, isPlaying: boolean ) => {
+
+			if ( isPlaying ) {
+
+				this.music.play( t );
+
+			} else {
+
+				this.music.stop();
+
+			}
+
+		} );
 
 		/*-------------------------------
 			Events
