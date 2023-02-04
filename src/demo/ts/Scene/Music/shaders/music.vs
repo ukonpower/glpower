@@ -18,7 +18,7 @@ vec2 music( float time ) {
 	vec2 o = vec2( 0.0 );
 
 	o += sin( time * 300.0 ) * exp( - fract(time * 0.2) * 5.0 );
-	o += rnd( vec2(time) ) * 0.02;
+	// o += rnd( vec2(time) ) * 0.02;
 
 	return o;
 	
