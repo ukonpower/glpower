@@ -164,7 +164,7 @@ export class BLidge extends EventEmitter {
 
 	}
 
-	public syncJsonScene( jsonPath: string ) {
+	public loadJsonScene( jsonPath: string ) {
 
 		const req = new XMLHttpRequest();
 
@@ -174,7 +174,7 @@ export class BLidge extends EventEmitter {
 
 				if ( req.status == 200 ) {
 
-					this.onSyncScene( JSON.parse( req.response ) );
+					this.loadScene( JSON.parse( req.response ) );
 
 				}
 
@@ -191,7 +191,7 @@ export class BLidge extends EventEmitter {
 		Events
 	-------------------------------*/
 
-	private onSyncScene( data: BLidgeSceneData ) {
+	public loadScene( data: BLidgeSceneData ) {
 
 		// frame
 
@@ -275,7 +275,7 @@ export class BLidge extends EventEmitter {
 
 		if ( msg.type == 'sync/scene' ) {
 
-			this.onSyncScene( msg.data );
+			this.loadScene( msg.data );
 
 		} else if ( msg.type == "sync/timeline" ) {
 
