@@ -82,7 +82,7 @@ export type BLidgeAnimationCurveKeyFrameParam = {
     h_l: IVector2;
     h_r: IVector2;
     e: string;
-    i: FCurveInterpolation;
+    i: "B" | "L" | "C";
 }
 
 // message
@@ -217,7 +217,13 @@ export class BLidge extends EventEmitter {
 
 				curve.set( fcurveData.keyframes.map( frame => {
 
-					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, frame.i );
+					let interpolation = {
+						"B": "BEZIER",
+						"C": "CONSTANT",
+						"L": "LINEAR",
+					}[frame.i];
+
+					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, interpolation as FCurveInterpolation);
 
 				} ) );
 
