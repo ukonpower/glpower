@@ -217,13 +217,13 @@ export class BLidge extends EventEmitter {
 
 				curve.set( fcurveData.keyframes.map( frame => {
 
-					let interpolation = {
+					const interpolation = {
 						"B": "BEZIER",
 						"C": "CONSTANT",
 						"L": "LINEAR",
-					}[frame.i];
+					}[ frame.i ];
 
-					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, interpolation as FCurveInterpolation);
+					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, interpolation as FCurveInterpolation );
 
 				} ) );
 
