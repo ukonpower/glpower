@@ -1,7 +1,6 @@
 import { EventEmitter } from '../utils/EventEmitter';
 import { IVector2, IVector3 } from "../Math/Vector";
 import { FCurveGroup } from '../Animation/FCurveGroup';
-import { FCurveInterpolation } from "../Animation/FCurveKeyFrame";
 export declare type BLidgeObject = {
     name: string;
     parent: string;
@@ -63,7 +62,7 @@ export declare type BLidgeAnimationCurveKeyFrameParam = {
     h_l: IVector2;
     h_r: IVector2;
     e: string;
-    i: FCurveInterpolation;
+    i: "B" | "L" | "C";
 };
 export declare type BLidgeMessage = BLidgeSyncSceneMessage | BLidgeSyncFrameMessage;
 export declare type BLidgeSyncSceneMessage = {
@@ -91,8 +90,8 @@ export declare class BLidge extends EventEmitter {
     scene: BLidgeObject | null;
     constructor(url?: string);
     connect(url: string): void;
-    syncJsonScene(jsonPath: string): void;
-    private onSyncScene;
+    loadJsonScene(jsonPath: string): void;
+    loadScene(data: BLidgeSceneData): void;
     private onSyncTimeline;
     private onOpen;
     private onMessage;
