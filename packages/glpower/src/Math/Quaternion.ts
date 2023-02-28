@@ -1,4 +1,4 @@
-import { IVector3 } from "..";
+import { IVector3, IVector4, Types } from "..";
 import { Vector } from "./Vector";
 
 export type Quat = {
@@ -80,7 +80,42 @@ export class Quaternion {
 
 	}
 
-	public multiply() {
+	public multiply( q: Quaternion ) {
+
+		const w = this.w * q.w - this.x * q.x - this.y * q.y - this.z * q.z;
+		const x = this.w * q.x + this.x * q.w + this.y * q.z - this.z * q.y;
+		const y = this.w * q.y - this.x * q.z + this.y * q.w + this.z * q.x;
+		const z = this.w * q.z + this.x * q.y - this.y * q.x + this.z * q.w;
+
+		this.set( x, y, z, w );
+
+		return this;
+
+	}
+
+	public inverse() {
+
+		this.set( - this.x, - this.y, - this.z, this.w );
+
+		return this;
+
+	}
+
+	public copy( a: Quaternion | Types.Nullable<IVector4> ) {
+
+		this.x = a.x ?? 0;
+		this.y = a.y ?? 0;
+		this.z = a.z ?? 0;
+		this.w = a.w ?? 0;
+
+		return this;
+
+	}
+
+	public clone() {
+
+		return new Quaternion( this.x, this.y, this.z, this.w );
+
 	}
 
 }
