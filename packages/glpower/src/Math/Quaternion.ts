@@ -86,59 +86,53 @@ export class Quaternion {
 
 		const elm = matrix.elm;
 
-		// 最大成分を検索
-		const elem = [ 0, 0, 0, 0 ]; // 0:x, 1:y, 2:z, 3:w
-		elem[ 0 ] = elm[ 0 ] - elm[ 5 ] - elm[ 10 ] + 1.0;
-		elem[ 1 ] = - elm[ 0 ] + elm[ 5 ] - elm[ 10 ] + 1.0;
-		elem[ 2 ] = - elm[ 0 ] - elm[ 5 ] + elm[ 10 ] + 1.0;
-		elem[ 3 ] = elm[ 0 ] + elm[ 5 ] + elm[ 10 ] + 1.0;
+		const trace = elm[ 0 ] + elm[ 5 ] + elm[ 10 ];
+		let qx, qy, qz, qw;
 
-		let biggestIndex = 0;
-		for ( let i = 1; i < 4; i ++ ) {
+		if ( trace > 0 ) {
 
-			if ( elem[ i ] > elem[ biggestIndex ] )
-				biggestIndex = i;
+		  const s = Math.sqrt( trace + 1.0 ) * 2;
+		  qw = 0.25 * s;
+		  qx = ( elm[ 6 ] - elm[ 9 ] ) / s;
+		  qy = ( elm[ 8 ] - elm[ 2 ] ) / s;
+		  qz = ( elm[ 1 ] - elm[ 4 ] ) / s;
 
-		}
+		} else if ( elm[ 0 ] > elm[ 5 ] && elm[ 0 ] > elm[ 10 ] ) {
 
-		if ( elem[ biggestIndex ] < 0.0 ) {
+		  const s = Math.sqrt( 1.0 + elm[ 0 ] - elm[ 5 ] - elm[ 10 ] ) * 2;
+		  qw = ( elm[ 6 ] - elm[ 9 ] ) / s;
+		  qx = 0.25 * s;
+		  qy = ( elm[ 1 ] + elm[ 4 ] ) / s;
+		  qz = ( elm[ 2 ] + elm[ 8 ] ) / s;
 
-			return false; // 引数の行列に間違いあり！
+		} else if ( elm[ 5 ] > elm[ 10 ] ) {
 
-		}
+		  const s = Math.sqrt( 1.0 + elm[ 5 ] - elm[ 0 ] - elm[ 10 ] ) * 2;
+		  qw = ( elm[ 8 ] - elm[ 2 ] ) / s;
+		  qx = ( elm[ 1 ] + elm[ 4 ] ) / s;
+		  qy = 0.25 * s;
+		  qz = ( elm[ 6 ] + elm[ 9 ] ) / s;
 
-		const v = Math.sqrt( elem[ biggestIndex ] ) * 0.5;
+		} else {
 
-		const mult = 0.25 / v;
-
-		switch ( biggestIndex ) {
-
-			case 0: // x
-				this.x = v;
-				this.y = ( elm[ 4 ] + elm[ 1 ] ) * mult;
-				this.z = ( elm[ 8 ] + elm[ 2 ] ) * mult;
-				this.w = ( elm[ 9 ] - elm[ 6 ] ) * mult;
-				break;
-			case 1: // y
-				this.x = ( elm[ 4 ] + elm[ 1 ] ) * mult;
-				this.y = v;
-				this.z = ( elm[ 9 ] + elm[ 6 ] ) * mult;
-				this.w = ( elm[ 8 ] - elm[ 2 ] ) * mult;
-				break;
-			case 2: // z
-				this.x = ( elm[ 8 ] + elm[ 2 ] ) * mult;
-				this.y = ( elm[ 9 ] + elm[ 6 ] ) * mult;
-				this.z = v;
-				this.w = ( elm[ 4 ] - elm[ 1 ] ) * mult;
-				break;
-			case 3: // w
-				this.x = ( elm[ 9 ] - elm[ 6 ] ) * mult;
-				this.y = ( elm[ 8 ] - elm[ 2 ] ) * mult;
-				this.z = ( elm[ 4 ] - elm[ 1 ] ) * mult;
-				this.w = v;
-				break;
+		  const s = Math.sqrt( 1.0 + elm[ 10 ] - elm[ 0 ] - elm[ 5 ] ) * 2;
+		  qw = ( elm[ 1 ] - elm[ 4 ] ) / s;
+		  qx = ( elm[ 2 ] + elm[ 8 ] ) / s;
+		  qy = ( elm[ 6 ] + elm[ 9 ] ) / s;
+		  qz = 0.25 * s;
 
 		}
+
+		const length = Math.sqrt( qx * qx + qy * qy + qz * qz + qw * qw );
+		qx /= length;
+		qy /= length;
+		qz /= length;
+		qw /= length;
+
+		this.x = qx;
+		this.y = qy;
+		this.z = qz;
+		this.w = qw;
 
 		return this;
 

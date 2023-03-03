@@ -86,12 +86,12 @@ export class Matrix {
 		const yAxis = zAxis.clone().cross( xAxis ).normalize();
 
 		this.elm = [
-		   xAxis.x, yAxis.x, zAxis.x, 0,
-		   xAxis.y, yAxis.y, zAxis.y, 0,
-		   xAxis.z, yAxis.z, zAxis.z, 0,
-		   - eye.dot( xAxis ),
-		   - eye.dot( yAxis ),
-		   - eye.dot( zAxis ),
+		   xAxis.x, xAxis.y, xAxis.z, 0,
+		   yAxis.x, yAxis.y, yAxis.z, 0,
+		   zAxis.x, zAxis.y, zAxis.z, 0,
+		   eye.x,
+		   eye.y,
+		   eye.z,
 		   1,
 		];
 
