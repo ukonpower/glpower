@@ -102,9 +102,9 @@ export class Matrix {
 	public inverse() {
 
 		const a = this.elm[ 0 ], b = this.elm[ 1 ], c = this.elm[ 2 ], d = this.elm[ 3 ],
-			e = this.elm[ 4 ], f = this.elm[ 5 ], g = this.elm[ 6 ], h = this.elm[ 7 ],
-			i = this.elm[ 8 ], j = this.elm[ 9 ], k = this.elm[ 10 ], l = this.elm[ 11 ],
-			m = this.elm[ 12 ], n = this.elm[ 13 ], o = this.elm[ 14 ], p = this.elm[ 15 ],
+			  e = this.elm[ 4 ], f = this.elm[ 5 ], g = this.elm[ 6 ], h = this.elm[ 7 ],
+			  i = this.elm[ 8 ], j = this.elm[ 9 ], k = this.elm[ 10 ], l = this.elm[ 11 ],
+			  m = this.elm[ 12 ], n = this.elm[ 13 ], o = this.elm[ 14 ], p = this.elm[ 15 ],
 			q = a * f - b * e, r = a * g - c * e,
 			s = a * h - d * e, t = b * g - c * f,
 			u = b * h - d * f, v = c * h - d * g,
@@ -276,6 +276,30 @@ export class Matrix {
 		this.matmul( tmp );
 
 		return this;
+
+	}
+
+	public decompose( pos?: IVector3, rot?: Quaternion, scale?: IVector3 ) {
+
+		if ( pos ) {
+
+			pos.x = this.elm[ 12 ];
+			pos.y = this.elm[ 13 ];
+			pos.z = this.elm[ 14 ];
+
+		}
+
+		if ( rot ) {
+
+			rot.setFromMatrix( this );
+
+		}
+
+		if ( scale ) {
+
+			// todo
+
+		}
 
 	}
 

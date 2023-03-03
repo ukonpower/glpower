@@ -1,4 +1,4 @@
-import { IVector3, IVector4, Types } from "..";
+import { IVector3, IVector4, Matrix, Types } from "..";
 import { Vector } from "./Vector";
 
 export type Quat = {
@@ -36,7 +36,7 @@ export class Quaternion {
 
 	}
 
-	public euler( euler: Vector | IVector3, order: EulerOrder = 'XYZ' ) {
+	public setFromEuler( euler: Vector | IVector3, order: EulerOrder = 'XYZ' ) {
 
 		const sx = Math.sin( euler.x / 2 );
 		const sy = Math.sin( euler.y / 2 );
@@ -73,6 +73,70 @@ export class Quaternion {
 			this.y = sx * cy * sz + cx * sy * cz;
 			this.z = - sx * sy * cz + cx * cy * sz;
 			this.w = sx * sy * sz + cx * cy * cz;
+
+		}
+
+		return this;
+
+	}
+
+	// http://marupeke296.sakura.ne.jp/DXG_No58_RotQuaternionTrans.html
+
+	public setFromMatrix( matrix: Matrix ) {
+
+		const elm = matrix.elm;
+
+		// 最大成分を検索
+		const elem = [ 0, 0, 0, 0 ]; // 0:x, 1:y, 2:z, 3:w
+		elem[ 0 ] = elm[ 0 ] - elm[ 5 ] - elm[ 10 ] + 1.0;
+		elem[ 1 ] = - elm[ 0 ] + elm[ 5 ] - elm[ 10 ] + 1.0;
+		elem[ 2 ] = - elm[ 0 ] - elm[ 5 ] + elm[ 10 ] + 1.0;
+		elem[ 3 ] = elm[ 0 ] + elm[ 5 ] + elm[ 10 ] + 1.0;
+
+		let biggestIndex = 0;
+		for ( let i = 1; i < 4; i ++ ) {
+
+			if ( elem[ i ] > elem[ biggestIndex ] )
+				biggestIndex = i;
+
+		}
+
+		if ( elem[ biggestIndex ] < 0.0 ) {
+
+			return false; // 引数の行列に間違いあり！
+
+		}
+
+		const v = Math.sqrt( elem[ biggestIndex ] ) * 0.5;
+
+		const mult = 0.25 / v;
+
+		switch ( biggestIndex ) {
+
+			case 0: // x
+				this.x = v;
+				this.y = ( elm[ 4 ] + elm[ 1 ] ) * mult;
+				this.z = ( elm[ 8 ] + elm[ 2 ] ) * mult;
+				this.w = ( elm[ 9 ] - elm[ 6 ] ) * mult;
+				break;
+			case 1: // y
+				this.x = ( elm[ 4 ] + elm[ 1 ] ) * mult;
+				this.y = v;
+				this.z = ( elm[ 9 ] + elm[ 6 ] ) * mult;
+				this.w = ( elm[ 8 ] - elm[ 2 ] ) * mult;
+				break;
+			case 2: // z
+				this.x = ( elm[ 8 ] + elm[ 2 ] ) * mult;
+				this.y = ( elm[ 9 ] + elm[ 6 ] ) * mult;
+				this.z = v;
+				this.w = ( elm[ 4 ] - elm[ 1 ] ) * mult;
+				break;
+			case 3: // w
+				this.x = ( elm[ 9 ] - elm[ 6 ] ) * mult;
+				this.y = ( elm[ 8 ] - elm[ 2 ] ) * mult;
+				this.z = ( elm[ 4 ] - elm[ 1 ] ) * mult;
+				this.w = v;
+				break;
 
 		}
 
