@@ -181,4 +181,14 @@ export class GLPowerVAO {
 
 	}
 
+	public dispose() {
+
+		this.attributes.forEach( item => {
+
+			item.buffer.dispose();
+
+		} );
+
+	}
+
 }

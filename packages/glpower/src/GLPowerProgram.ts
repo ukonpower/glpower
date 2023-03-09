@@ -248,4 +248,10 @@ export class GLPowerProgram {
 
 	}
 
+	public dispose() {
+
+		this.gl.deleteProgram( this.program );
+
+	}
+
 }

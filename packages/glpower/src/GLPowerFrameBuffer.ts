@@ -109,4 +109,11 @@ export class GLPowerFrameBuffer {
 
 	}
 
+	public dispose() {
+
+		this.gl.deleteFramebuffer( this.frameBuffer );
+		this.gl.deleteRenderbuffer( this.depthRenderBuffer );
+
+	}
+
 }

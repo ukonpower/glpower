@@ -33,4 +33,10 @@ export class GLPowerBuffer {
 
 	}
 
+	public dispose() {
+
+		this.gl.deleteBuffer( this.buffer );
+
+	}
+
 }

@@ -174,4 +174,10 @@ export class GLPowerTexture {
 
 	}
 
+	public dispose() {
+
+		this.gl.deleteTexture( this.texture );
+
+	}
+
 }
