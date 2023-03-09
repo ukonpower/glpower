@@ -85,7 +85,7 @@ class ExGeometries {
 
 				const modelMatrix = obj.modelMatrix;
 
-				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
+				modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().setFromEuler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
 
 				const modelViewMatrix = viewMatrix.clone().multiply( modelMatrix );
 				program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
