@@ -1,31 +1,46 @@
 import { GLPowerTexture } from "./GLPowerTexture";
 import { Vector } from "./Math/Vector";
 
+export type GLPowerFrameBfferOpt = {
+	disableDepthBuffer?: boolean
+}
+
 export class GLPowerFrameBuffer {
 
 	public size: Vector;
 
 	private gl: WebGL2RenderingContext;
-	private frameBuffer: WebGLFramebuffer | null;
-	private depthRenderBuffer: WebGLRenderbuffer | null;
+	public frameBuffer: WebGLFramebuffer | null;
+	public depthRenderBuffer: WebGLRenderbuffer | null;
 
 	public textures: GLPowerTexture[];
 	public textureAttachmentList: number[];
 
-	constructor( gl: WebGL2RenderingContext ) {
+	constructor( gl: WebGL2RenderingContext, opt?: GLPowerFrameBfferOpt ) {
 
 		this.gl = gl;
 
 		this.size = new Vector( 1, 1 );
 
 		this.frameBuffer = this.gl.createFramebuffer();
-		this.depthRenderBuffer = this.gl.createRenderbuffer();
+		this.depthRenderBuffer = null;
 
 		this.textures = [];
 		this.textureAttachmentList = [];
 
+		if ( ! opt || ! opt.disableDepthBuffer ) {
+
+			this.setDepthBuffer( this.gl.createRenderbuffer() );
+
+		}
+
+	}
+
+	public setDepthBuffer( renderBuffer: WebGLRenderbuffer | null ) {
+
 		// depth buffer
 
+		this.depthRenderBuffer = renderBuffer;
 		this.gl.bindRenderbuffer( this.gl.RENDERBUFFER, this.depthRenderBuffer );
 		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.frameBuffer );
 		this.gl.framebufferRenderbuffer( this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.RENDERBUFFER, this.depthRenderBuffer );
@@ -106,6 +121,13 @@ export class GLPowerFrameBuffer {
 	public getFrameBuffer() {
 
 		return this.frameBuffer;
+
+	}
+
+	public dispose() {
+
+		this.gl.deleteFramebuffer( this.frameBuffer );
+		this.gl.deleteRenderbuffer( this.depthRenderBuffer );
 
 	}
 

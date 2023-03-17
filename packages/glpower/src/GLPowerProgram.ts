@@ -103,10 +103,9 @@ export class GLPowerProgram {
 		} else {
 
 			console.error( this.gl.getShaderInfoLog( shader ) );
+			console.error( shaderSrc );
 
 		}
-
-		return null;
 
 	}
 
@@ -245,6 +244,20 @@ export class GLPowerProgram {
 	public getProgram() {
 
 		return this.program;
+
+	}
+
+	public dispose() {
+
+		this.vao.forEach( vao => {
+
+			vao.dispose();
+
+		} );
+
+		this.vao.clear();
+
+		this.gl.deleteProgram( this.program );
 
 	}
 
