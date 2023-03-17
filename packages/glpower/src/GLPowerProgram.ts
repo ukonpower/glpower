@@ -249,6 +249,14 @@ export class GLPowerProgram {
 
 	public dispose() {
 
+		this.vao.forEach( vao => {
+
+			vao.dispose();
+
+		} );
+
+		this.vao.clear();
+
 		this.gl.deleteProgram( this.program );
 
 	}
