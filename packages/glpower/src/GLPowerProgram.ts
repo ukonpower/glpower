@@ -103,10 +103,9 @@ export class GLPowerProgram {
 		} else {
 
 			console.error( this.gl.getShaderInfoLog( shader ) );
+			console.error( shaderSrc );
 
 		}
-
-		return null;
 
 	}
 
