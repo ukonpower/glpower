@@ -38,7 +38,7 @@ type BLidgeLightParamCommon = {
 	type: 'directional' | 'spot'
 	color: IVector3,
 	intensity: number,
-	useShadowMap: boolean,
+	shadowMap: boolean,
 }
 
 export type BLidgeDirectionalLightParam = {
