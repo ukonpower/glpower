@@ -42,6 +42,7 @@ export * from './BLidge';
 // utils
 
 export * from './utils/EventEmitter';
+export * from './utils/Uniform';
 
 // types
 
