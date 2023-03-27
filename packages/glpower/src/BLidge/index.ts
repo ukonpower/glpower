@@ -19,7 +19,7 @@ export type BLidgeObject = {
 	param?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon
 }
 
-export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
+export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'cylinder' | 'mesh' | 'camera' | 'plane' | 'light';
 
 export type BLidgeCameraParam = {
 	fov: number
