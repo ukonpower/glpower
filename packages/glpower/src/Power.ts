@@ -7,7 +7,7 @@ export class Power {
 
 	public gl: WebGL2RenderingContext;
 
-	public extTimerQuery: any;
+	public extDisJointTimerQuery: any;
 
 	constructor( gl: WebGL2RenderingContext ) {
 
@@ -17,7 +17,7 @@ export class Power {
 
 		this.gl.getExtension( "EXT_color_buffer_float" );
 		this.gl.getExtension( "EXT_color_buffer_half_float" );
-		this.extTimerQuery = this.gl.getExtension( "EXT_disjoint_timer_query_webgl2" );
+		this.extDisJointTimerQuery = this.gl.getExtension( "EXT_disjoint_timer_query_webgl2" );
 
 	}
 
