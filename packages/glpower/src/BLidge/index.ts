@@ -16,6 +16,7 @@ export type BLidgeObject = {
 	scale: IVector3,
 	material: BLidgeMaterialParam
 	type: BLidgeObjectType,
+	visible: boolean,
 	param?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon
 }
 
