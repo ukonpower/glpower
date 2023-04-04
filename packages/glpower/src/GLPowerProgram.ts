@@ -104,15 +104,15 @@ export class GLPowerProgram {
 
 			console.error( this.gl.getShaderInfoLog( shader ) );
 
-			let shaderSrc = '';
+			let error = '';
 
 			shaderSrc.split( '\n' ).forEach( ( t, i ) => {
 
-				shaderSrc += `${i + 1}: ${t}\n`;
+				error += `${i + 1}: ${t}\n`;
 
 			} );
 
-			console.error( shaderSrc );
+			console.error( error );
 
 		}
 
