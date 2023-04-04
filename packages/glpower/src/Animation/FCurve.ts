@@ -82,7 +82,7 @@ export class FCurve extends EventEmitter {
 
 			const keyframe = this.keyframes[ i ];
 
-			if ( frame <= keyframe.coordinate.x ) {
+			if ( frame < keyframe.coordinate.x ) {
 
 				const beforeKeyFrame = this.keyframes[ i - 1 ];
 

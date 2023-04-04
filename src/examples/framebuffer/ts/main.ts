@@ -103,7 +103,7 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.cube.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
+			this.objList.cube.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().setFromEuler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.cube.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.cube.modelMatrix ).elm );
 			this.objList.cube.program.setUniform( 'projectionMatrix', 'Matrix4fv', projectionMatrixFrame.elm );
@@ -128,7 +128,7 @@ class ExFrameBuffer {
 			this.gl.clear( this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT );
 			gl.enable( gl.DEPTH_TEST );
 
-			this.objList.plane.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().euler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
+			this.objList.plane.modelMatrix.multiply( new GLP.Matrix().applyQuaternion( new GLP.Quaternion().setFromEuler( new GLP.Vector( 0.0, 0.01, 0.0 ) ) ) );
 
 			this.objList.plane.program.setUniform( 'modelViewMatrix', 'Matrix4fv', viewMatrix.clone().multiply( this.objList.plane.modelMatrix ).elm );
 			this.objList.plane.program.setUniform( 'projectionMatrix', 'Matrix4fv', this.projectionMatrix.elm );

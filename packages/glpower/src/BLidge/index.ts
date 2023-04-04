@@ -16,10 +16,11 @@ export type BLidgeObject = {
 	scale: IVector3,
 	material: BLidgeMaterialParam
 	type: BLidgeObjectType,
+	visible: boolean,
 	param?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon
 }
 
-export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'mesh' | 'camera' | 'plane' | 'light';
+export type BLidgeObjectType = 'empty' | 'cube' | 'sphere' | 'cylinder' | 'mesh' | 'camera' | 'plane' | 'light';
 
 export type BLidgeCameraParam = {
 	fov: number
@@ -38,7 +39,7 @@ type BLidgeLightParamCommon = {
 	type: 'directional' | 'spot'
 	color: IVector3,
 	intensity: number,
-	useShadowMap: boolean,
+	shadowMap: boolean,
 }
 
 export type BLidgeDirectionalLightParam = {
@@ -82,7 +83,7 @@ export type BLidgeAnimationCurveKeyFrameParam = {
     h_l: IVector2;
     h_r: IVector2;
     e: string;
-    i: FCurveInterpolation;
+    i: "B" | "L" | "C";
 }
 
 // message
@@ -164,7 +165,7 @@ export class BLidge extends EventEmitter {
 
 	}
 
-	public syncJsonScene( jsonPath: string ) {
+	public loadJsonScene( jsonPath: string ) {
 
 		const req = new XMLHttpRequest();
 
@@ -174,7 +175,7 @@ export class BLidge extends EventEmitter {
 
 				if ( req.status == 200 ) {
 
-					this.onSyncScene( JSON.parse( req.response ) );
+					this.loadScene( JSON.parse( req.response ) );
 
 				}
 
@@ -191,7 +192,7 @@ export class BLidge extends EventEmitter {
 		Events
 	-------------------------------*/
 
-	private onSyncScene( data: BLidgeSceneData ) {
+	public loadScene( data: BLidgeSceneData ) {
 
 		// frame
 
@@ -217,7 +218,13 @@ export class BLidge extends EventEmitter {
 
 				curve.set( fcurveData.keyframes.map( frame => {
 
-					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, frame.i );
+					const interpolation = {
+						"B": "BEZIER",
+						"C": "CONSTANT",
+						"L": "LINEAR",
+					}[ frame.i ];
+
+					return new FCurveKeyFrame( frame.c, frame.h_l, frame.h_r, interpolation as FCurveInterpolation );
 
 				} ) );
 
@@ -275,7 +282,7 @@ export class BLidge extends EventEmitter {
 
 		if ( msg.type == 'sync/scene' ) {
 
-			this.onSyncScene( msg.data );
+			this.loadScene( msg.data );
 
 		} else if ( msg.type == "sync/timeline" ) {
 

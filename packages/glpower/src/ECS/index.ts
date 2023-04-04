@@ -135,9 +135,10 @@ export namespace ECS {
 
 		const systemList = world.systems;
 
-		systemList.forEach( system => {
+		systemList.forEach( ( system, systemName ) => {
 
 			system.update( {
+				systemName,
 				world,
 				deltaTime,
 				time: world.elapsedTime,

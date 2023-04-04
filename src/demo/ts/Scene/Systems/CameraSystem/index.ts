@@ -15,7 +15,7 @@ export class CameraSystem extends GLP.System {
 
 		this.size = new GLP.Vector();
 
-		this.lightOffsetQuaternion = new GLP.Quaternion().euler( { x: - Math.PI / 2, y: 0, z: 0 } );
+		this.lightOffsetQuaternion = new GLP.Quaternion().setFromEuler( { x: - Math.PI / 2, y: 0, z: 0 } );
 
 	}
 

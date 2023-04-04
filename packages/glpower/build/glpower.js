@@ -130,18 +130,18 @@ class F {
     return this.divide(this.length() || 1);
   }
   cross(t) {
-    const e = this.x, s = this.y, i = this.z, r = t.x, h = t.y, c = t.z;
-    return this.x = s * c - i * h, this.y = i * r - e * c, this.z = e * h - s * r, this;
+    const e = this.x, s = this.y, i = this.z, r = t.x, h = t.y, f = t.z;
+    return this.x = s * f - i * h, this.y = i * r - e * f, this.z = e * h - s * r, this;
   }
   dot(t) {
     return this.x * t.x + this.y * t.y + this.z * t.z;
   }
   applyMatrix3(t) {
-    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[4], c = e[5], a = e[6], o = e[8], f = e[9], l = e[10], m = this.x * s + this.y * h + this.z * o, g = this.x * i + this.y * c + this.z * f, p = this.x * r + this.y * a + this.z * l;
+    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[4], f = e[5], a = e[6], o = e[8], c = e[9], l = e[10], m = this.x * s + this.y * h + this.z * o, g = this.x * i + this.y * f + this.z * c, p = this.x * r + this.y * a + this.z * l;
     this.x = m, this.y = g, this.z = p, this.w = 0;
   }
   applyMatrix4(t) {
-    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[3], c = e[4], a = e[5], o = e[6], f = e[7], l = e[8], m = e[9], g = e[10], p = e[11], y = e[12], d = e[13], E = e[14], n = e[15], b = this.x * s + this.y * c + this.z * l + this.w * y, A = this.x * i + this.y * a + this.z * m + this.w * d, x = this.x * r + this.y * o + this.z * g + this.w * E, R = this.x * h + this.y * f + this.z * p + this.w * n;
+    const e = t.elm, s = e[0], i = e[1], r = e[2], h = e[3], f = e[4], a = e[5], o = e[6], c = e[7], l = e[8], m = e[9], g = e[10], p = e[11], y = e[12], d = e[13], E = e[14], n = e[15], b = this.x * s + this.y * f + this.z * l + this.w * y, A = this.x * i + this.y * a + this.z * m + this.w * d, x = this.x * r + this.y * o + this.z * g + this.w * E, R = this.x * h + this.y * c + this.z * p + this.w * n;
     return this.x = b, this.y = A, this.z = x, this.w = R, this;
   }
   copy(t) {
@@ -263,7 +263,7 @@ class j {
     });
   }
 }
-class O {
+class S {
   constructor(t) {
     this.elm = [
       1,
@@ -305,7 +305,7 @@ class O {
     ], this;
   }
   clone() {
-    return new O().copy(this);
+    return new S().copy(this);
   }
   copy(t) {
     return this.set(t.elm), this;
@@ -373,12 +373,12 @@ class O {
     ], this;
   }
   inverse() {
-    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], c = this.elm[6], a = this.elm[7], o = this.elm[8], f = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15], E = t * h - e * r, n = t * c - s * r, b = t * a - i * r, A = e * c - s * h, x = e * a - i * h, R = s * a - i * c, _ = o * p - f * g, v = o * y - l * g, z = o * d - m * g, B = f * y - l * p, M = f * d - m * p, w = l * d - m * y, D = E * w - n * M + b * B + A * z - x * v + R * _, T = 1 / D;
-    return D == 0 ? this.identity() : (this.elm[0] = (h * w - c * M + a * B) * T, this.elm[1] = (-e * w + s * M - i * B) * T, this.elm[2] = (p * R - y * x + d * A) * T, this.elm[3] = (-f * R + l * x - m * A) * T, this.elm[4] = (-r * w + c * z - a * v) * T, this.elm[5] = (t * w - s * z + i * v) * T, this.elm[6] = (-g * R + y * b - d * n) * T, this.elm[7] = (o * R - l * b + m * n) * T, this.elm[8] = (r * M - h * z + a * _) * T, this.elm[9] = (-t * M + e * z - i * _) * T, this.elm[10] = (g * x - p * b + d * E) * T, this.elm[11] = (-o * x + f * b - m * E) * T, this.elm[12] = (-r * B + h * v - c * _) * T, this.elm[13] = (t * B - e * v + s * _) * T, this.elm[14] = (-g * A + p * n - y * E) * T, this.elm[15] = (o * A - f * n + l * E) * T, this);
+    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], f = this.elm[6], a = this.elm[7], o = this.elm[8], c = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15], E = t * h - e * r, n = t * f - s * r, b = t * a - i * r, A = e * f - s * h, x = e * a - i * h, R = s * a - i * f, _ = o * p - c * g, v = o * y - l * g, z = o * d - m * g, B = c * y - l * p, M = c * d - m * p, w = l * d - m * y, O = E * w - n * M + b * B + A * z - x * v + R * _, T = 1 / O;
+    return O == 0 ? this.identity() : (this.elm[0] = (h * w - f * M + a * B) * T, this.elm[1] = (-e * w + s * M - i * B) * T, this.elm[2] = (p * R - y * x + d * A) * T, this.elm[3] = (-c * R + l * x - m * A) * T, this.elm[4] = (-r * w + f * z - a * v) * T, this.elm[5] = (t * w - s * z + i * v) * T, this.elm[6] = (-g * R + y * b - d * n) * T, this.elm[7] = (o * R - l * b + m * n) * T, this.elm[8] = (r * M - h * z + a * _) * T, this.elm[9] = (-t * M + e * z - i * _) * T, this.elm[10] = (g * x - p * b + d * E) * T, this.elm[11] = (-o * x + c * b - m * E) * T, this.elm[12] = (-r * B + h * v - f * _) * T, this.elm[13] = (t * B - e * v + s * _) * T, this.elm[14] = (-g * A + p * n - y * E) * T, this.elm[15] = (o * A - c * n + l * E) * T, this);
   }
   transpose() {
-    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], c = this.elm[6], a = this.elm[7], o = this.elm[8], f = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15];
-    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = o, this.elm[3] = g, this.elm[4] = e, this.elm[5] = h, this.elm[6] = f, this.elm[7] = p, this.elm[8] = s, this.elm[9] = c, this.elm[10] = l, this.elm[11] = y, this.elm[12] = i, this.elm[13] = a, this.elm[14] = m, this.elm[15] = d, this;
+    const t = this.elm[0], e = this.elm[1], s = this.elm[2], i = this.elm[3], r = this.elm[4], h = this.elm[5], f = this.elm[6], a = this.elm[7], o = this.elm[8], c = this.elm[9], l = this.elm[10], m = this.elm[11], g = this.elm[12], p = this.elm[13], y = this.elm[14], d = this.elm[15];
+    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = o, this.elm[3] = g, this.elm[4] = e, this.elm[5] = h, this.elm[6] = c, this.elm[7] = p, this.elm[8] = s, this.elm[9] = f, this.elm[10] = l, this.elm[11] = y, this.elm[12] = i, this.elm[13] = a, this.elm[14] = m, this.elm[15] = d, this;
   }
   set(t) {
     var e;
@@ -410,19 +410,19 @@ class O {
     ]), this;
   }
   applyQuaternion(t) {
-    const e = t.x, s = t.y, i = t.z, r = t.w, h = e * e, c = s * s, a = i * i, o = r * r, f = e * s, l = e * i, m = e * r, g = s * i, p = s * r, y = i * r;
+    const e = t.x, s = t.y, i = t.z, r = t.w, h = e * e, f = s * s, a = i * i, o = r * r, c = e * s, l = e * i, m = e * r, g = s * i, p = s * r, y = i * r;
     return this.matmul([
-      h - c - a + o,
-      2 * (f + y),
+      h - f - a + o,
+      2 * (c + y),
       2 * (l - p),
       0,
-      2 * (f - y),
-      -h + c - a + o,
+      2 * (c - y),
+      -h + f - a + o,
       2 * (g + m),
       0,
       2 * (l + p),
       2 * (g - m),
-      -h - c + a + o,
+      -h - f + a + o,
       0,
       0,
       0,
@@ -483,8 +483,8 @@ class W {
     this.x = t != null ? t : this.x, this.y = e != null ? e : this.y, this.z = s != null ? s : this.z, this.w = i != null ? i : this.w;
   }
   euler(t, e = "XYZ") {
-    const s = Math.sin(t.x / 2), i = Math.sin(t.y / 2), r = Math.sin(t.z / 2), h = Math.cos(t.x / 2), c = Math.cos(t.y / 2), a = Math.cos(t.z / 2);
-    return e == "XYZ" ? (this.x = h * i * r + s * c * a, this.y = -s * c * r + h * i * a, this.z = h * c * r + s * i * a, this.w = -s * i * r + h * c * a) : e == "XZY" ? (this.x = -h * i * r + s * c * a, this.y = h * i * a - s * c * r, this.z = s * i * a + h * c * r, this.w = s * i * r + h * c * a) : e == "YZX" ? (this.x = s * c * a + h * i * r, this.y = s * c * r + h * i * a, this.z = -s * i * a + h * c * r, this.w = -s * i * r + h * c * a) : e == "ZYX" && (this.x = s * c * a - h * i * r, this.y = s * c * r + h * i * a, this.z = -s * i * a + h * c * r, this.w = s * i * r + h * c * a), this;
+    const s = Math.sin(t.x / 2), i = Math.sin(t.y / 2), r = Math.sin(t.z / 2), h = Math.cos(t.x / 2), f = Math.cos(t.y / 2), a = Math.cos(t.z / 2);
+    return e == "XYZ" ? (this.x = h * i * r + s * f * a, this.y = -s * f * r + h * i * a, this.z = h * f * r + s * i * a, this.w = -s * i * r + h * f * a) : e == "XZY" ? (this.x = -h * i * r + s * f * a, this.y = h * i * a - s * f * r, this.z = s * i * a + h * f * r, this.w = s * i * r + h * f * a) : e == "YZX" ? (this.x = s * f * a + h * i * r, this.y = s * f * r + h * i * a, this.z = -s * i * a + h * f * r, this.w = -s * i * r + h * f * a) : e == "ZYX" && (this.x = s * f * a - h * i * r, this.y = s * f * r + h * i * a, this.z = -s * i * a + h * f * r, this.w = s * i * r + h * f * a), this;
   }
   multiply() {
   }
@@ -528,7 +528,7 @@ class U {
 class Y extends U {
   constructor(t = 1, e = 1, s = 1) {
     super();
-    const i = t / 2, r = e / 2, h = s / 2, c = [
+    const i = t / 2, r = e / 2, h = s / 2, f = [
       -i,
       r,
       h,
@@ -674,7 +674,7 @@ class Y extends U {
       0,
       -1,
       0
-    ], o = [], f = [];
+    ], o = [], c = [];
     for (let l = 0; l < 6; l++) {
       o.push(
         0,
@@ -687,7 +687,7 @@ class Y extends U {
         0
       );
       const m = 4 * l;
-      f.push(
+      c.push(
         0 + m,
         2 + m,
         1 + m,
@@ -696,41 +696,41 @@ class Y extends U {
         3 + m
       );
     }
-    this.setAttribute("position", c, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", f, 1);
+    this.setAttribute("position", f, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", c, 1);
   }
 }
 class K extends U {
   constructor(t = 0.5, e = 0.5, s = 1, i = 10, r = 1) {
     super();
-    const h = [], c = [], a = [], o = [];
-    for (let f = 0; f <= r + 2; f++)
+    const h = [], f = [], a = [], o = [];
+    for (let c = 0; c <= r + 2; c++)
       for (let l = 0; l < i; l++) {
         const m = Math.PI * 2 / i * l;
-        if (f <= r) {
-          const g = f / r, p = (1 - g) * e + g * t, y = Math.cos(m) * p, d = -(s / 2) + s / r * f, E = Math.sin(m) * p;
+        if (c <= r) {
+          const g = c / r, p = (1 - g) * e + g * t, y = Math.cos(m) * p, d = -(s / 2) + s / r * c, E = Math.sin(m) * p;
           h.push(y, d, E), a.push(
             l / i,
-            f / r
+            c / r
           );
           const n = new F(Math.cos(m), 0, Math.sin(m)).normalize();
-          c.push(
+          f.push(
             n.x,
             n.y,
             n.z
-          ), f < r && o.push(
-            f * i + l,
-            (f + 1) * i + (l + 1) % i,
-            f * i + (l + 1) % i,
-            f * i + l,
-            (f + 1) * i + l,
-            (f + 1) * i + (l + 1) % i
+          ), c < r && o.push(
+            c * i + l,
+            (c + 1) * i + (l + 1) % i,
+            c * i + (l + 1) % i,
+            c * i + l,
+            (c + 1) * i + l,
+            (c + 1) * i + (l + 1) % i
           );
         } else {
-          const g = f - r - 1, p = g ? t : e, y = Math.cos(m) * p, d = -(s / 2) + s * g, E = Math.sin(m) * p;
+          const g = c - r - 1, p = g ? t : e, y = Math.cos(m) * p, d = -(s / 2) + s * g, E = Math.sin(m) * p;
           h.push(y, d, E), a.push(
             (y + p) * 0.5 / p,
             (E + p) * 0.5 / p
-          ), c.push(0, -1 + g * 2, 0);
+          ), f.push(0, -1 + g * 2, 0);
           const n = i * (r + (g + 1));
           l <= i - 2 && (g == 0 ? o.push(
             n,
@@ -743,23 +743,23 @@ class K extends U {
           ));
         }
       }
-    this.setAttribute("position", h, 3), this.setAttribute("normal", c, 3), this.setAttribute("uv", a, 2), this.setAttribute("index", o, 1);
+    this.setAttribute("position", h, 3), this.setAttribute("normal", f, 3), this.setAttribute("uv", a, 2), this.setAttribute("index", o, 1);
   }
 }
 class q extends U {
   constructor(t = 1, e = 1, s = 1, i = 1) {
     super();
-    const r = t / 2, h = e / 2, c = [], a = [], o = [], f = [];
+    const r = t / 2, h = e / 2, f = [], a = [], o = [], c = [];
     for (let l = 0; l <= i; l++)
       for (let m = 0; m <= s; m++) {
         const g = m / s, p = l / s;
-        if (c.push(
+        if (f.push(
           -r + t * g,
           -h + e * p,
           0
         ), o.push(g, p), a.push(0, 0, 1), l > 0 && m > 0) {
           const y = s + 1, d = y * l + m, E = y * (l - 1) + m - 1;
-          f.push(
+          c.push(
             d,
             y * l + m - 1,
             E,
@@ -769,23 +769,23 @@ class q extends U {
           );
         }
       }
-    this.setAttribute("position", c, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", f, 1);
+    this.setAttribute("position", f, 3), this.setAttribute("normal", a, 3), this.setAttribute("uv", o, 2), this.setAttribute("index", c, 1);
   }
 }
 class J extends U {
   constructor(t = 0.5, e = 20, s = 10) {
     super();
-    const i = [], r = [], h = [], c = [];
+    const i = [], r = [], h = [], f = [];
     for (let a = 0; a <= s; a++) {
-      const o = a / s * Math.PI, f = (a != 0 && a != s, e);
-      for (let l = 0; l < f; l++) {
-        const m = l / f * Math.PI * 2, g = Math.sin(o) * t, p = Math.cos(m) * g, y = -Math.cos(o) * t, d = -Math.sin(m) * g;
+      const o = a / s * Math.PI, c = (a != 0 && a != s, e);
+      for (let l = 0; l < c; l++) {
+        const m = l / c * Math.PI * 2, g = Math.sin(o) * t, p = Math.cos(m) * g, y = -Math.cos(o) * t, d = -Math.sin(m) * g;
         i.push(p, y, d), h.push(
-          l / f,
+          l / c,
           a / s
         );
         const E = new F(p, y, d).normalize();
-        r.push(E.x, E.y, E.z), c.push(
+        r.push(E.x, E.y, E.z), f.push(
           a * e + l,
           a * e + (l + 1) % e,
           (a + 1) * e + (l + 1) % e,
@@ -795,7 +795,7 @@ class J extends U {
         );
       }
     }
-    this.setAttribute("position", i, 3), this.setAttribute("normal", r, 3), this.setAttribute("uv", h, 2), this.setAttribute("index", c, 1);
+    this.setAttribute("position", i, 3), this.setAttribute("normal", r, 3), this.setAttribute("uv", h, 2), this.setAttribute("index", f, 1);
   }
   setAttribute(t, e, s) {
     t == "index" && e.forEach((i, r) => {
@@ -808,9 +808,9 @@ class $ extends U {
     super(), this.count = t;
     const e = [], s = [], i = [], r = new F(0, 0);
     let h = 1;
-    for (let c = 0; c < t; c++) {
+    for (let f = 0; f < t; f++) {
       e.push(-1 + r.x, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y, 0), e.push(-1 + r.x + h, 1 + r.y - h, 0), e.push(-1 + r.x, 1 + r.y - h, 0), s.push(0, 1), s.push(1, 1), s.push(1, 0), s.push(0, 0);
-      const a = (c + 0) * 4;
+      const a = (f + 0) * 4;
       i.push(a + 0, a + 2, a + 1, a + 0, a + 3, a + 2), r.x += h, r.y = r.y - h, h *= 0.5;
     }
     this.setAttribute("position", e, 3), this.setAttribute("uv", s, 2), this.setAttribute("index", i, 1);
@@ -857,8 +857,8 @@ var C;
     });
   }, u.getEntities = (t, e) => t.entities.filter((i) => {
     for (let r = 0; r < e.length; r++) {
-      const h = e[r], c = t.components.get(h);
-      if (c === void 0 || c[i] === void 0)
+      const h = e[r], f = t.components.get(h);
+      if (f === void 0 || f[i] === void 0)
         return !1;
     }
     return !0;
@@ -933,40 +933,40 @@ var I;
   function s(o) {
     return -3 * o.p0 + 3 * o.p1;
   }
-  function i(o, f) {
-    return 3 * t(o) * f * f + 2 * e(o) * f + s(o);
+  function i(o, c) {
+    return 3 * t(o) * c * c + 2 * e(o) * c + s(o);
   }
   u.calcBezierSlope = i;
-  function r(o, f) {
-    return ((t(o) * f + e(o)) * f + s(o)) * f + o.p0;
+  function r(o, c) {
+    return ((t(o) * c + e(o)) * c + s(o)) * c + o.p0;
   }
   u.calcBezier = r;
-  function h(o, f, l, m) {
+  function h(o, c, l, m) {
     let g = 0, p = 0;
     for (let y = 0; y < u.SUBDIVISION_MAX_ITERATIONS; y++)
-      p = f + (l - f) / 2, g = r(m, p), g > o ? l = p : f = p;
+      p = c + (l - c) / 2, g = r(m, p), g > o ? l = p : c = p;
     return p;
   }
-  function c(o, f, l) {
+  function f(o, c, l) {
     for (let m = 0; m < u.NEWTON_ITERATIONS; m++) {
-      const g = i(f, l);
+      const g = i(c, l);
       if (g == 0)
         return l;
-      l -= (r(f, l) - o) / g;
+      l -= (r(c, l) - o) / g;
     }
     return l;
   }
-  function a(o, f, l) {
+  function a(o, c, l) {
     o.p1 = Math.max(o.p0, Math.min(o.p3, o.p1)), o.p2 = Math.max(o.p0, Math.min(o.p3, o.p2));
     let m = 0;
-    for (let y = 1; y < l.length && (m = y - 1, !(f < l[y])); y++)
+    for (let y = 1; y < l.length && (m = y - 1, !(c < l[y])); y++)
       ;
     const g = m / (u.BEZIER_EASING_CACHE_SIZE - 1), p = i(o, g) / (o.p3 - o.p0);
-    return p == 0 ? g : p > 0.01 ? c(f, o, g) : h(f, g, g + u.BEZIER_EASING_SAMPLE_STEP_SIZE, o);
+    return p == 0 ? g : p > 0.01 ? f(c, o, g) : h(c, g, g + u.BEZIER_EASING_SAMPLE_STEP_SIZE, o);
   }
   u.getBezierTfromX = a;
 })(I || (I = {}));
-var S;
+var D;
 ((u) => {
   function t(n = 6) {
     return (b) => {
@@ -996,10 +996,10 @@ var S;
     return n < 0.5 ? 2 * n * n : -1 + (4 - 2 * n) * n;
   }
   u.easeInOutQuad = h;
-  function c(n) {
+  function f(n) {
     return n * n * n;
   }
-  u.easeInCubic = c;
+  u.easeInCubic = f;
   function a(n) {
     return --n * n * n + 1;
   }
@@ -1008,10 +1008,10 @@ var S;
     return n < 0.5 ? 4 * n * n * n : (n - 1) * (2 * n - 2) * (2 * n - 2) + 1;
   }
   u.easeInOutCubic = o;
-  function f(n) {
+  function c(n) {
     return n * n * n * n;
   }
-  u.easeInQuart = f;
+  u.easeInQuart = c;
   function l(n) {
     return 1 - --n * n * n * n;
   }
@@ -1047,7 +1047,7 @@ var S;
     );
   }
   u.cubicBezier = E;
-})(S || (S = {}));
+})(D || (D = {}));
 class V extends N {
   constructor(t) {
     super(), this.keyframes = [], this.cache = { frame: NaN, value: NaN }, this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.set(t);
@@ -1110,7 +1110,7 @@ class Q extends N {
     this.coordinate = t, this.handleLeft = e || t, this.handleRight = s || t, this.interpolation = i || "BEZIER";
   }
   getEasing(t, e) {
-    return t == "BEZIER" ? S.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (s) => {
+    return t == "BEZIER" ? D.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (s) => {
       const i = e.coordinate.y - this.coordinate.y;
       return s = (s - this.coordinate.x) / (e.coordinate.x - this.coordinate.x), this.coordinate.y + s * i;
     };
@@ -1134,20 +1134,27 @@ class et extends N {
       console.error(e), this.emit("error");
     };
   }
-  syncJsonScene(t) {
+  loadJsonScene(t) {
     const e = new XMLHttpRequest();
     e.onreadystatechange = () => {
-      e.readyState == 4 && e.status == 200 && this.onSyncScene(JSON.parse(e.response));
+      e.readyState == 4 && e.status == 200 && this.loadScene(JSON.parse(e.response));
     }, e.open("GET", t), e.send();
   }
-  onSyncScene(t) {
+  loadScene(t) {
     this.frame.start = t.frame.start, this.frame.end = t.frame.end, this.frame.fps = t.frame.fps, this.curveGroups.length = 0, this.objects.length = 0;
     const e = Object.keys(t.animations);
     for (let i = 0; i < e.length; i++) {
       const r = e[i], h = new Z(r);
-      t.animations[r].forEach((c) => {
+      t.animations[r].forEach((f) => {
         const a = new V();
-        a.set(c.keyframes.map((o) => new Q(o.c, o.h_l, o.h_r, o.i))), h.setFCurve(a, c.axis);
+        a.set(f.keyframes.map((o) => {
+          let c = {
+            B: "BEZIER",
+            C: "CONSTANT",
+            L: "LINEAR"
+          }[o.i];
+          return new Q(o.c, o.h_l, o.h_r, c);
+        })), h.setFCurve(a, f.axis);
       }), this.curveGroups.push(h);
     }
     this.scene = t.scene, this.objects.length = 0;
@@ -1164,7 +1171,7 @@ class et extends N {
   }
   onMessage(t) {
     const e = JSON.parse(t.data);
-    e.type == "sync/scene" ? this.onSyncScene(e.data) : e.type == "sync/timeline" && this.onSyncTimeline(e.data);
+    e.type == "sync/scene" ? this.loadScene(e.data) : e.type == "sync/timeline" && this.onSyncTimeline(e.data);
   }
   onClose(t) {
     this.disposeWS();
@@ -1185,7 +1192,7 @@ export {
   Y as CubeGeometry,
   K as CylinderGeometry,
   C as ECS,
-  S as Easings,
+  D as Easings,
   N as EventEmitter,
   V as FCurve,
   Z as FCurveGroup,
@@ -1197,7 +1204,7 @@ export {
   j as GLPowerTransformFeedback,
   P as GLPowerVAO,
   U as Geometry,
-  O as Matrix,
+  S as Matrix,
   $ as MipMapGeometry,
   q as PlaneGeometry,
   H as Power,

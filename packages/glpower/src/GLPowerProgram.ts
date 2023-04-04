@@ -104,9 +104,17 @@ export class GLPowerProgram {
 
 			console.error( this.gl.getShaderInfoLog( shader ) );
 
-		}
+			let error = '';
 
-		return null;
+			shaderSrc.split( '\n' ).forEach( ( t, i ) => {
+
+				error += `${i + 1}: ${t}\n`;
+
+			} );
+
+			console.error( error );
+
+		}
 
 	}
 
@@ -245,6 +253,20 @@ export class GLPowerProgram {
 	public getProgram() {
 
 		return this.program;
+
+	}
+
+	public dispose() {
+
+		this.vao.forEach( vao => {
+
+			vao.dispose();
+
+		} );
+
+		this.vao.clear();
+
+		this.gl.deleteProgram( this.program );
 
 	}
 

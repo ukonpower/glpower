@@ -1,6 +1,6 @@
 import * as GLP from 'glpower';
 import { Entity, Uniformable } from 'glpower';
-import { ComponentCamera, ComponentGeometry, ComponentLightDirectional, ComponentLightSpot, ComponentMaterial, ComponentPostProcess, ComponentRenderCamera, ComponentShadowmapCamera, ComponentTransformMatrix, ComponentTransformMatrix } from '../../Component';
+import { ComponentCamera, ComponentGeometry, ComponentLightDirectional, ComponentLightSpot, ComponentMaterial, ComponentPostProcess, ComponentRenderCamera, ComponentShadowmapCamera, ComponentTransformMatrix } from '../../Component';
 import { ProgramManager } from './ProgramManager';
 import { shaderParse } from './ShaderParser';
 

@@ -51,7 +51,7 @@ export class BLidgeSystem extends GLP.System {
 
 		this.blidge.on( 'error', () => {
 
-			this.blidge.syncJsonScene( BASE_PATH + '/assets/demo/scene.json' );
+			this.blidge.loadJsonScene( BASE_PATH + '/assets/demo/scene.json' );
 			this.play = true;
 
 		} );
@@ -123,7 +123,7 @@ export class BLidgeSystem extends GLP.System {
 
 					if ( blidgeComponent.type == 'camera' ) rotXOffset = - Math.PI / 2;
 
-					this.tmpQuaternion.euler( {
+					this.tmpQuaternion.setFromEuler( {
 						x: rot.x + rotXOffset,
 						y: rot.y,
 						z: rot.z
@@ -343,7 +343,7 @@ export class BLidgeSystem extends GLP.System {
 				};
 
 
-				const q = new GLP.Quaternion().euler( rot, 'YZX' );
+				const q = new GLP.Quaternion().setFromEuler( rot, 'YZX' );
 
 				quaternion.x = q.x;
 				quaternion.y = q.y;

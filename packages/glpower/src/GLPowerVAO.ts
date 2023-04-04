@@ -24,7 +24,7 @@ export class GLPowerVAO {
 
 	public program: WebGLProgram;
 
-	protected indexBuffer: GLPowerBuffer | null;
+	public indexBuffer: GLPowerBuffer | null;
 
 	protected attributes: Map<string, AttributeBuffer>;
 
@@ -178,6 +178,16 @@ export class GLPowerVAO {
 	public getVAO() {
 
 		return this.vao;
+
+	}
+
+	public dispose() {
+
+		this.attributes.forEach( item => {
+
+			item.buffer.dispose();
+
+		} );
 
 	}
 
