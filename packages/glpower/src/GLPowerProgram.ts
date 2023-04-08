@@ -18,7 +18,7 @@ export type Uniform = {
 	needsUpdate?: boolean
 }
 
-export type Uniforms = {[key:string]: {value: Uniformable | Uniformable[], type: UniformType}}
+export type Uniforms = {[key:string]: {value: any, type: UniformType}}
 
 export type ShaderOptions = {
 	transformFeedbackVaryings?: string[]
