@@ -66,7 +66,7 @@ export class Geometry {
 
 	public getComponent( power: Power ) {
 
-		const attributes = [];
+		const attributes:( Omit<AttributeBuffer, 'count'> & {name: string} )[] = [];
 
 		if ( this.getAttribute( 'position' ) ) {
 
