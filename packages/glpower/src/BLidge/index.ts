@@ -308,6 +308,16 @@ export class BLidge extends EventEmitter {
 
 	}
 
+	public setFrame( frame: number ) {
+
+		this.onSyncTimeline( {
+			...this.frame,
+			playing: true,
+			current: frame,
+		} );
+
+	}
+
 	/*-------------------------------
 		Dispose
 	-------------------------------*/
