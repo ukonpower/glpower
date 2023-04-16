@@ -11,7 +11,7 @@ export class CubeGeometry extends Geometry {
 		const normalArray = [];
 		const uvArray = [];
 		const indexArray = [];
-		const trailIdArray = [];
+		const posYArray = [];
 
 		const faces = [
 			{ normal: [ 0, 0, 1 ], dir: [ 1, 0, 0 ], up: [ 0, 1, 0 ], w: width, h: height, d: depth, segW: segmentsWidth, segH: segmentsHeight },
@@ -58,10 +58,9 @@ export class CubeGeometry extends Geometry {
 					normalArray.push( ...n );
 					uvArray.push( u, v );
 
-					trailIdArray.push(
+					posYArray.push(
 						i / segH * up[ 1 ] + ( Math.max( 0.0, up[ 2 ] ) ),
 					);
-
 
 					if ( i < segH && j < segW ) {
 
@@ -86,7 +85,7 @@ export class CubeGeometry extends Geometry {
 		this.setAttribute( 'position', posArray, 3 );
 		this.setAttribute( 'normal', normalArray, 3 );
 		this.setAttribute( 'uv', uvArray, 2 );
-		this.setAttribute( 'trailId', trailIdArray, 1 );
+		this.setAttribute( 'posY', posYArray, 1 );
 		this.setAttribute( 'index', indexArray, 1 );
 
 	}
@@ -96,8 +95,8 @@ export class CubeGeometry extends Geometry {
 		const component = super.getComponent( power );
 
 		component.attributes.push( {
-			name: 'trailId',
-			...this.getAttributeBuffer( power, "trailId", Float32Array )
+			name: 'posY',
+			...this.getAttributeBuffer( power, "posY", Float32Array )
 		} );
 
 		return component;

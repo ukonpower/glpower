@@ -22,6 +22,8 @@ export class Geometry {
 
 		this.updateVertCount();
 
+		return this;
+
 	}
 
 	public getAttribute( name: DefaultAttributeName | ( string & {} ) ) {
