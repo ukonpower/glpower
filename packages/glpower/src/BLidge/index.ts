@@ -91,14 +91,14 @@ export type BLidgeAnimation = { [key: string]: string }
 export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
 
 export type BLidgeAnimationCurveParam = {
-    keyframes: BLidgeAnimationCurveKeyFrameParam[];
+    k: BLidgeAnimationCurveKeyFrameParam[];
 	axis: BLidgeAnimationCurveAxis
 }
 
 export type BLidgeAnimationCurveKeyFrameParam = {
     c: IVector2;
-    h_l: IVector2;
-    h_r: IVector2;
+    h_l?: IVector2;
+    h_r?: IVector2;
     e: string;
     i: "B" | "L" | "C";
 }
@@ -233,7 +233,7 @@ export class BLidge extends EventEmitter {
 
 				const curve = new FCurve();
 
-				curve.set( fcurveData.keyframes.map( frame => {
+				curve.set( fcurveData.k.map( frame => {
 
 					const interpolation = {
 						"B": "BEZIER",
@@ -258,8 +258,6 @@ export class BLidge extends EventEmitter {
 		this.objects.length = 0;
 
 		const _ = ( objMsg: BLidgeObjectMessage ): BLidgeObject => {
-
-			console.log( objMsg.ps );
 
 			const mat = { name: '', uniforms: {} };
 
@@ -301,9 +299,6 @@ export class BLidge extends EventEmitter {
 		};
 
 		this.scene = _( data.scene );
-
-		console.log( this.scene );
-
 
 		// dispatch event
 
