@@ -1,10 +1,27 @@
 import { EventEmitter } from '../utils/EventEmitter';
-import { IVector2, IVector3 } from "../Math/Vector";
+import { IVector2, IVector3, Vector } from "../Math/Vector";
 import { FCurve } from "../Animation/FCurve";
 import { FCurveGroup } from '../Animation/FCurveGroup';
 import { FCurveInterpolation, FCurveKeyFrame } from "../Animation/FCurveKeyFrame";
 
 // object
+
+export type BLidgeObjectMessage = {
+	n: string,
+	prnt: string,
+	chld?: BLidgeObjectMessage[],
+	anim?: BLidgeAnimation,
+	ps: IVector3,
+	rt?: IVector3,
+	sc?: IVector3,
+	mat?: {
+		n?: string,
+		uni?: BLidgeAnimation
+	}
+	t: BLidgeObjectType,
+	v: boolean,
+	prm?: BLidgeCameraParam | BLidgeMeshParam | BLidgeLightParamCommon
+}
 
 export type BLidgeObject = {
 	name: string,
@@ -63,7 +80,7 @@ export type BLidgeMaterialParam = {
 
 export type BLidgeSceneData = {
     animations: {[key: string]: BLidgeAnimationCurveParam[]};
-	scene: BLidgeObject;
+	scene: BLidgeObjectMessage;
 	frame: BLidgeSceneFrame;
 }
 
@@ -74,14 +91,14 @@ export type BLidgeAnimation = { [key: string]: string }
 export type BLidgeAnimationCurveAxis = 'x' | 'y' | 'z' | 'w'
 
 export type BLidgeAnimationCurveParam = {
-    keyframes: BLidgeAnimationCurveKeyFrameParam[];
+    k: BLidgeAnimationCurveKeyFrameParam[];
 	axis: BLidgeAnimationCurveAxis
 }
 
 export type BLidgeAnimationCurveKeyFrameParam = {
     c: IVector2;
-    h_l: IVector2;
-    h_r: IVector2;
+    h_l?: IVector2;
+    h_r?: IVector2;
     e: string;
     i: "B" | "L" | "C";
 }
@@ -216,7 +233,7 @@ export class BLidge extends EventEmitter {
 
 				const curve = new FCurve();
 
-				curve.set( fcurveData.keyframes.map( frame => {
+				curve.set( fcurveData.k.map( frame => {
 
 					const interpolation = {
 						"B": "BEZIER",
@@ -238,19 +255,50 @@ export class BLidge extends EventEmitter {
 
 		// objects
 
-		this.scene = data.scene;
-
 		this.objects.length = 0;
 
-		const _ = ( obj: BLidgeObject ) => {
+		const _ = ( objMsg: BLidgeObjectMessage ): BLidgeObject => {
+
+			const mat = { name: '', uniforms: {} };
+
+			if ( objMsg.mat ) {
+
+				mat.name = objMsg.mat.n || '';
+				mat.uniforms = objMsg.mat.uni || {};
+
+			}
+
+			const obj: BLidgeObject = {
+				name: objMsg.n,
+				parent: objMsg.prnt,
+				children: [],
+				animation: objMsg.anim || {},
+				position: objMsg.ps || new Vector(),
+				rotation: objMsg.rt || new Vector(),
+				scale: objMsg.sc || new Vector(),
+				material: mat,
+				type: objMsg.t,
+				visible: objMsg.v,
+				param: objMsg.prm
+			};
+
+			if ( objMsg.chld ) {
+
+				objMsg.chld.forEach( item => {
+
+					obj.children.push( _( item ) );
+
+				} );
+
+			}
 
 			this.objects.push( obj );
 
-			obj.children.forEach( item => _( item ) );
+			return obj;
 
 		};
 
-		_( this.scene );
+		this.scene = _( data.scene );
 
 		// dispatch event
 
@@ -305,6 +353,16 @@ export class BLidge extends EventEmitter {
 	public getCurveGroup( name: string ) {
 
 		return this.curveGroups.find( curve => curve.name == name );
+
+	}
+
+	public setFrame( frame: number ) {
+
+		this.onSyncTimeline( {
+			...this.frame,
+			playing: true,
+			current: frame,
+		} );
 
 	}
 

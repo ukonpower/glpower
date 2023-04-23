@@ -22,6 +22,8 @@ export class Geometry {
 
 		this.updateVertCount();
 
+		return this;
+
 	}
 
 	public getAttribute( name: DefaultAttributeName | ( string & {} ) ) {
@@ -66,7 +68,7 @@ export class Geometry {
 
 	public getComponent( power: Power ) {
 
-		const attributes = [];
+		const attributes:( Omit<AttributeBuffer, 'count'> & {name: string} )[] = [];
 
 		if ( this.getAttribute( 'position' ) ) {
 
