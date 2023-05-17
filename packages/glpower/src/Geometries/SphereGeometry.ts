@@ -68,7 +68,7 @@ export class SphereGeometry extends Geometry {
 
 	}
 
-	public setAttribute( name: ( 'position' | 'uv' | 'normal' | 'index' ) | ( string & {} ), array: number[], size: number ): void {
+	public setAttribute( name: ( 'position' | 'uv' | 'normal' | 'index' ) | ( string & {} ), array: number[], size: number ) {
 
 		if ( name == 'index' ) {
 
@@ -81,9 +81,7 @@ export class SphereGeometry extends Geometry {
 
 		}
 
-		super.setAttribute( name, array, size );
-
-
+		return super.setAttribute( name, array, size );
 
 	}
 
