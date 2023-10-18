@@ -10,7 +10,6 @@ const pageList = [
 	{ path: 'examples/framebuffer' },
 	{ path: 'examples/instancing' },
 	{ path: 'examples/transformfeedback' },
-	{ path: 'demo/' },
 ];
 
 const input = {
@@ -51,7 +50,8 @@ export default defineConfig( {
 	},
 	resolve: {
 		alias: {
-			"glpower": path.join( __dirname, "packages/glpower/src" )
+			"glpower": path.join( __dirname, "packages/glpower/src" ),
+			"@examples": path.join( __dirname, "src/examples" )
 		},
 	},
 	plugins: [

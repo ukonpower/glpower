@@ -13,7 +13,7 @@ export declare type Uniform = {
 };
 export declare type Uniforms = {
     [key: string]: {
-        value: Uniformable | Uniformable[];
+        value: any;
         type: UniformType;
     };
 };
@@ -27,12 +27,13 @@ export declare class GLPowerProgram {
     protected uniforms: Map<string, Uniform>;
     constructor(gl: WebGL2RenderingContext);
     setShader(vertexShaderSrc: string, fragmentShaderSrc: string, opt?: ShaderOptions): this | undefined;
-    protected createShader(shaderSrc: string, type: number): WebGLShader | null;
+    protected createShader(shaderSrc: string, type: number): WebGLShader | null | undefined;
     setUniform(name: string, type: UniformType, value: (number | boolean)[]): void;
     private updateUniformLocations;
     uploadUniforms(): void;
     getVAO(id?: string): GLPowerVAO | null;
     use(cb?: (program: GLPowerProgram) => void): void;
     getProgram(): WebGLProgram | null;
+    dispose(): void;
 }
 //# sourceMappingURL=GLPowerProgram.d.ts.map

@@ -3,6 +3,12 @@ import * as GLP from 'glpower';
 import basicVert from '../../shaders/basic.vs';
 import basicFrag from '../../shaders/basic.fs';
 
+import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
+import { CylinderGeometry } from '@examples/libs/Geometries/CylinderGeometry';
+import { Geometry } from '@examples/libs/Geometries/Geometry';
+import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
+import { SphereGeometry } from '@examples/libs/Geometries/SphereGeometry';
+
 class ExGeometries {
 
 	// contexts
@@ -14,7 +20,7 @@ class ExGeometries {
 
 	private objList: {
 		modelMatrix: GLP.Matrix;
-		geometry: GLP.Geometry;
+		geometry: Geometry;
 		vao: GLP.GLPowerVAO;
 	}[] = [];
 
@@ -39,10 +45,10 @@ class ExGeometries {
 		// program
 
 		const geometries = [
-			new GLP.PlaneGeometry(),
-			new GLP.CubeGeometry(),
-			new GLP.SphereGeometry(),
-			new GLP.CylinderGeometry(),
+			new PlaneGeometry(),
+			new CubeGeometry(),
+			new SphereGeometry(),
+			new CylinderGeometry(),
 		];
 
 		const program = this.core.createProgram();

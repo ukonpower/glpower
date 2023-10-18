@@ -2,6 +2,7 @@ import * as GLP from 'glpower';
 
 import instancingVert from '../../shaders/instancing.vs';
 import basicFrag from '../../shaders/basic.fs';
+import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
 
 class ExTexture {
 
@@ -39,7 +40,7 @@ class ExTexture {
 
 		// geometry
 
-		const geometry = new GLP.CubeGeometry();
+		const geometry = new CubeGeometry();
 
 		// vao
 

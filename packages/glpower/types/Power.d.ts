@@ -4,6 +4,7 @@ import { GLPowerTexture } from "./GLPowerTexture";
 import { GLPowerFrameBuffer } from "./GLPowerFrameBuffer";
 export declare class Power {
     gl: WebGL2RenderingContext;
+    extDisJointTimerQuery: any;
     constructor(gl: WebGL2RenderingContext);
     createProgram(): GLPowerProgram;
     createBuffer(): GLPowerBuffer;

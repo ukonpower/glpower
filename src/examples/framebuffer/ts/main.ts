@@ -4,6 +4,10 @@ import basicVert from '../../shaders/basic.vs';
 import basicFrag from '../../shaders/basic.fs';
 import textureFrag from '../../shaders/texture.fs';
 
+import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
+import { Geometry } from '@examples/libs/Geometries/Geometry';
+import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
+
 class ExFrameBuffer {
 
 	// contexts
@@ -62,7 +66,7 @@ class ExFrameBuffer {
 
 		// vao
 
-		const setVao = ( vao: GLP.GLPowerVAO, geo: GLP.Geometry ) => {
+		const setVao = ( vao: GLP.GLPowerVAO, geo: Geometry ) => {
 
 			const position = geo.getAttribute( 'position' );
 			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
@@ -79,13 +83,13 @@ class ExFrameBuffer {
 
 		this.objList.cube = {
 			modelMatrix: new GLP.Matrix().applyPosition( new GLP.Vector( 0, 0, 0 ) ),
-			vao: setVao( basicProgram.getVAO()!, new GLP.CubeGeometry() ),
+			vao: setVao( basicProgram.getVAO()!, new CubeGeometry() ),
 			program: basicProgram
 		};
 
 		this.objList.plane = {
 			modelMatrix: new GLP.Matrix().applyPosition( new GLP.Vector( 0, 0, 0 ) ),
-			vao: setVao( frameProgram.getVAO()!, new GLP.PlaneGeometry( 2.0, 2.0 ) ),
+			vao: setVao( frameProgram.getVAO()!, new PlaneGeometry( 2.0, 2.0 ) ),
 			program: frameProgram
 		};
 

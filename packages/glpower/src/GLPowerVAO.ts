@@ -1,11 +1,11 @@
-import { GLPowerBuffer } from "./GLPowerBuffer";
+import { GLPowerBuffer, TArrayBuffer } from "./GLPowerBuffer";
 
 export type Attribute = {
-	array: number[];
+	array: TArrayBuffer;
 	size: number;
 }
 
-type AttributeOptions = {
+export type AttributeOptions = {
 	instanceDivisor?: number;
 }
 
@@ -115,7 +115,11 @@ export class GLPowerVAO {
 
 			}
 
-			this.vertCount = Math.max( this.vertCount, attribute.count );
+			if ( attribute.instanceDivisor == undefined && name != 'index' ) {
+
+				this.vertCount = Math.max( this.vertCount, attribute.count );
+
+			}
 
 			if ( attribute.instanceDivisor !== undefined && attribute.instanceDivisor > 0 ) {
 

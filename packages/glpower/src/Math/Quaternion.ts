@@ -1,4 +1,5 @@
 import { IVector3, IVector4, Matrix, Types } from "..";
+import { Euler, EulerOrder } from "./Euler";
 import { Vector } from "./Vector";
 
 export type Quat = {
@@ -6,8 +7,6 @@ export type Quat = {
 	y: number,
 	z: number
 }
-
-export type EulerOrder = 'XYZ' | 'XZY' | 'ZYX' | 'YZX'
 
 export class Quaternion {
 
@@ -36,7 +35,9 @@ export class Quaternion {
 
 	}
 
-	public setFromEuler( euler: Vector | IVector3, order: EulerOrder = 'XYZ' ) {
+	public setFromEuler( euler: Vector | Euler | IVector3, orverrideOrder?: EulerOrder ) {
+
+		const order = orverrideOrder || ( 'order' in euler ? euler.order : 'XYZ' );
 
 		const sx = Math.sin( euler.x / 2 );
 		const sy = Math.sin( euler.y / 2 );

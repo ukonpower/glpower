@@ -78,7 +78,7 @@ export class GLPowerTexture {
 
 			this.size.set( this.image.width, this.image.height );
 
-			if ( this.image instanceof HTMLImageElement ) {
+			if ( this.image instanceof HTMLImageElement || this.image instanceof HTMLCanvasElement ) {
 
 				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this._setting.format, this._setting.type, this.image );
 
