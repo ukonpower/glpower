@@ -6,5 +6,6 @@ export declare class GLPowerBuffer {
     array: TArrayBuffer | null;
     constructor(gl: WebGL2RenderingContext);
     setData(data: TArrayBuffer, type?: BufferType, usage?: number): this;
+    dispose(): void;
 }
 //# sourceMappingURL=GLPowerBuffer.d.ts.map

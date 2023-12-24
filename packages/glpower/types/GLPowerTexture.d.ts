@@ -29,6 +29,7 @@ export declare class GLPowerTexture {
     load(src: string, callBack?: () => void): this;
     getTexture(): WebGLTexture | null;
     loadAsync(src: string): Promise<unknown>;
+    dispose(): void;
 }
 export {};
 //# sourceMappingURL=GLPowerTexture.d.ts.map

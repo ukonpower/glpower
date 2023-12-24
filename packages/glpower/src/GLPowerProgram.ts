@@ -102,17 +102,42 @@ export class GLPowerProgram {
 
 		} else {
 
-			console.error( this.gl.getShaderInfoLog( shader ) );
+			if ( process.env.NODE_ENV == "development" ) {
 
-			let error = '';
+				const errorLog = this.gl.getShaderInfoLog( shader );
 
-			shaderSrc.split( '\n' ).forEach( ( t, i ) => {
+				if ( errorLog ) {
 
-				error += `${i + 1}: ${t}\n`;
+					const splitShaderSrc = shaderSrc.split( '\n' );
 
-			} );
+					const lines = errorLog.matchAll( /ERROR: 0:(\d+)/g );
 
-			console.error( error );
+					Array.from( lines ).forEach( ( line, index ) => {
+
+						const lineNum = Number( line[ 1 ] );
+
+						const start = Math.max( 0, lineNum - 5 );
+						const end = Math.min( splitShaderSrc.length, lineNum + 2 );
+
+						let error = errorLog.split( '\n' )[ index ] + '\n';
+
+						splitShaderSrc.forEach( ( t, i ) => {
+
+							if ( start <= i && i <= end ) {
+
+								error += `${i + 1}: ${t}\n`;
+
+							}
+
+						} );
+
+						console.error( error );
+
+					} );
+
+				}
+
+			}
 
 		}
 

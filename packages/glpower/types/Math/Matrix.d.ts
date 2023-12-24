@@ -20,6 +20,7 @@ export declare class Matrix {
     protected matmul(elm2: number[]): void;
     multiply(m: Matrix): this;
     preMultiply(m: Matrix): this;
+    decompose(pos?: IVector3, rot?: Quaternion, scale?: IVector3): void;
     copyToArray(array: number[]): number[];
 }
 //# sourceMappingURL=Matrix.d.ts.map

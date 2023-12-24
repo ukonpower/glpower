@@ -1,5 +1,7 @@
 import * as GLP from 'glpower';
 
+import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
+
 import basicVert from '../../shaders/basic.vs';
 import textureFrag from '../../shaders/texture.fs';
 
@@ -45,7 +47,7 @@ class ExTexture {
 
 		// create vao
 
-		const geometry = new GLP.PlaneGeometry( 1.4, 1.4 );
+		const geometry = new PlaneGeometry( 1.4, 1.4 );
 
 		const vao = program.getVAO()!;
 

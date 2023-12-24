@@ -26,11 +26,12 @@ export declare class Vector {
     divide(a: number): Vector;
     divide(a: Vector): Vector;
     length(): number;
-    normalize(): Vector;
+    normalize(): this;
     cross(v: Vector | IVector3): this;
     dot(v: Vector | IVector3): number;
     applyMatrix3(mat: Matrix): void;
     applyMatrix4(mat: Matrix): this;
+    floor(): void;
     copy(a: Vector | Types.Nullable<IVector4>): this;
     clone(): Vector;
     getElm(type?: 'vec2' | 'vec3' | 'vec4'): number[];
