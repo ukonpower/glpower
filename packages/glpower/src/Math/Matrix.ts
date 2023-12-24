@@ -259,6 +259,57 @@ export class Matrix {
 
 	}
 
+	public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
+
+		up = up || { x: 0, y: 1, z: 0 };
+
+		const zAxis = new Vector().copy( direction ).normalize();
+		const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
+
+		if ( xAxis.length() == 0.0 ) {
+
+			zAxis.x += 0.001;
+
+			xAxis.copy( up ).cross( zAxis ).normalize();
+
+		}
+
+		const yAxis = zAxis.clone().cross( xAxis ).normalize();
+
+		this.set( [
+		   xAxis.x, xAxis.y, xAxis.z, 0,
+		   yAxis.x, yAxis.y, yAxis.z, 0,
+		   zAxis.x, zAxis.y, zAxis.z, 0,
+		   0, 0, 0, 1,
+		] );
+
+		return this;
+
+	}
+
+	makeRotationAxis( axis: IVector3, angle: number ) {
+
+		// Based on http://www.gamedev.net/reference/articles/article1199.asp
+
+		const c = Math.cos( angle );
+		const s = Math.sin( angle );
+		const t = 1 - c;
+		const x = axis.x, y = axis.y, z = axis.z;
+		const tx = t * x, ty = t * y;
+
+		this.set(
+			[
+				tx * x + c, tx * y - s * z, tx * z + s * y, 0,
+				tx * y + s * z, ty * y + c, ty * z - s * x, 0,
+				tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
+				0, 0, 0, 1
+			]
+		);
+
+		return this;
+
+	}
+
 	public multiply( m: Matrix ) {
 
 		this.matmul( m.elm );

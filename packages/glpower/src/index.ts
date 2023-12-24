@@ -6,6 +6,7 @@ export * from './GLPowerBuffer';
 export * from './GLPowerVAO';
 export * from './GLPowerFrameBuffer';
 export * from './GLPowerTexture';
+export * from './GLPowerTextureCube';
 export * from './GLPowerTransformFeedback';
 
 // math
@@ -17,6 +18,7 @@ export * from './Math/Matrix';
 
 // animation
 
+export * from './Animation/Animator';
 export * from './Animation/Bezier';
 export * from './Animation/Easings';
 export * from './Animation/FCurve';
