@@ -32,18 +32,33 @@ export class Euler extends Vector {
 
 	public setFromQuaternion( q: Quaternion ) {
 
-		this.order = "XYZ";
+		const matrix = new Matrix().applyQuaternion( q );
 
-		this.y = Math.asin( 2 * q.x * q.z + 2 * q.y * q.w );
+		this.setFromRotationMatrix( matrix );
 
-		if ( Math.cos( this.y ) != 0.0 ) {
+		return this;
 
-			this.x = Math.atan( - ( 2 * q.y * q.z - 2 * q.x * q.w ) / ( 2 * q.w * q.w + 2 * q.z * q.z - 1 ) );
-			this.z = Math.atan( - ( 2 * q.x * q.y - 2 * q.z * q.w ) / ( 2 * q.w * q.w + 2 * q.x * q.x - 1 ) );
+	}
+
+	public setFromRotationMatrix( m: Matrix ) {
+
+		const te = m.elm;
+		const m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ];
+		const m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ];
+		const m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ];
+
+		this.order = 'XYZ';
+
+		this.y = Math.asin( Math.min( 1.0, Math.max( - 1.0, m13 ) ) );
+
+		if ( Math.abs( m13 ) < 0.9999999 ) {
+
+			this.x = Math.atan2( - m23, m33 );
+			this.z = Math.atan2( - m12, m11 );
 
 		} else {
 
-			this.x = Math.atan( ( 2 * q.y * q.z + 2 * q.x * q.w ) / ( 2 * q.w * q.w + 2 * q.y * q.y - 1 ) );
+			this.x = Math.atan2( m32, m22 );
 			this.z = 0;
 
 		}
