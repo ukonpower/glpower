@@ -1,4 +1,5 @@
 import { IVector3, IVector4, Matrix, Types } from "..";
+
 import { Euler, EulerOrder } from "./Euler";
 import { Vector } from "./Vector";
 
@@ -14,6 +15,8 @@ export class Quaternion {
 	public y: number;
 	public z: number;
 	public w: number;
+
+	public updated: boolean = false;
 
 	constructor( x?: number, y?: number, z?: number, w?: number ) {
 
@@ -32,6 +35,8 @@ export class Quaternion {
 		this.y = y ?? this.y;
 		this.z = z ?? this.z;
 		this.w = w ?? this.w;
+
+		this.updated = true;
 
 	}
 
@@ -77,6 +82,8 @@ export class Quaternion {
 
 		}
 
+		this.updated = true;
+
 		return this;
 
 	}
@@ -92,35 +99,35 @@ export class Quaternion {
 
 		if ( trace > 0 ) {
 
-		  const s = Math.sqrt( trace + 1.0 ) * 2;
-		  qw = 0.25 * s;
-		  qx = ( elm[ 6 ] - elm[ 9 ] ) / s;
-		  qy = ( elm[ 8 ] - elm[ 2 ] ) / s;
-		  qz = ( elm[ 1 ] - elm[ 4 ] ) / s;
+			const s = Math.sqrt( trace + 1.0 ) * 2;
+			qw = 0.25 * s;
+			qx = ( elm[ 6 ] - elm[ 9 ] ) / s;
+			qy = ( elm[ 8 ] - elm[ 2 ] ) / s;
+			qz = ( elm[ 1 ] - elm[ 4 ] ) / s;
 
 		} else if ( elm[ 0 ] > elm[ 5 ] && elm[ 0 ] > elm[ 10 ] ) {
 
-		  const s = Math.sqrt( 1.0 + elm[ 0 ] - elm[ 5 ] - elm[ 10 ] ) * 2;
-		  qw = ( elm[ 6 ] - elm[ 9 ] ) / s;
-		  qx = 0.25 * s;
-		  qy = ( elm[ 1 ] + elm[ 4 ] ) / s;
-		  qz = ( elm[ 2 ] + elm[ 8 ] ) / s;
+			const s = Math.sqrt( 1.0 + elm[ 0 ] - elm[ 5 ] - elm[ 10 ] ) * 2;
+			qw = ( elm[ 6 ] - elm[ 9 ] ) / s;
+			qx = 0.25 * s;
+			qy = ( elm[ 1 ] + elm[ 4 ] ) / s;
+			qz = ( elm[ 2 ] + elm[ 8 ] ) / s;
 
 		} else if ( elm[ 5 ] > elm[ 10 ] ) {
 
-		  const s = Math.sqrt( 1.0 + elm[ 5 ] - elm[ 0 ] - elm[ 10 ] ) * 2;
-		  qw = ( elm[ 8 ] - elm[ 2 ] ) / s;
-		  qx = ( elm[ 1 ] + elm[ 4 ] ) / s;
-		  qy = 0.25 * s;
-		  qz = ( elm[ 6 ] + elm[ 9 ] ) / s;
+			const s = Math.sqrt( 1.0 + elm[ 5 ] - elm[ 0 ] - elm[ 10 ] ) * 2;
+			qw = ( elm[ 8 ] - elm[ 2 ] ) / s;
+			qx = ( elm[ 1 ] + elm[ 4 ] ) / s;
+			qy = 0.25 * s;
+			qz = ( elm[ 6 ] + elm[ 9 ] ) / s;
 
 		} else {
 
-		  const s = Math.sqrt( 1.0 + elm[ 10 ] - elm[ 0 ] - elm[ 5 ] ) * 2;
-		  qw = ( elm[ 1 ] - elm[ 4 ] ) / s;
-		  qx = ( elm[ 2 ] + elm[ 8 ] ) / s;
-		  qy = ( elm[ 6 ] + elm[ 9 ] ) / s;
-		  qz = 0.25 * s;
+			const s = Math.sqrt( 1.0 + elm[ 10 ] - elm[ 0 ] - elm[ 5 ] ) * 2;
+			qw = ( elm[ 1 ] - elm[ 4 ] ) / s;
+			qx = ( elm[ 2 ] + elm[ 8 ] ) / s;
+			qy = ( elm[ 6 ] + elm[ 9 ] ) / s;
+			qz = 0.25 * s;
 
 		}
 
@@ -135,6 +142,8 @@ export class Quaternion {
 		this.z = qz;
 		this.w = qw;
 
+		this.updated = true;
+
 		return this;
 
 	}
@@ -148,6 +157,8 @@ export class Quaternion {
 
 		this.set( x, y, z, w );
 
+		this.updated = true;
+
 		return this;
 
 	}
@@ -155,6 +166,8 @@ export class Quaternion {
 	public inverse() {
 
 		this.set( - this.x, - this.y, - this.z, this.w );
+
+		this.updated = true;
 
 		return this;
 
@@ -166,6 +179,8 @@ export class Quaternion {
 		this.y = a.y ?? 0;
 		this.z = a.z ?? 0;
 		this.w = a.w ?? 0;
+
+		this.updated = true;
 
 		return this;
 
