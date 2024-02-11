@@ -36,9 +36,15 @@ export class EventEmitter {
 
 	}
 
-	public off( event: string, cb: ListenerFunction ) {
+	public off( event: string, cb?: ListenerFunction ) {
 
 		this.listeners = this.listeners.filter( l => {
+
+			if ( cb == undefined ) {
+
+				return ! ( l.event == event );
+
+			}
 
 			return ! ( l.event == event && l.cb == cb );
 
