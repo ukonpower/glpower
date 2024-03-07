@@ -1,6 +1,7 @@
+import { GLPowerVAO } from "./GLPowerVAO";
 import { Matrix } from "./Math/Matrix";
 import { Vector } from "./Math/Vector";
-import { GLPowerVAO } from "./GLPowerVAO";
+
 import { GLPowerTexture } from ".";
 
 export type Uniformable = boolean | number | Vector | Matrix | GLPowerTexture;
@@ -210,7 +211,7 @@ export class GLPowerProgram {
 
 		this.uniforms.forEach( uniform => {
 
-			if ( uniform.needsUpdate ) {
+			if ( uniform.needsUpdate && uniform.location !== null ) {
 
 				if ( /Matrix[2|3|4]fv/.test( uniform.type ) ) {
 
