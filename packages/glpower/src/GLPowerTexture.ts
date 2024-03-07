@@ -21,7 +21,7 @@ export type GLPowerTextureSetting = {
 export class GLPowerTexture {
 
 	public unit: number;
-	public image: HTMLImageElement | ImagePretense | null;
+	public image: HTMLImageElement | HTMLImageElement[] | ImagePretense | null;
 	public size: Vector;
 
 	protected gl: WebGL2RenderingContext;
@@ -72,7 +72,7 @@ export class GLPowerTexture {
 
 	}
 
-	public attach( img: HTMLImageElement | ImagePretense | null ) {
+	public attach( img: HTMLImageElement | ImagePretense | null | HTMLImageElement[] ) {
 
 		this.image = img;
 
@@ -80,15 +80,17 @@ export class GLPowerTexture {
 
 		if ( this.image ) {
 
-			this.size.set( this.image.width, this.image.height );
+			const img = Array.isArray( this.image ) ? this.image[ 0 ] : this.image;
 
-			if ( this.image instanceof HTMLImageElement || this.image instanceof HTMLCanvasElement ) {
+			this.size.set( img.width, img.height );
 
-				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, this._setting.format, this._setting.type, this.image );
+			if ( img instanceof HTMLImageElement || img instanceof HTMLCanvasElement ) {
+
+				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, this._setting.format, this._setting.type, img );
 
 			} else {
 
-				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, this.image.width, this.image.height, 0, this._setting.format, this._setting.type, this.image.data || null );
+				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, img.width, img.height, 0, this._setting.format, this._setting.type, this.image.data || null );
 
 			}
 

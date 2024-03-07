@@ -9,10 +9,10 @@ export class GLPowerFrameBuffer {
 
 	public size: Vector;
 
-	private gl: WebGL2RenderingContext;
+	public gl: WebGL2RenderingContext;
 	public frameBuffer: WebGLFramebuffer | null;
 
-	public textures: GLPowerTexture[];
+	public textures: GLPowerTexture [];
 	public depthTexture: GLPowerTexture | null;
 	public textureAttachmentList: number[];
 
@@ -58,7 +58,7 @@ export class GLPowerFrameBuffer {
 
 	}
 
-	public setTexture( textures: GLPowerTexture[], skip?: boolean ) {
+	public setTexture( textures: GLPowerTexture [] ) {
 
 		this.textures = textures;
 		this.textureAttachmentList.length = 0;
@@ -67,7 +67,7 @@ export class GLPowerFrameBuffer {
 
 		this.textures.forEach( ( t, i ) => {
 
-			! skip && t.attach( { width: this.size.x, height: this.size.y } );
+			t.attach( { width: this.size.x, height: this.size.y } );
 
 			const attachment = this.gl.COLOR_ATTACHMENT0 + i;
 			this.gl.framebufferTexture2D( this.gl.FRAMEBUFFER, attachment, this.gl.TEXTURE_2D, t.getTexture(), 0 );
