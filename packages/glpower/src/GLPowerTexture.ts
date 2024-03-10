@@ -25,7 +25,7 @@ export class GLPowerTexture {
 	public size: Vector;
 
 	protected gl: WebGL2RenderingContext;
-	protected texture: WebGLTexture | null;
+	protected glTex: WebGLTexture | null;
 
 	protected textureType: number;
 	protected _setting: GLPowerTextureSetting;
@@ -36,7 +36,7 @@ export class GLPowerTexture {
 		this.image = null;
 		this.unit = 0;
 		this.size = new Vector();
-		this.texture = this.gl.createTexture();
+		this.glTex = this.gl.createTexture();
 
 		this._setting = {
 			type: this.gl.UNSIGNED_BYTE,
@@ -76,7 +76,7 @@ export class GLPowerTexture {
 
 		this.image = img;
 
-		this.gl.bindTexture( this.textureType, this.texture );
+		this.gl.bindTexture( this.textureType, this.glTex );
 
 		if ( this.image ) {
 
@@ -122,7 +122,7 @@ export class GLPowerTexture {
 	public activate( unitNumber: number ) {
 
 		this.gl.activeTexture( this.gl.TEXTURE0 + unitNumber );
-		this.gl.bindTexture( this.textureType, this.texture );
+		this.gl.bindTexture( this.textureType, this.glTex );
 
 		this.unit = unitNumber;
 
@@ -150,13 +150,19 @@ export class GLPowerTexture {
 
 	public getTexture() {
 
-		return this.texture;
+		return this.glTex;
+
+	}
+
+	public get type() {
+
+		return this.textureType;
 
 	}
 
 	public dispose() {
 
-		this.gl.deleteTexture( this.texture );
+		this.gl.deleteTexture( this.glTex );
 
 	}
 

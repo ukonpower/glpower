@@ -10,7 +10,7 @@ export class GLPowerFrameBuffer {
 	public size: Vector;
 
 	public gl: WebGL2RenderingContext;
-	public frameBuffer: WebGLFramebuffer | null;
+	public glFrameBuffer: WebGLFramebuffer | null;
 
 	public textures: GLPowerTexture [];
 	public depthTexture: GLPowerTexture | null;
@@ -22,7 +22,7 @@ export class GLPowerFrameBuffer {
 
 		this.size = new Vector( 1, 1 );
 
-		this.frameBuffer = this.gl.createFramebuffer();
+		this.glFrameBuffer = this.gl.createFramebuffer();
 		this.depthTexture = null;
 
 		this.textures = [];
@@ -50,7 +50,7 @@ export class GLPowerFrameBuffer {
 
 		if ( this.depthTexture ) {
 
-			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.frameBuffer );
+			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.glFrameBuffer );
 			this.gl.framebufferTexture2D( this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.TEXTURE_2D, this.depthTexture.getTexture(), 0 );
 			this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, null );
 
@@ -63,7 +63,7 @@ export class GLPowerFrameBuffer {
 		this.textures = textures;
 		this.textureAttachmentList.length = 0;
 
-		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.frameBuffer );
+		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.glFrameBuffer );
 
 		this.textures.forEach( ( t, i ) => {
 
@@ -126,13 +126,13 @@ export class GLPowerFrameBuffer {
 
 	public getFrameBuffer() {
 
-		return this.frameBuffer;
+		return this.glFrameBuffer;
 
 	}
 
 	public dispose() {
 
-		this.gl.deleteFramebuffer( this.frameBuffer );
+		this.gl.deleteFramebuffer( this.glFrameBuffer );
 
 	}
 

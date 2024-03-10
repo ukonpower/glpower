@@ -31,7 +31,7 @@ export class GLPowerTextureCube extends GLPowerTexture {
 
 		this.image = img;
 
-		this.gl.bindTexture( this.textureType, this.texture );
+		this.gl.bindTexture( this.textureType, this.glTex );
 
 		if ( this.image ) {
 
@@ -61,11 +61,11 @@ export class GLPowerTextureCube extends GLPowerTexture {
 
 		}
 
-
 		this.gl.texParameteri( this.textureType, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter );
 		this.gl.texParameteri( this.textureType, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter );
 		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_S, this._setting.wrapS );
 		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_T, this._setting.wrapT );
+		this.gl.texParameteri( this.gl.TEXTURE_CUBE_MAP, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE );
 
 		this.gl.bindTexture( this.textureType, null );
 
