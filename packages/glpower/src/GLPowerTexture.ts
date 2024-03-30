@@ -90,7 +90,7 @@ export class GLPowerTexture {
 
 			} else {
 
-				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, img.width, img.height, 0, this._setting.format, this._setting.type, this.image.data || null );
+				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, img.width, img.height, 0, this._setting.format, this._setting.type, img.data || null );
 
 			}
 
