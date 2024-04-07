@@ -76,4 +76,10 @@ export class EventEmitter {
 
 	}
 
+	public hasEvent( event: string ) {
+
+		return this.listeners.some( l => l.event == event );
+
+	}
+
 }
