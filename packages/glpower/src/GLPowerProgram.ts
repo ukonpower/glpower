@@ -103,42 +103,42 @@ export class GLPowerProgram {
 
 		} else {
 
-			if ( process.env.NODE_ENV == "development" ) {
+			// if ( process.env.NODE_ENV == "development" ) {
 
-				const errorLog = this.gl.getShaderInfoLog( shader );
+			const errorLog = this.gl.getShaderInfoLog( shader );
 
-				if ( errorLog ) {
+			if ( errorLog ) {
 
-					const splitShaderSrc = shaderSrc.split( '\n' );
+				const splitShaderSrc = shaderSrc.split( '\n' );
 
-					const lines = errorLog.matchAll( /ERROR: 0:(\d+)/g );
+				const lines = errorLog.matchAll( /ERROR: 0:(\d+)/g );
 
-					Array.from( lines ).forEach( ( line, index ) => {
+				Array.from( lines ).forEach( ( line, index ) => {
 
-						const lineNum = Number( line[ 1 ] );
+					const lineNum = Number( line[ 1 ] );
 
-						const start = Math.max( 0, lineNum - 5 );
-						const end = Math.min( splitShaderSrc.length, lineNum + 2 );
+					const start = Math.max( 0, lineNum - 5 );
+					const end = Math.min( splitShaderSrc.length, lineNum + 2 );
 
-						let error = errorLog.split( '\n' )[ index ] + '\n';
+					let error = errorLog.split( '\n' )[ index ] + '\n';
 
-						splitShaderSrc.forEach( ( t, i ) => {
+					splitShaderSrc.forEach( ( t, i ) => {
 
-							if ( start <= i && i <= end ) {
+						if ( start <= i && i <= end ) {
 
-								error += `${i + 1}: ${t}\n`;
+							error += `${i + 1}: ${t}\n`;
 
-							}
-
-						} );
-
-						console.error( error );
+						}
 
 					} );
 
-				}
+					console.error( error );
+
+				} );
 
 			}
+
+			// }
 
 		}
 

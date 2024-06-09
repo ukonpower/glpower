@@ -28,22 +28,22 @@ export namespace Maths {
 		return random;
 
 	};
-	
-	export const randomRange = (a: number = -1, b: number = 1) => {
 
-		return a +  Math.random() * ( b - a )
-		
-	}
+	export const randomRange = ( a: number = - 1, b: number = 1 ) => {
 
-	export const randomVector = (a: Vector = new Vector(-1,-1,-1,-1), b: Vector=new Vector(1,1,1,1)) => {
+		return a + Math.random() * ( b - a );
+
+	};
+
+	export const randomVector = ( a: Vector = new Vector( - 1, - 1, - 1, - 1 ), b: Vector = new Vector( 1, 1, 1, 1 ) ) => {
 
 		return new Vector(
-			randomRange( a.x, b.x),
-			randomRange( a.y, b.y),
-			randomRange( a.z, b.z),
-			randomRange( a.w, b.w),
+			randomRange( a.x, b.x ),
+			randomRange( a.y, b.y ),
+			randomRange( a.z, b.z ),
+			randomRange( a.w, b.w ),
 		);
-		
-	}
+
+	};
 
 }

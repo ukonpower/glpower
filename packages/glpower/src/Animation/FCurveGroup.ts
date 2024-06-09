@@ -1,6 +1,7 @@
 import { Types, Vector } from '..';
-import { FCurve } from './FCurve';
 import { EventEmitter } from '../utils/EventEmitter';
+
+import { FCurve } from './FCurve';
 
 export class FCurveGroup extends EventEmitter {
 

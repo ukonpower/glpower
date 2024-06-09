@@ -30,7 +30,7 @@ export class GLPowerFrameBufferCube extends GLPowerFrameBuffer {
 	public setTexture( textures: GLPowerTextureCube [] ) {
 
 		this.textures = textures;
-		this.textureAttachmentList.length = 0;
+		this.textureAttachmentList = [];
 
 		this.textures.forEach( ( t ) => {
 
@@ -45,7 +45,7 @@ export class GLPowerFrameBufferCube extends GLPowerFrameBuffer {
 	public face( face: number ) {
 
 		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.glFrameBuffer );
-		this.textureAttachmentList.length = 0;
+		this.textureAttachmentList = [];
 
 		this.textures.forEach( ( t, i ) => {
 

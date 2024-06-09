@@ -16,7 +16,7 @@ export * from './Math/Vector';
 export * from './Math/Euler';
 export * from './Math/Quaternion';
 export * from './Math/Matrix';
-export * from './Math/Random'
+export * from './Math/Random';
 
 // animation
 

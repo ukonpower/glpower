@@ -61,7 +61,7 @@ export class GLPowerFrameBuffer {
 	public setTexture( textures: GLPowerTexture [] ) {
 
 		this.textures = textures;
-		this.textureAttachmentList.length = 0;
+		this.textureAttachmentList = [];
 
 		this.gl.bindFramebuffer( this.gl.FRAMEBUFFER, this.glFrameBuffer );
 

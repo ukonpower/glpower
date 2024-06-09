@@ -1,6 +1,7 @@
 import { UniformType } from "../GLPowerProgram";
 import { Vector } from "../Math/Vector";
 import { EventEmitter } from "../utils/EventEmitter";
+
 import { EasingFunc, Easings } from "./Easings";
 import { LerpFunc, Lerps } from "./Lerps";
 
