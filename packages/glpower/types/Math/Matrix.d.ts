@@ -18,6 +18,8 @@ export declare class Matrix {
     applyQuaternion(q: Quaternion | IVector4): this;
     applyScale(scale: IVector3): this;
     protected matmul(elm2: number[]): void;
+    setRotationFromDirection(direction: IVector3, up?: IVector3): this;
+    makeRotationAxis(axis: IVector3, angle: number): this;
     multiply(m: Matrix): this;
     preMultiply(m: Matrix): this;
     decompose(pos?: IVector3, rot?: Quaternion, scale?: IVector3): void;

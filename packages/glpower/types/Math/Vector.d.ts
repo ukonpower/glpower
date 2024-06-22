@@ -29,9 +29,10 @@ export declare class Vector {
     normalize(): this;
     cross(v: Vector | IVector3): this;
     dot(v: Vector | IVector3): number;
-    applyMatrix3(mat: Matrix): void;
+    applyMatrix3(mat: Matrix): this;
     applyMatrix4(mat: Matrix): this;
     floor(): void;
+    lerp(b: Vector, t: number): this;
     copy(a: Vector | Types.Nullable<IVector4>): this;
     clone(): Vector;
     getElm(type?: 'vec2' | 'vec3' | 'vec4'): number[];

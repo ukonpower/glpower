@@ -11,6 +11,7 @@ export declare class Quaternion {
     y: number;
     z: number;
     w: number;
+    updated: boolean;
     constructor(x?: number, y?: number, z?: number, w?: number);
     set(x?: number, y?: number, z?: number, w?: number): void;
     setFromEuler(euler: Vector | Euler | IVector3, orverrideOrder?: EulerOrder): this;

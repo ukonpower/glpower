@@ -1,5 +1,5 @@
-import { FCurveKeyFrame } from './FCurveKeyFrame';
 import { EventEmitter } from '../utils/EventEmitter';
+import { FCurveKeyFrame } from './FCurveKeyFrame';
 export declare class FCurve extends EventEmitter {
     keyframes: FCurveKeyFrame[];
     private cache;

@@ -5,8 +5,8 @@ export declare type GLPowerFrameBfferOpt = {
 };
 export declare class GLPowerFrameBuffer {
     size: Vector;
-    private gl;
-    frameBuffer: WebGLFramebuffer | null;
+    gl: WebGL2RenderingContext;
+    glFrameBuffer: WebGLFramebuffer | null;
     textures: GLPowerTexture[];
     depthTexture: GLPowerTexture | null;
     textureAttachmentList: number[];

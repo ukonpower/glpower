@@ -1,4 +1,9 @@
-class L {
+class K {
+  constructor(t) {
+    this.gl = t, this.gl.pixelStorei(t.UNPACK_FLIP_Y_WEBGL, !0), this.gl.getExtension("EXT_color_buffer_float"), this.gl.getExtension("EXT_color_buffer_half_float"), this.extDisJointTimerQuery = this.gl.getExtension("EXT_disjoint_timer_query_webgl2");
+  }
+}
+class Z {
   constructor(t, e) {
     this.gl = t, this.program = e, this.vao = this.gl.createVertexArray(), this.attributes = /* @__PURE__ */ new Map(), this.indexBuffer = null, this.vertCount = 0, this.indexCount = 0, this.instanceCount = 0;
   }
@@ -36,7 +41,7 @@ class L {
     });
   }
 }
-class X {
+class W {
   constructor(t) {
     this.gl = t, this.program = this.gl.createProgram(), this.vao = /* @__PURE__ */ new Map(), this.uniforms = /* @__PURE__ */ new Map();
   }
@@ -60,13 +65,13 @@ class X {
       if (s) {
         const r = t.split(`
 `), l = s.matchAll(/ERROR: 0:(\d+)/g);
-        Array.from(l).forEach((a, u) => {
-          const h = Number(a[1]), c = Math.max(0, h - 5), f = Math.min(r.length, h + 2);
+        Array.from(l).forEach((o, u) => {
+          const h = Number(o[1]), c = Math.max(0, h - 5), f = Math.min(r.length, h + 2);
           let x = s.split(`
 `)[u] + `
 `;
-          r.forEach((g, m) => {
-            c <= m && m <= f && (x += `${m + 1}: ${g}
+          r.forEach((m, g) => {
+            c <= g && g <= f && (x += `${g + 1}: ${m}
 `);
           }), console.error(x);
         });
@@ -99,14 +104,14 @@ class X {
   }
   uploadUniforms() {
     this.uniforms.forEach((t) => {
-      t.needsUpdate && (/Matrix[2|3|4]fv/.test(t.type) ? this.gl["uniform" + t.type](t.location, !1, t.value) : /[1|2|3|4][f|i]$/.test(t.type) ? this.gl["uniform" + t.type](t.location, ...t.value) : this.gl["uniform" + t.type](t.location, t.value), t.cache = t.value.concat(), t.needsUpdate = !1);
+      t.needsUpdate && t.location !== null && (/Matrix[2|3|4]fv/.test(t.type) ? this.gl["uniform" + t.type](t.location, !1, t.value) : /[1|2|3|4][f|i]$/.test(t.type) ? this.gl["uniform" + t.type](t.location, ...t.value) : this.gl["uniform" + t.type](t.location, t.value), t.cache = t.value.concat(), t.needsUpdate = !1);
     });
   }
   getVAO(t = "_") {
     if (!this.program)
       return null;
     let e = this.vao.get(t);
-    return e || (e = new L(this.gl, this.program), this.vao.set(t, e), e);
+    return e || (e = new Z(this.gl, this.program), this.vao.set(t, e), e);
   }
   use(t) {
     !this.program || (this.gl.useProgram(this.program), t && t(this), this.gl.useProgram(null));
@@ -120,7 +125,7 @@ class X {
     }), this.vao.clear(), this.gl.deleteProgram(this.program);
   }
 }
-class k {
+class j {
   constructor(t) {
     this.gl = t, this.buffer = this.gl.createBuffer(), this.array = null;
   }
@@ -132,7 +137,7 @@ class k {
     this.gl.deleteBuffer(this.buffer);
   }
 }
-class w {
+class F {
   constructor(t, e, i, s) {
     this.x = t || 0, this.y = e || 0, this.z = i || 0, this.w = s || 0;
   }
@@ -140,7 +145,7 @@ class w {
     return !0;
   }
   set(t, e, i, s) {
-    return this.x = t, this.y = e != null ? e : this.y, this.z = i != null ? i : this.z, this.w = s != null ? s : this.w, this;
+    return this.x = t, this.y = e != null ? e : t, this.z = i != null ? i : t, this.w = s != null ? s : t, this;
   }
   add(t) {
     var e, i, s, r;
@@ -164,37 +169,40 @@ class w {
     return this.x /= t, this.y /= t, this.z /= t, this;
   }
   cross(t) {
-    const e = this.x, i = this.y, s = this.z, r = t.x, l = t.y, a = t.z;
-    return this.x = i * a - s * l, this.y = s * r - e * a, this.z = e * l - i * r, this;
+    const e = this.x, i = this.y, s = this.z, r = t.x, l = t.y, o = t.z;
+    return this.x = i * o - s * l, this.y = s * r - e * o, this.z = e * l - i * r, this;
   }
   dot(t) {
     return this.x * t.x + this.y * t.y + this.z * t.z;
   }
   applyMatrix3(t) {
-    const e = t.elm, i = e[0], s = e[1], r = e[2], l = e[4], a = e[5], u = e[6], h = e[8], c = e[9], f = e[10], x = this.x * i + this.y * l + this.z * h, g = this.x * s + this.y * a + this.z * c, m = this.x * r + this.y * u + this.z * f;
-    this.x = x, this.y = g, this.z = m, this.w = 0;
+    const e = t.elm, i = e[0], s = e[1], r = e[2], l = e[4], o = e[5], u = e[6], h = e[8], c = e[9], f = e[10], x = this.x * i + this.y * l + this.z * h, m = this.x * s + this.y * o + this.z * c, g = this.x * r + this.y * u + this.z * f;
+    return this.x = x, this.y = m, this.z = g, this.w = 0, this;
   }
   applyMatrix4(t) {
-    const e = t.elm, i = e[0], s = e[1], r = e[2], l = e[3], a = e[4], u = e[5], h = e[6], c = e[7], f = e[8], x = e[9], g = e[10], m = e[11], E = e[12], _ = e[13], R = e[14], n = e[15], p = this.x * i + this.y * a + this.z * f + this.w * E, y = this.x * s + this.y * u + this.z * x + this.w * _, d = this.x * r + this.y * h + this.z * g + this.w * R, A = this.x * l + this.y * c + this.z * m + this.w * n;
-    return this.x = p, this.y = y, this.z = d, this.w = A, this;
+    const e = t.elm, i = e[0], s = e[1], r = e[2], l = e[3], o = e[4], u = e[5], h = e[6], c = e[7], f = e[8], x = e[9], m = e[10], g = e[11], y = e[12], A = e[13], R = e[14], n = e[15], T = this.x * i + this.y * o + this.z * f + this.w * y, d = this.x * s + this.y * u + this.z * x + this.w * A, E = this.x * r + this.y * h + this.z * m + this.w * R, z = this.x * l + this.y * c + this.z * g + this.w * n;
+    return this.x = T, this.y = d, this.z = E, this.w = z, this;
   }
   floor() {
     this.x = Math.floor(this.x), this.y = Math.floor(this.y), this.z = Math.floor(this.z), this.w = Math.floor(this.w);
+  }
+  lerp(t, e) {
+    return this.x = this.x + (t.x - this.x) * e, this.y = this.y + (t.y - this.y) * e, this.z = this.z + (t.z - this.z) * e, this.w = this.w + (t.w - this.w) * e, this;
   }
   copy(t) {
     var e, i, s, r;
     return this.x = (e = t.x) != null ? e : 0, this.y = (i = t.y) != null ? i : 0, this.z = (s = t.z) != null ? s : 0, this.w = (r = t.w) != null ? r : 0, this;
   }
   clone() {
-    return new w(this.x, this.y, this.z, this.w);
+    return new F(this.x, this.y, this.z, this.w);
   }
   getElm(t) {
     return t == "vec2" ? [this.x, this.y] : t == "vec3" ? [this.x, this.y, this.z] : [this.x, this.y, this.z, this.w];
   }
 }
-class D {
+class k {
   constructor(t) {
-    this.gl = t, this.image = null, this.unit = 0, this.size = new w(), this.texture = this.gl.createTexture(), this._setting = {
+    this.gl = t, this.image = null, this.unit = 0, this.size = new F(), this.glTex = this.gl.createTexture(), this._setting = {
       type: this.gl.UNSIGNED_BYTE,
       internalFormat: this.gl.RGBA,
       format: this.gl.RGBA,
@@ -203,7 +211,7 @@ class D {
       generateMipmap: !1,
       wrapS: this.gl.CLAMP_TO_EDGE,
       wrapT: this.gl.CLAMP_TO_EDGE
-    };
+    }, this.textureType = t.TEXTURE_2D;
   }
   get isTexture() {
     return !0;
@@ -215,10 +223,15 @@ class D {
     }, this.attach(this.image), this;
   }
   attach(t) {
-    return this.image = t, this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture), this.image ? (this.size.set(this.image.width, this.image.height), this.image instanceof HTMLImageElement || this.image instanceof HTMLCanvasElement ? this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this._setting.format, this._setting.type, this.image) : this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.image.width, this.image.height, 0, this._setting.format, this._setting.type, null)) : (this.size.set(1, 1), this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.size.x, this.size.y, 0, this._setting.format, this._setting.type, null)), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter), this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this._setting.wrapS), this.gl.texParameterf(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this._setting.wrapT), this._setting.generateMipmap && this.gl.generateMipmap(this.gl.TEXTURE_2D), this.gl.bindTexture(this.gl.TEXTURE_2D, null), this;
+    if (this.image = t, this.gl.bindTexture(this.textureType, this.glTex), this.image) {
+      const e = Array.isArray(this.image) ? this.image[0] : this.image;
+      this.size.set(e.width, e.height), e instanceof HTMLImageElement || e instanceof HTMLCanvasElement ? this.gl.texImage2D(this.textureType, 0, this._setting.internalFormat, this._setting.format, this._setting.type, e) : this.gl.texImage2D(this.textureType, 0, this._setting.internalFormat, e.width, e.height, 0, this._setting.format, this._setting.type, e.data || null);
+    } else
+      this.size.set(1, 1), this.gl.texImage2D(this.textureType, 0, this._setting.internalFormat, this.size.x, this.size.y, 0, this._setting.format, this._setting.type, null);
+    return this._setting.generateMipmap && this.gl.generateMipmap(this.textureType), this.gl.texParameteri(this.textureType, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter), this.gl.texParameteri(this.textureType, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter), this.gl.texParameterf(this.textureType, this.gl.TEXTURE_WRAP_S, this._setting.wrapS), this.gl.texParameterf(this.textureType, this.gl.TEXTURE_WRAP_T, this._setting.wrapT), this.gl.bindTexture(this.textureType, null), this;
   }
   activate(t) {
-    return this.gl.activeTexture(this.gl.TEXTURE0 + t), this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture), this.unit = t, this;
+    return this.gl.activeTexture(this.gl.TEXTURE0 + t), this.gl.bindTexture(this.textureType, this.glTex), this.unit = t, this;
   }
   load(t, e) {
     const i = new Image();
@@ -227,25 +240,18 @@ class D {
     }, i.src = t, this;
   }
   getTexture() {
-    return this.texture;
+    return this.glTex;
   }
-  loadAsync(t) {
-    return new Promise((e, i) => {
-      const s = new Image();
-      s.onload = () => {
-        this.attach(s), e(this);
-      }, s.onerror = () => {
-        i("img error, " + t);
-      }, s.src = t;
-    });
+  get type() {
+    return this.textureType;
   }
   dispose() {
-    this.gl.deleteTexture(this.texture);
+    this.gl.deleteTexture(this.glTex);
   }
 }
-class V {
+class Q {
   constructor(t, e) {
-    this.gl = t, this.size = new w(1, 1), this.frameBuffer = this.gl.createFramebuffer(), this.depthTexture = null, this.textures = [], this.textureAttachmentList = [], (!e || !e.disableDepthBuffer) && this.setDepthTexture(new D(this.gl).setting({
+    this.gl = t, this.size = new F(1, 1), this.glFrameBuffer = this.gl.createFramebuffer(), this.depthTexture = null, this.textures = [], this.textureAttachmentList = [], (!e || !e.disableDepthBuffer) && this.setDepthTexture(new k(this.gl).setting({
       internalFormat: this.gl.DEPTH_COMPONENT32F,
       format: this.gl.DEPTH_COMPONENT,
       type: this.gl.FLOAT,
@@ -254,11 +260,11 @@ class V {
     }));
   }
   setDepthTexture(t) {
-    this.depthTexture = t, this.depthTexture && (this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer), this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.TEXTURE_2D, this.depthTexture.getTexture(), 0), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null));
+    this.depthTexture = t, this.depthTexture && (this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer), this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.DEPTH_ATTACHMENT, this.gl.TEXTURE_2D, this.depthTexture.getTexture(), 0), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null));
   }
   setTexture(t) {
-    return this.textures = t, this.textureAttachmentList.length = 0, this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer), this.textures.forEach((e, i) => {
-      e.attach({ width: this.size.x, height: this.size.y }), this.gl.bindTexture(this.gl.TEXTURE_2D, e.getTexture()), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR), this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR), this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    return this.textures = t, this.textureAttachmentList = [], this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer), this.textures.forEach((e, i) => {
+      e.attach({ width: this.size.x, height: this.size.y });
       const s = this.gl.COLOR_ATTACHMENT0 + i;
       this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, s, this.gl.TEXTURE_2D, e.getTexture(), 0), this.textureAttachmentList.push(s);
     }), this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null), this;
@@ -269,30 +275,56 @@ class V {
     }), this.depthTexture && this.depthTexture.attach({ width: this.size.x, height: this.size.y }), this;
   }
   getFrameBuffer() {
-    return this.frameBuffer;
+    return this.glFrameBuffer;
   }
   dispose() {
-    this.gl.deleteFramebuffer(this.frameBuffer);
+    this.gl.deleteFramebuffer(this.glFrameBuffer);
   }
 }
-class Z {
+class $ extends Q {
+  constructor(t, e) {
+    super(t, e), this.textures = [], this.cubeTarget = [
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+    ], this.currentFace = this.cubeTarget[0];
+  }
+  setTexture(t) {
+    return this.textures = t, this.textureAttachmentList = [], this.textures.forEach((e) => {
+      e.attach({ width: this.size.x, height: this.size.y });
+    }), this;
+  }
+  face(t) {
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.glFrameBuffer), this.textureAttachmentList = [], this.textures.forEach((e, i) => {
+      const s = this.gl.COLOR_ATTACHMENT0 + i;
+      this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, s, this.cubeTarget[t], e.getTexture(), 0), this.textureAttachmentList.push(s);
+    }), this.currentFace = this.cubeTarget[t], this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+  }
+}
+class J extends k {
   constructor(t) {
-    this.gl = t, this.gl.pixelStorei(t.UNPACK_FLIP_Y_WEBGL, !0), this.gl.getExtension("EXT_color_buffer_float"), this.gl.getExtension("EXT_color_buffer_half_float"), this.extDisJointTimerQuery = this.gl.getExtension("EXT_disjoint_timer_query_webgl2");
+    super(t), this.textureType = t.TEXTURE_CUBE_MAP, this.cubeTarget = [
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+      this.gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+      this.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+    ];
   }
-  createProgram() {
-    return new X(this.gl);
-  }
-  createBuffer() {
-    return new k(this.gl);
-  }
-  createTexture() {
-    return new D(this.gl);
-  }
-  createFrameBuffer() {
-    return new V(this.gl);
+  attach(t) {
+    if (this.image = t, this.gl.bindTexture(this.textureType, this.glTex), this.image)
+      for (let e = 0; e < 6; e++) {
+        const i = Array.isArray(this.image) ? this.image[e] : this.image;
+        this.size.set(i.width, i.height), i instanceof HTMLImageElement || i instanceof HTMLCanvasElement ? this.gl.texImage2D(this.cubeTarget[e], 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, i) : this.gl.texImage2D(this.cubeTarget[e], 0, this._setting.internalFormat, i.width, i.height, 0, this._setting.format, this._setting.type, i.data || null);
+      }
+    return this._setting.generateMipmap && this.gl.generateMipmap(this.textureType), this.gl.texParameteri(this.textureType, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter), this.gl.texParameteri(this.textureType, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter), this.gl.texParameterf(this.textureType, this.gl.TEXTURE_WRAP_S, this._setting.wrapS), this.gl.texParameterf(this.textureType, this.gl.TEXTURE_WRAP_T, this._setting.wrapT), this.gl.bindTexture(this.textureType, null), this;
   }
 }
-class G {
+class q {
   constructor(t) {
     this.gl = t, this.transformFeedback = this.gl.createTransformFeedback(), this.feedbackBuffer = /* @__PURE__ */ new Map();
   }
@@ -315,60 +347,7 @@ class G {
     });
   }
 }
-class Q extends w {
-  constructor(t, e, i, s) {
-    super(t, e, i, 0), this.order = s || "XYZ";
-  }
-  copy(t) {
-    return "order" in t && (this.order = t.order), super.copy(t);
-  }
-}
-class O {
-  constructor(t, e, i, s) {
-    this.x = 0, this.y = 0, this.z = 0, this.w = 1, this.set(t, e, i, s);
-  }
-  set(t, e, i, s) {
-    this.x = t != null ? t : this.x, this.y = e != null ? e : this.y, this.z = i != null ? i : this.z, this.w = s != null ? s : this.w;
-  }
-  setFromEuler(t, e) {
-    const i = e || ("order" in t ? t.order : "XYZ"), s = Math.sin(t.x / 2), r = Math.sin(t.y / 2), l = Math.sin(t.z / 2), a = Math.cos(t.x / 2), u = Math.cos(t.y / 2), h = Math.cos(t.z / 2);
-    return i == "XYZ" ? (this.x = a * r * l + s * u * h, this.y = -s * u * l + a * r * h, this.z = a * u * l + s * r * h, this.w = -s * r * l + a * u * h) : i == "XZY" ? (this.x = -a * r * l + s * u * h, this.y = a * r * h - s * u * l, this.z = s * r * h + a * u * l, this.w = s * r * l + a * u * h) : i == "YZX" ? (this.x = s * u * h + a * r * l, this.y = s * u * l + a * r * h, this.z = -s * r * h + a * u * l, this.w = -s * r * l + a * u * h) : i == "ZYX" && (this.x = s * u * h - a * r * l, this.y = s * u * l + a * r * h, this.z = -s * r * h + a * u * l, this.w = s * r * l + a * u * h), this;
-  }
-  setFromMatrix(t) {
-    const e = t.elm, i = e[0] + e[5] + e[10];
-    let s, r, l, a;
-    if (i > 0) {
-      const h = Math.sqrt(i + 1) * 2;
-      a = 0.25 * h, s = (e[6] - e[9]) / h, r = (e[8] - e[2]) / h, l = (e[1] - e[4]) / h;
-    } else if (e[0] > e[5] && e[0] > e[10]) {
-      const h = Math.sqrt(1 + e[0] - e[5] - e[10]) * 2;
-      a = (e[6] - e[9]) / h, s = 0.25 * h, r = (e[1] + e[4]) / h, l = (e[2] + e[8]) / h;
-    } else if (e[5] > e[10]) {
-      const h = Math.sqrt(1 + e[5] - e[0] - e[10]) * 2;
-      a = (e[8] - e[2]) / h, s = (e[1] + e[4]) / h, r = 0.25 * h, l = (e[6] + e[9]) / h;
-    } else {
-      const h = Math.sqrt(1 + e[10] - e[0] - e[5]) * 2;
-      a = (e[1] - e[4]) / h, s = (e[2] + e[8]) / h, r = (e[6] + e[9]) / h, l = 0.25 * h;
-    }
-    const u = Math.sqrt(s * s + r * r + l * l + a * a);
-    return s /= u, r /= u, l /= u, a /= u, this.x = s, this.y = r, this.z = l, this.w = a, this;
-  }
-  multiply(t) {
-    const e = this.w * t.w - this.x * t.x - this.y * t.y - this.z * t.z, i = this.w * t.x + this.x * t.w + this.y * t.z - this.z * t.y, s = this.w * t.y - this.x * t.z + this.y * t.w + this.z * t.x, r = this.w * t.z + this.x * t.y - this.y * t.x + this.z * t.w;
-    return this.set(i, s, r, e), this;
-  }
-  inverse() {
-    return this.set(-this.x, -this.y, -this.z, this.w), this;
-  }
-  copy(t) {
-    var e, i, s, r;
-    return this.x = (e = t.x) != null ? e : 0, this.y = (i = t.y) != null ? i : 0, this.z = (s = t.z) != null ? s : 0, this.w = (r = t.w) != null ? r : 0, this;
-  }
-  clone() {
-    return new O(this.x, this.y, this.z, this.w);
-  }
-}
-class P {
+class N {
   constructor(t) {
     this.elm = [
       1,
@@ -410,13 +389,13 @@ class P {
     ], this;
   }
   clone() {
-    return new P().copy(this);
+    return new N().copy(this);
   }
   copy(t) {
     return this.set(t.elm), this;
   }
   perspective(t, e, i, s) {
-    var r = 1 / Math.tan(t * Math.PI / 360), l = s - i;
+    const r = 1 / Math.tan(t * Math.PI / 360), l = s - i;
     return this.elm = [
       r / e,
       0,
@@ -478,12 +457,12 @@ class P {
     ], this;
   }
   inverse() {
-    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], l = this.elm[5], a = this.elm[6], u = this.elm[7], h = this.elm[8], c = this.elm[9], f = this.elm[10], x = this.elm[11], g = this.elm[12], m = this.elm[13], E = this.elm[14], _ = this.elm[15], R = t * l - e * r, n = t * a - i * r, p = t * u - s * r, y = e * a - i * l, d = e * u - s * l, A = i * u - s * a, z = h * m - c * g, F = h * E - f * g, b = h * _ - x * g, v = c * E - f * m, S = c * _ - x * m, M = f * _ - x * E, N = R * M - n * S + p * v + y * b - d * F + A * z, T = 1 / N;
-    return N == 0 ? this.identity() : (this.elm[0] = (l * M - a * S + u * v) * T, this.elm[1] = (-e * M + i * S - s * v) * T, this.elm[2] = (m * A - E * d + _ * y) * T, this.elm[3] = (-c * A + f * d - x * y) * T, this.elm[4] = (-r * M + a * b - u * F) * T, this.elm[5] = (t * M - i * b + s * F) * T, this.elm[6] = (-g * A + E * p - _ * n) * T, this.elm[7] = (h * A - f * p + x * n) * T, this.elm[8] = (r * S - l * b + u * z) * T, this.elm[9] = (-t * S + e * b - s * z) * T, this.elm[10] = (g * d - m * p + _ * R) * T, this.elm[11] = (-h * d + c * p - x * R) * T, this.elm[12] = (-r * v + l * F - a * z) * T, this.elm[13] = (t * v - e * F + i * z) * T, this.elm[14] = (-g * y + m * n - E * R) * T, this.elm[15] = (h * y - c * n + f * R) * T, this);
+    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], l = this.elm[5], o = this.elm[6], u = this.elm[7], h = this.elm[8], c = this.elm[9], f = this.elm[10], x = this.elm[11], m = this.elm[12], g = this.elm[13], y = this.elm[14], A = this.elm[15], R = t * l - e * r, n = t * o - i * r, T = t * u - s * r, d = e * o - i * l, E = e * u - s * l, z = i * u - s * o, _ = h * g - c * m, b = h * y - f * m, w = h * A - x * m, M = c * y - f * g, v = c * A - x * g, S = f * A - x * y, O = R * S - n * v + T * M + d * w - E * b + z * _, p = 1 / O;
+    return O == 0 ? this.identity() : (this.elm[0] = (l * S - o * v + u * M) * p, this.elm[1] = (-e * S + i * v - s * M) * p, this.elm[2] = (g * z - y * E + A * d) * p, this.elm[3] = (-c * z + f * E - x * d) * p, this.elm[4] = (-r * S + o * w - u * b) * p, this.elm[5] = (t * S - i * w + s * b) * p, this.elm[6] = (-m * z + y * T - A * n) * p, this.elm[7] = (h * z - f * T + x * n) * p, this.elm[8] = (r * v - l * w + u * _) * p, this.elm[9] = (-t * v + e * w - s * _) * p, this.elm[10] = (m * E - g * T + A * R) * p, this.elm[11] = (-h * E + c * T - x * R) * p, this.elm[12] = (-r * M + l * b - o * _) * p, this.elm[13] = (t * M - e * b + i * _) * p, this.elm[14] = (-m * d + g * n - y * R) * p, this.elm[15] = (h * d - c * n + f * R) * p, this);
   }
   transpose() {
-    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], l = this.elm[5], a = this.elm[6], u = this.elm[7], h = this.elm[8], c = this.elm[9], f = this.elm[10], x = this.elm[11], g = this.elm[12], m = this.elm[13], E = this.elm[14], _ = this.elm[15];
-    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = h, this.elm[3] = g, this.elm[4] = e, this.elm[5] = l, this.elm[6] = c, this.elm[7] = m, this.elm[8] = i, this.elm[9] = a, this.elm[10] = f, this.elm[11] = E, this.elm[12] = s, this.elm[13] = u, this.elm[14] = x, this.elm[15] = _, this;
+    const t = this.elm[0], e = this.elm[1], i = this.elm[2], s = this.elm[3], r = this.elm[4], l = this.elm[5], o = this.elm[6], u = this.elm[7], h = this.elm[8], c = this.elm[9], f = this.elm[10], x = this.elm[11], m = this.elm[12], g = this.elm[13], y = this.elm[14], A = this.elm[15];
+    return this.elm[0] = t, this.elm[1] = r, this.elm[2] = h, this.elm[3] = m, this.elm[4] = e, this.elm[5] = l, this.elm[6] = c, this.elm[7] = g, this.elm[8] = i, this.elm[9] = o, this.elm[10] = f, this.elm[11] = y, this.elm[12] = s, this.elm[13] = u, this.elm[14] = x, this.elm[15] = A, this;
   }
   set(t) {
     var e;
@@ -515,19 +494,19 @@ class P {
     ]), this;
   }
   applyQuaternion(t) {
-    const e = t.x, i = t.y, s = t.z, r = t.w, l = e * e, a = i * i, u = s * s, h = r * r, c = e * i, f = e * s, x = e * r, g = i * s, m = i * r, E = s * r;
+    const e = t.x, i = t.y, s = t.z, r = t.w, l = e * e, o = i * i, u = s * s, h = r * r, c = e * i, f = e * s, x = e * r, m = i * s, g = i * r, y = s * r;
     return this.matmul([
-      l - a - u + h,
-      2 * (c + E),
-      2 * (f - m),
+      l - o - u + h,
+      2 * (c + y),
+      2 * (f - g),
       0,
-      2 * (c - E),
-      -l + a - u + h,
-      2 * (g + x),
+      2 * (c - y),
+      -l + o - u + h,
+      2 * (m + x),
       0,
-      2 * (f + m),
-      2 * (g - x),
-      -l - a + u + h,
+      2 * (f + g),
+      2 * (m - x),
+      -l - o + u + h,
       0,
       0,
       0,
@@ -566,6 +545,53 @@ class P {
       }
     this.elm = e;
   }
+  setRotationFromDirection(t, e) {
+    e = e || { x: 0, y: 1, z: 0 };
+    const i = new F().copy(t).normalize(), s = new F().copy(e).cross(i).normalize();
+    s.length() == 0 && (i.x += 1e-3, s.copy(e).cross(i).normalize());
+    const r = i.clone().cross(s).normalize();
+    return this.set([
+      s.x,
+      s.y,
+      s.z,
+      0,
+      r.x,
+      r.y,
+      r.z,
+      0,
+      i.x,
+      i.y,
+      i.z,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]), this;
+  }
+  makeRotationAxis(t, e) {
+    const i = Math.cos(e), s = Math.sin(e), r = 1 - i, l = t.x, o = t.y, u = t.z, h = r * l, c = r * o;
+    return this.set(
+      [
+        h * l + i,
+        h * o - s * u,
+        h * u + s * o,
+        0,
+        h * o + s * u,
+        c * o + i,
+        c * u - s * l,
+        0,
+        h * u - s * o,
+        c * u + s * l,
+        r * u * u + i,
+        0,
+        0,
+        0,
+        0,
+        1
+      ]
+    ), this;
+  }
   multiply(t) {
     return this.matmul(t.elm), this;
   }
@@ -583,134 +609,91 @@ class P {
     return t;
   }
 }
-var I;
-((o) => {
-  o.NEWTON_ITERATIONS = 4, o.NEWTON_MIN_SLOPE = 1e-3, o.SUBDIVISION_PRECISION = 1e-7, o.SUBDIVISION_MAX_ITERATIONS = 10, o.BEZIER_EASING_CACHE_SIZE = 11, o.BEZIER_EASING_SAMPLE_STEP_SIZE = 1 / o.BEZIER_EASING_CACHE_SIZE;
-  function t(h) {
-    return -h.p0 + 3 * h.p1 - 3 * h.p2 + h.p3;
+class tt extends F {
+  constructor(t, e, i, s) {
+    super(t, e, i, 0), this.order = s || "XYZ";
   }
-  function e(h) {
-    return 3 * h.p0 - 6 * h.p1 + 3 * h.p2;
+  copy(t) {
+    return "order" in t && (this.order = t.order), super.copy(t);
   }
-  function i(h) {
-    return -3 * h.p0 + 3 * h.p1;
+  setFromQuaternion(t) {
+    const e = new N().applyQuaternion(t);
+    return this.setFromRotationMatrix(e), this;
   }
-  function s(h, c) {
-    return 3 * t(h) * c * c + 2 * e(h) * c + i(h);
+  setFromRotationMatrix(t) {
+    const e = t.elm, i = e[0], s = e[4], r = e[8];
+    e[1];
+    const l = e[5], o = e[9];
+    e[2];
+    const u = e[6], h = e[10];
+    return this.order = "XYZ", this.y = Math.asin(Math.min(1, Math.max(-1, r))), Math.abs(r) < 0.9999999 ? (this.x = Math.atan2(-o, h), this.z = Math.atan2(-s, i)) : (this.x = Math.atan2(u, l), this.z = 0), this;
   }
-  o.calcBezierSlope = s;
-  function r(h, c) {
-    return ((t(h) * c + e(h)) * c + i(h)) * c + h.p0;
+}
+class G {
+  constructor(t, e, i, s) {
+    this.updated = !1, this.x = 0, this.y = 0, this.z = 0, this.w = 1, this.set(t, e, i, s);
   }
-  o.calcBezier = r;
-  function l(h, c, f, x) {
-    let g = 0, m = 0;
-    for (let E = 0; E < o.SUBDIVISION_MAX_ITERATIONS; E++)
-      m = c + (f - c) / 2, g = r(x, m), g > h ? f = m : c = m;
-    return m;
+  set(t, e, i, s) {
+    this.x = t != null ? t : this.x, this.y = e != null ? e : this.y, this.z = i != null ? i : this.z, this.w = s != null ? s : this.w, this.updated = !0;
   }
-  function a(h, c, f) {
-    for (let x = 0; x < o.NEWTON_ITERATIONS; x++) {
-      const g = s(c, f);
-      if (g == 0)
-        return f;
-      f -= (r(c, f) - h) / g;
+  setFromEuler(t, e) {
+    const i = e || ("order" in t ? t.order : "XYZ"), s = Math.sin(t.x / 2), r = Math.sin(t.y / 2), l = Math.sin(t.z / 2), o = Math.cos(t.x / 2), u = Math.cos(t.y / 2), h = Math.cos(t.z / 2);
+    return i == "XYZ" ? (this.x = o * r * l + s * u * h, this.y = -s * u * l + o * r * h, this.z = o * u * l + s * r * h, this.w = -s * r * l + o * u * h) : i == "XZY" ? (this.x = -o * r * l + s * u * h, this.y = o * r * h - s * u * l, this.z = s * r * h + o * u * l, this.w = s * r * l + o * u * h) : i == "YZX" ? (this.x = s * u * h + o * r * l, this.y = s * u * l + o * r * h, this.z = -s * r * h + o * u * l, this.w = -s * r * l + o * u * h) : i == "ZYX" && (this.x = s * u * h - o * r * l, this.y = s * u * l + o * r * h, this.z = -s * r * h + o * u * l, this.w = s * r * l + o * u * h), this.updated = !0, this;
+  }
+  setFromMatrix(t) {
+    const e = t.elm, i = e[0] + e[5] + e[10];
+    let s, r, l, o;
+    if (i > 0) {
+      const h = Math.sqrt(i + 1) * 2;
+      o = 0.25 * h, s = (e[6] - e[9]) / h, r = (e[8] - e[2]) / h, l = (e[1] - e[4]) / h;
+    } else if (e[0] > e[5] && e[0] > e[10]) {
+      const h = Math.sqrt(1 + e[0] - e[5] - e[10]) * 2;
+      o = (e[6] - e[9]) / h, s = 0.25 * h, r = (e[1] + e[4]) / h, l = (e[2] + e[8]) / h;
+    } else if (e[5] > e[10]) {
+      const h = Math.sqrt(1 + e[5] - e[0] - e[10]) * 2;
+      o = (e[8] - e[2]) / h, s = (e[1] + e[4]) / h, r = 0.25 * h, l = (e[6] + e[9]) / h;
+    } else {
+      const h = Math.sqrt(1 + e[10] - e[0] - e[5]) * 2;
+      o = (e[1] - e[4]) / h, s = (e[2] + e[8]) / h, r = (e[6] + e[9]) / h, l = 0.25 * h;
     }
-    return f;
+    const u = Math.sqrt(s * s + r * r + l * l + o * o);
+    return s /= u, r /= u, l /= u, o /= u, this.x = s, this.y = r, this.z = l, this.w = o, this.updated = !0, this;
   }
-  function u(h, c, f) {
-    h.p1 = Math.max(h.p0, Math.min(h.p3, h.p1)), h.p2 = Math.max(h.p0, Math.min(h.p3, h.p2));
-    let x = 0;
-    for (let E = 1; E < f.length && (x = E - 1, !(c < f[E])); E++)
-      ;
-    const g = x / (o.BEZIER_EASING_CACHE_SIZE - 1), m = s(h, g) / (h.p3 - h.p0);
-    return m == 0 ? g : m > 0.01 ? a(c, h, g) : l(c, g, g + o.BEZIER_EASING_SAMPLE_STEP_SIZE, h);
+  multiply(t) {
+    const e = this.w * t.w - this.x * t.x - this.y * t.y - this.z * t.z, i = this.w * t.x + this.x * t.w + this.y * t.z - this.z * t.y, s = this.w * t.y - this.x * t.z + this.y * t.w + this.z * t.x, r = this.w * t.z + this.x * t.y - this.y * t.x + this.z * t.w;
+    return this.set(i, s, r, e), this.updated = !0, this;
   }
-  o.getBezierTfromX = u;
-})(I || (I = {}));
-var B;
-((o) => {
-  function t(n = 6) {
-    return (p) => {
-      var y = Math.exp(-n * (2 * p - 1)), d = Math.exp(-n);
-      return (1 + (1 - y) / (1 + y) * (1 + d) / (1 - d)) / 2;
-    };
+  inverse() {
+    return this.set(-this.x, -this.y, -this.z, this.w), this.updated = !0, this;
   }
-  o.sigmoid = t;
-  function e(n, p, y) {
-    const d = Math.max(0, Math.min(1, (y - n) / (p - n)));
-    return d * d * (3 - 2 * d);
+  copy(t) {
+    var e, i, s, r;
+    return this.x = (e = t.x) != null ? e : 0, this.y = (i = t.y) != null ? i : 0, this.z = (s = t.z) != null ? s : 0, this.w = (r = t.w) != null ? r : 0, this.updated = !0, this;
   }
-  o.smoothstep = e;
-  function i(n) {
-    return n;
+  clone() {
+    return new G(this.x, this.y, this.z, this.w);
   }
-  o.linear = i;
-  function s(n) {
-    return n * n;
-  }
-  o.easeInQuad = s;
-  function r(n) {
-    return n * (2 - n);
-  }
-  o.easeOutQuad = r;
-  function l(n) {
-    return n < 0.5 ? 2 * n * n : -1 + (4 - 2 * n) * n;
-  }
-  o.easeInOutQuad = l;
-  function a(n) {
-    return n * n * n;
-  }
-  o.easeInCubic = a;
-  function u(n) {
-    return --n * n * n + 1;
-  }
-  o.easeOutCubic = u;
-  function h(n) {
-    return n < 0.5 ? 4 * n * n * n : (n - 1) * (2 * n - 2) * (2 * n - 2) + 1;
-  }
-  o.easeInOutCubic = h;
-  function c(n) {
-    return n * n * n * n;
-  }
-  o.easeInQuart = c;
-  function f(n) {
-    return 1 - --n * n * n * n;
-  }
-  o.easeOutQuart = f;
-  function x(n) {
-    return n < 0.5 ? 8 * n * n * n * n : 1 - 8 * --n * n * n * n;
-  }
-  o.easeInOutQuart = x;
-  function g(n) {
-    return n * n * n * n * n;
-  }
-  o.easeInQuint = g;
-  function m(n) {
-    return 1 + --n * n * n * n * n;
-  }
-  o.easeOutQuint = m;
-  function E(n) {
-    return n < 0.5 ? 16 * n * n * n * n * n : 1 + 16 * --n * n * n * n * n;
-  }
-  o.easeInOutQuint = E;
-  function _(n, p, y, d) {
-    for (var A = new Array(I.BEZIER_EASING_CACHE_SIZE), z = 0; z < I.BEZIER_EASING_CACHE_SIZE; ++z)
-      A[z] = I.calcBezier({ p0: n.x, p1: p.x, p2: y.x, p3: d.x }, z / (I.BEZIER_EASING_CACHE_SIZE - 1));
-    return (F) => F <= n.x ? n.y : d.x <= F ? d.y : I.calcBezier({ p0: n.y, p1: p.y, p2: y.y, p3: d.y }, I.getBezierTfromX({ p0: n.x, p1: p.x, p2: y.x, p3: d.x }, F, A));
-  }
-  o.bezier = _;
-  function R(n, p, y, d) {
-    return _(
-      { x: 0, y: 0 },
-      { x: n, y: p },
-      { x: y, y: d },
-      { x: 1, y: 1 }
-    );
-  }
-  o.cubicBezier = R;
-})(B || (B = {}));
-class C {
+}
+var D;
+((a) => {
+  a.randomSeed = (t) => {
+    t ^= t << 13, t ^= 2 >>> 17, t ^= t << 5;
+    let e = 123456789 ^ t;
+    t ^= t << 13, t ^= 2 >>> 17, t ^= t << 5;
+    let i = 362436069 ^ t;
+    t ^= t << 13, t ^= 2 >>> 17, t ^= t << 5;
+    let s = 521288629 ^ t;
+    t ^= t << 13, t ^= 2 >>> 17, t ^= t << 5;
+    let r = 88675123 ^ t, l;
+    return () => (l = e ^ e << 11, e = i, i = s, s = r, r = (r ^ r >>> 19 ^ (l ^ l >>> 8)) >>> 0, r / 4294967296);
+  }, a.randomRange = (t = -1, e = 1) => t + Math.random() * (e - t), a.randomVector = (t = new F(-1, -1, -1, -1), e = new F(1, 1, 1, 1)) => new F(
+    a.randomRange(t.x, e.x),
+    a.randomRange(t.y, e.y),
+    a.randomRange(t.z, e.z),
+    a.randomRange(t.w, e.w)
+  );
+})(D || (D = {}));
+class P {
   constructor() {
     this.listeners = [];
   }
@@ -728,7 +711,7 @@ class C {
     });
   }
   off(t, e) {
-    this.listeners = this.listeners.filter((i) => !(i.event == t && i.cb == e));
+    this.listeners = this.listeners.filter((i) => e == null ? i.event != t : !(i.event == t && i.cb == e));
   }
   emit(t, e) {
     const i = this.listeners.concat();
@@ -737,13 +720,188 @@ class C {
       r.event == t && (r.cb.apply(this, e || []), r.once && this.off(t, r.cb));
     }
   }
+  hasEvent(t) {
+    return this.listeners.some((e) => e.event == t);
+  }
 }
-class H extends C {
+var I;
+((a) => {
+  a.NEWTON_ITERATIONS = 4, a.NEWTON_MIN_SLOPE = 1e-3, a.SUBDIVISION_PRECISION = 1e-7, a.SUBDIVISION_MAX_ITERATIONS = 10, a.BEZIER_EASING_CACHE_SIZE = 11, a.BEZIER_EASING_SAMPLE_STEP_SIZE = 1 / a.BEZIER_EASING_CACHE_SIZE;
+  function t(h) {
+    return -h.p0 + 3 * h.p1 - 3 * h.p2 + h.p3;
+  }
+  function e(h) {
+    return 3 * h.p0 - 6 * h.p1 + 3 * h.p2;
+  }
+  function i(h) {
+    return -3 * h.p0 + 3 * h.p1;
+  }
+  function s(h, c) {
+    return 3 * t(h) * c * c + 2 * e(h) * c + i(h);
+  }
+  a.calcBezierSlope = s;
+  function r(h, c) {
+    return ((t(h) * c + e(h)) * c + i(h)) * c + h.p0;
+  }
+  a.calcBezier = r;
+  function l(h, c, f, x) {
+    let m = 0, g = 0;
+    for (let y = 0; y < a.SUBDIVISION_MAX_ITERATIONS; y++)
+      g = c + (f - c) / 2, m = r(x, g), m > h ? f = g : c = g;
+    return g;
+  }
+  function o(h, c, f) {
+    for (let x = 0; x < a.NEWTON_ITERATIONS; x++) {
+      const m = s(c, f);
+      if (m == 0)
+        return f;
+      f -= (r(c, f) - h) / m;
+    }
+    return f;
+  }
+  function u(h, c, f) {
+    h.p1 = Math.max(h.p0, Math.min(h.p3, h.p1)), h.p2 = Math.max(h.p0, Math.min(h.p3, h.p2));
+    let x = 0;
+    for (let y = 1; y < f.length && (x = y - 1, !(c < f[y])); y++)
+      ;
+    const m = x / (a.BEZIER_EASING_CACHE_SIZE - 1), g = s(h, m) / (h.p3 - h.p0);
+    return g == 0 ? m : g > 0.01 ? o(c, h, m) : l(c, m, m + a.BEZIER_EASING_SAMPLE_STEP_SIZE, h);
+  }
+  a.getBezierTfromX = u;
+})(I || (I = {}));
+var U;
+((a) => {
+  function t(n = 6) {
+    return (T) => {
+      const d = Math.exp(-n * (2 * T - 1)), E = Math.exp(-n);
+      return (1 + (1 - d) / (1 + d) * (1 + E) / (1 - E)) / 2;
+    };
+  }
+  a.sigmoid = t;
+  function e(n, T, d) {
+    const E = Math.max(0, Math.min(1, (d - n) / (T - n)));
+    return E * E * (3 - 2 * E);
+  }
+  a.smoothstep = e;
+  function i(n) {
+    return n;
+  }
+  a.linear = i;
+  function s(n) {
+    return n * n;
+  }
+  a.easeInQuad = s;
+  function r(n) {
+    return n * (2 - n);
+  }
+  a.easeOutQuad = r;
+  function l(n) {
+    return n < 0.5 ? 2 * n * n : -1 + (4 - 2 * n) * n;
+  }
+  a.easeInOutQuad = l;
+  function o(n) {
+    return n * n * n;
+  }
+  a.easeInCubic = o;
+  function u(n) {
+    return --n * n * n + 1;
+  }
+  a.easeOutCubic = u;
+  function h(n) {
+    return n < 0.5 ? 4 * n * n * n : (n - 1) * (2 * n - 2) * (2 * n - 2) + 1;
+  }
+  a.easeInOutCubic = h;
+  function c(n) {
+    return n * n * n * n;
+  }
+  a.easeInQuart = c;
+  function f(n) {
+    return 1 - --n * n * n * n;
+  }
+  a.easeOutQuart = f;
+  function x(n) {
+    return n < 0.5 ? 8 * n * n * n * n : 1 - 8 * --n * n * n * n;
+  }
+  a.easeInOutQuart = x;
+  function m(n) {
+    return n * n * n * n * n;
+  }
+  a.easeInQuint = m;
+  function g(n) {
+    return 1 + --n * n * n * n * n;
+  }
+  a.easeOutQuint = g;
+  function y(n) {
+    return n < 0.5 ? 16 * n * n * n * n * n : 1 + 16 * --n * n * n * n * n;
+  }
+  a.easeInOutQuint = y;
+  function A(n, T, d, E) {
+    const z = new Array(I.BEZIER_EASING_CACHE_SIZE);
+    for (let _ = 0; _ < I.BEZIER_EASING_CACHE_SIZE; ++_)
+      z[_] = I.calcBezier({ p0: n.x, p1: T.x, p2: d.x, p3: E.x }, _ / (I.BEZIER_EASING_CACHE_SIZE - 1));
+    return (_) => _ <= n.x ? n.y : E.x <= _ ? E.y : I.calcBezier({ p0: n.y, p1: T.y, p2: d.y, p3: E.y }, I.getBezierTfromX({ p0: n.x, p1: T.x, p2: d.x, p3: E.x }, _, z));
+  }
+  a.bezier = A;
+  function R(n, T, d, E) {
+    return A(
+      { x: 0, y: 0 },
+      { x: n, y: T },
+      { x: d, y: E },
+      { x: 1, y: 1 }
+    );
+  }
+  a.cubicBezier = R;
+})(U || (U = {}));
+var C;
+((a) => {
+  a.number = (t, e, i) => t + (e - t) * i, a.vector = (t, e, i) => t.lerp(e, i);
+})(C || (C = {}));
+const L = (a) => typeof a == "number" ? a : "clone" in a ? a.clone() : a, B = (a, t) => typeof a == "number" ? t : "clone" in a && typeof t != "number" ? a.copy(t) : t, H = (a) => typeof a == "number" ? C.number : C.vector, Y = (a) => typeof a == "number" ? "1f" : "4fv";
+class et extends P {
+  constructor() {
+    super(), this.variables = /* @__PURE__ */ new Map();
+  }
+  add(t, e, i = U.easeInOutCubic, s) {
+    this.variables.set(t, {
+      time: 0,
+      duration: 1,
+      value: e,
+      valueStart: L(e),
+      valueEnd: L(e),
+      easingFunc: i,
+      lerpFunc: H(e),
+      animating: !1,
+      type: Y(e) || s
+    });
+  }
+  get(t) {
+    var e;
+    return (e = this.variables.get(t)) != null ? e : null;
+  }
+  getValue(t) {
+    const e = this.get(t);
+    return e === null ? null : e.value;
+  }
+  cancel(t) {
+    const e = this.variables.get(t);
+    !e || (e.animating = !1);
+  }
+  animate(t, e, i = 1, s) {
+    const r = this.variables.get(t);
+    !r || (r.animating = !0, r.valueStart = B(r.valueStart, r.value), r.valueEnd = B(r.valueEnd, e), r.duration = i, r.onFinish = s, r.time = 0, i === 0 && (r.animating = !1, r.value = B(r.value, e), r.onFinish && r.onFinish()));
+  }
+  update(t) {
+    this.variables.forEach((e) => {
+      !e.animating || (e.time >= 1 && (e.animating = !1, e.time = 1), e.value = B(e.value, e.valueStart), e.value = e.lerpFunc(e.value, e.valueEnd, e.easingFunc(e.time)), e.time += t / e.duration, e.animating == !1 && e.onFinish && e.onFinish());
+    });
+  }
+}
+class it extends P {
   constructor(t) {
     super(), this.keyframes = [], this.cache = { frame: NaN, value: NaN }, this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.set(t);
   }
   set(t) {
-    t && (this.keyframes.length = 0, t.forEach((e) => {
+    t && (this.keyframes = [], t.forEach((e) => {
       this.addKeyFrame(e);
     }));
   }
@@ -771,9 +929,9 @@ class H extends C {
     }, e) : 0;
   }
 }
-class Y extends C {
+class st extends P {
   constructor(t, e, i, s, r) {
-    super(), this.updatedFrame = -1, this.name = t || "", this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.curves = /* @__PURE__ */ new Map(), this.value = new w(), e && this.setFCurve(e, "x"), i && this.setFCurve(i, "y"), s && this.setFCurve(s, "z"), r && this.setFCurve(r, "w");
+    super(), this.updatedFrame = -1, this.name = t || "", this.frameStart = 0, this.frameEnd = 0, this.frameDuration = 0, this.curves = /* @__PURE__ */ new Map(), this.value = new F(), e && this.setFCurve(e, "x"), i && this.setFCurve(i, "y"), s && this.setFCurve(s, "z"), r && this.setFCurve(r, "w");
   }
   setFCurve(t, e) {
     this.curves.set(e, t);
@@ -792,7 +950,7 @@ class Y extends C {
     return e && (this.value.x = e.getValue(t)), i && (this.value.y = i.getValue(t)), s && (this.value.z = s.getValue(t)), r && (this.value.w = r.getValue(t)), this.updatedFrame = t, this;
   }
 }
-class K extends C {
+class rt extends P {
   constructor(t, e, i, s) {
     super(), this.coordinate = { x: 0, y: 0 }, this.handleLeft = { x: 0, y: 0 }, this.handleRight = { x: 0, y: 0 }, this.interpolation = "BEZIER", this.easing = null, this.nextFrame = null, this.set(t, e, i, s);
   }
@@ -800,7 +958,7 @@ class K extends C {
     this.coordinate = t, this.handleLeft = e || t, this.handleRight = i || t, this.interpolation = s || "BEZIER";
   }
   getEasing(t, e) {
-    return t == "BEZIER" ? B.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (i) => {
+    return t == "BEZIER" ? U.bezier(this.coordinate, this.handleRight, e.handleLeft, e.coordinate) : t == "CONSTANT" ? () => this.coordinate.y : (i) => {
       const s = e.coordinate.y - this.coordinate.y;
       return i = (i - this.coordinate.x) / (e.coordinate.x - this.coordinate.x), this.coordinate.y + i * s;
     };
@@ -809,34 +967,46 @@ class K extends C {
     return (this.nextFrame == null || this.nextFrame.coordinate.x != t.coordinate.x || this.nextFrame.coordinate.y != t.coordinate.y) && (this.easing = this.getEasing(this.interpolation, t), this.nextFrame = t), this.easing ? this.easing(e) : 0;
   }
 }
-var U;
-((o) => {
+var X;
+((a) => {
   function t(...e) {
     const i = {};
     for (let s = 0; s < e.length; s++)
       e[s] != null && Object.assign(i, e[s]);
     return i;
   }
-  o.merge = t;
-})(U || (U = {}));
+  a.merge = t;
+})(X || (X = {}));
+var V;
+((a) => {
+  function t() {
+    return self.crypto.randomUUID();
+  }
+  a.genUUID = t;
+})(V || (V = {}));
 export {
+  et as Animator,
   I as Bezier,
-  B as Easings,
-  Q as Euler,
-  C as EventEmitter,
-  H as FCurve,
-  Y as FCurveGroup,
-  K as FCurveKeyFrame,
-  k as GLPowerBuffer,
-  V as GLPowerFrameBuffer,
-  X as GLPowerProgram,
-  D as GLPowerTexture,
-  G as GLPowerTransformFeedback,
-  L as GLPowerVAO,
-  P as Matrix,
-  Z as Power,
-  O as Quaternion,
-  U as UniformsUtils,
-  w as Vector
+  U as Easings,
+  tt as Euler,
+  P as EventEmitter,
+  it as FCurve,
+  st as FCurveGroup,
+  rt as FCurveKeyFrame,
+  j as GLPowerBuffer,
+  Q as GLPowerFrameBuffer,
+  $ as GLPowerFrameBufferCube,
+  W as GLPowerProgram,
+  k as GLPowerTexture,
+  J as GLPowerTextureCube,
+  q as GLPowerTransformFeedback,
+  Z as GLPowerVAO,
+  V as ID,
+  D as Maths,
+  N as Matrix,
+  K as Power,
+  G as Quaternion,
+  X as UniformsUtils,
+  F as Vector
 };
 //# sourceMappingURL=glpower.js.map

@@ -1,6 +1,6 @@
 import { Types, Vector } from '..';
-import { FCurve } from './FCurve';
 import { EventEmitter } from '../utils/EventEmitter';
+import { FCurve } from './FCurve';
 export declare class FCurveGroup extends EventEmitter {
     name: string;
     private curves;

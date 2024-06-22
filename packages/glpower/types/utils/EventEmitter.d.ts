@@ -4,8 +4,9 @@ export declare class EventEmitter {
     constructor();
     on(event: string, cb: ListenerFunction): void;
     once(event: string, cb: ListenerFunction): void;
-    off(event: string, cb: ListenerFunction): void;
+    off(event: string, cb?: ListenerFunction): void;
     emit(event: string, args?: any[]): void;
+    hasEvent(event: string): boolean;
 }
 export {};
 //# sourceMappingURL=EventEmitter.d.ts.map
