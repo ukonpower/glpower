@@ -51,7 +51,7 @@ class ExGeometries {
 			new CylinderGeometry(),
 		];
 
-		const program = this.core.createProgram();
+		const program = new GLP.GLPowerProgram( gl );
 		program.setShader( basicVert, basicFrag );
 
 		geometries.forEach( ( geometry, i ) => {
@@ -59,13 +59,13 @@ class ExGeometries {
 			const vao = program.getVAO( i.toString() )!;
 
 			const position = geometry.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.core.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+			vao.setAttribute( 'position', new GLP.GLPowerBuffer( gl ).setData( new Float32Array( position.array ) ), position.size );
 
 			const uv = geometry.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.core.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+			vao.setAttribute( 'uv', new GLP.GLPowerBuffer( gl ).setData( new Float32Array( uv.array ) ), uv.size );
 
 			const index = geometry.getAttribute( 'index' );
-			vao.setIndex( this.core.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+			vao.setIndex( new GLP.GLPowerBuffer( gl ).setData( new Uint16Array( index.array ), 'ibo' ) );
 
 			const modelMatrix = new GLP.Matrix().applyPosition( new GLP.Vector( ( i / ( geometries.length - 1.0 ) - 0.5 ) * 5.0, 0, 0 ) );
 
