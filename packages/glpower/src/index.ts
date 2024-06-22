@@ -5,7 +5,9 @@ export * from './GLPowerProgram';
 export * from './GLPowerBuffer';
 export * from './GLPowerVAO';
 export * from './GLPowerFrameBuffer';
+export * from './GLPowerFrameBufferCube';
 export * from './GLPowerTexture';
+export * from './GLPowerTextureCube';
 export * from './GLPowerTransformFeedback';
 
 // math
@@ -14,9 +16,11 @@ export * from './Math/Vector';
 export * from './Math/Euler';
 export * from './Math/Quaternion';
 export * from './Math/Matrix';
+export * from './Math/Random';
 
 // animation
 
+export * from './Animation/Animator';
 export * from './Animation/Bezier';
 export * from './Animation/Easings';
 export * from './Animation/FCurve';
@@ -27,6 +31,7 @@ export * from './Animation/FCurveKeyFrame';
 
 export * from './utils/EventEmitter';
 export * from './utils/Uniform';
+export * from './utils/ID';
 
 // types
 

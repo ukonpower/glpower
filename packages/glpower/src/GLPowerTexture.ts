@@ -4,9 +4,10 @@ import { Types } from "./types";
 type ImagePretense = {
 	width: number,
 	height: number
+	data?: any
 }
 
-type GLPowerTextureSetting = {
+export type GLPowerTextureSetting = {
 	type: number,
 	internalFormat: number,
 	format: number,
@@ -20,13 +21,14 @@ type GLPowerTextureSetting = {
 export class GLPowerTexture {
 
 	public unit: number;
-	public image: HTMLImageElement | ImagePretense | null;
+	public image: HTMLImageElement | HTMLImageElement[] | ImagePretense | null;
 	public size: Vector;
 
-	private gl: WebGL2RenderingContext;
-	private texture: WebGLTexture | null;
+	protected gl: WebGL2RenderingContext;
+	protected glTex: WebGLTexture | null;
 
-	private _setting: GLPowerTextureSetting;
+	protected textureType: number;
+	protected _setting: GLPowerTextureSetting;
 
 	constructor( gl: WebGL2RenderingContext ) {
 
@@ -34,7 +36,7 @@ export class GLPowerTexture {
 		this.image = null;
 		this.unit = 0;
 		this.size = new Vector();
-		this.texture = this.gl.createTexture();
+		this.glTex = this.gl.createTexture();
 
 		this._setting = {
 			type: this.gl.UNSIGNED_BYTE,
@@ -47,6 +49,8 @@ export class GLPowerTexture {
 			wrapT: this.gl.CLAMP_TO_EDGE,
 		};
 
+		this.textureType = gl.TEXTURE_2D;
+
 	}
 
 	public get isTexture() {
@@ -55,7 +59,7 @@ export class GLPowerTexture {
 
 	}
 
-	public setting( param: Types.Nullable<GLPowerTextureSetting> ) {
+	public setting( param?: Types.Nullable<GLPowerTextureSetting> ) {
 
 		this._setting = {
 			...this._setting,
@@ -68,23 +72,25 @@ export class GLPowerTexture {
 
 	}
 
-	public attach( img: HTMLImageElement | ImagePretense | null ) {
+	public attach( img: HTMLImageElement | ImagePretense | null | HTMLImageElement[] ) {
 
 		this.image = img;
 
-		this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
+		this.gl.bindTexture( this.textureType, this.glTex );
 
 		if ( this.image ) {
 
-			this.size.set( this.image.width, this.image.height );
+			const img = Array.isArray( this.image ) ? this.image[ 0 ] : this.image;
 
-			if ( this.image instanceof HTMLImageElement || this.image instanceof HTMLCanvasElement ) {
+			this.size.set( img.width, img.height );
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this._setting.format, this._setting.type, this.image );
+			if ( img instanceof HTMLImageElement || img instanceof HTMLCanvasElement ) {
+
+				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, this._setting.format, this._setting.type, img );
 
 			} else {
 
-				this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.image.width, this.image.height, 0, this._setting.format, this._setting.type, null );
+				this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, img.width, img.height, 0, this._setting.format, this._setting.type, img.data || null );
 
 			}
 
@@ -92,22 +98,22 @@ export class GLPowerTexture {
 
 			this.size.set( 1, 1 );
 
-			this.gl.texImage2D( this.gl.TEXTURE_2D, 0, this._setting.internalFormat, this.size.x, this.size.y, 0, this._setting.format, this._setting.type, null );
+			this.gl.texImage2D( this.textureType, 0, this._setting.internalFormat, this.size.x, this.size.y, 0, this._setting.format, this._setting.type, null );
 
 		}
-
-		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter );
-		this.gl.texParameteri( this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter );
-		this.gl.texParameterf( this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this._setting.wrapS );
-		this.gl.texParameterf( this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this._setting.wrapT );
 
 		if ( this._setting.generateMipmap ) {
 
-			this.gl.generateMipmap( this.gl.TEXTURE_2D );
+			this.gl.generateMipmap( this.textureType );
 
 		}
 
-		this.gl.bindTexture( this.gl.TEXTURE_2D, null );
+		this.gl.texParameteri( this.textureType, this.gl.TEXTURE_MAG_FILTER, this._setting.magFilter );
+		this.gl.texParameteri( this.textureType, this.gl.TEXTURE_MIN_FILTER, this._setting.minFilter );
+		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_S, this._setting.wrapS );
+		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_T, this._setting.wrapT );
+
+		this.gl.bindTexture( this.textureType, null );
 
 		return this;
 
@@ -116,7 +122,7 @@ export class GLPowerTexture {
 	public activate( unitNumber: number ) {
 
 		this.gl.activeTexture( this.gl.TEXTURE0 + unitNumber );
-		this.gl.bindTexture( this.gl.TEXTURE_2D, this.texture );
+		this.gl.bindTexture( this.textureType, this.glTex );
 
 		this.unit = unitNumber;
 
@@ -144,39 +150,19 @@ export class GLPowerTexture {
 
 	public getTexture() {
 
-		return this.texture;
+		return this.glTex;
 
 	}
 
-	public loadAsync( src: string ) {
+	public get type() {
 
-		return new Promise( ( resolve, reject ) => {
-
-			const img = new Image();
-
-			img.onload = () => {
-
-				this.attach( img );
-
-				resolve( this );
-
-			};
-
-			img.onerror = () => {
-
-				reject( 'img error, ' + src );
-
-			};
-
-			img.src = src;
-
-		} );
+		return this.textureType;
 
 	}
 
 	public dispose() {
 
-		this.gl.deleteTexture( this.texture );
+		this.gl.deleteTexture( this.glTex );
 
 	}
 

@@ -1,5 +1,6 @@
-import { FCurveKeyFrame } from './FCurveKeyFrame';
 import { EventEmitter } from '../utils/EventEmitter';
+
+import { FCurveKeyFrame } from './FCurveKeyFrame';
 
 export class FCurve extends EventEmitter {
 
@@ -27,7 +28,7 @@ export class FCurve extends EventEmitter {
 
 		if ( frames ) {
 
-			this.keyframes.length = 0;
+			this.keyframes = [];
 
 			frames.forEach( keyframe => {
 

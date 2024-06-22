@@ -1,4 +1,5 @@
 import { IVector2 } from "..";
+
 import { Bezier } from "./Bezier";
 
 export type EasingFunc = ( t: number ) => any
@@ -9,8 +10,8 @@ export namespace Easings {
 
 		return ( x: number ) => {
 
-			var e1 = Math.exp( - weight * ( 2 * x - 1 ) );
-			var e2 = Math.exp( - weight );
+			const e1 = Math.exp( - weight * ( 2 * x - 1 ) );
+			const e2 = Math.exp( - weight );
 
 			return ( 1 + ( 1 - e1 ) / ( 1 + e1 ) * ( 1 + e2 ) / ( 1 - e2 ) ) / 2;
 
@@ -109,9 +110,9 @@ export namespace Easings {
 
 	export function bezier( c1: IVector2, h1: IVector2, h2: IVector2, c2: IVector2 ): EasingFunc {
 
-		var cache = new Array( Bezier.BEZIER_EASING_CACHE_SIZE );
+		const cache = new Array( Bezier.BEZIER_EASING_CACHE_SIZE );
 
-		for ( var i = 0; i < Bezier.BEZIER_EASING_CACHE_SIZE; ++ i ) {
+		for ( let i = 0; i < Bezier.BEZIER_EASING_CACHE_SIZE; ++ i ) {
 
 			cache[ i ] = Bezier.calcBezier( { p0: c1.x, p1: h1.x, p2: h2.x, p3: c2.x }, i / ( Bezier.BEZIER_EASING_CACHE_SIZE - 1.0 ) );
 

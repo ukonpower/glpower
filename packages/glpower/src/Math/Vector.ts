@@ -38,9 +38,9 @@ export class Vector {
 	public set( x: number, y?: number, z?: number, w?: number ) {
 
 		this.x = x;
-		this.y = y ?? this.y;
-		this.z = z ?? this.z;
-		this.w = w ?? this.w;
+		this.y = y ?? x;
+		this.z = z ?? x;
+		this.w = w ?? x;
 
 		return this;
 
@@ -207,6 +207,8 @@ export class Vector {
 		this.z = zz;
 		this.w = 0;
 
+		return this;
+
 	}
 
 	public applyMatrix4( mat: Matrix ) {
@@ -238,6 +240,17 @@ export class Vector {
 		this.y = Math.floor( this.y );
 		this.z = Math.floor( this.z );
 		this.w = Math.floor( this.w );
+
+	}
+
+	public lerp( b: Vector, t: number ) {
+
+		this.x = this.x + ( b.x - this.x ) * t;
+		this.y = this.y + ( b.y - this.y ) * t;
+		this.z = this.z + ( b.z - this.z ) * t;
+		this.w = this.w + ( b.w - this.w ) * t;
+
+		return this;
 
 	}
 

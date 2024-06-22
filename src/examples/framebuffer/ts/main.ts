@@ -1,12 +1,12 @@
-import * as GLP from 'glpower';
-
-import basicVert from '../../shaders/basic.vs';
-import basicFrag from '../../shaders/basic.fs';
-import textureFrag from '../../shaders/texture.fs';
-
 import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
 import { Geometry } from '@examples/libs/Geometries/Geometry';
 import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
+import * as GLP from 'glpower';
+
+import basicFrag from '../../shaders/basic.fs';
+import basicVert from '../../shaders/basic.vs';
+import textureFrag from '../../shaders/texture.fs';
+
 
 class ExFrameBuffer {
 
@@ -45,10 +45,10 @@ class ExFrameBuffer {
 
 		// frameBuffer
 
-		const frameBuffer = this.power.createFrameBuffer();
+		const frameBuffer = new GLP.GLPowerFrameBuffer( this.gl );
 		frameBuffer.setSize( 1024, 1024 );
 
-		const texture = this.power.createTexture();
+		const texture = new GLP.GLPowerTexture( this.gl );
 
 		frameBuffer.setTexture( [
 			texture
@@ -58,10 +58,10 @@ class ExFrameBuffer {
 
 		// program
 
-		const basicProgram = this.power.createProgram();
+		const basicProgram = new GLP.GLPowerProgram( this.gl );
 		basicProgram.setShader( basicVert, basicFrag );
 
-		const frameProgram = this.power.createProgram();
+		const frameProgram = new GLP.GLPowerProgram( this.gl );
 		frameProgram.setShader( basicVert, textureFrag );
 
 		// vao
@@ -69,13 +69,13 @@ class ExFrameBuffer {
 		const setVao = ( vao: GLP.GLPowerVAO, geo: Geometry ) => {
 
 			const position = geo.getAttribute( 'position' );
-			vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+			vao.setAttribute( 'position', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( position.array ) ), position.size );
 
 			const uv = geo.getAttribute( 'uv' );
-			vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+			vao.setAttribute( 'uv', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( uv.array ) ), uv.size );
 
 			const index = geo.getAttribute( 'index' );
-			vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+			vao.setIndex( new GLP.GLPowerBuffer( this.gl ).setData( new Uint16Array( index.array ), 'ibo' ) );
 
 			return vao;
 

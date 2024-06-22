@@ -1,6 +1,6 @@
+import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
 import * as GLP from 'glpower';
 
-import { PlaneGeometry } from '@examples/libs/Geometries/PlaneGeometry';
 
 import basicVert from '../../shaders/basic.vs';
 import textureFrag from '../../shaders/texture.fs';
@@ -36,13 +36,13 @@ class ExTexture {
 
 		// texture
 
-		const texture = this.power.createTexture();
+		const texture = new GLP.GLPowerTexture( this.gl );
 
 		texture.load( BASE_PATH + "/assets/gazou.jpg" );
 
 		// program
 
-		const program = this.power.createProgram();
+		const program = new GLP.GLPowerProgram( this.gl );
 		program.setShader( basicVert, textureFrag );
 
 		// create vao
@@ -52,13 +52,13 @@ class ExTexture {
 		const vao = program.getVAO()!;
 
 		const position = geometry.getAttribute( 'position' );
-		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+		vao.setAttribute( 'position', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( position.array ) ), position.size );
 
 		const uv = geometry.getAttribute( 'uv' );
-		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+		vao.setAttribute( 'uv', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( uv.array ) ), uv.size );
 
 		const index = geometry.getAttribute( 'index' );
-		vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+		vao.setIndex( new GLP.GLPowerBuffer( this.gl ).setData( new Uint16Array( index.array ), 'ibo' ) );
 
 		// animate
 

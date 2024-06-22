@@ -1,8 +1,8 @@
 import * as GLP from 'glpower';
 
+import transformFeedbackFrag from './shaders/transformFeedback.fs';
 import transformFeedbackVert1 from './shaders/transformFeedback1.vs';
 import transformFeedbackVert2 from './shaders/transformFeedback2.vs';
-import transformFeedbackFrag from './shaders/transformFeedback.fs';
 
 class ExTransformFeedback {
 
@@ -30,13 +30,13 @@ class ExTransformFeedback {
 
 		}
 
-		const buffer1 = this.power.createBuffer();
+		const buffer1 = new GLP.GLPowerBuffer( gl );
 		buffer1.setData( new Float32Array( buffer1Data ), 'vbo' );
 
-		const buffer2 = this.power.createBuffer();
+		const buffer2 = new GLP.GLPowerBuffer( gl );
 		buffer2.setData( new Float32Array( buffer2Data ), 'vbo', this.gl.DYNAMIC_COPY );
 
-		const buffer3 = this.power.createBuffer();
+		const buffer3 = new GLP.GLPowerBuffer( gl );
 		buffer3.setData( new Float32Array( buffer2Data ), 'vbo', this.gl.DYNAMIC_COPY );
 
 		// tf1
@@ -44,7 +44,7 @@ class ExTransformFeedback {
 		const transformFeedback1 = new GLP.GLPowerTransformFeedback( this.gl );
 		transformFeedback1.setBuffer( "", buffer2, 0 );
 
-		const program = this.power.createProgram();
+		const program = new GLP.GLPowerProgram( this.gl );
 
 		transformFeedback1.bind( () => {
 
@@ -89,7 +89,7 @@ class ExTransformFeedback {
 		const transformFeedback2 = new GLP.GLPowerTransformFeedback( this.gl );
 		transformFeedback2.setBuffer( "", buffer3, 0 );
 
-		const program2 = this.power.createProgram();
+		const program2 = new GLP.GLPowerProgram( this.gl );
 
 		transformFeedback2.bind( () => {
 

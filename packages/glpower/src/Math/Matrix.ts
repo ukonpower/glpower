@@ -1,4 +1,5 @@
 import { IVector4 } from "..";
+
 import { Quaternion } from "./Quaternion";
 import { IVector3, Vector } from "./Vector";
 
@@ -52,8 +53,8 @@ export class Matrix {
 
 	public perspective( fov: number, aspect: number, near: number, far: number ) {
 
-		var r = 1 / Math.tan( fov * Math.PI / 360 );
-		var d = far - near;
+		const r = 1 / Math.tan( fov * Math.PI / 360 );
+		const d = far - near;
 
 		this.elm = [
 			r / aspect, 0, 0, 0,
@@ -86,13 +87,13 @@ export class Matrix {
 		const yAxis = zAxis.clone().cross( xAxis ).normalize();
 
 		this.elm = [
-		   xAxis.x, xAxis.y, xAxis.z, 0,
-		   yAxis.x, yAxis.y, yAxis.z, 0,
-		   zAxis.x, zAxis.y, zAxis.z, 0,
-		   eye.x,
-		   eye.y,
-		   eye.z,
-		   1,
+			xAxis.x, xAxis.y, xAxis.z, 0,
+			yAxis.x, yAxis.y, yAxis.z, 0,
+			zAxis.x, zAxis.y, zAxis.z, 0,
+			eye.x,
+			eye.y,
+			eye.z,
+			1,
 		];
 
 		return this;
@@ -102,9 +103,9 @@ export class Matrix {
 	public inverse() {
 
 		const a = this.elm[ 0 ], b = this.elm[ 1 ], c = this.elm[ 2 ], d = this.elm[ 3 ],
-			  e = this.elm[ 4 ], f = this.elm[ 5 ], g = this.elm[ 6 ], h = this.elm[ 7 ],
-			  i = this.elm[ 8 ], j = this.elm[ 9 ], k = this.elm[ 10 ], l = this.elm[ 11 ],
-			  m = this.elm[ 12 ], n = this.elm[ 13 ], o = this.elm[ 14 ], p = this.elm[ 15 ],
+			e = this.elm[ 4 ], f = this.elm[ 5 ], g = this.elm[ 6 ], h = this.elm[ 7 ],
+			i = this.elm[ 8 ], j = this.elm[ 9 ], k = this.elm[ 10 ], l = this.elm[ 11 ],
+			m = this.elm[ 12 ], n = this.elm[ 13 ], o = this.elm[ 14 ], p = this.elm[ 15 ],
 			q = a * f - b * e, r = a * g - c * e,
 			s = a * h - d * e, t = b * g - c * f,
 			u = b * h - d * f, v = c * h - d * g,
@@ -256,6 +257,57 @@ export class Matrix {
 		}
 
 		this.elm = dist;
+
+	}
+
+	public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
+
+		up = up || { x: 0, y: 1, z: 0 };
+
+		const zAxis = new Vector().copy( direction ).normalize();
+		const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
+
+		if ( xAxis.length() == 0.0 ) {
+
+			zAxis.x += 0.001;
+
+			xAxis.copy( up ).cross( zAxis ).normalize();
+
+		}
+
+		const yAxis = zAxis.clone().cross( xAxis ).normalize();
+
+		this.set( [
+			xAxis.x, xAxis.y, xAxis.z, 0,
+			yAxis.x, yAxis.y, yAxis.z, 0,
+			zAxis.x, zAxis.y, zAxis.z, 0,
+			0, 0, 0, 1,
+		] );
+
+		return this;
+
+	}
+
+	makeRotationAxis( axis: IVector3, angle: number ) {
+
+		// Based on http://www.gamedev.net/reference/articles/article1199.asp
+
+		const c = Math.cos( angle );
+		const s = Math.sin( angle );
+		const t = 1 - c;
+		const x = axis.x, y = axis.y, z = axis.z;
+		const tx = t * x, ty = t * y;
+
+		this.set(
+			[
+				tx * x + c, tx * y - s * z, tx * z + s * y, 0,
+				tx * y + s * z, ty * y + c, ty * z - s * x, 0,
+				tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
+				0, 0, 0, 1
+			]
+		);
+
+		return this;
 
 	}
 

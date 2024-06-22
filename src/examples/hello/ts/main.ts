@@ -1,7 +1,7 @@
 import * as GLP from 'glpower';
 
-import basicVert from '../../shaders/basic.vs';
 import basicFrag from '../../shaders/basic.fs';
+import basicVert from '../../shaders/basic.vs';
 
 class ExHello {
 
@@ -34,7 +34,7 @@ class ExHello {
 
 		// program
 
-		const program = this.power.createProgram();
+		const program = new GLP.GLPowerProgram( this.gl );
 		program.setShader( basicVert, basicFrag );
 
 		program.setUniform( 'modelViewMatrix', 'Matrix4fv', modelViewMatrix.elm );
@@ -44,13 +44,13 @@ class ExHello {
 
 		if ( ! vao ) return;
 
-		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'position', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( [
 			0.0, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			- 1.0, 0.0, 0.0,
 		] ) ), 3 );
 
-		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( [
+		vao.setAttribute( 'uv', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( [
 			0.5, 1.0, 0.0,
 			1.0, 0.0, 0.0,
 			0.0, 0.0, 1.0

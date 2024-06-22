@@ -1,8 +1,8 @@
+import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
 import * as GLP from 'glpower';
 
-import instancingVert from '../../shaders/instancing.vs';
 import basicFrag from '../../shaders/basic.fs';
-import { CubeGeometry } from '@examples/libs/Geometries/CubeGeometry';
+import instancingVert from '../../shaders/instancing.vs';
 
 class ExTexture {
 
@@ -35,7 +35,7 @@ class ExTexture {
 
 		// program
 
-		const program = this.power.createProgram();
+		const program = new GLP.GLPowerProgram( this.gl );
 		program.setShader( instancingVert, basicFrag );
 
 		// geometry
@@ -47,13 +47,13 @@ class ExTexture {
 		const vao = program.getVAO()!;
 
 		const position = geometry.getAttribute( 'position' );
-		vao.setAttribute( 'position', this.power.createBuffer().setData( new Float32Array( position.array ) ), position.size );
+		vao.setAttribute( 'position', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( position.array ) ), position.size );
 
 		const uv = geometry.getAttribute( 'uv' );
-		vao.setAttribute( 'uv', this.power.createBuffer().setData( new Float32Array( uv.array ) ), uv.size );
+		vao.setAttribute( 'uv', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( uv.array ) ), uv.size );
 
 		const index = geometry.getAttribute( 'index' );
-		vao.setIndex( this.power.createBuffer().setData( new Uint16Array( index.array ), 'ibo' ) );
+		vao.setIndex( new GLP.GLPowerBuffer( this.gl ).setData( new Uint16Array( index.array ), 'ibo' ) );
 
 		// instancedAttribute
 
@@ -69,7 +69,7 @@ class ExTexture {
 
 		}
 
-		vao.setAttribute( 'instancePosition', this.power.createBuffer().setData( new Float32Array( instancePositionArray ) ), 3, { instanceDivisor: 1 } );
+		vao.setAttribute( 'instancePosition', new GLP.GLPowerBuffer( this.gl ).setData( new Float32Array( instancePositionArray ) ), 3, { instanceDivisor: 1 } );
 
 		// animate
 
