@@ -102,12 +102,42 @@ export class GLPowerVAO {
 				if ( attribute.location > - 1 ) {
 
 					this.gl.bindBuffer( this.gl.ARRAY_BUFFER, attribute.buffer.buffer );
-					this.gl.enableVertexAttribArray( attribute.location );
-					this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
 
-					if ( attribute.instanceDivisor !== undefined ) {
+					if ( attribute.size == 16 ) {
 
-						this.gl.vertexAttribDivisor( attribute.location, attribute.instanceDivisor );
+						for ( let i = 0; i < 4; i ++ ) {
+
+							this.gl.enableVertexAttribArray( attribute.location + i );
+
+						}
+
+						for ( let i = 0; i < 4; i ++ ) {
+
+							this.gl.vertexAttribPointer( attribute.location + i, 4, this.gl.FLOAT, false, 64, 16 * i );
+
+						}
+
+						if ( attribute.instanceDivisor !== undefined ) {
+
+							for ( let i = 0; i < 4; i ++ ) {
+
+								this.gl.vertexAttribDivisor( attribute.location + i, attribute.instanceDivisor );
+
+							}
+
+						}
+
+					} else {
+
+						this.gl.enableVertexAttribArray( attribute.location );
+
+						this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
+
+						if ( attribute.instanceDivisor !== undefined ) {
+
+							this.gl.vertexAttribDivisor( attribute.location, attribute.instanceDivisor );
+
+						}
 
 					}
 
@@ -128,6 +158,9 @@ export class GLPowerVAO {
 					this.instanceCount = attribute.count;
 
 				} else {
+
+					console.log( name, attribute.count );
+
 
 					this.instanceCount = Math.min( this.instanceCount, attribute.count );
 
