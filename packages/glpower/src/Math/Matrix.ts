@@ -166,15 +166,27 @@ export class Matrix {
 
 	}
 
-	public setFromTransform( pos: IVector3, qua: Quaternion | IVector4, scale: IVector3 ) {
+	public setFromTransform( pos?: IVector3, qua?: Quaternion | IVector4, scale?: IVector3 ) {
 
 		this.identity();
 
-		this.applyPosition( pos );
+		if ( pos ) {
 
-		this.applyQuaternion( qua );
+			this.applyPosition( pos );
 
-		this.applyScale( scale );
+		}
+
+		if ( qua ) {
+
+			this.applyQuaternion( qua );
+
+		}
+
+		if ( scale ) {
+
+			this.applyScale( scale );
+
+		}
 
 		return this;
 
