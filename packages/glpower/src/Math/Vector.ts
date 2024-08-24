@@ -40,9 +40,9 @@ export class Vector {
 	public set( x: number, y?: number, z?: number, w?: number ) {
 
 		this.x = x;
-		this.y = y ?? x;
-		this.z = z ?? x;
-		this.w = w ?? x;
+		this.y = y ?? 0;
+		this.z = z ?? 0;
+		this.w = w ?? 0;
 
 		return this;
 
