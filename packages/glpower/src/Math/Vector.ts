@@ -48,6 +48,17 @@ export class Vector {
 
 	}
 
+	public setFromArray( array: number[] ) {
+
+		this.x = array[ 0 ] || 0;
+		this.y = array[ 1 ] || 0;
+		this.z = array[ 2 ] || 0;
+		this.w = array[ 3 ] || 0;
+
+		return this;
+
+	}
+
 	public add( a: number ): Vector
 
 	public add( a: Vector | Types.Nullable<IVector4> ): Vector
