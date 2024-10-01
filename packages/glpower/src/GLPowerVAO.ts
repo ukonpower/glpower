@@ -34,6 +34,9 @@ export class GLPowerVAO {
 
 	public instanceCount: number;
 
+	private attribPointerDiect: Map<string, any>;
+	private attribTypeDict: Map<string, any>;
+
 	constructor( gl: WebGL2RenderingContext, program: WebGLProgram ) {
 
 		this.gl = gl;
@@ -47,6 +50,30 @@ export class GLPowerVAO {
 		this.vertCount = 0;
 		this.indexCount = 0;
 		this.instanceCount = 0;
+
+		this.attribPointerDiect = new Map<string, any>(
+			[
+				[ "Float32Array", this.gl.vertexAttribPointer.bind( this.gl ) ],
+				[ "Int32Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+				[ "Int16Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+				[ "Int8Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+				[ "UInt32Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+				[ "UInt16Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+				[ "UInt8Array", this.gl.vertexAttribIPointer.bind( this.gl ) ],
+			]
+		);
+
+		this.attribTypeDict = new Map<string, any>(
+			[
+				[ "Float32Array", this.gl.FLOAT ],
+				[ "Int32Array", this.gl.INT ],
+				[ "Int16Array", this.gl.SHORT ],
+				[ "Int8Array", this.gl.BYTE ],
+				[ "UInt32Array", this.gl.UNSIGNED_INT ],
+				[ "UInt16Array", this.gl.UNSIGNED_SHORT ],
+				[ "UInt8Array", this.gl.UNSIGNED_BYTE ],
+			]
+		);
 
 	}
 
@@ -83,6 +110,8 @@ export class GLPowerVAO {
 
 	public setAttribute( name: string, buffer: GLPowerBuffer, size: number, opt?: AttributeOptions ) {
 
+		if ( buffer.array === null ) return;
+
 		const attribute: AttributeBuffer = {
 			buffer,
 			size,
@@ -96,6 +125,9 @@ export class GLPowerVAO {
 		this.gl.bindVertexArray( this.vao );
 
 		attribute.location = this.gl.getAttribLocation( this.program, name );
+
+		const attribPointerFunc = this.attribPointerDiect.get( buffer.array.constructor.name );
+		const type = this.attribTypeDict.get( buffer.array.constructor.name );
 
 		if ( attribute.location > - 1 ) {
 
@@ -111,7 +143,7 @@ export class GLPowerVAO {
 
 				for ( let i = 0; i < 4; i ++ ) {
 
-					this.gl.vertexAttribPointer( attribute.location + i, 4, this.gl.FLOAT, false, 64, 16 * i );
+					this.gl.vertexAttribPointer( attribute.location + i, 4, type, false, 64, 16 * i );
 
 				}
 
@@ -129,7 +161,7 @@ export class GLPowerVAO {
 
 				this.gl.enableVertexAttribArray( attribute.location );
 
-				this.gl.vertexAttribPointer( attribute.location, attribute.size, this.gl.FLOAT, false, 0, 0 );
+				attribPointerFunc( attribute.location, attribute.size, type, false, 0, 0 );
 
 				if ( attribute.instanceDivisor !== undefined ) {
 
