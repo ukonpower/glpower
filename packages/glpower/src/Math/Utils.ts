@@ -4,26 +4,39 @@ export namespace MathUtils {
 
 	export const gauss = ( x: number, x0: number, sx: number ) => {
 
-		let arg = x - x0;
-		arg = - 1. / 2. * arg * arg / sx;
+		const a = ( x - x0 );
+		const arg = - ( a * a ) / ( 2.0 * sx * sx );
 
-		const a = 1. / ( Math.sqrt( 2. * 3.1415 * sx ) );
-
-		return a * Math.exp( arg );
+		return 1.0 / ( Math.sqrt( 2. * Math.PI * sx ) ) * Math.exp( arg );
 
 	};
 
 	export const gaussWeights = ( length: number ) => {
 
-		return new Array( length ).fill( 0 ).map( ( _, i ) => {
+		let total = 0.0;
+		const res = [];
 
-			if ( length == 0 ) return 1;
+		if ( length <= 1 ) return [ 0.5 ];
 
-			const w = ( i - 1 ) / length;
+		for ( let i = 0; i < length; i ++ ) {
 
-			return gauss( w, 0.0, 0.5 );
+			const x = i / ( length - 1 );
 
-		} );
+			const w = gauss( x, 0.0, 1.0 );
+
+			total += w * ( i > 0 ? 2 : 1 );
+
+			res.push( w );
+
+		}
+
+		for ( let i = 0; i < length; i ++ ) {
+
+			res[ i ] /= total;
+
+		}
+
+		return res;
 
 	};
 
