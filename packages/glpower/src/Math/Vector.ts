@@ -37,12 +37,23 @@ export class Vector {
 
 	}
 
-	public set( x: number, y?: number, z?: number, w?: number ) {
+	public set( x?: number, y?: number, z?: number, w?: number ) {
 
-		this.x = x;
+		this.x = x ?? 0;
 		this.y = y ?? 0;
 		this.z = z ?? 0;
 		this.w = w ?? 0;
+
+		return this;
+
+	}
+
+	public setScalar( value: number ) {
+
+		this.x = value;
+		this.y = value;
+		this.z = value;
+		this.w = value;
 
 		return this;
 
