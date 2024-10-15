@@ -30,7 +30,6 @@ export * from './Animation/FCurveKeyFrame';
 // utils
 
 export * from './utils/EventEmitter';
-export * from './utils/Uniform';
 export * from './utils/ID';
 
 // types
