@@ -27,7 +27,7 @@ export class Vector {
 		this.z = 0;
 		this.w = 0;
 
-		this.set( x || 0, y, z, w );
+		this.set( x, y, z, w );
 
 	}
 
