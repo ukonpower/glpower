@@ -84,7 +84,7 @@ export namespace MathUtils {
 
 	};
 
-	export const smoothstep = ( x: number, min: number, max: number ) => {
+	export const smoothstep = ( min: number, max: number, x: number ) => {
 
 		if ( x <= min ) return 0;
 		if ( x >= max ) return 1;
