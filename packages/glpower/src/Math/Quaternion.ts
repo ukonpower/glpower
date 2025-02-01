@@ -163,6 +163,15 @@ export class Quaternion {
 
 	}
 
+	public preMultiply( q: Quaternion ) {
+
+		const qq = q.clone().multiply( this );
+
+		this.set( qq.x, qq.y, qq.z, qq.w );
+
+	}
+
+
 	public inverse() {
 
 		this.set( - this.x, - this.y, - this.z, this.w );
