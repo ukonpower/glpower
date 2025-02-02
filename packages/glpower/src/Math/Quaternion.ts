@@ -20,12 +20,10 @@ export class Quaternion {
 
 	constructor( x?: number, y?: number, z?: number, w?: number ) {
 
-		this.x = 0;
-		this.y = 0;
-		this.z = 0;
-		this.w = 1;
-
-		this.set( x, y, z, w );
+		this.x = x || 0;
+		this.y = y || 0;
+		this.z = z || 0;
+		this.w = w || 1;
 
 	}
 
