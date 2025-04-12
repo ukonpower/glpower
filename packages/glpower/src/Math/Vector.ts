@@ -22,10 +22,12 @@ export class Vector {
 
 	constructor( x?: number, y?: number, z?: number, w?: number ) {
 
-		this.x = x || 0;
-		this.y = y || 0;
-		this.z = z || 0;
-		this.w = w || 0;
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.w = 0;
+
+		this.set( x, y, z, w );
 
 	}
 
@@ -35,12 +37,34 @@ export class Vector {
 
 	}
 
-	public set( x: number, y?: number, z?: number, w?: number ) {
+	public set( x?: number, y?: number, z?: number, w?: number ) {
 
-		this.x = x;
-		this.y = y ?? x;
-		this.z = z ?? x;
-		this.w = w ?? x;
+		this.x = x ?? 0;
+		this.y = y ?? 0;
+		this.z = z ?? 0;
+		this.w = w ?? 0;
+
+		return this;
+
+	}
+
+	public setScalar( value: number ) {
+
+		this.x = value;
+		this.y = value;
+		this.z = value;
+		this.w = value;
+
+		return this;
+
+	}
+
+	public setFromArray( array: number[] ) {
+
+		this.x = array[ 0 ] || 0;
+		this.y = array[ 1 ] || 0;
+		this.z = array[ 2 ] || 0;
+		this.w = array[ 3 ] || 0;
 
 		return this;
 
@@ -152,6 +176,16 @@ export class Vector {
 	public length() {
 
 		return Math.sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+
+	}
+
+	public distanceTo( v: Vector | IVector3 ) {
+
+		const dx = this.x - v.x;
+		const dy = this.y - v.y;
+		const dz = this.z - v.z;
+
+		return Math.sqrt( dx * dx + dy * dy + dz * dz );
 
 	}
 

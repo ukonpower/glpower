@@ -16,7 +16,7 @@ export * from './Math/Vector';
 export * from './Math/Euler';
 export * from './Math/Quaternion';
 export * from './Math/Matrix';
-export * from './Math/Random';
+export * from './Math/Utils';
 
 // animation
 
@@ -30,7 +30,6 @@ export * from './Animation/FCurveKeyFrame';
 // utils
 
 export * from './utils/EventEmitter';
-export * from './utils/Uniform';
 export * from './utils/ID';
 
 // types

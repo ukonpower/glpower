@@ -126,6 +126,18 @@ export class Animator extends EventEmitter {
 
 	}
 
+	public setValue<T extends AnimatorVariableType>( name: string, value: T ) {
+
+		const val = this.get<T>( name );
+
+		if ( val === null ) return null;
+
+		val.value = value;
+
+		return val.value;
+
+	}
+
 	public cancel( name: string ) {
 
 		const v = this.variables.get( name );

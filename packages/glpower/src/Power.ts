@@ -14,6 +14,7 @@ export class Power {
 
 		this.gl.getExtension( "EXT_color_buffer_float" );
 		this.gl.getExtension( "EXT_color_buffer_half_float" );
+		this.gl.getExtension( "OES_texture_float_linear" );
 		this.extDisJointTimerQuery = this.gl.getExtension( "EXT_disjoint_timer_query_webgl2" );
 
 	}

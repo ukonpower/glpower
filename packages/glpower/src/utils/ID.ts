@@ -1,9 +1,11 @@
 
+let uuid = 0;
+
 export namespace ID {
 
 	export function genUUID(): string {
 
-		return self.crypto.randomUUID();
+		return ( uuid ++ ).toString( 16 );
 
 	}
 

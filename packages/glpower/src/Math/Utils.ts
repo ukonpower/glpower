@@ -1,6 +1,44 @@
 import { Vector } from "..";
 
-export namespace Maths {
+export namespace MathUtils {
+
+	export const gauss = ( x: number, x0: number, sx: number ) => {
+
+		const a = ( x - x0 );
+		const arg = - ( a * a ) / ( 2.0 * sx * sx );
+
+		return 1.0 / ( Math.sqrt( 2. * Math.PI * sx ) ) * Math.exp( arg );
+
+	};
+
+	export const gaussWeights = ( length: number ) => {
+
+		let total = 0.0;
+		const res = [];
+
+		if ( length <= 1 ) return [ 0.5 ];
+
+		for ( let i = 0; i < length; i ++ ) {
+
+			const x = i / ( length - 1 );
+
+			const w = gauss( x, 0.0, 1.0 );
+
+			total += w * ( i > 0 ? 2 : 1 );
+
+			res.push( w );
+
+		}
+
+		for ( let i = 0; i < length; i ++ ) {
+
+			res[ i ] /= total;
+
+		}
+
+		return res;
+
+	};
 
 	export const randomSeed = ( s: number ) => {
 
@@ -43,6 +81,17 @@ export namespace Maths {
 			randomRange( a.z, b.z ),
 			randomRange( a.w, b.w ),
 		);
+
+	};
+
+	export const smoothstep = ( min: number, max: number, x: number ) => {
+
+		if ( x <= min ) return 0;
+		if ( x >= max ) return 1;
+
+		x = ( x - min ) / ( max - min );
+
+		return x * x * ( 3 - 2 * x );
 
 	};
 
