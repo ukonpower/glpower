@@ -268,6 +268,26 @@ export class Vector {
 
 	}
 
+	public applyMatrix4AsPosition( mat: Matrix ) {
+
+		const tempW = this.w;
+		this.w = 1;
+		this.applyMatrix4( mat );
+		this.w = tempW;
+		return this;
+
+	}
+
+	public applyMatrix4AsDirection( mat: Matrix ) {
+
+		const tempW = this.w;
+		this.w = 0;
+		this.applyMatrix4( mat );
+		this.w = tempW;
+		return this;
+
+	}
+
 	public floor() {
 
 		this.x = Math.floor( this.x );
