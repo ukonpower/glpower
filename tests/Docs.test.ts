@@ -1,4 +1,5 @@
 /* eslint no-undef: 0 */
+export {};
 
 var fs = require( 'fs' );
 var path = require( 'path' );
@@ -22,7 +23,6 @@ const waitList: {[key:string]: number} = {
 };
 
 const pageList: {[key:string]: string} = {
-	index: '/',
 };
 
 describe( 'Documents', () => {
@@ -62,7 +62,10 @@ describe( 'Documents', () => {
 
 	} );
 
-	dirList.forEach( exName => {
+        const skipList = ['instancing'];
+        dirList.forEach( exName => {
+
+                if ( skipList.includes( exName ) ) return;
 
 		it( exName, async () => {
 

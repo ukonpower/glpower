@@ -5,7 +5,7 @@ on:
 
 jobs:
   jest:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
@@ -23,3 +23,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           test-command: "npm run test:coverage"
+
+      - name: E2E Test
+        run: npm run test:e2e
