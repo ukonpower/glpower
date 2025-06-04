@@ -1,6 +1,12 @@
 module.exports = {
-	server: {
-	  command: 'npx vite',
-	  port: 3000,
-	},
+        launch: {
+                args: [
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox'
+                ],
+        },
+        server: {
+          command: 'npx vite',
+          port: 3000,
+        },
 };
