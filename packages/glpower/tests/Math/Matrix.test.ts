@@ -166,7 +166,7 @@ describe( 'Matrix', () => {
 
 		} );
 
-		it( 'multiply()で行列を乗算できる', () => {
+               it( 'multiply()で行列を乗算できる', () => {
 
 			const m1 = new Matrix( [
 				2, 0, 0, 0,
@@ -187,9 +187,28 @@ describe( 'Matrix', () => {
 			// 行列乗算の結果を確認
 			expect( m1.elm[ 12 ] ).toBe( 9 ); // 変換後のx
 			expect( m1.elm[ 13 ] ).toBe( 12 ); // 変換後のy
-			expect( m1.elm[ 14 ] ).toBe( 15 ); // 変換後のz
+                       expect( m1.elm[ 14 ] ).toBe( 15 ); // 変換後のz
 
-		} );
+               } );
+
+               it( 'applyQuaternionからQuaternionへの変換が一貫する', () => {
+
+                       const quat = new Quaternion().setFromEuler( {
+                               x: Math.PI / 5,
+                               y: Math.PI / 4,
+                               z: - Math.PI / 6,
+                       } );
+
+                       const mat = new Matrix();
+                       mat.applyQuaternion( quat );
+                       const result = new Quaternion().setFromMatrix( mat );
+
+                       expect( result.x ).toBeCloseTo( quat.x, 5 );
+                       expect( result.y ).toBeCloseTo( quat.y, 5 );
+                       expect( result.z ).toBeCloseTo( quat.z, 5 );
+                       expect( result.w ).toBeCloseTo( quat.w, 5 );
+
+               } );
 
 	} );
 

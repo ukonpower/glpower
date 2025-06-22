@@ -205,7 +205,7 @@ export class Matrix {
 
 	}
 
-	public applyQuaternion( q: Quaternion | IVector4 ) {
+        public applyQuaternion( q: Quaternion | IVector4 ) {
 
 		const x = q.x, y = q.y, z = q.z, w = q.w;
 		const xx = x * x, yy = y * y, zz = z * z, ww = w * w;
@@ -229,9 +229,10 @@ export class Matrix {
 			0, 0, 0, 0, 1
 		] );
 
-		return this;
+                return this;
 
-	}
+        }
+
 
 	public applyScale( scale: IVector3 ) {
 
