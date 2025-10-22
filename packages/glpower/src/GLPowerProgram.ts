@@ -4,6 +4,25 @@ import { Vector } from "./Math/Vector";
 
 import { GLPowerTexture } from ".";
 
+/**
+ * シンプルなハッシュ関数（文字列からハッシュ値を生成）
+ */
+function hashString( str: string ): string {
+
+	let hash = 0;
+
+	for ( let i = 0; i < str.length; i ++ ) {
+
+		const char = str.charCodeAt( i );
+		hash = ( ( hash << 5 ) - hash ) + char;
+		hash = hash & hash; // 32bit整数に変換
+
+	}
+
+	return hash.toString( 36 );
+
+}
+
 export type Uniformable = boolean | number | Vector | Matrix | GLPowerTexture;
 
 export type UniformType =
@@ -97,13 +116,25 @@ export class GLPowerProgram {
 		this.gl.shaderSource( shader, shaderSrc );
 		this.gl.compileShader( shader );
 
+		// シェーダーキーを生成（コンパイル成功・失敗両方で使用）
+		const shaderKey = hashString( shaderSrc );
+		const shaderType = type === this.gl.VERTEX_SHADER ? 'vertex' : 'fragment';
+
 		if ( this.gl.getShaderParameter( shader, this.gl.COMPILE_STATUS ) ) {
+
+			// コンパイル成功: このシェーダーの古いエラーをクリア
+			if ( process.env.NODE_ENV !== 'production' && typeof window !== 'undefined' && ( window as any ).__glpowerShaderClearHandler ) {
+
+				console.log( `[GLPowerProgram] Compile SUCCESS - ${shaderType} shader, key: ${shaderKey}` );
+				( window as any ).__glpowerShaderClearHandler( shaderKey, shaderType );
+
+			}
 
 			return shader;
 
 		} else {
 
-			if ( process.env.NODE_ENV == "development" ) {
+			if ( process.env.NODE_ENV !== 'production' ) {
 
 				const errorLog = this.gl.getShaderInfoLog( shader );
 
@@ -121,18 +152,35 @@ export class GLPowerProgram {
 						const end = Math.min( splitShaderSrc.length, lineNum + 2 );
 
 						let error = errorLog.split( '\n' )[ index ] + '\n';
+						let sourceContext = '';
 
 						splitShaderSrc.forEach( ( t, i ) => {
 
 							if ( start <= i && i <= end ) {
 
 								error += `${i + 1}: ${t}\n`;
+								sourceContext += `${i + 1}: ${t}\n`;
 
 							}
 
 						} );
 
 						console.error( error );
+
+						// グローバルエラーハンドラーに通知（開発環境のみ）
+						if ( typeof window !== 'undefined' && ( window as any ).__glpowerShaderErrorHandler ) {
+
+							console.log( `[GLPowerProgram] Compile ERROR - ${shaderType} shader, key: ${shaderKey}` );
+							( window as any ).__glpowerShaderErrorHandler( {
+								shaderKey: shaderKey,
+								type: shaderType,
+								message: errorLog.split( '\n' )[ index ],
+								line: lineNum,
+								sourceContext: sourceContext,
+								fullSource: shaderSrc,
+							} );
+
+						}
 
 					} );
 
