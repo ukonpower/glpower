@@ -236,6 +236,49 @@ export class GLPowerProgram {
 
 	}
 
+	public resetUniforms() {
+
+		this.uniforms.forEach( uniform => {
+
+			if( uniform.location === null ) return;
+
+			// typeに応じて適切な長さの0配列を生成
+			let length = 1;
+
+			if ( uniform.type.includes( 'Matrix4' ) ) {
+
+				length = 16;
+
+			} else if ( uniform.type.includes( 'Matrix3' ) ) {
+
+				length = 9;
+
+			} else if ( uniform.type.includes( 'Matrix2' ) ) {
+
+				length = 4;
+
+			} else if ( uniform.type.includes( '4' ) ) {
+
+				length = 4;
+
+			} else if ( uniform.type.includes( '3' ) ) {
+
+				length = 3;
+
+			} else if ( uniform.type.includes( '2' ) ) {
+
+				length = 2;
+
+			}
+
+			// 0で初期化
+			uniform.value = new Array( length ).fill( 0 );
+			uniform.needsUpdate = true;
+
+		} );
+
+	}
+
 	/*-------------------------------
 		VAO
 	-------------------------------*/
