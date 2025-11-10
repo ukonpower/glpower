@@ -84,6 +84,37 @@ export namespace MathUtils {
 
 	};
 
+	/**
+	 * 球の内部に均一分布する3D座標を生成
+	 * @param radius 球の半径（デフォルトは1）
+	 * @param random オプションの乱数生成関数（デフォルトはMath.random）
+	 * @returns {x, y, z} 球の内部に均一分布する座標
+	 */
+	export const randomInSphere = ( radius: number = 1, random: () => number = Math.random ) => {
+
+		// 球面座標のパラメータ
+		const u = random();
+		const v = random();
+		const w = random();
+
+		// 球面方向
+		const theta = 2 * Math.PI * u;      // 方位角
+		const phi = Math.acos( 2 * v - 1 ); // 極角
+
+		// 半径補正（体積に比例した均一分布）
+		const r = Math.cbrt( w ) * radius;
+
+		// 直交座標に変換
+		const sinPhi = Math.sin( phi );
+
+		return {
+			x: r * sinPhi * Math.cos( theta ),
+			y: r * sinPhi * Math.sin( theta ),
+			z: r * Math.cos( phi ),
+		};
+
+	};;
+
 	export const smoothstep = ( min: number, max: number, x: number ) => {
 
 		if ( x <= min ) return 0;
