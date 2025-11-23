@@ -67,18 +67,24 @@ export class Matrix {
 
 	}
 
-	// public orthographic( width: number, height: number, near: number, far: number ) {
+	public orthographic( width: number, height: number, near: number, far: number ) {
 
-	// 	this.elm = [
-	// 		2 / width, 0, 0, 0,
-	// 		0, 2 / height, 0, 0,
-	// 		0, 0, - 2 / ( far - near ), 0,
-	// 		0, 0, - ( far + near ) / ( far - near ), 1,
-	// 	];
+		// 64KBの呪縛
 
-	// 	return this;
+		if( process.env.NODE_ENV === 'development' ) {
 
-	// }
+			this.elm = [
+				2 / width, 0, 0, 0,
+				0, 2 / height, 0, 0,
+				0, 0, - 2 / ( far - near ), 0,
+				0, 0, - ( far + near ) / ( far - near ), 1,
+			];
+
+			return this;
+
+		}
+
+	}
 
 	public lookAt( eye: Vector, target: Vector, up: Vector ) {
 
