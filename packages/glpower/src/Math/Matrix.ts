@@ -67,18 +67,18 @@ export class Matrix {
 
 	}
 
-	public orthographic( width: number, height: number, near: number, far: number ) {
+	// public orthographic( width: number, height: number, near: number, far: number ) {
 
-		this.elm = [
-			2 / width, 0, 0, 0,
-			0, 2 / height, 0, 0,
-			0, 0, - 2 / ( far - near ), 0,
-			0, 0, - ( far + near ) / ( far - near ), 1,
-		];
+	// 	this.elm = [
+	// 		2 / width, 0, 0, 0,
+	// 		0, 2 / height, 0, 0,
+	// 		0, 0, - 2 / ( far - near ), 0,
+	// 		0, 0, - ( far + near ) / ( far - near ), 1,
+	// 	];
 
-		return this;
+	// 	return this;
 
-	}
+	// }
 
 	public lookAt( eye: Vector, target: Vector, up: Vector ) {
 
@@ -273,52 +273,60 @@ export class Matrix {
 
 	}
 
-	public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
+	// 64KBの呪縛
+	
+	// public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
 
-		up = up || { x: 0, y: 1, z: 0 };
+	// 	up = up || { x: 0, y: 1, z: 0 };
 
-		const zAxis = new Vector().copy( direction ).normalize();
-		const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
+	// 	const zAxis = new Vector().copy( direction ).normalize();
+	// 	const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
 
-		if ( xAxis.length() == 0.0 ) {
+	// 	if ( xAxis.length() == 0.0 ) {
 
-			zAxis.x += 0.001;
+	// 		zAxis.x += 0.001;
 
-			xAxis.copy( up ).cross( zAxis ).normalize();
+	// 		xAxis.copy( up ).cross( zAxis ).normalize();
 
-		}
+	// 	}
 
-		const yAxis = zAxis.clone().cross( xAxis ).normalize();
+	// 	const yAxis = zAxis.clone().cross( xAxis ).normalize();
 
-		this.set( [
-			xAxis.x, xAxis.y, xAxis.z, 0,
-			yAxis.x, yAxis.y, yAxis.z, 0,
-			zAxis.x, zAxis.y, zAxis.z, 0,
-			0, 0, 0, 1,
-		] );
+	// 	this.set( [
+	// 		xAxis.x, xAxis.y, xAxis.z, 0,
+	// 		yAxis.x, yAxis.y, yAxis.z, 0,
+	// 		zAxis.x, zAxis.y, zAxis.z, 0,
+	// 		0, 0, 0, 1,
+	// 	] );
 
-		return this;
+	// 	return this;
 
-	}
+	// }
 
 	makeRotationAxis( axis: IVector3, angle: number ) {
 
-		// Based on http://www.gamedev.net/reference/articles/article1199.asp
+		// 64KBの呪縛
 
-		const c = Math.cos( angle );
-		const s = Math.sin( angle );
-		const t = 1 - c;
-		const x = axis.x, y = axis.y, z = axis.z;
-		const tx = t * x, ty = t * y;
+		if( process.env.NODE_ENV === 'development' ) {
 
-		this.set(
-			[
-				tx * x + c, tx * y - s * z, tx * z + s * y, 0,
-				tx * y + s * z, ty * y + c, ty * z - s * x, 0,
-				tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
-				0, 0, 0, 1
-			]
-		);
+			// Based on http://www.gamedev.net/reference/articles/article1199.asp
+
+			const c = Math.cos( angle );
+			const s = Math.sin( angle );
+			const t = 1 - c;
+			const x = axis.x, y = axis.y, z = axis.z;
+			const tx = t * x, ty = t * y;
+
+			this.set(
+				[
+					tx * x + c, tx * y - s * z, tx * z + s * y, 0,
+					tx * y + s * z, ty * y + c, ty * z - s * x, 0,
+					tx * z - s * y, ty * z + s * x, t * z * z + c, 0,
+					0, 0, 0, 1
+				]
+			);
+
+		}
 
 		return this;
 
@@ -370,12 +378,18 @@ export class Matrix {
 
 	public copyToArray( array: number[] ) {
 
-		array.length = this.elm.length;
+		// 64KBの呪縛
 
-		for ( let i = 0; i < this.elm.length; i ++ ) {
+		if( process.env.NODE_ENV === 'development' ) {
+			
+			array.length = this.elm.length;
 
-			array[ i ] = this.elm[ i ];
+			for ( let i = 0; i < this.elm.length; i ++ ) {
 
+				array[ i ] = this.elm[ i ];
+
+			}
+			
 		}
 
 		return array;
