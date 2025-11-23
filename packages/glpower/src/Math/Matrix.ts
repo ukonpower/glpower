@@ -273,35 +273,39 @@ export class Matrix {
 
 	}
 
-	// 64KBの呪縛
-	
-	// public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
+	public setRotationFromDirection( direction: IVector3, up?: IVector3 ) {
 
-	// 	up = up || { x: 0, y: 1, z: 0 };
+		// 64KBの呪縛
 
-	// 	const zAxis = new Vector().copy( direction ).normalize();
-	// 	const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
+		if( process.env.NODE_ENV === 'development' ) {
+			
+			up = up || { x: 0, y: 1, z: 0 };
 
-	// 	if ( xAxis.length() == 0.0 ) {
+			const zAxis = new Vector().copy( direction ).normalize();
+			const xAxis = new Vector().copy( up ).cross( zAxis ).normalize();
 
-	// 		zAxis.x += 0.001;
+			if ( xAxis.length() == 0.0 ) {
 
-	// 		xAxis.copy( up ).cross( zAxis ).normalize();
+				zAxis.x += 0.001;
 
-	// 	}
+				xAxis.copy( up ).cross( zAxis ).normalize();
 
-	// 	const yAxis = zAxis.clone().cross( xAxis ).normalize();
+			}
 
-	// 	this.set( [
-	// 		xAxis.x, xAxis.y, xAxis.z, 0,
-	// 		yAxis.x, yAxis.y, yAxis.z, 0,
-	// 		zAxis.x, zAxis.y, zAxis.z, 0,
-	// 		0, 0, 0, 1,
-	// 	] );
+			const yAxis = zAxis.clone().cross( xAxis ).normalize();
 
-	// 	return this;
+			this.set( [
+				xAxis.x, xAxis.y, xAxis.z, 0,
+				yAxis.x, yAxis.y, yAxis.z, 0,
+				zAxis.x, zAxis.y, zAxis.z, 0,
+				0, 0, 0, 1,
+			] );
 
-	// }
+			return this;
+
+		}
+
+	}
 
 	makeRotationAxis( axis: IVector3, angle: number ) {
 
@@ -378,18 +382,12 @@ export class Matrix {
 
 	public copyToArray( array: number[] ) {
 
-		// 64KBの呪縛
+		array.length = this.elm.length;
 
-		if( process.env.NODE_ENV === 'development' ) {
-			
-			array.length = this.elm.length;
+		for ( let i = 0; i < this.elm.length; i ++ ) {
 
-			for ( let i = 0; i < this.elm.length; i ++ ) {
+			array[ i ] = this.elm[ i ];
 
-				array[ i ] = this.elm[ i ];
-
-			}
-			
 		}
 
 		return array;
