@@ -22,4 +22,16 @@ export namespace ID {
 
 	}
 
+	export function advanceCounter( restoredUUID: string ) {
+
+		const num = parseInt( restoredUUID, 16 );
+
+		if ( ! isNaN( num ) && num >= uuid ) {
+
+			uuid = num + 1;
+
+		}
+
+	}
+
 }
