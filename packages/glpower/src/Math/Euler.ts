@@ -44,8 +44,8 @@ export class Euler extends Vector {
 
 		const te = m.elm;
 		const m11 = te[ 0 ], m12 = te[ 4 ], m13 = te[ 8 ];
-		const m21 = te[ 1 ], m22 = te[ 5 ], m23 = te[ 9 ];
-		const m31 = te[ 2 ], m32 = te[ 6 ], m33 = te[ 10 ];
+		const m22 = te[ 5 ], m23 = te[ 9 ];
+		const m32 = te[ 6 ], m33 = te[ 10 ];
 
 		this.order = 'XYZ';
 
