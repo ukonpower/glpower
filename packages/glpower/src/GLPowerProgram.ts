@@ -25,10 +25,13 @@ export type ShaderOptions = {
 	transformFeedbackVaryings?: string[]
 }
 
+export const shaderErrors: Map<string, string> = new Map();
+
 export class GLPowerProgram {
 
 	public gl: WebGL2RenderingContext;
 	public program: WebGLProgram | null;
+	public name = '';
 
 	private vao: Map<string, GLPowerVAO>;
 	protected uniforms: Map<string, Uniform>;
@@ -99,15 +102,19 @@ export class GLPowerProgram {
 
 		if ( this.gl.getShaderParameter( shader, this.gl.COMPILE_STATUS ) ) {
 
+			if ( this.name ) shaderErrors.delete( this.name );
+
 			return shader;
 
 		} else {
 
-			if ( process.env.NODE_ENV == "development" ) {
+			const errorLog = this.gl.getShaderInfoLog( shader );
 
-				const errorLog = this.gl.getShaderInfoLog( shader );
+			if ( errorLog ) {
 
-				if ( errorLog ) {
+				if ( this.name ) shaderErrors.set( this.name, errorLog );
+
+				if ( process.env.NODE_ENV == "development" ) {
 
 					const splitShaderSrc = shaderSrc.split( '\n' );
 
