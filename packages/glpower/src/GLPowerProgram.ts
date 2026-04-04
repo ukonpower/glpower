@@ -61,13 +61,33 @@ export class GLPowerProgram {
 
 		}
 
-		const vs = this.createShader( vertexShaderSrc, this.gl.VERTEX_SHADER );
-		const fs = this.createShader( fragmentShaderSrc, this.gl.FRAGMENT_SHADER );
+		const vsResult = this.createShader( vertexShaderSrc, this.gl.VERTEX_SHADER );
+		const fsResult = this.createShader( fragmentShaderSrc, this.gl.FRAGMENT_SHADER );
 
-		if ( ! vs || ! fs ) return;
+		// エラー集約: vertex/fragment 両方の結果を見てから shaderErrors に格納
+		if ( this.name ) {
 
-		this.gl.attachShader( this.program, vs );
-		this.gl.attachShader( this.program, fs );
+			const errors: string[] = [];
+
+			if ( vsResult.error ) errors.push( '[VERTEX]\n' + vsResult.error );
+			if ( fsResult.error ) errors.push( '[FRAGMENT]\n' + fsResult.error );
+
+			if ( errors.length > 0 ) {
+
+				shaderErrors.set( this.name, errors.join( '\n\n' ) );
+
+			} else {
+
+				shaderErrors.delete( this.name );
+
+			}
+
+		}
+
+		if ( ! vsResult.shader || ! fsResult.shader ) return;
+
+		this.gl.attachShader( this.program, vsResult.shader );
+		this.gl.attachShader( this.program, fsResult.shader );
 
 		if ( opt && opt.transformFeedbackVaryings ) {
 
@@ -79,7 +99,16 @@ export class GLPowerProgram {
 
 		if ( ! this.gl.getProgramParameter( this.program, this.gl.LINK_STATUS ) ) {
 
-			console.error( 'program link error:', this.gl.getProgramInfoLog( this.program ) );
+			const linkError = this.gl.getProgramInfoLog( this.program );
+
+			console.error( 'program link error:', linkError );
+
+			if ( this.name && linkError ) {
+
+				const existing = shaderErrors.get( this.name );
+				shaderErrors.set( this.name, ( existing ? existing + '\n\n' : '' ) + '[LINK]\n' + linkError );
+
+			}
 
 		}
 
@@ -87,13 +116,13 @@ export class GLPowerProgram {
 
 	}
 
-	protected createShader( shaderSrc: string, type: number ) {
+	protected createShader( shaderSrc: string, type: number ): { shader: WebGLShader | null; error: string | null } {
 
 		const shader = this.gl.createShader( type );
 
 		if ( ! shader ) {
 
-			return null;
+			return { shader: null, error: null };
 
 		}
 
@@ -102,17 +131,13 @@ export class GLPowerProgram {
 
 		if ( this.gl.getShaderParameter( shader, this.gl.COMPILE_STATUS ) ) {
 
-			if ( this.name ) shaderErrors.delete( this.name );
-
-			return shader;
+			return { shader, error: null };
 
 		} else {
 
 			const errorLog = this.gl.getShaderInfoLog( shader );
 
 			if ( errorLog ) {
-
-				if ( this.name ) shaderErrors.set( this.name, errorLog );
 
 				if ( process.env.NODE_ENV == "development" ) {
 
@@ -146,6 +171,8 @@ export class GLPowerProgram {
 				}
 
 			}
+
+			return { shader: null, error: errorLog || 'Unknown shader error' };
 
 		}
 
