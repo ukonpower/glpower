@@ -8,8 +8,6 @@ export class Power {
 
 		this.gl = gl;
 
-		this.gl.pixelStorei( gl.UNPACK_FLIP_Y_WEBGL, true );
-
 		// ext
 
 		this.gl.getExtension( "EXT_color_buffer_float" );

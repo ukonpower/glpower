@@ -136,7 +136,9 @@ export class GLPowerTexture {
 
 		img.onload = () => {
 
+			this.gl.pixelStorei( this.gl.UNPACK_FLIP_Y_WEBGL, true );
 			this.attach( img );
+			this.gl.pixelStorei( this.gl.UNPACK_FLIP_Y_WEBGL, false );
 
 			if ( callBack ) callBack();
 
