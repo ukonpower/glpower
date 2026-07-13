@@ -1,5 +1,5 @@
 /* eslint no-undef: 0 */
-import { Easings } from '../../src/Animation/Easings';
+import * as Easings from '../../src/Animation/Easings';
 
 describe( 'Easings', () => {
 

@@ -1,7 +1,7 @@
 import { IVector2 } from '../Math/Vector';
 import { EventEmitter } from '../utils/EventEmitter';
 
-import { EasingFunc, Easings } from './Easings';
+import { EasingFunc, bezier } from './Easings';
 
 export type FCurveInterpolation = "BEZIER" | "LINEAR" | "CONSTANT";
 
@@ -36,7 +36,7 @@ export class FCurveKeyFrame extends EventEmitter {
 
 		if ( interpolation == 'BEZIER' ) {
 
-			return Easings.bezier( this.coordinate, this.handleRight, nextFrame.handleLeft, nextFrame.coordinate );
+			return bezier( this.coordinate, this.handleRight, nextFrame.handleLeft, nextFrame.coordinate );
 
 		} else if ( interpolation == 'CONSTANT' ) {
 

@@ -2,7 +2,7 @@ import { UniformType } from "../GLPowerProgram";
 import { Vector } from "../Math/Vector";
 import { EventEmitter } from "../utils/EventEmitter";
 
-import { EasingFunc, Easings } from "./Easings";
+import { EasingFunc, easeInOutCubic } from "./Easings";
 import { LerpFunc, Lerps } from "./Lerps";
 
 export type AnimatorVariableType = Vector | number;
@@ -94,7 +94,7 @@ export class Animator extends EventEmitter {
 
 	}
 
-	public add( name: string, init: AnimatorVariableType, easing: EasingFunc = Easings.easeInOutCubic, type?: UniformType ) {
+	public add( name: string, init: AnimatorVariableType, easing: EasingFunc = easeInOutCubic, type?: UniformType ) {
 
 		this.variables.set( name, {
 			time: 0,
