@@ -130,6 +130,19 @@ export class GLPowerFrameBuffer {
 
 	}
 
+	// カラーアタッチメントを0でクリアする
+	public clear() {
+
+		const gl = this.gl;
+
+		gl.bindFramebuffer( gl.FRAMEBUFFER, this.glFrameBuffer );
+		gl.drawBuffers( this.textureAttachmentList );
+		gl.clearColor( 0, 0, 0, 0 );
+		gl.clear( gl.COLOR_BUFFER_BIT );
+		gl.bindFramebuffer( gl.FRAMEBUFFER, null );
+
+	}
+
 	public dispose() {
 
 		this.gl.deleteFramebuffer( this.glFrameBuffer );

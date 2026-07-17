@@ -189,16 +189,33 @@ export class GLPowerProgram {
 		if ( uniform ) {
 
 			uniform.type = type;
-			uniform.value = value;
+
+			// 呼び出し側が配列を使い回せるよう、参照保持せず内部配列へコピーする
+			const dst = uniform.value;
+			dst.length = value.length;
+
+			for ( let i = 0; i < value.length; i ++ ) {
+
+				dst[ i ] = value[ i ];
+
+			}
 
 			if ( uniform.cache ) {
 
-				for ( let i = 0; i < value.length; i ++ ) {
+				if ( uniform.cache.length !== dst.length ) {
 
-					if ( uniform.cache[ i ] !== value[ i ] ) {
+					uniform.needsUpdate = true;
 
-						uniform.needsUpdate = true;
-						break;
+				} else {
+
+					for ( let i = 0; i < dst.length; i ++ ) {
+
+						if ( uniform.cache[ i ] !== dst[ i ] ) {
+
+							uniform.needsUpdate = true;
+							break;
+
+						}
 
 					}
 
@@ -213,7 +230,7 @@ export class GLPowerProgram {
 		} else {
 
 			this.uniforms.set( name, {
-				value,
+				value: value.concat(),
 				type: type,
 				location: null,
 				needsUpdate: true
@@ -265,49 +282,6 @@ export class GLPowerProgram {
 				uniform.needsUpdate = false;
 
 			}
-
-		} );
-
-	}
-
-	public resetUniforms() {
-
-		this.uniforms.forEach( uniform => {
-
-			if( uniform.location === null ) return;
-
-			// typeに応じて適切な長さの0配列を生成
-			let length = 1;
-
-			if ( uniform.type.includes( 'Matrix4' ) ) {
-
-				length = 16;
-
-			} else if ( uniform.type.includes( 'Matrix3' ) ) {
-
-				length = 9;
-
-			} else if ( uniform.type.includes( 'Matrix2' ) ) {
-
-				length = 4;
-
-			} else if ( uniform.type.includes( '4' ) ) {
-
-				length = 4;
-
-			} else if ( uniform.type.includes( '3' ) ) {
-
-				length = 3;
-
-			} else if ( uniform.type.includes( '2' ) ) {
-
-				length = 2;
-
-			}
-
-			// 0で初期化
-			uniform.value = new Array( length ).fill( 0 );
-			uniform.needsUpdate = true;
 
 		} );
 
