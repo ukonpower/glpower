@@ -33,6 +33,17 @@ export class GLPowerBuffer {
 
 	}
 
+	// GPU側バッファの内容を読み戻す
+	public read( out: TArrayBuffer ) {
+
+		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, this.buffer );
+		this.gl.getBufferSubData( this.gl.ARRAY_BUFFER, 0, out );
+		this.gl.bindBuffer( this.gl.ARRAY_BUFFER, null );
+
+		return this;
+
+	}
+
 	public dispose() {
 
 		this.gl.deleteBuffer( this.buffer );

@@ -72,11 +72,17 @@ export class GLPowerTexture {
 
 	}
 
-	public attach( img: HTMLImageElement | ImagePretense | null | HTMLImageElement[] ) {
+	public attach( img: HTMLImageElement | ImagePretense | null | HTMLImageElement[], flipY?: boolean ) {
 
 		this.image = img;
 
 		this.gl.bindTexture( this.textureType, this.glTex );
+
+		if ( flipY ) {
+
+			this.gl.pixelStorei( this.gl.UNPACK_FLIP_Y_WEBGL, true );
+
+		}
 
 		if ( this.image ) {
 
@@ -102,6 +108,12 @@ export class GLPowerTexture {
 
 		}
 
+		if ( flipY ) {
+
+			this.gl.pixelStorei( this.gl.UNPACK_FLIP_Y_WEBGL, false );
+
+		}
+
 		if ( this._setting.generateMipmap ) {
 
 			this.gl.generateMipmap( this.textureType );
@@ -113,6 +125,17 @@ export class GLPowerTexture {
 		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_S, this._setting.wrapS );
 		this.gl.texParameterf( this.textureType, this.gl.TEXTURE_WRAP_T, this._setting.wrapT );
 
+		this.gl.bindTexture( this.textureType, null );
+
+		return this;
+
+	}
+
+	// テクスチャの領域へ配列データを書き込む（format/typeは設定値に従う）
+	public subImage( data: ArrayBufferView, width: number, height: number ) {
+
+		this.gl.bindTexture( this.textureType, this.glTex );
+		this.gl.texSubImage2D( this.textureType, 0, 0, 0, width, height, this._setting.format, this._setting.type, data );
 		this.gl.bindTexture( this.textureType, null );
 
 		return this;

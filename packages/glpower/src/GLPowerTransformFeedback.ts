@@ -1,4 +1,5 @@
 import { GLPowerBuffer } from "./GLPowerBuffer";
+import { GLPowerVAO } from "./GLPowerVAO";
 
 export class GLPowerTransformFeedback {
 
@@ -52,6 +53,35 @@ export class GLPowerTransformFeedback {
 				this.gl.bindBufferBase( this.gl.TRANSFORM_FEEDBACK_BUFFER, fbBuffer.varyingIndex, null );
 
 			} );
+
+		} );
+
+	}
+
+	// ラスタライズを止めてPOINTS描画を流し、varyingsを出力バッファへ焼き込む
+	public dispatchPoints( vao: GLPowerVAO ) {
+
+		this.use( () => {
+
+			this.gl.beginTransformFeedback( this.gl.POINTS );
+			this.gl.enable( this.gl.RASTERIZER_DISCARD );
+
+			vao.use( () => {
+
+				if ( vao.instanceCount > 0 ) {
+
+					this.gl.drawArraysInstanced( this.gl.POINTS, 0, vao.vertCount, vao.instanceCount );
+
+				} else {
+
+					this.gl.drawArrays( this.gl.POINTS, 0, vao.vertCount );
+
+				}
+
+			} );
+
+			this.gl.disable( this.gl.RASTERIZER_DISCARD );
+			this.gl.endTransformFeedback();
 
 		} );
 
